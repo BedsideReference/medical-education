@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <!--
-  Standalone Bedside Mechanical Ventilation Calculator
+  Bedside Mechanical Ventilation Calculator (v2)
   ─────────────────────────────────────────────────────
-  • Open the file directly in any modern browser, or host on GitHub Pages.
-  • All inputs are stored in memory only — no data leaves the page.
-  • Real-time worked steps show the formula and substituted values for each result.
+  Companion to the Mechanical Ventilation Teaching Reference.
+  All calculations run locally in your browser — nothing is uploaded.
+  Inputs persist via localStorage; snapshots can be saved for comparison.
 -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bedside Mechanical Ventilation Calculator</title>
+
+<!-- KaTeX (math rendering for symbolic baseline formulas) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters:[{left:'\\(',right:'\\)',display:false},{left:'$$',right:'$$',display:true}],throwOnError:false});"></script>
+
 <style>
   :root {
     --bg: #ffffff;
@@ -23,103 +29,187 @@
     --accent-soft: #eef5fb;
     --warn-soft: #fff8e1;
     --warn-rule: #f0c674;
+    --ok: #146c43;
+    --ok-bg: #eaf6ee;
+    --ok-rule: #cfead8;
+    --warn: #875010;
+    --warn-bg: #fbf0d4;
+    --warn-rule: #f3dfb6;
+    --bad: #8b1e1e;
+    --bad-bg: #fbe7e7;
+    --bad-rule: #f1c0c0;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0f1419;
-      --surface: #161b22;
-      --ink: #e6edf3;
-      --ink-soft: #c9d1d9;
-      --muted: #8b949e;
-      --rule: #30363d;
-      --accent: #58a6ff;
-      --accent-soft: #122036;
-      --warn-soft: #2a2110;
-      --warn-rule: #6b4f12;
+      --bg: #0f1419; --surface: #161b22; --ink: #e6edf3; --ink-soft: #c9d1d9;
+      --muted: #8b949e; --rule: #30363d; --accent: #58a6ff; --accent-soft: #122036;
+      --warn-soft: #2a2110; --warn-rule: #6b4f12;
+      --ok: #88d18d; --ok-bg: rgba(44,143,58,0.18); --ok-rule: rgba(44,143,58,0.35);
+      --warn: #f0c277; --warn-bg: rgba(201,137,42,0.18); --warn-rule: rgba(201,137,42,0.35);
+      --bad: #f0a09a; --bad-bg: rgba(196,69,47,0.20); --bad-rule: rgba(196,69,47,0.40);
     }
   }
   * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--ink);
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.5;
-  }
-  .wrap {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px 18px 40px;
-  }
-  header {
-    border-bottom: 1px solid var(--rule);
-    padding-bottom: 14px;
-    margin-bottom: 18px;
-  }
+    font-size: 15px; line-height: 1.5; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 18px 40px; }
+  header { border-bottom: 1px solid var(--rule); padding-bottom: 14px; margin-bottom: 18px; }
   header h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
   header .sub { color: var(--muted); font-size: 13.5px; }
   header .meta { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
   details.help { margin: 14px 0 18px; padding: 10px 14px; background: var(--accent-soft); border-radius: 6px; }
   details.help summary { cursor: pointer; font-weight: 600; color: var(--accent); }
   details.help p, details.help li { font-size: 13.5px; color: var(--ink-soft); }
   details.help ul { margin: 6px 0 4px 18px; padding: 0; }
 
-  /* ========== CALCULATOR WIDGET ========== */
-  .calc {
-    background: var(--surface); border: 1px solid var(--rule); border-radius: 8px;
-    padding: 14px 18px; margin: 14px 0;
+  /* ===== LPV bundle status row ===== */
+  .lpv-bundle {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    padding: 10px 14px; margin: 14px 0;
+    background: var(--accent-soft); border-radius: 6px;
+    font-size: 12px;
   }
-  .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 18px; margin: 8px 0; }
-  .calc-grid label { display: flex; flex-direction: column; font-size: 12.5px; color: var(--ink-soft); gap: 2px; }
-  .calc-grid input, .calc-grid select { padding: 5px 8px; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); color: var(--ink); font-size: 14px; font-family: inherit; }
+  .lpv-bundle .lb-label {
+    font-weight: 600; color: var(--accent); margin-right: 4px;
+    text-transform: uppercase; letter-spacing: 0.06em; font-size: 11px;
+  }
+  .lb-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 9px; border-radius: 999px;
+    background: var(--surface); color: var(--muted);
+    font-size: 12px; font-weight: 600;
+    border: 1px solid var(--rule);
+  }
+  .lb-item::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted);
+  }
+  .lb-item.ok    { color: var(--ok);   border-color: var(--ok-rule);   background: var(--ok-bg); }
+  .lb-item.ok::before { background: var(--ok); }
+  .lb-item.warn  { color: var(--warn); border-color: var(--warn-rule); background: var(--warn-bg); }
+  .lb-item.warn::before { background: var(--warn); }
+  .lb-item.bad   { color: var(--bad);  border-color: var(--bad-rule);  background: var(--bad-bg); }
+  .lb-item.bad::before { background: var(--bad); }
+  .lb-item .lb-val { font-weight: 700; margin-left: 2px; }
+
+  /* ===== Calculator widget ===== */
+  .calc { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px;
+    padding: 14px 18px; margin: 14px 0; }
+  .calc h2 { margin: 0 0 6px; font-size: 13.5px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .calc h3 { margin: 14px 0 6px; font-size: 12px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .calc h3:first-of-type { margin-top: 6px; }
+
+  .calc-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px 18px; margin: 6px 0;
+  }
+  .calc-grid label { display: flex; flex-direction: column; font-size: 12.5px;
+    color: var(--ink-soft); gap: 2px; }
+  .calc-grid input, .calc-grid select {
+    padding: 5px 8px; border: 1px solid var(--rule); border-radius: 4px;
+    background: var(--bg); color: var(--ink); font-size: 14px; font-family: inherit;
+  }
   .calc-grid input:focus, .calc-grid select:focus { outline: none; border-color: var(--accent); }
-  .calc-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
-  .calc-result { padding: 7px 11px; background: var(--accent-soft); border-radius: 5px; }
-  .calc-result .lbl { display: block; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
-  .calc-result .val { display: block; font-size: 17px; font-weight: 600; color: var(--ink); margin-top: 1px; }
+
+  details.optional-inputs { margin: 8px 0 4px; padding: 0; background: transparent; border: none; }
+  details.optional-inputs summary {
+    cursor: pointer; font-size: 12px; color: var(--accent); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 0;
+  }
+
+  /* ===== Result cards ===== */
+  .calc-results {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px; margin: 6px 0 14px;
+  }
+  .calc-result {
+    padding: 9px 11px;
+    background: var(--accent-soft);
+    border-radius: 5px;
+    border: 1px solid transparent;
+    transition: background 200ms, border-color 200ms;
+  }
+  .calc-result.ok    { background: var(--ok-bg);   border-color: var(--ok-rule); }
+  .calc-result.warn  { background: var(--warn-bg); border-color: var(--warn-rule); }
+  .calc-result.bad   { background: var(--bad-bg);  border-color: var(--bad-rule); }
+  .calc-result .lbl { display: block; font-size: 11px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .calc-result.ok   .lbl { color: var(--ok); }
+  .calc-result.warn .lbl { color: var(--warn); }
+  .calc-result.bad  .lbl { color: var(--bad); }
+  .calc-result .val {
+    display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
+    font-size: 17px; font-weight: 600; color: var(--ink); margin-top: 2px;
+  }
   .calc-result .unit { font-size: 11.5px; color: var(--muted); font-weight: 400; }
-  /* Symbolic baseline formula — always visible, italic */
+  .calc-result .bin {
+    font-size: 10.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px;
+    background: var(--surface); color: var(--muted); border: 1px solid var(--rule);
+  }
+  .calc-result.ok   .bin { color: var(--ok);   background: var(--ok-bg);   border-color: var(--ok-rule); }
+  .calc-result.warn .bin { color: var(--warn); background: var(--warn-bg); border-color: var(--warn-rule); }
+  .calc-result.bad  .bin { color: var(--bad);  background: var(--bad-bg);  border-color: var(--bad-rule); }
   .calc-result .formula-base {
     display: block;
     font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
-    font-size: 11px;
-    color: var(--ink-soft);
-    margin-top: 4px;
-    line-height: 1.45;
-    font-style: italic;
+    font-size: 11px; color: var(--ink-soft); margin-top: 5px;
+    line-height: 1.45; font-style: italic;
   }
-  /* Worked-substitution formula — visible once inputs are filled */
+  /* KaTeX-rendered math overrides italic/font */
+  .calc-result .formula-base .katex { font-size: 1.05em; font-style: normal; }
   .calc-result .formula {
     display: block;
     font-family: ui-monospace, "SF Mono", Consolas, "Liberation Mono", monospace;
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 1px;
-    line-height: 1.45;
-    word-spacing: 1px;
-    white-space: normal;
-    min-height: 1.2em;
+    font-size: 11.5px; color: var(--muted); margin-top: 2px;
+    line-height: 1.45; word-spacing: 1px;
   }
   .calc-result .formula:empty { display: none; }
-  /* Modeled-waveform panel (matches the embedded calculator in the parent doc) */
-  .calc-waveform {
-    margin-top: 12px;
-    padding: 10px 12px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 5px;
+  .calc-result .interpret {
+    display: block; margin-top: 6px; font-size: 12px;
+    color: var(--ink-soft); line-height: 1.5;
+    border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    padding-top: 6px;
   }
+  .calc-result.ok   .interpret { color: var(--ok); }
+  .calc-result.warn .interpret { color: var(--warn); }
+  .calc-result.bad  .interpret { color: var(--bad); }
+  .calc-result .interpret:empty { display: none; }
+
+  /* Wide cards (PEEP/FiO₂ ladder, Target PaCO₂, RR-by-IE table) */
+  .calc-result.wide { grid-column: 1 / -1; }
+  /* Tables embedded in result cards */
+  .calc-result .rr-mini, .calc-result .ladder-mini, .calc-result .target-mini {
+    width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12.5px;
+  }
+  .calc-result .rr-mini td, .calc-result .ladder-mini td,
+  .calc-result .ladder-mini th, .calc-result .target-mini td {
+    padding: 2px 6px; border: none; vertical-align: middle;
+  }
+  .calc-result .rr-mini td.r, .calc-result .ladder-mini td.r {
+    text-align: right; font-weight: 700; color: var(--ink);
+  }
+  .calc-result .rr-mini td.l, .calc-result .ladder-mini td.l { color: var(--ink-soft); }
+  .calc-result .ladder-mini th { text-align: left; color: var(--ink-soft); font-weight: 600;
+    border-bottom: 1px solid var(--rule); }
+  /* Numeric columns (2nd onward): right-align header AND data so they line up. */
+  .calc-result .ladder-mini th:nth-child(n+2) { text-align: right; }
+  .calc-result.rr-card .val, .calc-result.ladder-card .val { font-size: 12px; color: var(--muted); font-weight: 400; }
+
+  /* ===== Modeled-waveform panel ===== */
+  .calc-waveform { margin-top: 12px; padding: 10px 12px; background: var(--surface);
+    border: 1px solid var(--rule); border-radius: 5px; }
   .calc-waveform .cw-header {
-    font-size: 11px; color: var(--accent);
-    text-transform: uppercase; letter-spacing: 0.06em;
-    margin-bottom: 6px;
+    font-size: 11px; color: var(--accent); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 6px;
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
   .calc-waveform .cw-mode-group { display: inline-flex; gap: 0; }
   .calc-waveform button.cw-mode {
-    font-family: inherit; font-size: 11px; padding: 3px 10px;
+    appearance: none; -webkit-appearance: none;
+    font-family: inherit; font-size: 11px; padding: 3px 12px;
     border: 1px solid var(--rule); background: var(--bg); color: var(--muted);
     cursor: pointer; letter-spacing: 0; text-transform: none;
   }
@@ -132,32 +222,101 @@
     .calc-waveform svg path#cw-pressure { stroke: #56b4e9; }
     .calc-waveform svg path#cw-flow { stroke: #f0b66a; }
   }
-  /* Mini-table for the RR-by-I:E ceiling card */
-  .calc-result .rr-mini { width: 100%; border-collapse: collapse; margin-top: 3px; font-size: 12.5px; }
-  .calc-result .rr-mini td { padding: 1px 4px; border: none; vertical-align: middle; }
-  .calc-result .rr-mini td.r { text-align: right; font-weight: 700; color: var(--ink); }
-  .calc-result .rr-mini td.l { color: var(--ink-soft); }
-  .calc-result.rr-card .val { font-size: 12px; color: var(--muted); font-weight: 400; }
-  .calc-note { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 8px; line-height: 1.5; }
+
+  /* ===== Snapshots panel ===== */
+  .snapshots { background: var(--surface); border: 1px solid var(--rule);
+    border-radius: 8px; padding: 14px 18px; margin: 14px 0; }
+  .snapshots h2 { margin: 0 0 8px; font-size: 13.5px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+  .snap-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .snap-controls input { flex: 1 1 200px; min-width: 160px; padding: 6px 9px;
+    border: 1px solid var(--rule); border-radius: 5px; background: var(--bg);
+    color: var(--ink); font-size: 13px; font-family: inherit; }
+  .snap-controls input:focus { outline: none; border-color: var(--accent); }
+  .snap-controls button { padding: 6px 12px; font-size: 13px;
+    background: var(--bg); color: var(--ink-soft);
+    border: 1px solid var(--rule); border-radius: 5px;
+    cursor: pointer; font-family: inherit; }
+  .snap-controls button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .snap-controls button:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .snap-controls button.primary:hover { background: var(--accent); color: #fff; opacity: 0.92; }
+  .snap-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  .snap-table th, .snap-table td { padding: 6px 8px; border-bottom: 1px solid var(--rule);
+    text-align: left; vertical-align: top; }
+  .snap-table th { font-weight: 600; color: var(--ink-soft); font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: 0.04em; }
+  .snap-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .snap-table td .delta { font-size: 11px; color: var(--muted); margin-left: 4px; }
+  .snap-table td .delta.up   { color: var(--bad); }
+  .snap-table td .delta.down { color: var(--ok); }
+  .snap-table td.actions { text-align: right; }
+  .snap-table td.actions button { padding: 2px 8px; font-size: 11px;
+    background: transparent; color: var(--muted); border: 1px solid var(--rule);
+    border-radius: 4px; cursor: pointer; margin-left: 4px; font-family: inherit; }
+  .snap-table td.actions button:hover { color: var(--bad); border-color: var(--bad-rule); }
+  .snap-empty { font-size: 12.5px; color: var(--muted); font-style: italic; margin-top: 10px; }
+
+  .calc-note { font-size: 12px; color: var(--muted); font-style: italic;
+    margin-top: 12px; line-height: 1.5; }
   .calc-note strong { color: var(--ink-soft); }
 
-  .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .actions button {
-    padding: 6px 12px; font-size: 13px;
+    appearance: none; -webkit-appearance: none;
+    padding: 7px 14px; font-size: 13px;
     background: var(--bg); color: var(--ink-soft);
     border: 1px solid var(--rule); border-radius: 5px;
     cursor: pointer; font-family: inherit;
   }
   .actions button:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .actions button.copy-confirm { color: var(--ok); border-color: var(--ok-rule); background: var(--ok-bg); }
 
-  footer { margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--muted); }
+  footer { margin-top: 28px; padding-top: 12px; border-top: 1px solid var(--rule);
+    font-size: 12px; color: var(--muted); }
   footer a { color: var(--accent); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
+  /* ===== Print stylesheet ===== */
   @media print {
-    .actions, details.help { display: none; }
-    .calc { border-color: #999; box-shadow: none; }
+    .actions, details.help, .snap-controls, .snap-table td.actions,
+    .calc-waveform .cw-mode-group { display: none !important; }
+    body { font-size: 12px; }
+    .wrap { max-width: none; padding: 12px; }
+    .calc, .snapshots, .lpv-bundle { box-shadow: none; border-color: #999;
+      background: #fff !important; page-break-inside: avoid; }
+    .calc-result { background: #fff !important; border: 1px solid #ccc !important; }
+    .calc-result.ok   { border-color: var(--ok); }
+    .calc-result.warn { border-color: var(--warn); }
+    .calc-result.bad  { border-color: var(--bad); }
+    .lb-item { background: #fff !important; }
+    .calc-waveform { page-break-inside: avoid; }
+    header h1 { font-size: 18px; }
+    h2, h3 { color: #000 !important; }
+    footer { font-size: 10px; }
   }
+
+  /* MP mode toggle (replaces the cw-mode buttons that lived in the waveform panel) */
+  .mp-mode-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: 4px 0 8px;
+    font-size: 11px; color: var(--ink-soft);
+  }
+  .mp-mode-toggle .mp-mode-lbl {
+    text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .mp-mode-toggle .mp-mode-btn {
+    appearance: none; -webkit-appearance: none;
+    border: 1px solid var(--rule); background: var(--bg); color: var(--muted);
+    padding: 3px 12px; font-size: 11px; font-weight: 600;
+    cursor: pointer; font-family: inherit; line-height: 1.4;
+  }
+  .mp-mode-toggle .mp-mode-btn:first-of-type { border-radius: 4px 0 0 4px; }
+  .mp-mode-toggle .mp-mode-btn:last-of-type  { border-radius: 0 4px 4px 0; border-left: none; }
+  .mp-mode-toggle .mp-mode-btn.active {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+  }
+
 </style>
 </head>
 <body>
@@ -165,24 +324,38 @@
 
   <header>
     <h1>Bedside Mechanical Ventilation Calculator</h1>
-    <div class="sub">Real-time PBW, gas exchange, mechanics, and lung-protective metrics — with worked formula steps and live VC/PC pressure-flow waveforms.</div>
+    <div class="sub">Patient demographics, gas exchange, mechanics, lung-protective metrics, dead space, oxygen delivery, and decision aids — with threshold flags, clinical interpretation, and saveable snapshots.</div>
     <div class="meta">All calculations run locally in your browser — nothing is uploaded.</div>
   </header>
 
   <details class="help">
     <summary>How to use</summary>
-    <p>Enter values for any subset of inputs. Results update live. Each card shows three things:</p>
+    <p>Enter values for any subset of inputs. Results update live and persist between visits. Each card shows:</p>
     <ul>
-      <li><strong>The result</strong> with its unit (large, bold).</li>
-      <li><strong>The baseline formula</strong> in symbolic form (italic) — always visible so you see what the equation looks like even before filling anything in.</li>
-      <li><strong>The worked substitution</strong> (monospace) — the formula with your literal values plugged in, plus the answer. Hidden until inputs are populated.</li>
+      <li><strong>Result + unit</strong> (large), with a colored severity bin where applicable.</li>
+      <li><strong>Symbolic formula</strong> (italic; rendered with KaTeX where possible).</li>
+      <li><strong>Worked substitution</strong> (monospace) once the inputs are filled.</li>
+      <li><strong>One-line interpretation</strong> in clinical context — green = within target, amber = borderline, red = breach.</li>
     </ul>
-    <p>The <strong>"Max RR by I:E"</strong> card translates the calculated time constant (τ) into the highest respiratory rate that avoids air-trapping for each I:E ratio (Te ≥ 3τ rule).</p>
-    <p>The <strong>modeled waveforms panel</strong> renders the pressure-time and flow-time traces from your inputs. Toggle between <strong>VC</strong> (constant flow, linear pressure ramp) and <strong>PC</strong> (decelerating flow, square pressure) with the segmented control on its header.</p>
-    <p>Ranges and defaults are conservative; placeholder text shows a typical adult value. PBW switches between the men/women formulas when you change the Sex dropdown.</p>
+    <p>The <strong>LPV bundle row</strong> at the top gives an at-a-glance pass/fail on VT/kg, Pplat, ΔP, and MP — the four lung-protective targets.</p>
+    <p>Use the <strong>Snapshots</strong> panel to save the current input set and compare against later changes (PEEP titration, SBT, prone) — each row shows deltas from the most recent live values.</p>
+    <p>Optional inputs (ETCO₂, target PaCO₂, cardiac output, MAP, esophageal pressures) unlock additional calculations: Vd/Vt, recommended VE, DO₂, OI, and transpulmonary pressures.</p>
   </details>
 
-  <div class="calc" id="calcWidget" role="region" aria-label="Bedside calculator">
+  <!-- LPV bundle traffic-light strip -->
+  <div class="lpv-bundle" id="lpv-bundle" aria-label="Lung-protective bundle status">
+    <span class="lb-label">LPV bundle</span>
+    <span class="lb-item" id="lb-vtkg" data-tip="VT/PBW target ≤ 8 mL/kg">VT/kg <span class="lb-val" id="lb-vtkg-val">—</span></span>
+    <span class="lb-item" id="lb-pplat" data-tip="Pplat target ≤ 30 cmH₂O">Pplat <span class="lb-val" id="lb-pplat-val">—</span></span>
+    <span class="lb-item" id="lb-dp" data-tip="ΔP target ≤ 14 cmH₂O (Amato 2015)">ΔP <span class="lb-val" id="lb-dp-val">—</span></span>
+    <span class="lb-item" id="lb-mp" data-tip="MP target ≤ 17 J/min">MP <span class="lb-val" id="lb-mp-val">—</span></span>
+  </div>
+
+  <!-- ============== INPUTS ============== -->
+  <section class="calc" aria-label="Inputs">
+    <h2>Inputs</h2>
+
+    <h3>Patient</h3>
     <div class="calc-grid">
       <label>Sex
         <select id="c-sex">
@@ -190,447 +363,976 @@
           <option value="f">Female</option>
         </select>
       </label>
-      <label>Height (inches)
-        <input type="number" id="c-ht" min="48" max="84" step="1" placeholder="69"/>
-      </label>
-      <label>Age (years)
-        <input type="number" id="c-age" min="0" max="120" step="1" placeholder="55"/>
-      </label>
-      <label>Hb (g/dL)
-        <input type="number" id="c-hb" min="3" max="20" step="0.1" placeholder="13"/>
-      </label>
-      <label>FiO₂ (decimal, e.g. 0.5)
-        <input type="number" id="c-fio2" min="0.21" max="1" step="0.01" placeholder="0.4"/>
-      </label>
-      <label>PaO₂ (mmHg)
-        <input type="number" id="c-pao2" min="20" max="600" step="1" placeholder="80"/>
-      </label>
-      <label>PaCO₂ (mmHg)
-        <input type="number" id="c-paco2" min="10" max="120" step="1" placeholder="40"/>
-      </label>
-      <label>SpO₂ (%)
-        <input type="number" id="c-spo2" min="50" max="100" step="1" placeholder="95"/>
-      </label>
-      <label>SaO₂ (decimal, e.g. 0.97)
-        <input type="number" id="c-sao2" min="0.5" max="1" step="0.01" placeholder="0.97"/>
-      </label>
-      <label>VT (mL)
-        <input type="number" id="c-vt" min="100" max="1500" step="10" placeholder="450"/>
-      </label>
-      <label>RR (breaths/min)
-        <input type="number" id="c-rr" min="4" max="60" step="1" placeholder="20"/>
-      </label>
-      <label>PIP (cmH₂O)
-        <input type="number" id="c-pip" min="0" max="80" step="1" placeholder="32"/>
-      </label>
-      <label>Pplat (cmH₂O)
-        <input type="number" id="c-pplat" min="0" max="60" step="1" placeholder="24"/>
-      </label>
-      <label>PEEP (cmH₂O)
-        <input type="number" id="c-peep" min="0" max="30" step="1" placeholder="8"/>
-      </label>
-      <label>Peak inspiratory flow (L/min)
-        <input type="number" id="c-flow" min="0" max="200" step="1" placeholder="60"/>
-      </label>
+      <label>Height (inches)<input type="number" id="c-ht" min="48" max="84" step="1" placeholder="69"/></label>
+      <label>Age (years)<input type="number" id="c-age" min="0" max="120" step="1" placeholder="55"/></label>
+      <label>Hb (g/dL)<input type="number" id="c-hb" min="3" max="20" step="0.1" placeholder="13"/></label>
     </div>
-    <div class="calc-results" id="calcResults" role="region" aria-label="Calculator results" aria-live="polite">
-      <div class="calc-result"><span class="lbl">PBW</span><span class="val" id="r-pbw">—<span class="unit"> kg</span></span><span class="formula-base" id="fb-pbw">PBW = base + 2.3 × (ht_in − 60)</span><span class="formula" id="f-pbw"></span></div>
-      <div class="calc-result"><span class="lbl">VT/PBW</span><span class="val" id="r-vtpbw">—<span class="unit"> mL/kg</span></span><span class="formula-base">VT / PBW</span><span class="formula" id="f-vtpbw"></span></div>
-      <div class="calc-result"><span class="lbl">A–a gradient</span><span class="val" id="r-aa">—<span class="unit"> mmHg</span></span><span class="formula-base">A−a = PAO₂ − PaO₂;  PAO₂ = FiO₂(P_atm − P_H₂O) − PaCO₂/R</span><span class="formula" id="f-aa"></span></div>
-      <div class="calc-result"><span class="lbl">A–a (predicted normal)</span><span class="val" id="r-aanorm">—<span class="unit"> mmHg</span></span><span class="formula-base">age/4 + 4   (room air)</span><span class="formula" id="f-aanorm"></span></div>
-      <div class="calc-result"><span class="lbl">P/F ratio</span><span class="val" id="r-pf">—</span><span class="formula-base">PaO₂ / FiO₂</span><span class="formula" id="f-pf"></span></div>
-      <div class="calc-result"><span class="lbl">S/F ratio</span><span class="val" id="r-sf">—</span><span class="formula-base">SpO₂ / FiO₂</span><span class="formula" id="f-sf"></span></div>
-      <div class="calc-result"><span class="lbl">ROX index</span><span class="val" id="r-rox">—</span><span class="formula-base">(SpO₂ / FiO₂) / RR</span><span class="formula" id="f-rox"></span></div>
-      <div class="calc-result"><span class="lbl">RSBI</span><span class="val" id="r-rsbi">—</span><span class="formula-base">RR / VT (L)</span><span class="formula" id="f-rsbi"></span></div>
-      <div class="calc-result"><span class="lbl">Cstat</span><span class="val" id="r-cstat">—<span class="unit"> mL/cmH₂O</span></span><span class="formula-base">VT / ΔP</span><span class="formula" id="f-cstat"></span></div>
-      <div class="calc-result"><span class="lbl">Driving pressure (ΔP)</span><span class="val" id="r-dp">—<span class="unit"> cmH₂O</span></span><span class="formula-base">Pplat − PEEP</span><span class="formula" id="f-dp"></span></div>
-      <div class="calc-result"><span class="lbl">Raw</span><span class="val" id="r-raw">—<span class="unit"> cmH₂O·s/L</span></span><span class="formula-base">(PIP − Pplat) / V̇    (V̇ = peak flow, L/s)</span><span class="formula" id="f-raw"></span></div>
-      <div class="calc-result"><span class="lbl">Time constant (τ)</span><span class="val" id="r-tau">—<span class="unit"> s</span></span><span class="formula-base">τ = Raw × Cstat   (Te ≥ 3τ to avoid air-trapping)</span><span class="formula" id="f-tau"></span></div>
-      <div class="calc-result rr-card"><span class="lbl">Max RR by I:E (Te ≥ 3τ)</span>
-        <table class="rr-mini" aria-label="Maximum respiratory rate by inspiratory-to-expiratory ratio">
+
+    <h3>Arterial blood gas</h3>
+    <div class="calc-grid">
+      <label>FiO₂ (decimal)<input type="number" id="c-fio2" min="0.21" max="1" step="0.01" placeholder="0.4"/></label>
+      <label>PaO₂ (mmHg)<input type="number" id="c-pao2" min="20" max="600" step="1" placeholder="80"/></label>
+      <label>PaCO₂ (mmHg)<input type="number" id="c-paco2" min="10" max="120" step="1" placeholder="40"/></label>
+      <label>SpO₂ (%)<input type="number" id="c-spo2" min="50" max="100" step="1" placeholder="95"/></label>
+      <label>SaO₂ (decimal)<input type="number" id="c-sao2" min="0.5" max="1" step="0.01" placeholder="0.97"/></label>
+    </div>
+
+    <h3>Ventilator settings</h3>
+    <div class="calc-grid">
+      <label>VT (mL)<input type="number" id="c-vt" min="100" max="1500" step="10" placeholder="450"/></label>
+      <label>RR (breaths/min)<input type="number" id="c-rr" min="4" max="60" step="1" placeholder="20"/></label>
+      <label>PIP (cmH₂O)<input type="number" id="c-pip" min="0" max="80" step="1" placeholder="32"/></label>
+      <label>Pplat (cmH₂O)<input type="number" id="c-pplat" min="0" max="60" step="1" placeholder="24"/></label>
+      <label>PEEP (cmH₂O)<input type="number" id="c-peep" min="0" max="30" step="1" placeholder="8"/></label>
+      <label>Peak insp. flow (L/min)<input type="number" id="c-flow" min="0" max="200" step="1" placeholder="60"/></label>
+      <label>Mean airway P (cmH₂O)<input type="number" id="c-map" min="0" max="50" step="0.5" placeholder="14"/></label>
+    </div>
+
+    <details class="optional-inputs">
+      <summary>Optional — dead space, oxygen delivery, transpulmonary pressure</summary>
+      <div class="calc-grid">
+        <label>ETCO₂ (mmHg)<input type="number" id="c-etco2" min="5" max="80" step="1" placeholder="32"/></label>
+        <label>Target PaCO₂ (mmHg)<input type="number" id="c-paco2-target" min="20" max="80" step="1" placeholder="40"/></label>
+        <label>Cardiac output (L/min)<input type="number" id="c-co" min="1" max="20" step="0.1" placeholder="5"/></label>
+        <label>P<sub>esoph</sub> insp (cmH₂O)<input type="number" id="c-pes-insp" min="-30" max="50" step="0.5" placeholder="6"/></label>
+        <label>P<sub>esoph</sub> exp (cmH₂O)<input type="number" id="c-pes-exp" min="-30" max="50" step="0.5" placeholder="3"/></label>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============== RESULTS ============== -->
+  <section class="calc results-section" aria-label="Results" aria-live="polite">
+    <h2>Results</h2>
+
+    <h3>Oxygenation</h3>
+    <div class="calc-results">
+      <div class="calc-result" id="r-card-pbw">
+        <span class="lbl">PBW</span>
+        <span class="val"><span id="r-pbw">—</span><span class="unit">kg</span></span>
+        <span class="formula-base" id="fb-pbw">\(\text{PBW} = \text{base} + 2.3 \times (\text{ht}_\text{in} - 60)\)</span>
+        <span class="formula" id="f-pbw"></span>
+      </div>
+      <div class="calc-result" id="r-card-aa">
+        <span class="lbl">A–a gradient</span>
+        <span class="val"><span id="r-aa">—</span><span class="unit">mmHg</span></span>
+        <span class="formula-base">\(A{-}a = P_\text{A}O_2 - P_aO_2;\; P_\text{A}O_2 = F_iO_2(P_\text{atm} - P_{H_2O}) - P_aCO_2/R\)</span>
+        <span class="formula" id="f-aa"></span>
+        <span class="interpret" id="i-aa"></span>
+      </div>
+      <div class="calc-result" id="r-card-aanorm">
+        <span class="lbl">A–a — predicted</span>
+        <span class="val"><span id="r-aanorm">—</span><span class="unit">mmHg</span></span>
+        <span class="formula-base">\(\text{normal} = \text{age}/4 + 4\) (room air); on supplemental O₂ this underestimates</span>
+        <span class="formula" id="f-aanorm"></span>
+      </div>
+      <div class="calc-result" id="r-card-pf">
+        <span class="lbl">P/F ratio</span>
+        <span class="val"><span id="r-pf">—</span><span class="bin" id="r-pf-bin">—</span></span>
+        <span class="formula-base">\(\text{P/F} = P_aO_2 / F_iO_2\) — Berlin oxygenation index</span>
+        <span class="formula" id="f-pf"></span>
+        <span class="interpret" id="i-pf"></span>
+      </div>
+      <div class="calc-result" id="r-card-sf">
+        <span class="lbl">S/F ratio</span>
+        <span class="val"><span id="r-sf">—</span></span>
+        <span class="formula-base">\(\text{S/F} = SpO_2 / F_iO_2\)</span>
+        <span class="formula" id="f-sf"></span>
+      </div>
+      <div class="calc-result" id="r-card-rox">
+        <span class="lbl">ROX index</span>
+        <span class="val"><span id="r-rox">—</span></span>
+        <span class="formula-base">\(\text{ROX} = (SpO_2 / F_iO_2) / RR\) — HFNC weaning predictor</span>
+        <span class="formula" id="f-rox"></span>
+        <span class="interpret" id="i-rox"></span>
+      </div>
+      <div class="calc-result" id="r-card-cao2">
+        <span class="lbl">CaO₂ — oxygen content</span>
+        <span class="val"><span id="r-cao2">—</span><span class="unit">mL/dL</span></span>
+        <span class="formula-base">\(CaO_2 = 1.34 \cdot Hb \cdot SaO_2 + 0.003 \cdot P_aO_2\)</span>
+        <span class="formula" id="f-cao2"></span>
+      </div>
+      <div class="calc-result" id="r-card-do2">
+        <span class="lbl">DO₂ — oxygen delivery</span>
+        <span class="val"><span id="r-do2">—</span><span class="unit">mL O₂/min</span></span>
+        <span class="formula-base">\(DO_2 = CO \times CaO_2 \times 10\) — needs cardiac output input</span>
+        <span class="formula" id="f-do2"></span>
+        <span class="interpret" id="i-do2"></span>
+      </div>
+      <div class="calc-result" id="r-card-oi">
+        <span class="lbl">OI — Oxygenation Index</span>
+        <span class="val"><span id="r-oi">—</span></span>
+        <span class="formula-base">\(OI = (\text{MAP} \times F_iO_2 \times 100) / P_aO_2\)</span>
+        <span class="formula" id="f-oi"></span>
+        <span class="interpret" id="i-oi"></span>
+      </div>
+    </div>
+
+    <h3>Ventilation &amp; dead space</h3>
+    <div class="calc-results">
+      <div class="calc-result" id="r-card-ve">
+        <span class="lbl">Minute ventilation (V<sub>E</sub>)</span>
+        <span class="val"><span id="r-ve">—</span><span class="unit">L/min</span></span>
+        <span class="formula-base">\(V_E = V_T \times RR\)</span>
+        <span class="formula" id="f-ve"></span>
+      </div>
+      <div class="calc-result" id="r-card-vdvt">
+        <span class="lbl">Vd/Vt — dead-space fraction</span>
+        <span class="val"><span id="r-vdvt">—</span></span>
+        <span class="formula-base">\(\frac{V_d}{V_T} = \frac{P_aCO_2 - P_{ET}CO_2}{P_aCO_2}\) — Bohr-Enghoff (needs ETCO₂)</span>
+        <span class="formula" id="f-vdvt"></span>
+        <span class="interpret" id="i-vdvt"></span>
+      </div>
+      <div class="calc-result wide" id="r-card-paco2target">
+        <span class="lbl">Target PaCO₂ helper</span>
+        <span class="val"><span id="r-paco2-target">—</span></span>
+        <span class="formula-base">\(\frac{V_E^\text{new}}{V_E^\text{cur}} = \frac{P_aCO_2^\text{cur}}{P_aCO_2^\text{target}}\) — adjust RR (or VT) by this factor</span>
+        <span class="formula" id="f-paco2target"></span>
+        <span class="interpret" id="i-paco2target"></span>
+      </div>
+    </div>
+
+    <h3>Mechanics</h3>
+    <div class="calc-results">
+      <div class="calc-result" id="r-card-dp">
+        <span class="lbl">Driving pressure (ΔP)</span>
+        <span class="val"><span id="r-dp">—</span><span class="unit">cmH₂O</span></span>
+        <span class="formula-base">\(\Delta P = P_\text{plat} - PEEP\)</span>
+        <span class="formula" id="f-dp"></span>
+        <span class="interpret" id="i-dp"></span>
+      </div>
+      <div class="calc-result" id="r-card-cstat">
+        <span class="lbl">Cstat — static compliance</span>
+        <span class="val"><span id="r-cstat">—</span><span class="unit">mL/cmH₂O</span></span>
+        <span class="formula-base">\(C_\text{stat} = V_T / \Delta P\)</span>
+        <span class="formula" id="f-cstat"></span>
+        <span class="interpret" id="i-cstat"></span>
+      </div>
+      <div class="calc-result" id="r-card-raw">
+        <span class="lbl">Raw — airway resistance</span>
+        <span class="val"><span id="r-raw">—</span><span class="unit">cmH₂O·s/L</span></span>
+        <span class="formula-base">\(R_\text{aw} = (PIP - P_\text{plat}) / \dot{V}\) (\(\dot{V}\) = peak flow, L/s)</span>
+        <span class="formula" id="f-raw"></span>
+        <span class="interpret" id="i-raw"></span>
+      </div>
+      <div class="calc-result" id="r-card-tau">
+        <span class="lbl">Time constant (τ)</span>
+        <span class="val"><span id="r-tau">—</span><span class="unit">s</span></span>
+        <span class="formula-base">\(\tau = R_\text{aw} \times C_\text{stat}\); \(T_e \geq 3\tau\) avoids air-trapping</span>
+        <span class="formula" id="f-tau"></span>
+      </div>
+      <div class="calc-result wide rr-card" id="r-card-rrmax">
+        <span class="lbl">Max RR by I:E (T<sub>e</sub> ≥ 3τ)</span>
+        <table class="rr-mini" aria-label="Maximum RR by inspiratory-to-expiratory ratio">
           <tr><td class="l">I:E 1:1</td><td class="r" id="r-rr-11">—</td><td class="l">I:E 1:3</td><td class="r" id="r-rr-13">—</td></tr>
           <tr><td class="l">I:E 1:2</td><td class="r" id="r-rr-12">—</td><td class="l">I:E 1:4</td><td class="r" id="r-rr-14">—</td></tr>
           <tr><td class="l">&nbsp;</td><td class="r"></td><td class="l">I:E 1:5</td><td class="r" id="r-rr-15">—</td></tr>
         </table>
-        <span class="formula-base">RR_max = 60·n / [(1+n)·3τ] bpm   (n = E:I ratio)</span>
+        <span class="formula-base">\(RR_\text{max} = 60n / [(1+n)\cdot 3\tau]\) bpm (n = E:I ratio)</span>
         <span class="formula" id="f-rrmax"></span>
       </div>
-      <div class="calc-result"><span class="lbl">Mechanical power</span><span class="val" id="r-mp">—<span class="unit"> J/min</span></span><span class="formula-base">MP = 0.098 × RR × VT × (PIP − ½ΔP)</span><span class="formula" id="f-mp"></span></div>
-      <div class="calc-result"><span class="lbl">CaO₂ (oxygen content)</span><span class="val" id="r-cao2">—<span class="unit"> mL/dL</span></span><span class="formula-base">CaO₂ = 1.34 × Hb × SaO₂ + 0.003 × PaO₂</span><span class="formula" id="f-cao2"></span></div>
-    </div>
-    <div class="calc-waveform" id="calcWaveform" aria-label="Pressure and flow waveforms modeled from current inputs">
-      <div class="cw-header">
-        <span>Modeled pressure &amp; flow waveforms</span>
-        <span class="cw-mode-group" role="radiogroup" aria-label="Ventilation mode">
-          <button type="button" class="cw-mode active" data-mode="VC" id="cw-mode-vc" aria-pressed="true">VC</button>
-          <button type="button" class="cw-mode" data-mode="PC" id="cw-mode-pc" aria-pressed="false">PC</button>
-        </span>
+      <div class="calc-result" id="r-card-plinsp">
+        <span class="lbl">P<sub>L,insp</sub> — transpulmonary insp.</span>
+        <span class="val"><span id="r-pl-insp">—</span><span class="unit">cmH₂O</span></span>
+        <span class="formula-base">\(P_{L,insp} = P_\text{plat} - P_\text{esoph}^\text{insp}\) (target ≤ 20–25)</span>
+        <span class="formula" id="f-plinsp"></span>
+        <span class="interpret" id="i-plinsp"></span>
       </div>
-      <svg id="cw-svg" viewBox="0 0 760 380" preserveAspectRatio="xMidYMid meet" style="width:100%; height:auto; display:block; aspect-ratio: 760/380;">
-        <text x="14" y="20" font-size="11" fill="currentColor" opacity="0.7">Pressure (cmH₂O)</text>
-        <rect x="130" y="32" width="610" height="128" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
-        <text id="cw-pip-label"  x="124" y="44"  font-size="11" fill="currentColor" opacity="0.8" text-anchor="end">PIP</text>
-        <line id="cw-peep-line" x1="130" y1="148" x2="740" y2="148" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
-        <text id="cw-peep-label" x="124" y="152" font-size="11" fill="currentColor" opacity="0.8" text-anchor="end">PEEP</text>
-        <path id="cw-pressure" fill="none" stroke="#0072B2" stroke-width="2.4"/>
-        <text x="14" y="208" font-size="11" fill="currentColor" opacity="0.7">Flow (L/min)</text>
-        <rect x="130" y="220" width="610" height="140" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.35"/>
-        <text id="cw-flow-pos-label" x="124" y="234" font-size="11" fill="currentColor" opacity="0.8" text-anchor="end">+ peak</text>
-        <line x1="130" y1="290" x2="740" y2="290" stroke="currentColor" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
-        <text id="cw-flow-zero-label" x="124" y="294" font-size="11" fill="currentColor" opacity="0.8" text-anchor="end">0</text>
-        <text id="cw-flow-neg-label" x="124" y="356" font-size="11" fill="currentColor" opacity="0.8" text-anchor="end">− peak</text>
-        <path id="cw-flow" fill="none" stroke="#E69F00" stroke-width="2.4"/>
-        <text x="740" y="376" font-size="10" fill="currentColor" opacity="0.6" text-anchor="end">time →</text>
-      </svg>
-      <div class="cw-note" id="cw-note">Enter VT, RR, PIP, Pplat, PEEP, and peak flow to see the breath cycle.</div>
+      <div class="calc-result" id="r-card-plexp">
+        <span class="lbl">P<sub>L,exp</sub> — transpulmonary end-exp.</span>
+        <span class="val"><span id="r-pl-exp">—</span><span class="unit">cmH₂O</span></span>
+        <span class="formula-base">\(P_{L,exp} = PEEP - P_\text{esoph}^\text{exp}\) (target slightly &gt; 0)</span>
+        <span class="formula" id="f-plexp"></span>
+        <span class="interpret" id="i-plexp"></span>
+      </div>
     </div>
-    <p class="calc-note">
-      <strong>Reference values.</strong>
-      PBW (men) = 50 + 2.3·(ht in − 60); women = 45.5 + 2.3·(ht in − 60).
-      A–a normal = age/4 + 4 (room air).
-      MP = 0.098 × RR × VT × (PIP − ½ ΔP).
-      CaO₂ = 1.34·Hb·SaO₂ + 0.003·PaO₂.
-      ROX = (SpO₂/FiO₂)/RR.
-      <strong>Raw = (PIP − Pplat) / flow_L/s</strong> (constant-flow VC).
-      <strong>τ = Raw × Cstat (in L/cmH₂O)</strong>; expiratory T<sub>e</sub> ≥ 3τ to avoid air-trapping.
-    </p>
-    <div class="actions">
-      <button id="btn-clear" type="button" title="Clear all input fields">Clear all</button>
-      <button id="btn-example" type="button" title="Load Case A: mild ARDS (68F, 64in, FiO₂ 0.5, ...)">Load example (Case A)</button>
-      <button id="btn-print" type="button" title="Print this page">Print</button>
+
+    <h3>Power &amp; lung protection</h3>
+    <div class="calc-results">
+      <div class="calc-result" id="r-card-vtpbw">
+        <span class="lbl">VT / PBW</span>
+        <span class="val"><span id="r-vtpbw">—</span><span class="unit">mL/kg</span></span>
+        <span class="formula-base">\(V_T / \text{PBW}\) — target 4–8 mL/kg lung-protective</span>
+        <span class="formula" id="f-vtpbw"></span>
+        <span class="interpret" id="i-vtpbw"></span>
+      </div>
+      
+      <div class="mp-mode-toggle" id="mp-mode-toggle" role="group" aria-label="Mechanical power formula mode">
+              <span class="mp-mode-lbl">MP formula mode:</span>
+              <button type="button" class="mp-mode-btn active" data-mode="VC">VC</button>
+              <button type="button" class="mp-mode-btn" data-mode="PC">PC</button>
+            </div>
+      <div class="calc-result" id="r-card-mp">
+        <span class="lbl">Mechanical power (<span id="mp-mode-tag">VC</span>)</span>
+        <span class="val"><span id="r-mp">—</span><span class="unit">J/min</span></span>
+        <span class="formula-base" id="fb-mp">\(MP = 0.098 \cdot RR \cdot V_T \cdot (PIP - \tfrac{1}{2}\Delta P)\) — Becker (VC)</span>
+        <span class="formula" id="f-mp"></span>
+        <span class="interpret" id="i-mp"></span>
+      </div>
     </div>
+
+    <h3>Liberation</h3>
+    <div class="calc-results">
+      <div class="calc-result" id="r-card-rsbi">
+        <span class="lbl">RSBI — Yang-Tobin</span>
+        <span class="val"><span id="r-rsbi">—</span></span>
+        <span class="formula-base">\(\text{RSBI} = RR / V_T(L)\) — target &lt; 105 for SBT readiness</span>
+        <span class="formula" id="f-rsbi"></span>
+        <span class="interpret" id="i-rsbi"></span>
+      </div>
+    </div>
+
+    <h3>Decision aids</h3>
+    <div class="calc-results">
+      <div class="calc-result wide ladder-card" id="r-card-ladder">
+        <span class="lbl">PEEP / FiO₂ ARDSnet ladder</span>
+        <table class="ladder-mini">
+          <thead>
+            <tr><th>FiO₂</th><th>Low-PEEP table</th><th>High-PEEP (LOVS)</th><th>Your PEEP</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">Current</td><td class="r" id="ladder-low">—</td><td class="r" id="ladder-high">—</td><td class="r" id="ladder-cur">—</td></tr>
+          </tbody>
+        </table>
+        <span class="formula-base">Lookup of ARDSnet low-PEEP and ALVEOLI / LOVS high-PEEP tables for the given FiO₂</span>
+        <span class="formula" id="f-ladder"></span>
+        <span class="interpret" id="i-ladder"></span>
+      </div>
+    </div>
+
+    <!-- ===== Modeled-waveform panel (kept) ===== -->
+  </section>
+
+  <!-- ============== SNAPSHOTS ============== -->
+  <section class="snapshots" aria-label="Saved snapshots">
+    <h2>Snapshots</h2>
+    <div class="snap-controls">
+      <input type="text" id="snap-label" placeholder="Label this snapshot — e.g., '0800 baseline', 'post-prone'" maxlength="40"/>
+      <button type="button" class="primary" id="snap-save">Save current</button>
+      <button type="button" id="snap-clear">Clear all</button>
+    </div>
+    <table class="snap-table" id="snap-table">
+      <thead>
+        <tr>
+          <th>Label</th><th>Time</th>
+          <th class="num">VT/kg</th><th class="num">ΔP</th>
+          <th class="num">P/F</th><th class="num">MP</th>
+          <th class="num">RSBI</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="snap-body"></tbody>
+    </table>
+    <div class="snap-empty" id="snap-empty">No snapshots saved. Snapshots persist in this browser only and are useful for tracking PEEP titration, SBT, or prone effects.</div>
+  </section>
+
+  <p class="calc-note">
+    <strong>Reference values.</strong>
+    PBW (men) = 50 + 2.3·(ht in − 60); women = 45.5 + 2.3·(ht in − 60).
+    A–a normal = age/4 + 4 (room air; underestimates on supplemental O₂).
+    MP (VC) = 0.098 × RR × VT × (PIP − ½ ΔP); MP (PC) = 0.098 × RR × VT × (PEEP + ΔP).
+    CaO₂ = 1.34·Hb·SaO₂ + 0.003·PaO₂. ROX = (SpO₂/FiO₂)/RR.
+    Vd/Vt = (PaCO₂ − ETCO₂)/PaCO₂. OI = MAP × FiO₂ × 100 / PaO₂.
+    DO₂ = CO × CaO₂ × 10. <strong>P<sub>L,insp</sub></strong> = Pplat − P<sub>esoph,insp</sub>;
+    <strong>P<sub>L,exp</sub></strong> = PEEP − P<sub>esoph,exp</sub>.
+    <strong>Raw</strong> = (PIP − Pplat) / flow_L/s (constant-flow VC).
+    τ = Raw × Cstat (in L/cmH₂O); expiratory T<sub>e</sub> ≥ 3τ avoids air-trapping.
+  </p>
+
+  <div class="actions">
+    <button id="btn-clear" type="button" title="Clear all input fields">Clear all</button>
+    <button id="btn-example" type="button" title="Load Case A: mild ARDS (68F, 64in)">Load example</button>
+    <button id="btn-copy" type="button" title="Copy a chart-ready snapshot to clipboard">📋 Copy snapshot</button>
+    <button id="btn-print" type="button" title="Print this page">Print</button>
+    <span id="copy-confirm" style="font-size: 12px; color: var(--ok); font-weight: 600;" aria-live="polite"></span>
   </div>
 
   <footer>
     Companion to the
     <a href="https://jonhunterhunter7-cell.github.io/medical-education/mechanical-ventilation-teaching-reference.html">Mechanical Ventilation Teaching Reference</a>
-    and the
-    <a href="https://jonhunterhunter7-cell.github.io/medical-education/mechanical-ventilation-bedside-one-pager.html">bedside one-pager</a>.
+    (44 chapters across 9 Parts, with embedded calculator and bedside cheat sheet) and the
+    <a href="https://jonhunterhunter7-cell.github.io/medical-education/mechanical-ventilation-bedside-one-pager.html">bedside one-pager</a>
+    (single-page rounds reference).
     All formulas referenced in §A · Equations of the parent doc.
+    Threshold cut-points: ARDS Network 2000 (VT, Pplat), Amato 2015 (ΔP),
+    Serpa Neto 2018 / Cressoni 2016 (MP), Berlin Definition 2012 (P/F),
+    Yang-Tobin 1991 (RSBI), Roca 2019 (ROX), Nuckton 2002 (Vd/Vt).
   </footer>
 
 </div>
 
 <script>
 (function(){
-  // ============== BEDSIDE CALCULATOR ==============
-  try {
-    const calcWidget = document.getElementById('calcWidget');
-    if (calcWidget) {
-      const $ = (id) => document.getElementById(id);
-      const inputs = ['c-sex', 'c-ht', 'c-age', 'c-hb', 'c-fio2', 'c-pao2', 'c-paco2', 'c-spo2', 'c-sao2', 'c-vt', 'c-rr', 'c-pip', 'c-pplat', 'c-peep', 'c-flow'];
-      const num = (id) => {
-        const el = $(id);
-        if (!el) return NaN;
-        const v = parseFloat(el.value);
-        return isFinite(v) ? v : NaN;
-      };
-      const fmt = (v, dp = 1) => isFinite(v) ? v.toFixed(dp) : '—';
-      const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
-      const setText = (id, txt) => { const el = $(id); if (el) el.textContent = txt; };
-      const f = (v, dp = 1) => isFinite(v) ? (Number.isInteger(v) ? String(v) : v.toFixed(dp)) : '?';
-      const setFormula = (id, text) => { const el = $(id); if (el) el.textContent = text || ''; };
+  // ============== CONSTANTS ==============
+  const STORAGE_INPUTS = 'mv-calc-inputs-v2';
+  const STORAGE_SNAPSHOTS = 'mv-calc-snapshots-v2';
+  const STORAGE_MODE = 'mv-calc-mode-v2';
+  const MAX_SNAPSHOTS = 8;
 
-      function calc() {
-        try {
-          const sexEl = $('c-sex');
-          const sex = sexEl ? sexEl.value : 'm';
-          const ht = num('c-ht');
-          const age = num('c-age');
-          const hb = num('c-hb');
-          const fio2 = num('c-fio2');
-          const pao2 = num('c-pao2');
-          const paco2 = num('c-paco2');
-          const spo2 = num('c-spo2');
-          const sao2 = num('c-sao2');
-          const vt = num('c-vt');
-          const rr = num('c-rr');
-          const pip = num('c-pip');
-          const pplat = num('c-pplat');
-          const peep = num('c-peep');
-          const flow = num('c-flow');
+  // ARDSnet PEEP/FiO₂ ladder. Each entry: [FiO₂, low-PEEP, high-PEEP].
+  // Source: ARDSnet ARMA / ALVEOLI; LOVS (Meade 2008).
+  const LADDER = [
+    [0.30,  5, 12],
+    [0.40,  6, 14],   // 5-8 simplified to mid 6
+    [0.50,  9, 17],   // 8-10 mid; 16-18 mid
+    [0.60, 10, 20],
+    [0.70, 12, 20],   // 10-14 mid
+    [0.80, 14, 22],
+    [0.90, 16, 22],   // 14-18 mid
+    [1.00, 21, 23]    // 18-24 mid; 22-24 mid
+  ];
 
-          // PBW
-          const baseW = sex === 'm' ? 50 : 45.5;
-          const pbw = isFinite(ht) ? (baseW + 2.3 * (ht - 60)) : NaN;
-          setHTML('r-pbw', fmt(pbw, 1) + '<span class="unit"> kg</span>');
-          const fbPbw = $('fb-pbw');
-          if (fbPbw) fbPbw.textContent = `PBW = ${baseW} + 2.3 × (ht_in − 60)   (${sex === 'm' ? 'men' : 'women'})`;
-          setFormula('f-pbw', isFinite(pbw)
-            ? `= ${baseW} + 2.3 × (${f(ht,0)} − 60) = ${f(pbw,1)}` : '');
+  // Threshold band functions
+  const band = {
+    vtkg:  v => !isFinite(v) ? null : v <= 8 ? 'ok' : v <= 10 ? 'warn' : 'bad',
+    pplat: v => !isFinite(v) ? null : v <= 28 ? 'ok' : v <= 30 ? 'warn' : 'bad',
+    dp:    v => !isFinite(v) ? null : v <= 14 ? 'ok' : v <= 18 ? 'warn' : 'bad',
+    mp:    v => !isFinite(v) ? null : v <  17 ? 'ok' : v <= 22 ? 'warn' : 'bad',
+    rsbi:  v => !isFinite(v) ? null : v < 105 ? 'ok' : 'bad',
+    rox:   v => !isFinite(v) ? null : v >= 4.88 ? 'ok' : v >= 3.85 ? 'warn' : 'bad',
+    vdvt:  v => !isFinite(v) ? null : v <= 0.4 ? 'ok' : v <= 0.6 ? 'warn' : 'bad',
+    cstat: v => !isFinite(v) ? null : v >= 50 ? 'ok' : v >= 30 ? 'warn' : 'bad',
+    raw:   v => !isFinite(v) ? null : v <= 10 ? 'ok' : v <= 15 ? 'warn' : 'bad',
+    do2:   v => !isFinite(v) ? null : v >= 800 ? 'ok' : v >= 500 ? 'warn' : 'bad',
+    oi:    v => !isFinite(v) ? null : v <  5 ? 'ok' : v <= 15 ? 'warn' : 'bad',
+    plinsp: v => !isFinite(v) ? null : v <= 20 ? 'ok' : v <= 25 ? 'warn' : 'bad',
+    plexp:  v => !isFinite(v) ? null : v >= 0 ? 'ok' : 'bad'
+  };
 
-          // VT / PBW
-          const vtpbw = (isFinite(vt) && isFinite(pbw) && pbw > 0) ? vt / pbw : NaN;
-          setHTML('r-vtpbw', fmt(vtpbw, 1) + '<span class="unit"> mL/kg</span>');
-          setFormula('f-vtpbw', isFinite(vtpbw)
-            ? `= ${f(vt,0)} / ${f(pbw,1)} = ${f(vtpbw,1)}` : '');
-
-          // A-a gradient
-          const PAO2 = (isFinite(fio2) && isFinite(paco2)) ? (fio2 * 713 - paco2 / 0.8) : NaN;
-          const aa = (isFinite(PAO2) && isFinite(pao2)) ? (PAO2 - pao2) : NaN;
-          setHTML('r-aa', fmt(aa, 1) + '<span class="unit"> mmHg</span>');
-          setFormula('f-aa', isFinite(aa)
-            ? `PAO₂ = ${f(fio2,2)} × 713 − ${f(paco2,0)}/0.8 = ${f(PAO2,0)};  A−a = ${f(PAO2,0)} − ${f(pao2,0)} = ${f(aa,1)}` : '');
-
-          // A-a normal
-          const aaNorm = isFinite(age) ? (age / 4 + 4) : NaN;
-          setHTML('r-aanorm', fmt(aaNorm, 1) + '<span class="unit"> mmHg</span>');
-          setFormula('f-aanorm', isFinite(aaNorm)
-            ? `= ${f(age,0)}/4 + 4 = ${f(aaNorm,1)}` : '');
-
-          // P/F
-          const pf = (isFinite(pao2) && isFinite(fio2) && fio2 > 0) ? pao2 / fio2 : NaN;
-          setText('r-pf', fmt(pf, 0));
-          setFormula('f-pf', isFinite(pf) ? `= ${f(pao2,0)} / ${f(fio2,2)} = ${f(pf,0)}` : '');
-
-          // S/F
-          const sf = (isFinite(spo2) && isFinite(fio2) && fio2 > 0) ? spo2 / fio2 : NaN;
-          setText('r-sf', fmt(sf, 0));
-          setFormula('f-sf', isFinite(sf) ? `= ${f(spo2,0)} / ${f(fio2,2)} = ${f(sf,0)}` : '');
-
-          // ROX
-          const rox = (isFinite(sf) && isFinite(rr) && rr > 0) ? sf / rr : NaN;
-          setText('r-rox', fmt(rox, 2));
-          setFormula('f-rox', isFinite(rox) ? `= (${f(spo2,0)}/${f(fio2,2)}) / ${f(rr,0)} = ${f(sf,0)}/${f(rr,0)} = ${f(rox,2)}` : '');
-
-          // RSBI
-          const rsbi = (isFinite(rr) && isFinite(vt) && vt > 0) ? rr / (vt / 1000) : NaN;
-          setText('r-rsbi', fmt(rsbi, 0));
-          setFormula('f-rsbi', isFinite(rsbi) ? `= ${f(rr,0)} / ${f(vt/1000,2)} = ${f(rsbi,0)}` : '');
-
-          // ΔP
-          const dp = (isFinite(pplat) && isFinite(peep)) ? pplat - peep : NaN;
-          setHTML('r-dp', fmt(dp, 1) + '<span class="unit"> cmH₂O</span>');
-          setFormula('f-dp', isFinite(dp) ? `= ${f(pplat,0)} − ${f(peep,0)} = ${f(dp,1)}` : '');
-
-          // Cstat
-          const cstat = (isFinite(vt) && isFinite(dp) && dp > 0) ? vt / dp : NaN;
-          setHTML('r-cstat', fmt(cstat, 1) + '<span class="unit"> mL/cmH₂O</span>');
-          setFormula('f-cstat', isFinite(cstat) ? `= ${f(vt,0)} / ${f(dp,1)} = ${f(cstat,1)}` : '');
-
-          // Raw
-          const flowLps = (isFinite(flow) && flow > 0) ? flow / 60 : NaN;
-          const raw = (isFinite(pip) && isFinite(pplat) && isFinite(flowLps)) ? (pip - pplat) / flowLps : NaN;
-          setHTML('r-raw', fmt(raw, 1) + '<span class="unit"> cmH₂O·s/L</span>');
-          setFormula('f-raw', isFinite(raw)
-            ? `= (${f(pip,0)} − ${f(pplat,0)}) / (${f(flow,0)}/60) = ${f(pip-pplat,0)} / ${f(flowLps,2)} = ${f(raw,1)}` : '');
-
-          // τ
-          const tau = (isFinite(raw) && isFinite(cstat)) ? raw * (cstat / 1000) : NaN;
-          setHTML('r-tau', fmt(tau, 2) + '<span class="unit"> s</span>');
-          setFormula('f-tau', isFinite(tau)
-            ? `= ${f(raw,1)} × ${f(cstat/1000,3)} = ${f(tau,2)}  (Te ≥ 3τ = ${f(3*tau,2)} s)` : '');
-
-          // Max RR per I:E ratio constrained by Te ≥ 3τ
-          // RR_max = 60n / [(1+n)·3τ] bpm   (n = E:I ratio)
-          [1, 2, 3, 4, 5].forEach(n => {
-            const cellId = 'r-rr-1' + n;
-            if (isFinite(tau) && tau > 0) {
-              const rrMax = (60 * n) / ((1 + n) * 3 * tau);
-              setText(cellId, '≤ ' + Math.floor(rrMax));
-            } else {
-              setText(cellId, '—');
-            }
-          });
-          setFormula('f-rrmax', isFinite(tau)
-            ? `with τ = ${f(tau,2)} s and Te = 3τ = ${f(3*tau,2)} s` : '');
-
-          // MP
-          const mp = (isFinite(rr) && isFinite(vt) && isFinite(pip) && isFinite(dp)) ? 0.098 * rr * (vt / 1000) * (pip - 0.5 * dp) : NaN;
-          setHTML('r-mp', fmt(mp, 1) + '<span class="unit"> J/min</span>');
-          setFormula('f-mp', isFinite(mp)
-            ? `= 0.098 × ${f(rr,0)} × ${f(vt/1000,2)} × (${f(pip,0)} − ½·${f(dp,1)}) = ${f(mp,1)}` : '');
-
-          // CaO₂
-          const cao2bound = isFinite(hb) && isFinite(sao2) ? 1.34 * hb * sao2 : NaN;
-          const cao2dissolved = isFinite(pao2) ? 0.003 * pao2 : 0;
-          const cao2 = (isFinite(cao2bound)) ? (cao2bound + cao2dissolved) : NaN;
-          setHTML('r-cao2', fmt(cao2, 2) + '<span class="unit"> mL/dL</span>');
-          setFormula('f-cao2', isFinite(cao2)
-            ? `= 1.34 × ${f(hb,1)} × ${f(sao2,2)} + 0.003 × ${f(isFinite(pao2)?pao2:0,0)} = ${f(cao2bound,2)} + ${f(cao2dissolved,2)} = ${f(cao2,2)}` : '');
-
-          // Modeled waveforms (pressure-time and flow-time)
-          drawWaveforms({pip, pplat, peep, vt, rr, flow, tau});
-        } catch (err) {
-          console.error('Calculator calc() error:', err);
-        }
-      }
-
-      // Ventilation mode (default VC). Toggled via .cw-mode buttons.
-      let cwMode = 'VC';
-      document.querySelectorAll('.calc-waveform .cw-mode').forEach(btn => {
-        btn.addEventListener('click', () => {
-          cwMode = btn.dataset.mode;
-          document.querySelectorAll('.calc-waveform .cw-mode').forEach(b => {
-            const isOn = b.dataset.mode === cwMode;
-            b.classList.toggle('active', isOn);
-            b.setAttribute('aria-pressed', String(isOn));
-          });
-          calc();
-        });
-      });
-
-      function drawWaveforms(p) {
-        const presPath = $('cw-pressure');
-        const flowPath = $('cw-flow');
-        const note = $('cw-note');
-        const peepLine = $('cw-peep-line');
-        const peepLabel = $('cw-peep-label');
-        const pipLabel = $('cw-pip-label');
-        if (!presPath || !flowPath) return;
-
-        const ready = [p.pip, p.pplat, p.peep, p.vt, p.rr, p.flow]
-          .every(v => isFinite(v) && v >= 0);
-        if (!ready) {
-          presPath.setAttribute('d', '');
-          flowPath.setAttribute('d', '');
-          if (note) note.textContent = 'Enter VT, RR, PIP, Pplat, PEEP, and peak flow to see the breath cycle.';
-          return;
-        }
-
-        // SVG layout constants — match the SVG viewBox (760 × 380)
-        const xL = 130, xR = 740;
-        const pTop = 40, pBot = 152;
-        const fZero = 290;
-        const fTopY = 226;
-        const fBotY = 354;
-        const fScalePos = fZero - fTopY;
-        const fScaleNeg = fBotY - fZero;
-
-        // Time model — show ONE breath cycle, padded slightly
-        const Ttot = 60 / p.rr;
-        const flowLps = p.flow / 60;
-        const TiFlow = (p.vt / 1000) / flowLps;
-        const TiHold = Math.min(0.4, Ttot * 0.15);
-        const Ti = TiFlow + TiHold;
-        const Te = Math.max(0, Ttot - Ti);
-        const tau = (isFinite(p.tau) && p.tau > 0) ? p.tau : 0.3;
-        const totalT = Ttot * 1.05;
-
-        const pMin = Math.max(0, p.peep - 3);
-        const pMax = Math.max(p.pip, p.pplat, p.peep) + 4;
-        const pRange = Math.max(1, pMax - pMin);
-        const xT = (t) => xL + (t / totalT) * (xR - xL);
-        const yP = (P) => pBot - ((P - pMin) / pRange) * (pBot - pTop);
-        const fAbs = Math.max(p.flow, 1);
-        const yF = (Q) => Q >= 0
-          ? fZero - (Q / fAbs) * fScalePos
-          : fZero - (Q / fAbs) * fScaleNeg;
-
-        const presPts = [];
-        const flowPts = [];
-
-        if (cwMode === 'VC') {
-          presPts.push([0, p.peep]);
-          presPts.push([TiFlow, p.pip]);
-          presPts.push([TiFlow + 0.003, p.pplat]);
-          presPts.push([Ti, p.pplat]);
-          for (let i = 1; i <= 24; i++) {
-            const dt = (i / 24) * Te;
-            presPts.push([Ti + dt, p.peep + (p.pplat - p.peep) * Math.exp(-dt / tau)]);
-          }
-          flowPts.push([0, 0]);
-          flowPts.push([0.001, p.flow]);
-          flowPts.push([TiFlow, p.flow]);
-          flowPts.push([TiFlow + 0.001, 0]);
-          flowPts.push([Ti, 0]);
-          const peakExp = -p.flow * 0.85;
-          flowPts.push([Ti + 0.001, peakExp]);
-          for (let i = 1; i <= 24; i++) {
-            const dt = (i / 24) * Te;
-            flowPts.push([Ti + dt, peakExp * Math.exp(-dt / tau)]);
-          }
-        } else {
-          // Pressure control: square pressure, decelerating flow
-          const Pset = p.pplat;
-          presPts.push([0, p.peep]);
-          presPts.push([0.04, Pset]);
-          presPts.push([Ti, Pset]);
-          for (let i = 1; i <= 24; i++) {
-            const dt = (i / 24) * Te;
-            presPts.push([Ti + dt, p.peep + (Pset - p.peep) * Math.exp(-dt / tau)]);
-          }
-          const flowTau = Math.max(tau, Ti / 4);
-          flowPts.push([0, 0]);
-          flowPts.push([0.001, p.flow]);
-          for (let i = 1; i <= 24; i++) {
-            const dt = (i / 24) * Ti;
-            flowPts.push([dt, p.flow * Math.exp(-dt / flowTau)]);
-          }
-          flowPts.push([Ti, 0]);
-          const peakExp = -p.flow * 0.85;
-          flowPts.push([Ti + 0.001, peakExp]);
-          for (let i = 1; i <= 24; i++) {
-            const dt = (i / 24) * Te;
-            flowPts.push([Ti + dt, peakExp * Math.exp(-dt / tau)]);
-          }
-        }
-
-        const presD = presPts.map((pt, i) => `${i ? 'L' : 'M'}${xT(pt[0]).toFixed(1)},${yP(pt[1]).toFixed(1)}`).join(' ');
-        presPath.setAttribute('d', presD);
-        const flowD = flowPts.map((pt, i) => `${i ? 'L' : 'M'}${xT(pt[0]).toFixed(1)},${yF(pt[1]).toFixed(1)}`).join(' ');
-        flowPath.setAttribute('d', flowD);
-
-        if (peepLine) {
-          const peepY = yP(p.peep).toFixed(1);
-          peepLine.setAttribute('y1', peepY);
-          peepLine.setAttribute('y2', peepY);
-        }
-        if (peepLabel) peepLabel.textContent = `PEEP ${p.peep.toFixed(0)}`;
-        if (pipLabel) {
-          const topPressure = (cwMode === 'VC') ? p.pip : p.pplat;
-          pipLabel.textContent = (cwMode === 'VC' ? 'PIP ' : 'Pset ') + topPressure.toFixed(0);
-        }
-        const fPosLabel = $('cw-flow-pos-label');
-        const fNegLabel = $('cw-flow-neg-label');
-        if (fPosLabel) fPosLabel.textContent = '+ ' + p.flow.toFixed(0);
-        if (fNegLabel) fNegLabel.textContent = '− ' + Math.round(p.flow * 0.85);
-        if (note) {
-          const ieRatio = (Ti > 0 && Te > 0) ? `1:${(Te / Ti).toFixed(1)}` : '—';
-          const trapWarn = Te < 3 * tau ? '  ⚠ Te < 3τ — air-trapping risk' : '';
-          note.textContent = `${cwMode} mode · Cycle ${Ttot.toFixed(2)} s · Ti ${Ti.toFixed(2)} s · Te ${Te.toFixed(2)} s · I:E ${ieRatio}${trapWarn}`;
-        }
-      }
-
-      inputs.forEach(id => {
-        const el = $(id);
-        if (el) el.addEventListener('input', calc);
-      });
-      calc();
-
-      // Buttons
-      const btnClear = document.getElementById('btn-clear');
-      if (btnClear) btnClear.addEventListener('click', () => {
-        inputs.forEach(id => {
-          const el = $(id);
-          if (el && el.tagName === 'INPUT') el.value = '';
-        });
-        calc();
-      });
-
-      const btnExample = document.getElementById('btn-example');
-      if (btnExample) btnExample.addEventListener('click', () => {
-        // Case A: mild ARDS, post-pneumonia, average build
-        const caseA = {
-          'c-sex': 'f', 'c-ht': '64', 'c-age': '68', 'c-hb': '13',
-          'c-fio2': '0.5', 'c-pao2': '88', 'c-paco2': '50',
-          'c-spo2': '95', 'c-sao2': '0.97',
-          'c-vt': '480', 'c-rr': '18',
-          'c-pip': '28', 'c-pplat': '24', 'c-peep': '8', 'c-flow': '60'
-        };
-        Object.keys(caseA).forEach(id => {
-          const el = $(id);
-          if (el) el.value = caseA[id];
-        });
-        calc();
-      });
-
-      const btnPrint = document.getElementById('btn-print');
-      if (btnPrint) btnPrint.addEventListener('click', () => window.print());
-    }
-  } catch (err) {
-    console.error('Calculator init error:', err);
+  function pfBin(v) {
+    if (!isFinite(v)) return ['', '—'];
+    if (v >  300) return ['ok',   'normal'];
+    if (v >  200) return ['warn', 'mild ARDS'];
+    if (v >  100) return ['warn', 'moderate ARDS'];
+    return ['bad', 'severe ARDS'];
   }
+
+  // One-line clinical interpretations
+  const interpret = {
+    pf: (v) => {
+      if (!isFinite(v)) return '';
+      if (v <= 100) return 'Severe ARDS — prone, consider ECMO referral if refractory.';
+      if (v <= 200) return 'Moderate ARDS — consider prone positioning.';
+      if (v <= 300) return 'Mild ARDS — lung-protective bundle is the priority.';
+      return 'Within normal range.';
+    },
+    dp: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >  18) return 'Above target — drop VT (mL/kg) before raising PEEP further.';
+      if (v >  14) return 'Borderline — track trend; consider ↓VT.';
+      return 'Within lung-protective range.';
+    },
+    mp: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >  22) return 'High VILI risk — reduce RR or VT before raising PEEP.';
+      if (v >= 17) return 'Caution — power approaching the harm threshold.';
+      return 'Within protective range.';
+    },
+    vtkg: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >  10) return 'Excessive — drop VT urgently.';
+      if (v >   8) return 'Above target — consider ↓VT toward 6 mL/kg.';
+      if (v <   4) return 'Below 4 mL/kg — verify intentional (ECCO₂R, severe ARDS).';
+      return 'Within 4–8 mL/kg target.';
+    },
+    rsbi: (v) => {
+      if (!isFinite(v)) return '';
+      return v < 105 ? 'Favorable — proceed with SBT if other criteria met.'
+                     : 'High failure risk — defer SBT, address underlying cause.';
+    },
+    rox: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >= 4.88) return 'HFNC likely succeeding (Roca 2019, ≥ 4.88 at 12h).';
+      if (v >= 3.85) return 'Borderline — re-evaluate within an hour.';
+      return 'High HFNC-failure risk — escalate to NIV or intubation.';
+    },
+    vdvt: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >  0.6) return 'Severely elevated — predicts wean failure (Nuckton 2002).';
+      if (v >  0.4) return 'Elevated — consider cause: PE, hyperinflation, low CO.';
+      return 'Within physiologic range.';
+    },
+    cstat: (v) => {
+      if (!isFinite(v)) return '';
+      if (v <  30) return 'Stiff lung — recruit, optimize PEEP, watch ΔP.';
+      if (v <  50) return 'Reduced — typical of moderate ARDS / restriction.';
+      return 'Within or above normal range.';
+    },
+    raw: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >  15) return 'High — bronchospasm, secretions, kinked ETT.';
+      if (v >  10) return 'Mildly elevated.';
+      return 'Within normal range.';
+    },
+    do2: (v) => {
+      if (!isFinite(v)) return '';
+      if (v <  500) return 'Critically low — assess cardiac output, Hb, oxygenation.';
+      if (v <  800) return 'Marginal — verify CO and Hb optimized.';
+      return 'Adequate global oxygen delivery.';
+    },
+    oi: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >= 16) return 'Very severe oxygenation failure (peds ECMO threshold).';
+      if (v >=  5) return 'Severe oxygenation failure.';
+      return 'Mild oxygenation impairment.';
+    },
+    plinsp: (v) => {
+      if (!isFinite(v)) return '';
+      if (v >  25) return 'Above 25 — risk of overdistension; reduce VT/PIP.';
+      if (v >  20) return 'Borderline — monitor closely.';
+      return 'Within target.';
+    },
+    plexp: (v) => {
+      if (!isFinite(v)) return '';
+      return v < 0 ? 'Negative — alveoli collapse at end-expiration; raise PEEP.'
+                   : 'Slightly positive — alveoli held open.';
+    },
+    aa: (v, predicted) => {
+      if (!isFinite(v) || !isFinite(predicted)) return '';
+      if (v >  predicted * 2)   return 'Markedly elevated A–a — V/Q mismatch, shunt, or diffusion impairment.';
+      if (v >  predicted * 1.5) return 'Elevated A–a — consider gas-exchange disease.';
+      return 'Within expected range for age (room-air formula).';
+    },
+    paco2target: (factor, current_ve, target_ve, recommend) => recommend
+  };
+
+  // ============== HELPERS ==============
+  const $ = id => document.getElementById(id);
+  const num = id => { const el = $(id); if (!el) return NaN; const v = parseFloat(el.value); return isFinite(v) ? v : NaN; };
+  const fmt = (v, dp = 1) => isFinite(v) ? v.toFixed(dp) : '—';
+  const f = (v, dp = 1) => isFinite(v) ? (Number.isInteger(v) ? String(v) : v.toFixed(dp)) : '?';
+  const setText = (id, txt) => { const el = $(id); if (el) el.textContent = txt; };
+  const setHTML = (id, h)   => { const el = $(id); if (el) el.innerHTML = h; };
+  const setFormula = (id, t)=> { const el = $(id); if (el) el.textContent = t || ''; };
+  function setCardClass(cardId, cls) {
+    const el = $(cardId); if (!el) return;
+    el.classList.remove('ok','warn','bad');
+    if (cls) el.classList.add(cls);
+  }
+  function setBundleClass(itemId, cls) {
+    const el = $(itemId); if (!el) return;
+    el.classList.remove('ok','warn','bad');
+    if (cls) el.classList.add(cls);
+  }
+  function setInterpret(id, txt) {
+    const el = $(id); if (!el) return;
+    el.textContent = txt || '';
+  }
+
+  // ============== ARDSNET LADDER LOOKUP ==============
+  function ladderLookup(fio2) {
+    if (!isFinite(fio2)) return null;
+    let best = LADDER[0];
+    for (const entry of LADDER) {
+      if (Math.abs(entry[0] - fio2) < Math.abs(best[0] - fio2)) best = entry;
+    }
+    return { fio2: best[0], low: best[1], high: best[2] };
+  }
+  function ladderInterpret(currentPeep, low, high) {
+    if (!isFinite(currentPeep) || !isFinite(low)) return '';
+    if (currentPeep < low - 1) return 'PEEP below low-PEEP target — consider ↑PEEP per ARDSnet.';
+    if (currentPeep > high + 1) return 'PEEP above high-PEEP target — verify recruitable lung; risk of overdistension.';
+    if (currentPeep <= low + 1) return 'On low-PEEP table.';
+    if (currentPeep >= high - 1) return 'On high-PEEP (LOVS) table.';
+    return 'Between low and high PEEP tables.';
+  }
+
+  // ============== MAIN CALC ==============
+  let cwMode = 'VC';
+  function calc() {
+    try {
+      const sex = $('c-sex').value;
+      const ht  = num('c-ht');
+      const age = num('c-age');
+      const hb  = num('c-hb');
+      const fio2  = num('c-fio2');
+      const pao2  = num('c-pao2');
+      const paco2 = num('c-paco2');
+      const spo2  = num('c-spo2');
+      const sao2  = num('c-sao2');
+      const vt    = num('c-vt');
+      const rr    = num('c-rr');
+      const pip   = num('c-pip');
+      const pplat = num('c-pplat');
+      const peep  = num('c-peep');
+      const flow  = num('c-flow');
+      const map   = num('c-map');
+      const etco2 = num('c-etco2');
+      const paco2target = num('c-paco2-target');
+      const co    = num('c-co');
+      const pesInsp = num('c-pes-insp');
+      const pesExp  = num('c-pes-exp');
+
+      // ----- PBW -----
+      const baseW = sex === 'm' ? 50 : 45.5;
+      const pbw = isFinite(ht) ? (baseW + 2.3 * (ht - 60)) : NaN;
+      setText('r-pbw', fmt(pbw, 1));
+      setFormula('f-pbw', isFinite(pbw)
+        ? `= ${baseW} + 2.3 × (${f(ht,0)} − 60) = ${f(pbw,1)}` : '');
+
+      // ----- VT/PBW -----
+      const vtpbw = (isFinite(vt) && isFinite(pbw) && pbw > 0) ? vt / pbw : NaN;
+      setText('r-vtpbw', fmt(vtpbw, 1));
+      setFormula('f-vtpbw', isFinite(vtpbw) ? `= ${f(vt,0)} / ${f(pbw,1)} = ${f(vtpbw,1)}` : '');
+      setCardClass('r-card-vtpbw', band.vtkg(vtpbw));
+      setInterpret('i-vtpbw', interpret.vtkg(vtpbw));
+
+      // ----- A-a -----
+      const PAO2 = (isFinite(fio2) && isFinite(paco2)) ? (fio2 * 713 - paco2 / 0.8) : NaN;
+      const aa = (isFinite(PAO2) && isFinite(pao2)) ? (PAO2 - pao2) : NaN;
+      setText('r-aa', fmt(aa, 1));
+      setFormula('f-aa', isFinite(aa)
+        ? `PAO₂ = ${f(fio2,2)}×713 − ${f(paco2,0)}/0.8 = ${f(PAO2,0)};  A−a = ${f(PAO2,0)} − ${f(pao2,0)} = ${f(aa,1)}` : '');
+      const aaNorm = isFinite(age) ? (age / 4 + 4) : NaN;
+      setText('r-aanorm', fmt(aaNorm, 1));
+      setFormula('f-aanorm', isFinite(aaNorm) ? `= ${f(age,0)}/4 + 4 = ${f(aaNorm,1)}` : '');
+      // Threshold class on A-a only when both calculable AND room-air-ish
+      const aaClass = (isFinite(aa) && isFinite(aaNorm))
+        ? (aa <= aaNorm ? 'ok' : aa <= aaNorm * 1.5 ? 'warn' : 'bad')
+        : null;
+      setCardClass('r-card-aa', aaClass);
+      setInterpret('i-aa', interpret.aa(aa, aaNorm));
+
+      // ----- P/F -----
+      const pf = (isFinite(pao2) && isFinite(fio2) && fio2 > 0) ? pao2 / fio2 : NaN;
+      setText('r-pf', fmt(pf, 0));
+      setFormula('f-pf', isFinite(pf) ? `= ${f(pao2,0)} / ${f(fio2,2)} = ${f(pf,0)}` : '');
+      const [pfCls, pfLab] = pfBin(pf);
+      setText('r-pf-bin', pfLab);
+      setCardClass('r-card-pf', pfCls || null);
+      setInterpret('i-pf', interpret.pf(pf));
+
+      // ----- S/F -----
+      const sf = (isFinite(spo2) && isFinite(fio2) && fio2 > 0) ? spo2 / fio2 : NaN;
+      setText('r-sf', fmt(sf, 0));
+      setFormula('f-sf', isFinite(sf) ? `= ${f(spo2,0)} / ${f(fio2,2)} = ${f(sf,0)}` : '');
+
+      // ----- ROX -----
+      const rox = (isFinite(sf) && isFinite(rr) && rr > 0) ? sf / rr : NaN;
+      setText('r-rox', fmt(rox, 2));
+      setFormula('f-rox', isFinite(rox) ? `= ${f(sf,0)}/${f(rr,0)} = ${f(rox,2)}` : '');
+      setCardClass('r-card-rox', band.rox(rox));
+      setInterpret('i-rox', interpret.rox(rox));
+
+      // ----- CaO₂ -----
+      const cao2bound = (isFinite(hb) && isFinite(sao2)) ? 1.34 * hb * sao2 : NaN;
+      const cao2dissolved = isFinite(pao2) ? 0.003 * pao2 : 0;
+      const cao2 = isFinite(cao2bound) ? (cao2bound + cao2dissolved) : NaN;
+      setText('r-cao2', fmt(cao2, 2));
+      setFormula('f-cao2', isFinite(cao2)
+        ? `= 1.34 × ${f(hb,1)} × ${f(sao2,2)} + 0.003 × ${f(isFinite(pao2)?pao2:0,0)} = ${f(cao2,2)}` : '');
+
+      // ----- DO₂ -----
+      const do2 = (isFinite(co) && isFinite(cao2)) ? co * cao2 * 10 : NaN;
+      setText('r-do2', fmt(do2, 0));
+      setFormula('f-do2', isFinite(do2)
+        ? `= ${f(co,1)} × ${f(cao2,2)} × 10 = ${f(do2,0)}` : '');
+      setCardClass('r-card-do2', band.do2(do2));
+      setInterpret('i-do2', interpret.do2(do2));
+
+      // ----- OI -----
+      const oi = (isFinite(map) && isFinite(fio2) && isFinite(pao2) && pao2 > 0)
+                 ? (map * fio2 * 100) / pao2 : NaN;
+      setText('r-oi', fmt(oi, 1));
+      setFormula('f-oi', isFinite(oi)
+        ? `= (${f(map,0)} × ${f(fio2,2)} × 100) / ${f(pao2,0)} = ${f(oi,1)}` : '');
+      setCardClass('r-card-oi', band.oi(oi));
+      setInterpret('i-oi', interpret.oi(oi));
+
+      // ----- VE -----
+      const ve = (isFinite(vt) && isFinite(rr)) ? (vt * rr) / 1000 : NaN;
+      setText('r-ve', fmt(ve, 1));
+      setFormula('f-ve', isFinite(ve) ? `= ${f(vt,0)} × ${f(rr,0)} / 1000 = ${f(ve,1)}` : '');
+
+      // ----- Vd/Vt -----
+      const vdvt = (isFinite(paco2) && isFinite(etco2) && paco2 > 0)
+                   ? (paco2 - etco2) / paco2 : NaN;
+      setText('r-vdvt', fmt(vdvt, 2));
+      setFormula('f-vdvt', isFinite(vdvt)
+        ? `= (${f(paco2,0)} − ${f(etco2,0)}) / ${f(paco2,0)} = ${f(vdvt,2)}` : '');
+      setCardClass('r-card-vdvt', band.vdvt(vdvt));
+      setInterpret('i-vdvt', interpret.vdvt(vdvt));
+
+      // ----- Target PaCO₂ helper -----
+      let paco2recommend = '';
+      if (isFinite(paco2) && isFinite(paco2target) && isFinite(ve) && paco2target > 0) {
+        const factor = paco2 / paco2target;   // VE_new / VE_cur
+        const ve_new = ve * factor;
+        const rr_new = isFinite(rr) ? rr * factor : NaN;
+        const direction = factor > 1 ? '↑ ventilation' : factor < 1 ? '↓ ventilation' : 'no change';
+        paco2recommend = `Multiply MV by ${factor.toFixed(2)}× → V̇<sub>E</sub> ${ve_new.toFixed(1)} L/min`
+                       + (isFinite(rr_new) ? ` (≈ RR ${Math.round(rr_new)} at same VT)` : '')
+                       + `  · ${direction}`;
+        setHTML('r-paco2-target', `factor ${factor.toFixed(2)}× — ${direction}`);
+        setFormula('f-paco2target',
+          `Vd assumed constant: VE_new = ${f(ve,1)} × (${f(paco2,0)}/${f(paco2target,0)}) = ${f(ve_new,1)} L/min`);
+      } else {
+        setHTML('r-paco2-target', '—');
+        setFormula('f-paco2target', '');
+      }
+      const iEl = $('i-paco2target');
+      if (iEl) iEl.innerHTML = paco2recommend;
+
+      // ----- ΔP -----
+      const dp = (isFinite(pplat) && isFinite(peep)) ? pplat - peep : NaN;
+      setText('r-dp', fmt(dp, 1));
+      setFormula('f-dp', isFinite(dp) ? `= ${f(pplat,0)} − ${f(peep,0)} = ${f(dp,1)}` : '');
+      setCardClass('r-card-dp', band.dp(dp));
+      setInterpret('i-dp', interpret.dp(dp));
+
+      // ----- Cstat -----
+      const cstat = (isFinite(vt) && isFinite(dp) && dp > 0) ? vt / dp : NaN;
+      setText('r-cstat', fmt(cstat, 1));
+      setFormula('f-cstat', isFinite(cstat) ? `= ${f(vt,0)} / ${f(dp,1)} = ${f(cstat,1)}` : '');
+      setCardClass('r-card-cstat', band.cstat(cstat));
+      setInterpret('i-cstat', interpret.cstat(cstat));
+
+      // ----- Raw -----
+      const flowLps = (isFinite(flow) && flow > 0) ? flow / 60 : NaN;
+      const raw = (isFinite(pip) && isFinite(pplat) && isFinite(flowLps))
+                  ? (pip - pplat) / flowLps : NaN;
+      setText('r-raw', fmt(raw, 1));
+      setFormula('f-raw', isFinite(raw)
+        ? `= (${f(pip,0)} − ${f(pplat,0)}) / ${f(flowLps,2)} = ${f(raw,1)}` : '');
+      setCardClass('r-card-raw', band.raw(raw));
+      setInterpret('i-raw', interpret.raw(raw));
+
+      // ----- τ -----
+      const tau = (isFinite(raw) && isFinite(cstat)) ? raw * (cstat / 1000) : NaN;
+      setText('r-tau', fmt(tau, 2));
+      setFormula('f-tau', isFinite(tau)
+        ? `= ${f(raw,1)} × ${f(cstat/1000,3)} = ${f(tau,2)} s  (3τ = ${f(3*tau,2)} s)` : '');
+
+      // ----- Max RR by I:E -----
+      [1,2,3,4,5].forEach(n => {
+        const id = 'r-rr-1' + n;
+        if (isFinite(tau) && tau > 0) {
+          const rrMax = (60 * n) / ((1 + n) * 3 * tau);
+          setText(id, '≤ ' + Math.floor(rrMax));
+        } else setText(id, '—');
+      });
+      setFormula('f-rrmax', isFinite(tau) ? `with τ = ${f(tau,2)} s, T_e = 3τ = ${f(3*tau,2)} s` : '');
+
+      // ----- MP (mode-aware) -----
+      let mp = NaN, mpFormula = '';
+      if (isFinite(rr) && isFinite(vt) && isFinite(dp)) {
+        if (cwMode === 'PC' && isFinite(peep)) {
+          mp = 0.098 * rr * (vt / 1000) * (peep + dp);
+          mpFormula = `= 0.098 × ${f(rr,0)} × ${f(vt/1000,2)} × (${f(peep,0)} + ${f(dp,1)}) = ${f(mp,1)}`;
+        } else if (cwMode === 'VC' && isFinite(pip)) {
+          mp = 0.098 * rr * (vt / 1000) * (pip - 0.5 * dp);
+          mpFormula = `= 0.098 × ${f(rr,0)} × ${f(vt/1000,2)} × (${f(pip,0)} − ½·${f(dp,1)}) = ${f(mp,1)}`;
+        }
+      }
+      setText('r-mp', fmt(mp, 1));
+      setText('mp-mode-tag', cwMode);
+      setFormula('f-mp', mpFormula);
+      const fbMp = $('fb-mp');
+      if (fbMp) {
+        fbMp.textContent = (cwMode === 'PC')
+          ? 'MP = 0.098·RR·VT·(PEEP + ΔP)  — pressure-control form'
+          : 'MP = 0.098·RR·VT·(PIP − ½ΔP)  — Becker formula (VC)';
+      }
+      setCardClass('r-card-mp', band.mp(mp));
+      setInterpret('i-mp', interpret.mp(mp));
+
+      // ----- RSBI -----
+      const rsbi = (isFinite(rr) && isFinite(vt) && vt > 0) ? rr / (vt / 1000) : NaN;
+      setText('r-rsbi', fmt(rsbi, 0));
+      setFormula('f-rsbi', isFinite(rsbi) ? `= ${f(rr,0)} / ${f(vt/1000,2)} = ${f(rsbi,0)}` : '');
+      setCardClass('r-card-rsbi', band.rsbi(rsbi));
+      setInterpret('i-rsbi', interpret.rsbi(rsbi));
+
+      // ----- Transpulmonary pressures -----
+      const pl_insp = (isFinite(pplat) && isFinite(pesInsp)) ? pplat - pesInsp : NaN;
+      const pl_exp  = (isFinite(peep)  && isFinite(pesExp))  ? peep  - pesExp  : NaN;
+      setText('r-pl-insp', fmt(pl_insp, 1));
+      setFormula('f-plinsp', isFinite(pl_insp) ? `= ${f(pplat,0)} − ${f(pesInsp,1)} = ${f(pl_insp,1)}` : '');
+      setCardClass('r-card-plinsp', band.plinsp(pl_insp));
+      setInterpret('i-plinsp', interpret.plinsp(pl_insp));
+      setText('r-pl-exp', fmt(pl_exp, 1));
+      setFormula('f-plexp', isFinite(pl_exp) ? `= ${f(peep,0)} − ${f(pesExp,1)} = ${f(pl_exp,1)}` : '');
+      setCardClass('r-card-plexp', band.plexp(pl_exp));
+      setInterpret('i-plexp', interpret.plexp(pl_exp));
+
+      // ----- ARDSnet ladder -----
+      const lad = ladderLookup(fio2);
+      if (lad) {
+        setText('ladder-low',  '~' + lad.low);
+        setText('ladder-high', '~' + lad.high);
+        setText('ladder-cur',  isFinite(peep) ? String(peep) : '—');
+        setFormula('f-ladder', `Closest FiO₂ row: ${lad.fio2.toFixed(2)} → low ~${lad.low} cmH₂O · high ~${lad.high} cmH₂O`);
+        setInterpret('i-ladder', ladderInterpret(peep, lad.low, lad.high));
+      } else {
+        setText('ladder-low','—'); setText('ladder-high','—'); setText('ladder-cur','—');
+        setFormula('f-ladder',''); setInterpret('i-ladder','');
+      }
+
+      // ----- LPV bundle row -----
+      function setBundle(id, valId, value, cls, fmtCount) {
+        setBundleClass(id, cls);
+        const elV = $(valId);
+        if (elV) elV.textContent = isFinite(value)
+          ? (fmtCount === 0 ? Math.round(value) : value.toFixed(fmtCount || 1))
+          : '—';
+      }
+      setBundle('lb-vtkg',  'lb-vtkg-val',  vtpbw, band.vtkg(vtpbw),  1);
+      setBundle('lb-pplat', 'lb-pplat-val', pplat, band.pplat(pplat), 0);
+      setBundle('lb-dp',    'lb-dp-val',    dp,    band.dp(dp),       0);
+      setBundle('lb-mp',    'lb-mp-val',    mp,    band.mp(mp),       1);
+
+      // ----- Modeled waveforms -----
+// ----- Persist inputs -----
+      saveInputs();
+    } catch (err) {
+      console.error('calc error:', err);
+    }
+  }
+
+  // ============== WAVEFORMS (kept from v1, lightly modernized) ==============
+
+  // ============== INPUT FIELDS ==============
+  const inputIds = ['c-sex','c-ht','c-age','c-hb','c-fio2','c-pao2','c-paco2','c-spo2','c-sao2',
+                    'c-vt','c-rr','c-pip','c-pplat','c-peep','c-flow','c-map',
+                    'c-etco2','c-paco2-target','c-co','c-pes-insp','c-pes-exp'];
+
+  function saveInputs() {
+    try {
+      const snap = {};
+      inputIds.forEach(id => { const el = $(id); if (el) snap[id] = el.value; });
+      localStorage.setItem(STORAGE_INPUTS, JSON.stringify(snap));
+      localStorage.setItem(STORAGE_MODE, cwMode);
+    } catch (e) { /* ignore */ }
+  }
+  function restoreInputs() {
+    try {
+      const raw = localStorage.getItem(STORAGE_INPUTS);
+      if (raw) {
+        const snap = JSON.parse(raw);
+        inputIds.forEach(id => {
+          const el = $(id);
+          if (el && snap[id] != null) el.value = snap[id];
+        });
+      }
+      const mode = localStorage.getItem(STORAGE_MODE);
+      if (mode === 'VC' || mode === 'PC') {
+        cwMode = mode;
+        document.querySelectorAll('.mp-mode-btn').forEach(b => {
+          const on = b.dataset.mode === cwMode;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  // ============== SNAPSHOTS ==============
+  function readSnapshots() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_SNAPSHOTS)) || []; }
+    catch (e) { return []; }
+  }
+  function writeSnapshots(arr) {
+    try { localStorage.setItem(STORAGE_SNAPSHOTS, JSON.stringify(arr.slice(0, MAX_SNAPSHOTS))); }
+    catch (e) { /* ignore */ }
+  }
+  function currentMetrics() {
+    return {
+      vtkg: parseFloat($('r-vtpbw').textContent),
+      dp:   parseFloat($('r-dp').textContent),
+      pf:   parseFloat($('r-pf').textContent),
+      mp:   parseFloat($('r-mp').textContent),
+      rsbi: parseFloat($('r-rsbi').textContent)
+    };
+  }
+  function saveSnapshot() {
+    const labelEl = $('snap-label');
+    const label = (labelEl && labelEl.value.trim()) || ('Snapshot ' + (readSnapshots().length + 1));
+    const inputs = {};
+    inputIds.forEach(id => { const el = $(id); if (el) inputs[id] = el.value; });
+    const snap = {
+      label, time: new Date().toISOString(),
+      mode: cwMode, inputs, metrics: currentMetrics()
+    };
+    const arr = readSnapshots();
+    arr.unshift(snap);
+    writeSnapshots(arr);
+    if (labelEl) labelEl.value = '';
+    renderSnapshots();
+  }
+  function clearAllSnapshots() {
+    if (!confirm('Delete all saved snapshots? This cannot be undone.')) return;
+    writeSnapshots([]);
+    renderSnapshots();
+  }
+  function deleteSnapshot(idx) {
+    const arr = readSnapshots();
+    arr.splice(idx, 1);
+    writeSnapshots(arr);
+    renderSnapshots();
+  }
+  function loadSnapshot(idx) {
+    const arr = readSnapshots();
+    const s = arr[idx]; if (!s) return;
+    inputIds.forEach(id => {
+      const el = $(id);
+      if (el && s.inputs && s.inputs[id] != null) el.value = s.inputs[id];
+    });
+    if (s.mode === 'VC' || s.mode === 'PC') {
+      cwMode = s.mode;
+      document.querySelectorAll('.cw-mode').forEach(b => {
+        const on = b.dataset.mode === cwMode;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-pressed', String(on));
+      });
+    }
+    calc();
+  }
+  function fmtTime(iso) {
+    try {
+      const d = new Date(iso);
+      return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' ' + d.toLocaleDateString([], {month:'short', day:'numeric'});
+    } catch (e) { return iso || '—'; }
+  }
+  function renderSnapshots() {
+    const arr = readSnapshots();
+    const body = $('snap-body');
+    const empty = $('snap-empty');
+    if (!body) return;
+    if (!arr.length) {
+      body.innerHTML = '';
+      if (empty) empty.style.display = '';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+    const live = currentMetrics();
+    const dCell = (label, snap, key, dp) => {
+      const v = snap.metrics ? snap.metrics[key] : NaN;
+      const lv = live[key];
+      let html = isFinite(v) ? v.toFixed(dp != null ? dp : 1) : '—';
+      if (isFinite(v) && isFinite(lv) && Math.abs(lv - v) > (dp === 0 ? 0.5 : 0.05)) {
+        const delta = lv - v;
+        const cls = (key === 'vtkg' || key === 'dp' || key === 'mp' || key === 'rsbi')
+          ? (delta > 0 ? 'up' : 'down')
+          : (delta > 0 ? 'down' : 'up');  // for P/F, higher is better
+        const sign = delta > 0 ? '+' : '−';
+        html += `<span class="delta ${cls}">${sign}${Math.abs(delta).toFixed(dp != null ? dp : 1)}</span>`;
+      }
+      return `<td class="num">${html}</td>`;
+    };
+    body.innerHTML = arr.map((s, i) => `
+      <tr>
+        <td><strong>${escapeHtml(s.label)}</strong> <span style="color:var(--muted); font-size:11px;">${s.mode || ''}</span></td>
+        <td>${fmtTime(s.time)}</td>
+        ${dCell('VT/kg', s, 'vtkg', 1)}
+        ${dCell('ΔP', s, 'dp', 0)}
+        ${dCell('P/F', s, 'pf', 0)}
+        ${dCell('MP', s, 'mp', 1)}
+        ${dCell('RSBI', s, 'rsbi', 0)}
+        <td class="actions">
+          <button type="button" data-action="load" data-idx="${i}">Load</button>
+          <button type="button" data-action="del"  data-idx="${i}">×</button>
+        </td>
+      </tr>`).join('');
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ============== COPY SNAPSHOT ==============
+  function buildSnapshotText() {
+    const v = (id, dp) => { const x = parseFloat($(id).textContent); return isFinite(x) ? x.toFixed(dp || 1) : null; };
+    const vt = num('c-vt'), rr = num('c-rr'), pip = num('c-pip'),
+          pplat = num('c-pplat'), peep = num('c-peep'), fio2 = num('c-fio2'),
+          pao2 = num('c-pao2');
+    const parts = [];
+    if (isFinite(vt)) {
+      const vtkg = v('r-vtpbw', 1);
+      parts.push(`VT ${vt.toFixed(0)}` + (vtkg ? ` (${vtkg} mL/kg)` : ''));
+    }
+    if (isFinite(rr))    parts.push(`RR ${rr.toFixed(0)}`);
+    if (isFinite(pip))   parts.push(`PIP ${pip.toFixed(0)}`);
+    if (isFinite(pplat)) parts.push(`Pplat ${pplat.toFixed(0)}`);
+    if (isFinite(peep))  parts.push(`PEEP ${peep.toFixed(0)}`);
+    if (isFinite(fio2))  parts.push(`FiO₂ ${fio2.toFixed(2)}`);
+    const dp = v('r-dp', 0); if (dp) parts.push(`ΔP ${dp}`);
+    const cstat = v('r-cstat', 0); if (cstat) parts.push(`Cstat ${cstat}`);
+    const pf = v('r-pf', 0); if (pf) parts.push(`P/F ${pf}`);
+    const mp = v('r-mp', 1); if (mp) parts.push(`MP ${mp}`);
+    const rsbi = v('r-rsbi', 0); if (rsbi) parts.push(`RSBI ${rsbi}`);
+    return parts.join(', ') + (cwMode === 'PC' ? '  [PC]' : '');
+  }
+  function copySnapshot() {
+    const text = buildSnapshotText();
+    const confirm = $('copy-confirm');
+    const showOk = () => {
+      if (confirm) {
+        confirm.textContent = '✓ copied to clipboard';
+        setTimeout(() => { confirm.textContent = ''; }, 1500);
+      }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(showOk, () => fallback(text, showOk));
+    } else fallback(text, showOk);
+  }
+  function fallback(text, ok) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); ok(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  // ============== INIT ==============
+  document.addEventListener('DOMContentLoaded', () => {
+    restoreInputs();
+    inputIds.forEach(id => {
+      const el = $(id); if (!el) return;
+      el.addEventListener('input', calc);
+      if (el.tagName === 'SELECT') el.addEventListener('change', calc);
+    });
+    document.querySelectorAll('.mp-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        cwMode = btn.dataset.mode;
+        document.querySelectorAll('.mp-mode-btn').forEach(b => {
+          const on = b.dataset.mode === cwMode;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-pressed', String(on));
+        });
+        calc();
+      });
+    });
+
+    // Buttons
+    $('btn-clear').addEventListener('click', () => {
+      inputIds.forEach(id => { const el = $(id); if (el && el.tagName === 'INPUT') el.value = ''; });
+      calc();
+    });
+    $('btn-example').addEventListener('click', () => {
+      const ex = {
+        'c-sex':'f','c-ht':'64','c-age':'68','c-hb':'13',
+        'c-fio2':'0.5','c-pao2':'88','c-paco2':'50',
+        'c-spo2':'95','c-sao2':'0.97',
+        'c-vt':'480','c-rr':'18','c-pip':'28','c-pplat':'24','c-peep':'8','c-flow':'60','c-map':'14',
+        'c-etco2':'40','c-paco2-target':'45','c-co':'5.5','c-pes-insp':'7','c-pes-exp':'4'
+      };
+      Object.keys(ex).forEach(id => { const el = $(id); if (el) el.value = ex[id]; });
+      calc();
+    });
+    $('btn-copy').addEventListener('click', copySnapshot);
+    $('btn-print').addEventListener('click', () => window.print());
+
+    // Snapshot UI
+    $('snap-save').addEventListener('click', saveSnapshot);
+    $('snap-clear').addEventListener('click', clearAllSnapshots);
+    $('snap-body').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const idx = parseInt(btn.dataset.idx, 10);
+      if (btn.dataset.action === 'load') loadSnapshot(idx);
+      if (btn.dataset.action === 'del')  deleteSnapshot(idx);
+    });
+
+    calc();
+    renderSnapshots();
+  });
 })();
 </script>
 </body>
