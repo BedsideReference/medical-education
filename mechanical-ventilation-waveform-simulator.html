@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ventilator Waveform Engine</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; }
+    /* Loading state visible while Babel compiles */
+    #root:empty::before {
+      content: "Loading simulator…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: ui-monospace, monospace;
+      color: #94a3b8;
+      background: #0a0e1a;
+    }
+    #error-display {
+      display: none;
+      padding: 2rem;
+      background: #1a0a0a;
+      color: #fca5a5;
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="error-display"></div>
+  <script>
+    // Surface any uncaught error so users aren't stuck staring at the loader
+    window.addEventListener('error', function(e) {
+      var ed = document.getElementById('error-display');
+      var root = document.getElementById('root');
+      if (ed) {
+        ed.style.display = 'block';
+        ed.textContent = 'Error loading simulator:\n\n' +
+          (e.message || 'Unknown error') +
+          (e.filename ? '\n\nFile: ' + e.filename : '') +
+          (e.lineno ? '\nLine: ' + e.lineno : '') +
+          (e.error && e.error.stack ? '\n\nStack:\n' + e.error.stack : '');
+      }
+      if (root) root.style.display = 'none';
+    });
+  </script>
+  <script type="text/babel" data-presets="react">
+    // React hooks pulled from global React
+    const { useState, useRef, useEffect } = React;
+    // ===== ENGINE =====
+/**
+ * Ventilator simulation engine — pure functions only.
+ * No React, no DOM. Imported by the rendering component (vent-waveforms.jsx)
+ * and exercised directly by the test suite (vent-engine.test.js).
+ *
+ * Equation of motion:  P_aw(t) = V(t)/C + Flow(t)·R + PEEP
+ */
+const CONSTANTS = {
+  SAMPLE_DT: 0.01,             // simulation timestep (sec) — 100 Hz
+  WINDOW_SEC: 6,               // visible time window in plots
+  TRENDS_LEN: 30,              // breaths held in the trends sparklines
+  HOLD_DURATION_SEC: 2,        // duration of inspiratory/expiratory hold
+  // Trigger detection (sec)
+  TRIG_PRESSURE_MIN: 0.06,
+  TRIG_PRESSURE_MAX: 0.22,
+  TRIG_FLOW_MIN: 0.05,
+  TRIG_FLOW_MAX: 0.18,
+  TRIG_AUTOTRACK_FIXED: 0.07,
+  // Patient effort magnitudes
+  PRESSURE_TRIG_BASE_DIP: 1.5,    // cmH2O baseline dip for pressure trigger
+  PRESSURE_TRIG_DIP_PER_SENS: 0.15,
+  FLOW_TRIG_PRESSURE_DIP: 0.4,    // cmH2O — small, just to show effort
+  AUTOTRACK_BASE_DIP: 0.8,
+  AUTOTRACK_DIP_PER_SENS: 0.05,
+  // CPAP modeling
+  CPAP_EFFORT_PRESSURE: 6,      // cmH2O peak inspiratory muscle effort
+  CPAP_COMPENSATION_GAP: 1.5,   // imperfect blower compensation, cmH2O
+  CPAP_EXP_RISE: 1.0,           // expiratory pressure rise, cmH2O
+  // APRV
+  APRV_SPONT_FREQ_HZ: 0.4,      // 24/min spontaneous breath ripple during P-high
+  APRV_SPONT_RIPPLE_MAG: 0.6,   // cmH2O ripple amplitude
+  // Pathology mechanics overrides
+  ARDS_COMPLIANCE: 0.025,
+  COPD_RESISTANCE: 25,
+  OBSTRUCTIVE_RESISTANCE: 30,
+  RESTRICTIVE_COMPLIANCE: 0.020,
+  // Alarm thresholds
+  PIP_ALARM: 35,                // cmH2O
+  PPLAT_ALARM: 30,
+  DRIVING_P_ALARM: 15,
+  RAW_ALARM: 20,
+};
+// ---------- Patient trigger helpers ----------
+// Returns the duration (in seconds) of the trigger detection phase.
+function getTriggerDuration(trigSens, triggerType = "pressure") {
+  if (triggerType === "autotrack") return CONSTANTS.TRIG_AUTOTRACK_FIXED;
+  if (triggerType === "flow") {
+    const t = CONSTANTS.TRIG_FLOW_MIN + ((trigSens - 0.5) / 9.5) * (CONSTANTS.TRIG_FLOW_MAX - CONSTANTS.TRIG_FLOW_MIN);
+    return Math.max(CONSTANTS.TRIG_FLOW_MIN, Math.min(CONSTANTS.TRIG_FLOW_MAX, t));
+  }
+  // Pressure trigger
+  const t = CONSTANTS.TRIG_PRESSURE_MIN + ((trigSens - 0.5) / 9.5) * (CONSTANTS.TRIG_PRESSURE_MAX - CONSTANTS.TRIG_PRESSURE_MIN);
+  return Math.max(CONSTANTS.TRIG_PRESSURE_MIN, Math.min(CONSTANTS.TRIG_PRESSURE_MAX, t));
+}
+// Returns {dipP, dipFlow} signature of the patient's pre-trigger effort.
+function patientTriggerEffort(t, tTrig, PEEP, sensitivity, triggerType = "pressure") {
+  const progress = t / tTrig;
+  if (triggerType === "flow") {
+    return {
+      dipP: -CONSTANTS.FLOW_TRIG_PRESSURE_DIP * progress,
+      dipFlow: sensitivity * progress,
+    };
+  }
+  if (triggerType === "autotrack") {
+    const env = Math.sin(Math.PI * progress) * 0.7;
+    return {
+      dipP: -(CONSTANTS.AUTOTRACK_BASE_DIP + sensitivity * CONSTANTS.AUTOTRACK_DIP_PER_SENS) * env,
+      dipFlow: -1.5 * env,
+    };
+  }
+  // Pressure trigger (default)
+  const effortP = CONSTANTS.PRESSURE_TRIG_BASE_DIP + sensitivity * CONSTANTS.PRESSURE_TRIG_DIP_PER_SENS;
+  return {
+    dipP: -effortP * progress,
+    dipFlow: -3 * progress,
+  };
+}
+// ---------- Pathology mechanics ----------
+function applyPathologyMechanics(C, R, pathology) {
+  let Ceff = C, Reff = R;
+  if (pathology === "ARDS") Ceff = CONSTANTS.ARDS_COMPLIANCE;
+  if (pathology === "COPD") Reff = CONSTANTS.COPD_RESISTANCE;
+  if (pathology === "obstructive") Reff = CONSTANTS.OBSTRUCTIVE_RESISTANCE;
+  if (pathology === "restrictive") Ceff = CONSTANTS.RESTRICTIVE_COMPLIANCE;
+  return { Ceff, Reff };
+}
+// ---------- Per-mode step functions ----------
+// Each takes (s, sim, dt, Ceff, Reff) and returns { pressure, flow }.
+// They mutate `sim.volume` and any mode-specific sim state.
+// These are *pure* in the sense that they only depend on sim state and settings —
+// no React, no DOM, no time outside `dt` and `sim.cycleT`.
+function stepVC(s, sim, dt, Ceff, Reff) {
+  const VtL = s.Vt / 1000;
+  const inInsp = sim.cycleT <= s.ITime;
+  let flow, pressure;
+  if (inInsp) {
+    flow = VtL / s.ITime;
+    sim.volume += flow * dt;
+  } else {
+    const tau = Reff * Ceff;
+    const tExp = sim.cycleT - s.ITime;
+    if (tExp < dt * 1.5) sim.expStartV = sim.volume;
+    sim.volume = sim.expStartV * Math.exp(-tExp / tau);
+    flow = -sim.volume / tau;
+  }
+  pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+  return { pressure, flow };
+}
+function stepPC_PRVC(s, sim, dt, Ceff, Reff) {
+  const tau = Reff * Ceff;
+  const VtL = s.Vt / 1000;
+  let drivingP;
+  if (s.mode === "PRVC") {
+    drivingP = VtL / (Ceff * (1 - Math.exp(-s.ITime / tau)));
+  } else {
+    drivingP = s.PIP - s.PEEP;
+  }
+  const inInsp = sim.cycleT <= s.ITime;
+  let flow, pressure;
+  if (inInsp) {
+    const rise = Math.min(1, sim.cycleT / s.riseTime);
+    const targetP = s.PEEP + drivingP * rise;
+    flow = (targetP - sim.volume / Ceff - s.PEEP) / Reff;
+    sim.volume += flow * dt;
+    pressure = targetP;
+  } else {
+    const tExp = sim.cycleT - s.ITime;
+    if (tExp < dt * 1.5) sim.expStartV = sim.volume;
+    sim.volume = sim.expStartV * Math.exp(-tExp / tau);
+    flow = -sim.volume / tau;
+    pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+  }
+  return { pressure, flow };
+}
+function stepPS(s, sim, dt, Ceff, Reff) {
+  const tau = Reff * Ceff;
+  const drivingP = s.PIP - s.PEEP;
+  const cyclePct = s.flowCyclePct / 100;
+  const tTrig = getTriggerDuration(s.trigSens, s.triggerType);
+  let flow, pressure;
+  if (sim.cycleT < tTrig) {
+    const { dipP, dipFlow } = patientTriggerEffort(sim.cycleT, tTrig, s.PEEP, s.trigSens, s.triggerType);
+    pressure = s.PEEP + dipP;
+    flow = dipFlow / 60;
+    if (sim.cycleT < dt * 1.5) sim.volume = 0;
+  } else {
+    const tInsp = sim.cycleT - tTrig;
+    const peakFlowExpected = drivingP / Reff;
+    const cycleOffFlow = peakFlowExpected * cyclePct;
+    if (tInsp < dt * 1.5) {
+      sim.psInspActive = true;
+      sim.expStartV = 0;
+    }
+    if (sim.psInspActive) {
+      const rise = Math.min(1, tInsp / s.riseTime);
+      const targetP = s.PEEP + drivingP * rise;
+      flow = (targetP - sim.volume / Ceff - s.PEEP) / Reff;
+      sim.volume += flow * dt;
+      pressure = targetP;
+      if (rise >= 1 && flow <= cycleOffFlow) {
+        sim.psInspActive = false;
+        sim.expStartV = sim.volume;
+        sim.psExpStartT = sim.cycleT;
+      }
+    } else {
+      const tExp = sim.cycleT - sim.psExpStartT;
+      sim.volume = sim.expStartV * Math.exp(-tExp / tau);
+      flow = -sim.volume / tau;
+      pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+    }
+  }
+  return { pressure, flow };
+}
+function stepCPAP(s, sim, dt, Ceff, Reff) {
+  const tau = Reff * Ceff;
+  const cycle = 60 / s.RR;
+  const tTrig = getTriggerDuration(s.trigSens, s.triggerType);
+  const inInsp = sim.cycleT <= s.ITime;
+  let flow, pressure;
+  if (inInsp) {
+    const phase = (sim.cycleT / s.ITime) * Math.PI;
+    const muscleP = -CONSTANTS.CPAP_EFFORT_PRESSURE * Math.sin(phase);
+    flow = (s.PEEP - muscleP - sim.volume / Ceff) / Reff;
+    sim.volume += flow * dt;
+    pressure = s.PEEP + (muscleP / CONSTANTS.CPAP_EFFORT_PRESSURE) * CONSTANTS.CPAP_COMPENSATION_GAP;
+    if (sim.cycleT < tTrig) {
+      const prog = sim.cycleT / tTrig;
+      const triggerDip = -(CONSTANTS.PRESSURE_TRIG_BASE_DIP + s.trigSens * CONSTANTS.PRESSURE_TRIG_DIP_PER_SENS) * Math.sin(Math.PI * prog);
+      pressure += triggerDip;
+    }
+  } else {
+    const tExp = sim.cycleT - s.ITime;
+    const eTime = cycle - s.ITime;
+    if (tExp < dt * 1.5) sim.expStartV = sim.volume;
+    sim.volume = sim.expStartV * Math.exp(-tExp / tau);
+    flow = -sim.volume / tau;
+    const phase = (tExp / eTime) * Math.PI;
+    pressure = s.PEEP + CONSTANTS.CPAP_EXP_RISE * Math.sin(phase);
+  }
+  return { pressure, flow };
+}
+function stepAPRV(s, sim, dt, Ceff, Reff) {
+  const Phigh = s.aprvPhigh;
+  const Plow = s.aprvPlow;
+  const Thigh = s.aprvThigh;
+  const Tlow = s.aprvTlow;
+  const aprvCycle = Thigh + Tlow;
+  sim.aprvPhase = (sim.aprvPhase + dt) % aprvCycle;
+  const tau = Reff * Ceff;
+  const Vlow_eq = Ceff * Plow;
+  let flow, pressure;
+  if (sim.aprvPhase < Thigh) {
+    const inP = sim.aprvPhase;
+    const sp = 2 * Math.PI * CONSTANTS.APRV_SPONT_FREQ_HZ * inP;
+    const spontRipple = s.aprvSpontEnabled ? CONSTANTS.APRV_SPONT_RIPPLE_MAG * Math.sin(sp) : 0;
+    const targetP = Phigh + spontRipple;
+    flow = (targetP - sim.volume / Ceff) / Reff;
+    sim.volume += flow * dt;
+    pressure = targetP;
+  } else {
+    const inR = sim.aprvPhase - Thigh;
+    if (inR < dt * 1.5) sim.expStartV = sim.volume;
+    sim.volume = Vlow_eq + (sim.expStartV - Vlow_eq) * Math.exp(-inR / tau);
+    flow = -(sim.volume - Vlow_eq) / tau;
+    pressure = sim.volume / Ceff + flow * Reff;
+  }
+  return { pressure, flow };
+}
+function stepSIMV(s, sim, dt, Ceff, Reff) {
+  const baseMode = s.mode === "SIMV-VC" ? "VC" : "PC";
+  const mandRate = Math.min(s.RR, 10);
+  const mandCycle = 60 / mandRate;
+  sim.simvT = (sim.simvT + dt) % mandCycle;
+  const mandLen = Math.min(s.ITime + 1.0, mandCycle * 0.55);
+  const tau = Reff * Ceff;
+  let flow, pressure;
+  if (sim.simvT < mandLen) {
+    // Mandatory breath
+    const mandT = sim.simvT;
+    const inMandInsp = mandT <= s.ITime;
+    if (baseMode === "VC") {
+      if (inMandInsp) {
+        flow = (s.Vt / 1000) / s.ITime;
+        sim.volume += flow * dt;
+      } else {
+        if (mandT - s.ITime < dt * 1.5) sim.expStartV = sim.volume;
+        sim.volume = sim.expStartV * Math.exp(-(mandT - s.ITime) / tau);
+        flow = -sim.volume / tau;
+      }
+      pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+    } else {
+      const drivingP = s.PIP - s.PEEP;
+      if (inMandInsp) {
+        const rise = Math.min(1, mandT / s.riseTime);
+        const targetP = s.PEEP + drivingP * rise;
+        flow = (targetP - sim.volume / Ceff - s.PEEP) / Reff;
+        sim.volume += flow * dt;
+        pressure = targetP;
+      } else {
+        if (mandT - s.ITime < dt * 1.5) sim.expStartV = sim.volume;
+        sim.volume = sim.expStartV * Math.exp(-(mandT - s.ITime) / tau);
+        flow = -sim.volume / tau;
+        pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+      }
+    }
+  } else {
+    // Spontaneous PS breath
+    const psT = (sim.simvT - mandLen) % 1.6;
+    const psI = 0.7;
+    const drivingP = (s.PIP - s.PEEP) * 0.5;
+    const tTrig = getTriggerDuration(s.trigSens, s.triggerType);
+    if (psT < tTrig) {
+      const { dipP, dipFlow } = patientTriggerEffort(psT, tTrig, s.PEEP, s.trigSens, s.triggerType);
+      pressure = s.PEEP + dipP;
+      flow = dipFlow / 60;
+      if (psT < dt * 1.5) sim.volume = 0;
+    } else {
+      const tInsp = psT - tTrig;
+      if (tInsp < psI) {
+        const rise = Math.min(1, tInsp / 0.1);
+        const targetP = s.PEEP + drivingP * rise;
+        flow = (targetP - sim.volume / Ceff - s.PEEP) / Reff;
+        sim.volume += flow * dt;
+        pressure = targetP;
+      } else {
+        if (tInsp - psI < dt * 1.5) sim.expStartV = sim.volume;
+        sim.volume = sim.expStartV * Math.exp(-(tInsp - psI) / tau);
+        flow = -sim.volume / tau;
+        pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+      }
+    }
+  }
+  return { pressure, flow };
+}
+const MODE_STEPPERS = {
+  VC: stepVC,
+  PC: stepPC_PRVC,
+  PRVC: stepPC_PRVC,
+  PS: stepPS,
+  CPAP: stepCPAP,
+  APRV: stepAPRV,
+  "SIMV-VC": stepSIMV,
+  "SIMV-PC": stepSIMV,
+};
+// ---------- Pathology overlay ----------
+// Applies after the mode step. Mutates pressure/flow in place (returns new values).
+function applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff) {
+  const cycle = 60 / s.RR;
+  const inInsp = sim.cycleT <= s.ITime;
+  const eTime = cycle - s.ITime;
+  const tExp = sim.cycleT - s.ITime;
+  switch (s.pathology) {
+    case "autoPEEP": {
+      if (!inInsp && tExp > eTime * 0.7) flow = Math.min(flow, -0.05);
+      break;
+    }
+    case "flowStarvation": {
+      if (s.mode === "VC" && inInsp) {
+        const localT = sim.cycleT / s.ITime;
+        pressure -= 4 * Math.sin(Math.PI * localT) * Math.exp(-localT * 0.5);
+      }
+      break;
+    }
+    case "ineffectiveEffort": {
+      if (!inInsp) {
+        for (const eOff of [eTime * 0.4, eTime * 0.75]) {
+          const lt = tExp - eOff;
+          if (Math.abs(lt) < 0.18) {
+            const env = Math.exp(-Math.pow(lt / 0.08, 2));
+            pressure -= 2.5 * env;
+            flow += 0.12 * env;
+          }
+        }
+      }
+      break;
+    }
+    case "autoTrigger": {
+      if (!inInsp && tExp > 0.2 && tExp < eTime - 0.2) {
+        pressure += 1.2 * Math.sin(2 * Math.PI * 3 * tExp);
+        flow += 0.05 * Math.sin(2 * Math.PI * 3 * tExp);
+      }
+      break;
+    }
+    case "triggerDelay": {
+      if (inInsp && sim.cycleT < 0.25) {
+        const env = Math.exp(-Math.pow((sim.cycleT - 0.12) / 0.06, 2));
+        pressure = s.PEEP - 4 * env;
+        flow = 0;
+      }
+      break;
+    }
+    case "reverseTrigger": {
+      if (!inInsp) {
+        const lt = tExp - eTime * 0.25;
+        if (Math.abs(lt) < 0.20) {
+          const env = Math.exp(-Math.pow(lt / 0.10, 2));
+          pressure -= 4 * env;
+          flow += 0.18 * env;
+        }
+      }
+      break;
+    }
+    case "doubleTrigger": {
+      // After end-of-inspiration, immediately deliver a second stacked breath
+      if (!inInsp && tExp < 0.5) {
+        const stackT = tExp;
+        const drivingP = (s.PIP || 25) - s.PEEP;
+        const tau = Reff * Ceff;
+        const stackedFlow = (drivingP / Reff) * Math.exp(-stackT / tau) * 0.85;
+        flow = stackedFlow;
+        // Add to volume already exhaled — clinically this is breath stacking
+        sim.volume += Ceff * drivingP * (1 - Math.exp(-stackT / tau)) * 0.85 * (sim.cycleT < dt * 2 ? 1 : 0);
+        pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+      }
+      break;
+    }
+    case "prematureCycling": {
+      // Vent ends inspiration while patient still pulling — pressure dip and flow blip
+      // just past the early cycle-off
+      if (!inInsp && tExp < 0.15) {
+        const env = Math.exp(-Math.pow((tExp - 0.05) / 0.05, 2));
+        pressure -= 3.5 * env;
+        flow += 0.20 * env;
+      }
+      break;
+    }
+    case "delayedCycling": {
+      // PS only: vent keeps insufflating after patient's effort ends — pressure rises
+      // late in inspiration as patient exhales against ongoing support
+      if (s.mode === "PS" && inInsp && sim.cycleT > 0.6) {
+        const localT = sim.cycleT - 0.6;
+        pressure += 5 * Math.exp(-Math.pow(localT / 0.15, 2));
+      }
+      break;
+    }
+  }
+  return { pressure, flow };
+}
+    // ===== COMPONENT =====
+/**
+ * Ventilator Waveform Engine
+ * --------------------------------
+ * Real-time, physiologically-faithful pressure / flow / volume traces driven
+ * from the equation of motion:
+ *
+ *     P_aw(t) = (V(t) / C) + (Flow(t) · R) + PEEP
+ *
+ * Where:
+ *   C = lung-thorax compliance (L/cmH₂O)
+ *   R = airway resistance (cmH₂O/L/sec)
+ *   V = lung volume above FRC (L)
+ *   F = flow (L/sec)
+ *
+ * Modes: VC, PC, PRVC, PS, SIMV-VC, SIMV-PC, CPAP, APRV.
+ * Sample rate: 100 Hz simulation, rendered at native refresh via rAF.
+ */
+// ---------- Theme ----------
+const THEMES = {
+  dark: {
+    bg: "linear-gradient(135deg, #050810 0%, #0a0f1f 100%)",
+    surface: "#0a0e1a",
+    surfaceAlt: "rgba(15, 23, 42, 0.4)",
+    border: "#1e293b",
+    grid: "#1a2238",
+    zeroLine: "#3a4868",
+    text: "#e2e8f0",
+    textMuted: "#94a3b8",
+    textFaint: "#64748b",
+    tickText: "#7a89aa",
+    accent: "#fbbf24",       // amber
+    accentInk: "#0f172a",    // ink for on-accent text
+    accentSoft: "rgba(251, 191, 36, 0.8)",
+    pressure: "#fbbf24",
+    flow: "#34d399",
+    volume: "#60a5fa",
+    selectBg: "#0f172a",
+  },
+  light: {
+    bg: "linear-gradient(135deg, #fafaf7 0%, #f1f0e9 100%)",
+    surface: "#ffffff",
+    surfaceAlt: "rgba(241, 240, 233, 0.5)",
+    border: "#d6d3c7",
+    grid: "#e8e5d8",
+    zeroLine: "#b8b3a3",
+    text: "#1c1917",
+    textMuted: "#57534e",
+    textFaint: "#78716c",
+    tickText: "#78716c",
+    accent: "#b45309",       // burnt amber for light
+    accentInk: "#fafaf7",
+    accentSoft: "rgba(180, 83, 9, 0.85)",
+    pressure: "#b45309",
+    flow: "#047857",
+    volume: "#1d4ed8",
+    selectBg: "#ffffff",
+  },
+};
+// ---------- Real-time sweeping plot (Canvas) ----------
+function WaveformPlot({
+  bufferRef, sweepRef, crosshairRef, channel, color, yLabel, yMin, yMax, theme, windowSec, height = 150,
+  onHoverMove, onHoverLeave,
+}) {
+  const canvasRef = useRef(null);
+  const W = 720, H = height, padL = 60, padR = 12, padT = 30, padB = 22;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  useEffect(() => {
+    const cvs = canvasRef.current;
+    if (!cvs) return;
+    const dpr = window.devicePixelRatio || 1;
+    cvs.width = W * dpr;
+    cvs.height = H * dpr;
+    const ctx = cvs.getContext("2d");
+    ctx.scale(dpr, dpr);
+    const x = (t) => padL + (t / windowSec) * innerW;
+    const y = (v) => padT + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+    let raf;
+    const draw = () => {
+      // Clear
+      ctx.fillStyle = theme.surface;
+      ctx.fillRect(0, 0, W, H);
+      // Grid
+      ctx.strokeStyle = theme.grid;
+      ctx.lineWidth = 0.5;
+      const yTicks = 4;
+      for (let i = 0; i <= yTicks; i++) {
+        const yy = padT + (innerH * i) / yTicks;
+        ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(W - padR, yy); ctx.stroke();
+      }
+      const xTicks = Math.floor(windowSec);
+      for (let i = 0; i <= xTicks; i++) {
+        const xx = padL + (innerW * i) / xTicks;
+        ctx.beginPath(); ctx.moveTo(xx, padT); ctx.lineTo(xx, H - padB); ctx.stroke();
+      }
+      // Zero line
+      if (yMin < 0 && yMax > 0) {
+        ctx.strokeStyle = theme.zeroLine;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        const zy = y(0);
+        ctx.moveTo(padL, zy); ctx.lineTo(W - padR, zy); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      // Tick labels
+      ctx.fillStyle = theme.tickText;
+      ctx.font = "9px ui-monospace, monospace";
+      ctx.textAlign = "end";
+      for (let i = 0; i <= yTicks; i++) {
+        const v = yMin + ((yMax - yMin) * (yTicks - i)) / yTicks;
+        const yy = padT + (innerH * i) / yTicks;
+        ctx.fillText(Math.round(v), padL - 6, yy + 3);
+      }
+      ctx.textAlign = "center";
+      for (let i = 0; i <= xTicks; i++) {
+        const xx = padL + (innerW * i) / xTicks;
+        ctx.fillText(`${i}s`, xx, H - 6);
+      }
+      // Channel label
+      ctx.fillStyle = color;
+      ctx.font = "bold 10px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText(yLabel, padL, 18);
+      // Trace - draw from circular buffer
+      const buf = bufferRef.current[channel];
+      const tBuf = bufferRef.current.t;
+      const sweepT = sweepRef.current; // current head position in sec within window
+      const N = buf.length;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.6;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      let started = false;
+      let prevX = -1;
+      for (let i = 0; i < N; i++) {
+        const tv = tBuf[i];
+        if (tv === null || tv === undefined || isNaN(tv)) continue;
+        const xx = x(tv);
+        const yy = y(buf[i]);
+        // Break the path at sweep wraparound (where time jumps backward)
+        if (started && xx < prevX - 5) {
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(xx, yy);
+        } else if (!started) {
+          ctx.moveTo(xx, yy);
+          started = true;
+        } else {
+          ctx.lineTo(xx, yy);
+        }
+        prevX = xx;
+      }
+      ctx.stroke();
+      // Sweep cursor (vertical line at current head)
+      const sx = x(sweepT);
+      ctx.strokeStyle = theme.zeroLine;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(sx, padT); ctx.lineTo(sx, H - padB); ctx.stroke();
+      ctx.globalAlpha = 1;
+      // Hover crosshair (drawn when crosshairRef.current is set)
+      const xhair = crosshairRef && crosshairRef.current;
+      if (xhair && xhair.tSec >= 0 && xhair.tSec <= windowSec) {
+        const cx = x(xhair.tSec);
+        // Vertical crosshair line
+        ctx.strokeStyle = theme.accent;
+        ctx.lineWidth = 1;
+        ctx.globalAlpha = 0.8;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(cx, padT); ctx.lineTo(cx, H - padB); ctx.stroke();
+        ctx.setLineDash([]);
+        // Find nearest sample in buffer to crosshair time
+        const tBuf = bufferRef.current.t;
+        const buf = bufferRef.current[channel];
+        let nearestIdx = -1;
+        let nearestDt = Infinity;
+        for (let i = 0; i < tBuf.length; i++) {
+          if (tBuf[i] === null || tBuf[i] === undefined) continue;
+          const d = Math.abs(tBuf[i] - xhair.tSec);
+          if (d < nearestDt) { nearestDt = d; nearestIdx = i; }
+        }
+        if (nearestIdx >= 0 && nearestDt < 0.1) {
+          const v = buf[nearestIdx];
+          const yy = y(v);
+          // Marker dot
+          ctx.fillStyle = theme.accent;
+          ctx.beginPath();
+          ctx.arc(cx, yy, 3, 0, 2 * Math.PI);
+          ctx.fill();
+          // Value readout box
+          const valStr = Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(1);
+          const boxW = 52, boxH = 16;
+          const boxX = Math.min(cx + 6, W - padR - boxW);
+          const boxY = Math.max(padT + 2, yy - boxH - 4);
+          ctx.fillStyle = theme.surface;
+          ctx.strokeStyle = theme.accent;
+          ctx.lineWidth = 1;
+          ctx.fillRect(boxX, boxY, boxW, boxH);
+          ctx.strokeRect(boxX, boxY, boxW, boxH);
+          ctx.fillStyle = theme.accent;
+          ctx.font = "bold 10px ui-monospace, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText(valStr, boxX + boxW / 2, boxY + 11);
+        }
+        ctx.globalAlpha = 1;
+      }
+      raf = requestAnimationFrame(draw);
+    };
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [theme, color, yLabel, yMin, yMax, windowSec, channel, bufferRef, sweepRef, crosshairRef]);
+  // Map mouse position to plot coordinates and check if hovering an annotation dot
+  const handleMouseMove = (e) => {
+    const cvs = canvasRef.current;
+    if (!cvs) return;
+    const rect = cvs.getBoundingClientRect();
+    const xPx = e.clientX - rect.left;
+    const xVB = (xPx / rect.width) * W;
+    // Crosshair when paused
+    if (onHoverMove && xVB >= padL && xVB <= W - padR) {
+      const tSec = ((xVB - padL) / innerW) * windowSec;
+      onHoverMove(tSec);
+    }
+  };
+  const handleLeave = () => {
+    if (onHoverLeave) onHoverLeave();
+  };
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        width: "100%",
+        height: `${H}px`,
+        display: "block",
+        cursor: onHoverMove ? "crosshair" : "default",
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleLeave}
+    />
+  );
+}
+// ---------- UI ----------
+const PATHOLOGY_GROUPS = [
+  {
+    label: "Baseline",
+    options: [{ id: "none", label: "Normal" }],
+  },
+  {
+    label: "Lung Mechanics",
+    options: [
+      { id: "ARDS", label: "ARDS (low compliance)" },
+      { id: "COPD", label: "COPD (high resistance)" },
+      { id: "autoPEEP", label: "Auto-PEEP / breath stacking" },
+      { id: "flowStarvation", label: "Flow starvation (air hunger)" },
+    ],
+  },
+  {
+    label: "Trigger Abnormalities",
+    options: [
+      { id: "ineffectiveEffort", label: "Ineffective triggering (missed effort)" },
+      { id: "autoTrigger", label: "Auto-triggering (cardiac / leak)" },
+      { id: "triggerDelay", label: "Trigger delay (prolonged lag)" },
+      { id: "doubleTrigger", label: "Double-triggering (breath stacking)" },
+      { id: "reverseTrigger", label: "Reverse-triggering (entrainment)" },
+    ],
+  },
+  {
+    label: "Cycling Abnormalities",
+    options: [
+      { id: "prematureCycling", label: "Premature cycling (short Ti)" },
+      { id: "delayedCycling", label: "Delayed cycling (long Ti, PS)" },
+    ],
+  },
+];
+// ---------- Tooltip dictionary ----------
+// Concise teaching tooltips for each setting. Format: 1-2 short sentences,
+// typical clinical range, and where relevant a key formula or caveat.
+const TOOLTIPS = {
+  Vt: "Tidal volume — the gas delivered with each breath. Lung-protective target is 6 mL/kg ideal body weight (≈350–500 mL for most adults).",
+  RR: "Respiratory rate — set breaths per minute. Typical 12–20 in adults; up to 30+ in ARDS to maintain minute ventilation at low Vt.",
+  ITime: "Inspiratory time — duration of inspiration in seconds. Combined with RR sets I:E ratio. Typical 0.8–1.2s; longer in obstructive disease.",
+  PEEP: "Positive end-expiratory pressure. Prevents alveolar collapse. Typical 5–8; higher in moderate-severe ARDS (10–20).",
+  PIP: "Peak inspiratory pressure setpoint (PC/PS modes). Typical 15–30 cmH₂O. Alarm above 35.",
+  riseTime: "Time for airway pressure to ramp from PEEP to PIP at start of inspiration. Faster (<0.1s) feels aggressive; slower (>0.3s) more comfortable for awake patients.",
+  flowCyclePct: "Pressure support cycle-off threshold. Inspiration ends when flow drops to this % of peak. Typical 25%; lower in obstructive disease, higher in restrictive.",
+  trigSens: "Trigger sensitivity. Lower = more sensitive (machine responds to smaller patient effort). Too low → auto-triggering; too high → missed triggers.",
+  FiO2: "Fraction of inspired oxygen, 21–100%. Target the lowest FiO₂ that maintains SpO₂ 88–95% in ARDS.",
+  C: "Static compliance — change in lung volume per change in pressure. Normal ≈ 50–100 mL/cmH₂O. ARDS <30, severe ARDS <20.",
+  R: "Airway resistance — pressure drop per unit flow through airways. Normal ≈ 5–10 cmH₂O/L/s. COPD/asthma >20.",
+  aprvPhigh: "P-high — sustained inflation pressure during APRV. Typical 25–35 cmH₂O. Set to estimated end-inspiratory pressure of conventional ventilation.",
+  aprvPlow: "P-low — release pressure. Typically set to 0 (zero PEEP) in true APRV; brief duration prevents derecruitment.",
+  aprvThigh: "T-high — duration of P-high phase. Typical 4–6s in adults; longer phases improve recruitment but reduce CO₂ clearance.",
+  aprvTlow: "T-low — release duration. Typically 0.5–0.8s. Set so expiratory flow terminates at 50–75% of peak (≈1 RC time constant).",
+};
+// ---------- Tooltip component ----------
+function InfoIcon({ tooltip, theme }) {
+  const [show, setShow] = useState(false);
+  if (!tooltip) return null;
+  return (
+    <span className="relative inline-flex" style={{ marginLeft: 4 }}>
+      <button
+        type="button"
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onFocus={() => setShow(true)}
+        onBlur={() => setShow(false)}
+        aria-label="Help"
+        className="text-[9px] font-mono leading-none"
+        style={{
+          width: 13, height: 13, borderRadius: "50%",
+          border: `1px solid ${theme.textFaint}`,
+          color: theme.textFaint,
+          background: "transparent",
+          cursor: "help",
+          padding: 0,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        ?
+      </button>
+      {show && (
+        <span
+          role="tooltip"
+          className="absolute z-50 text-[11px] leading-snug pointer-events-none"
+          style={{
+            bottom: "calc(100% + 6px)",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 260,
+            maxWidth: "60vw",
+            padding: "8px 10px",
+            background: theme.surface,
+            color: theme.text,
+            border: `1px solid ${theme.border}`,
+            borderRadius: 4,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.35)",
+            fontFamily: "ui-sans-serif, system-ui, sans-serif",
+          }}
+        >
+          {tooltip}
+        </span>
+      )}
+    </span>
+  );
+}
+function Slider({ label, unit, value, min, max, step, onChange, theme, tooltipKey }) {
+  const tooltip = tooltipKey ? TOOLTIPS[tooltipKey] : null;
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex justify-between items-baseline">
+        <span className="text-[10px] tracking-[0.15em] uppercase font-mono inline-flex items-center" style={{ color: theme.textMuted }}>
+          {label}
+          <InfoIcon tooltip={tooltip} theme={theme} />
+        </span>
+        <span className="text-sm font-mono tabular-nums" style={{ color: theme.accent }}>
+          {value}<span className="ml-1 text-[10px]" style={{ color: theme.textFaint }}>{unit}</span>
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full"
+        style={{ accentColor: theme.accent }}
+      />
+    </div>
+  );
+}
+function Stat({ label, value, unit, theme, color, hint, alert }) {
+  const displayVal = value === null || value === undefined || isNaN(value) || !isFinite(value)
+    ? "—"
+    : (typeof value === "number" ? (Math.abs(value) >= 100 ? value.toFixed(0) : value.toFixed(1)) : value);
+  return (
+    <div className="flex flex-col py-2 px-3 border-l-2" style={{ borderColor: alert ? "#ef4444" : (color || theme.border) }}>
+      <div className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>
+        {label}
+      </div>
+      <div className="flex items-baseline gap-1.5 mt-0.5">
+        <span className="text-2xl font-mono font-semibold tabular-nums leading-none" style={{ color: alert ? "#ef4444" : (color || theme.text) }}>
+          {displayVal}
+        </span>
+        {unit && (
+          <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>{unit}</span>
+        )}
+      </div>
+      {hint && (
+        <div className="text-[9px] font-mono mt-0.5" style={{ color: theme.textFaint }}>{hint}</div>
+      )}
+    </div>
+  );
+}
+function Sparkline({ values, label, unit, color, theme, alertHigh, windowSec }) {
+  const W = 280, H = 80, padL = 36, padR = 8, padT = 14, padB = 16;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const valid = values.filter((v) => v !== null && v !== undefined && isFinite(v));
+  const hasData = valid.length > 0;
+  const min = hasData ? Math.min(...valid) : 0;
+  const max = hasData ? Math.max(...valid) : 1;
+  const range = Math.max(0.5, max - min);
+  const yMin = min - range * 0.15;
+  const yMax = max + range * 0.15;
+  const current = valid.length > 0 ? valid[valid.length - 1] : null;
+  const isAlert = alertHigh !== undefined && current !== null && current > alertHigh;
+  const x = (i) => padL + (i / (values.length - 1)) * innerW;
+  const y = (v) => padT + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+  // Build path with breaks at null gaps
+  let path = "";
+  let inPath = false;
+  values.forEach((v, i) => {
+    if (v === null || v === undefined || !isFinite(v)) {
+      inPath = false;
+      return;
+    }
+    path += `${inPath ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)} `;
+    inPath = true;
+  });
+  // Area fill below line
+  let area = "";
+  if (hasData && path) {
+    area = path + `L${x(values.length - 1)},${padT + innerH} L${x(0)},${padT + innerH} Z`;
+  }
+  return (
+    <div className="flex flex-col">
+      <div className="flex items-baseline justify-between mb-1 px-1">
+        <div className="flex items-baseline gap-2">
+          <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>{label}</span>
+          {unit && <span className="text-[8px] font-mono" style={{ color: theme.textFaint }}>{unit}</span>}
+        </div>
+        <span className="text-sm font-mono font-semibold tabular-nums" style={{ color: isAlert ? "#ef4444" : color }}>
+          {current !== null ? (Math.abs(current) >= 100 ? current.toFixed(0) : current.toFixed(1)) : "—"}
+        </span>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: `${H}px`, background: theme.surface, border: `1px solid ${theme.border}` }}>
+        {/* y-axis labels */}
+        <text x={padL - 4} y={padT + 4} fontSize="8" textAnchor="end" fill={theme.tickText} fontFamily="ui-monospace, monospace">
+          {hasData ? (Math.abs(yMax) >= 100 ? yMax.toFixed(0) : yMax.toFixed(1)) : ""}
+        </text>
+        <text x={padL - 4} y={padT + innerH} fontSize="8" textAnchor="end" fill={theme.tickText} fontFamily="ui-monospace, monospace">
+          {hasData ? (Math.abs(yMin) >= 100 ? yMin.toFixed(0) : yMin.toFixed(1)) : ""}
+        </text>
+        {/* x-axis label — time window */}
+        <text x={padL} y={H - 4} fontSize="7" fill={theme.textFaint} fontFamily="ui-monospace, monospace">
+          {windowSec !== undefined && windowSec > 0
+            ? (windowSec >= 60 ? `−${(windowSec / 60).toFixed(1)} min` : `−${windowSec.toFixed(0)}s`)
+            : `${values.length} breaths ago`}
+        </text>
+        <text x={W - padR} y={H - 4} fontSize="7" textAnchor="end" fill={theme.textFaint} fontFamily="ui-monospace, monospace">
+          now
+        </text>
+        {/* Area fill */}
+        {area && (
+          <path d={area} fill={color} opacity="0.12" />
+        )}
+        {/* Line */}
+        {path && (
+          <path d={path} fill="none" stroke={color} strokeWidth="1.4" strokeLinejoin="round" strokeLinecap="round" />
+        )}
+        {/* Last-point dot */}
+        {hasData && (
+          <circle cx={x(values.length - 1)} cy={y(current)} r="2.5" fill={isAlert ? "#ef4444" : color} />
+        )}
+        {/* Empty state */}
+        {!hasData && (
+          <text x={W / 2} y={H / 2} fontSize="9" textAnchor="middle" fill={theme.textFaint} fontFamily="ui-monospace, monospace">
+            collecting breaths…
+          </text>
+        )}
+      </svg>
+    </div>
+  );
+}
+// ---------- Waveform feature detection ----------
+// Scans the most recent breath in the buffer and returns labeled anchor points
+// for annotation. Returns { pressure: [...], flow: [...], volume: [...] } where
+// each entry is { tSec, value, label, description, kind }.
+//
+// kind: "primary" (always-show in Style A) | "secondary" (hover-only) | "alarm"
+function detectWaveformFeatures(bufferRef, mode, settings) {
+  const tBuf = bufferRef.current.t;
+  const P = bufferRef.current.P;
+  const F = bufferRef.current.F;
+  const V = bufferRef.current.V;
+  const N = tBuf.length;
+  // Build a list of valid (t, P, F, V) samples in time order.
+  // Buffer is circular so we sort by t.
+  const valid = [];
+  for (let i = 0; i < N; i++) {
+    if (tBuf[i] === null || tBuf[i] === undefined || isNaN(tBuf[i])) continue;
+    valid.push({ t: tBuf[i], P: P[i], F: F[i], V: V[i] });
+  }
+  valid.sort((a, b) => a.t - b.t);
+  if (valid.length < 10) return { pressure: [], flow: [], volume: [] };
+  // Find peak pressure (PIP) and its time
+  let pipIdx = 0;
+  for (let i = 0; i < valid.length; i++) {
+    if (valid[i].P > valid[pipIdx].P) pipIdx = i;
+  }
+  const pip = valid[pipIdx];
+  // Plateau pressure: pressure ~5 samples after PIP (when flow has decelerated)
+  // Only meaningful if mode is PC/PRVC/PS (decelerating flow naturally yields plateau)
+  let plat = null;
+  if (["PC", "PRVC", "PS", "SIMV-PC"].includes(mode)) {
+    const platIdx = Math.min(pipIdx + 8, valid.length - 1);
+    plat = valid[platIdx];
+  }
+  // Peak inspiratory flow (max F)
+  let peakInspIdx = 0;
+  for (let i = 0; i < valid.length; i++) {
+    if (valid[i].F > valid[peakInspIdx].F) peakInspIdx = i;
+  }
+  const peakInsp = valid[peakInspIdx];
+  // Peak expiratory flow (most negative F)
+  let peakExpIdx = 0;
+  for (let i = 0; i < valid.length; i++) {
+    if (valid[i].F < valid[peakExpIdx].F) peakExpIdx = i;
+  }
+  const peakExp = valid[peakExpIdx];
+  // End-expiratory flow — last sample
+  const lastSample = valid[valid.length - 1];
+  // Detect auto-PEEP: end-exp flow significantly non-zero at cycle end
+  const hasAutoPEEP = Math.abs(lastSample.F) > 5; // L/min
+  // Peak volume (Vt)
+  let vtIdx = 0;
+  for (let i = 0; i < valid.length; i++) {
+    if (valid[i].V > valid[vtIdx].V) vtIdx = i;
+  }
+  const vtPeak = valid[vtIdx];
+  // PEEP baseline — use settings, anchor at last sample's time
+  const peepValue = mode === "APRV" ? settings.aprvPlow : settings.PEEP;
+  // ---- Build annotation lists ----
+  const pressure = [
+    {
+      tSec: pip.t, value: pip.P, label: "PIP",
+      description: "Peak inspiratory pressure — highest airway pressure during inspiration. Includes both elastic recoil and resistive components. Alarm if >35 cmH₂O.",
+      kind: pip.P > 35 ? "alarm" : "primary",
+    },
+  ];
+  if (plat) {
+    pressure.push({
+      tSec: plat.t, value: plat.P, label: "P-plat",
+      description: "Plateau pressure — static recoil pressure of the lung at end-inspiration when flow is zero. Reflects elastic loading only. Target ≤30 cmH₂O in ARDS.",
+      kind: plat.P > 30 ? "alarm" : "primary",
+    });
+  }
+  pressure.push({
+    tSec: lastSample.t, value: peepValue, label: "PEEP",
+    description: "Positive end-expiratory pressure — pressure maintained at end of expiration to prevent alveolar collapse.",
+    kind: "secondary",
+  });
+  const flow = [
+    {
+      tSec: peakInsp.t, value: peakInsp.F, label: "Peak insp",
+      description: "Peak inspiratory flow rate. In VC this equals the set flow (square wave). In PC/PS it's highest at start of inspiration and decelerates.",
+      kind: "primary",
+    },
+    {
+      tSec: peakExp.t, value: peakExp.F, label: "Peak exp",
+      description: "Peak expiratory flow rate (most negative). Driven by elastic recoil; magnitude depends on tidal volume and time constant.",
+      kind: "primary",
+    },
+  ];
+  if (hasAutoPEEP) {
+    flow.push({
+      tSec: lastSample.t, value: lastSample.F, label: "Flow ≠ 0",
+      description: "End-expiratory flow has not returned to zero — incomplete exhalation suggests auto-PEEP / gas trapping. Common in COPD or with insufficient expiratory time.",
+      kind: "alarm",
+    });
+  }
+  const volume = [
+    {
+      tSec: vtPeak.t, value: vtPeak.V, label: "Vt",
+      description: "Tidal volume — peak volume delivered each breath. Target 6 mL/kg ideal body weight in ARDS for lung-protective ventilation.",
+      kind: "primary",
+    },
+  ];
+  return { pressure, flow, volume };
+}
+// Renders the current frame of all three plots as a single composite PNG.
+// Uses 2× DPR scaling for retina-quality output.
+function exportWaveformsToPng({ bufferRef, sweepRef, theme, mode, windowSec, Pmax, Fabs, Vmax, settings, measurements }) {
+  const SCALE = 2;
+  const W = 720, plotH = 170; // taller than live plots to give annotations breathing room
+  const headerH = 60, footerH = 80;
+  const totalH = headerH + plotH * 3 + footerH;
+  const canvas = document.createElement("canvas");
+  canvas.width = W * SCALE;
+  canvas.height = totalH * SCALE;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(SCALE, SCALE);
+  // Background
+  ctx.fillStyle = theme.surface;
+  ctx.fillRect(0, 0, W, totalH);
+  // Header text
+  ctx.fillStyle = theme.text;
+  ctx.font = "bold 14px ui-serif, Georgia, serif";
+  ctx.textAlign = "left";
+  ctx.fillText("Ventilator Waveforms", 16, 24);
+  ctx.fillStyle = theme.textMuted;
+  ctx.font = "10px ui-monospace, monospace";
+  const stamp = new Date().toLocaleString();
+  ctx.fillText(`Mode: ${mode} · ${stamp}`, 16, 42);
+  ctx.textAlign = "right";
+  if (measurements) {
+    ctx.fillText(
+      `PIP ${measurements.PIP?.toFixed(0) ?? "—"} · Vt ${measurements.VtExp?.toFixed(0) ?? "—"} mL · MV ${measurements.MV?.toFixed(1) ?? "—"} L/min`,
+      W - 16, 42
+    );
+  }
+  // Detect features for Style A annotations
+  const features = detectWaveformFeatures(bufferRef, mode, settings || {});
+  // Draw each plot
+  const channels = [
+    { ch: "P", color: theme.pressure, label: "PRESSURE  cmH₂O", yMin: 0, yMax: Pmax, anns: features.pressure },
+    { ch: "F", color: theme.flow, label: "FLOW  L/min", yMin: -Fabs, yMax: Fabs, anns: features.flow },
+    { ch: "V", color: theme.volume, label: "VOLUME  mL", yMin: 0, yMax: Vmax, anns: features.volume },
+  ];
+  channels.forEach((cfg, i) => {
+    const yOffset = headerH + i * plotH;
+    drawPlotFrame(ctx, {
+      x: 0, y: yOffset, W, H: plotH,
+      bufferRef, sweepRef,
+      channel: cfg.ch, color: cfg.color, yLabel: cfg.label,
+      yMin: cfg.yMin, yMax: cfg.yMax,
+      theme, windowSec,
+      annotations: cfg.anns,
+    });
+  });
+  // Footer with settings summary
+  const footerY = headerH + plotH * 3 + 18;
+  ctx.fillStyle = theme.textFaint;
+  ctx.font = "9px ui-monospace, monospace";
+  ctx.textAlign = "left";
+  if (settings) {
+    const lines = [
+      mode === "APRV"
+        ? `P-high ${settings.aprvPhigh} · P-low ${settings.aprvPlow} · T-high ${settings.aprvThigh}s · T-low ${settings.aprvTlow}s`
+        : `Vt ${settings.Vt} mL · RR ${settings.RR} · I-time ${settings.ITime}s · PEEP ${settings.PEEP} · PIP ${settings.PIP}`,
+      `Compliance ${settings.C} L/cmH₂O · Resistance ${settings.R} cmH₂O/L/s · ${settings.pathology !== "none" ? `Scenario: ${settings.pathology}` : "Normal mechanics"}`,
+      "Educational use — single-compartment lung model",
+    ];
+    lines.forEach((line, i) => {
+      ctx.fillText(line, 16, footerY + i * 14);
+    });
+  }
+  // Trigger download
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const filename = `vent-waveform-${mode}-${Date.now()}.png`;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, "image/png");
+}
+// Pure drawing function — used by both export and (eventually) live plots.
+// If `annotations` is passed, renders Style A inline tick labels.
+function drawPlotFrame(ctx, { x, y, W, H, bufferRef, sweepRef, channel, color, yLabel, yMin, yMax, theme, windowSec, annotations }) {
+  const padL = 60, padR = 12, padT = 30, padB = 22;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const xCoord = (t) => x + padL + (t / windowSec) * innerW;
+  const yCoord = (v) => y + padT + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+  // Background
+  ctx.fillStyle = theme.surface;
+  ctx.fillRect(x, y, W, H);
+  // Grid
+  ctx.strokeStyle = theme.grid;
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const yy = y + padT + (innerH * i) / 4;
+    ctx.beginPath(); ctx.moveTo(x + padL, yy); ctx.lineTo(x + W - padR, yy); ctx.stroke();
+  }
+  const xTicks = Math.floor(windowSec);
+  for (let i = 0; i <= xTicks; i++) {
+    const xx = x + padL + (innerW * i) / xTicks;
+    ctx.beginPath(); ctx.moveTo(xx, y + padT); ctx.lineTo(xx, y + H - padB); ctx.stroke();
+  }
+  // Zero line
+  if (yMin < 0 && yMax > 0) {
+    const zy = yCoord(0);
+    ctx.strokeStyle = theme.zeroLine;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x + padL, zy); ctx.lineTo(x + W - padR, zy); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // Y tick labels
+  ctx.fillStyle = theme.tickText;
+  ctx.font = "9px ui-monospace, monospace";
+  ctx.textAlign = "end";
+  for (let i = 0; i <= 4; i++) {
+    const v = yMin + ((yMax - yMin) * (4 - i)) / 4;
+    const yy = y + padT + (innerH * i) / 4;
+    ctx.fillText(Math.round(v), x + padL - 6, yy + 3);
+  }
+  ctx.textAlign = "center";
+  for (let i = 0; i <= xTicks; i++) {
+    const xx = x + padL + (innerW * i) / xTicks;
+    ctx.fillText(`${i}s`, xx, y + H - 6);
+  }
+  // Channel label
+  ctx.fillStyle = color;
+  ctx.font = "bold 10px ui-monospace, monospace";
+  ctx.textAlign = "left";
+  ctx.fillText(yLabel, x + padL, y + 18);
+  // Trace
+  const tBuf = bufferRef.current.t;
+  const series = bufferRef.current[channel];
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.6;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  let started = false;
+  let prevX = -1;
+  for (let i = 0; i < tBuf.length; i++) {
+    const tv = tBuf[i];
+    if (tv === null || tv === undefined || isNaN(tv)) continue;
+    const xx = xCoord(tv);
+    const yy = yCoord(series[i]);
+    if (started && xx < prevX - 5) {
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(xx, yy);
+    } else if (!started) {
+      ctx.moveTo(xx, yy);
+      started = true;
+    } else {
+      ctx.lineTo(xx, yy);
+    }
+    prevX = xx;
+  }
+  ctx.stroke();
+  // ---- Style A annotations ----
+  // Place each annotation with leader line + label box, stacked vertically
+  // to prevent overlap. Layout strategy:
+  //   - Anchor dot at (xCoord(tSec), yCoord(value))
+  //   - Label sits to the right of anchor by default; flips left if no room
+  //   - If multiple labels would collide vertically, stack with min 14px spacing
+  if (annotations && annotations.length > 0) {
+    const labelH = 13;
+    const labelGap = 3; // gap between stacked labels
+    // Sort by y-coordinate so we stack from top to bottom predictably
+    const sorted = [...annotations]
+      .map(a => ({ ...a, _x: xCoord(a.tSec), _y: yCoord(a.value) }))
+      .sort((a, b) => a._y - b._y);
+    const placed = []; // tracks { left, top, right, bottom } of placed labels
+    for (const a of sorted) {
+      // Format the value
+      const valStr = typeof a.value === "number"
+        ? (Math.abs(a.value) >= 100 ? a.value.toFixed(0) : a.value.toFixed(1))
+        : String(a.value);
+      const text = `${a.label} ${valStr}`;
+      ctx.font = "bold 9px ui-monospace, monospace";
+      const textW = ctx.measureText(text).width;
+      const boxW = textW + 10;
+      // Default placement: to the right of anchor, leader line ~30px long
+      let labelX = a._x + 30;
+      let labelY = a._y - labelH / 2;
+      // Constrain to plot bounds (with margin)
+      const minX = x + padL + 4;
+      const maxX = x + W - padR - boxW - 4;
+      const minY = y + padT + 2;
+      const maxY = y + H - padB - labelH - 2;
+      // Flip to left side if would overflow right
+      if (labelX > maxX) {
+        labelX = a._x - 30 - boxW;
+      }
+      labelX = Math.max(minX, Math.min(maxX, labelX));
+      labelY = Math.max(minY, Math.min(maxY, labelY));
+      // Resolve vertical collision with previously placed labels
+      let tries = 0;
+      while (tries < 20) {
+        const collision = placed.find(p =>
+          labelX < p.right && labelX + boxW > p.left &&
+          labelY < p.bottom && labelY + labelH > p.top
+        );
+        if (!collision) break;
+        labelY = collision.bottom + labelGap;
+        if (labelY > maxY) {
+          // Couldn't fit below, try above the colliding label instead
+          labelY = collision.top - labelH - labelGap;
+          if (labelY < minY) {
+            labelY = minY; // give up — slight overlap better than off-screen
+            break;
+          }
+        }
+        tries++;
+      }
+      placed.push({
+        left: labelX, top: labelY,
+        right: labelX + boxW, bottom: labelY + labelH,
+      });
+      // Determine label color based on kind
+      const labelColor = a.kind === "alarm" ? "#ef4444" : color;
+      // Draw leader line: from anchor to label box
+      ctx.strokeStyle = labelColor;
+      ctx.lineWidth = 0.6;
+      ctx.globalAlpha = 0.7;
+      ctx.setLineDash([2, 2]);
+      ctx.beginPath();
+      ctx.moveTo(a._x, a._y);
+      // Leader goes horizontally first, then vertically to label
+      const leadEndX = labelX < a._x ? labelX + boxW : labelX;
+      const labelMidY = labelY + labelH / 2;
+      ctx.lineTo(leadEndX, labelMidY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      // Anchor dot
+      ctx.fillStyle = labelColor;
+      ctx.beginPath();
+      ctx.arc(a._x, a._y, 2.5, 0, 2 * Math.PI);
+      ctx.fill();
+      // Label box
+      ctx.fillStyle = theme.surface;
+      ctx.strokeStyle = labelColor;
+      ctx.lineWidth = 0.8;
+      ctx.fillRect(labelX, labelY, boxW, labelH);
+      ctx.strokeRect(labelX, labelY, boxW, labelH);
+      // Label text
+      ctx.fillStyle = labelColor;
+      ctx.font = "bold 9px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText(text, labelX + 5, labelY + 9);
+    }
+  }
+}
+// ---------- Share / URL state ----------
+// Settings are encoded into URL query params for shareable presets.
+// Format: ?m=PC&Vt=400&rr=18&...  (short keys to keep URL compact)
+const SHARE_KEYS = {
+  m: "mode", Vt: "Vt", rr: "RR", it: "ITime", peep: "PEEP", pip: "PIP",
+  c: "C", r: "R", rt: "riseTime", fcp: "flowCyclePct", ts: "trigSens",
+  tt: "triggerType", fio2: "FiO2", path: "pathology",
+  ph: "aprvPhigh", pl: "aprvPlow", th: "aprvThigh", tl: "aprvTlow",
+  asp: "aprvSpontEnabled", th_: "themeName",
+};
+function encodeStateToUrl(state) {
+  const params = new URLSearchParams();
+  for (const [shortKey, longKey] of Object.entries(SHARE_KEYS)) {
+    const v = state[longKey];
+    if (v === undefined || v === null) continue;
+    if (typeof v === "boolean") params.set(shortKey, v ? "1" : "0");
+    else params.set(shortKey, String(v));
+  }
+  return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+}
+function decodeStateFromUrl() {
+  if (typeof window === "undefined") return {};
+  const params = new URLSearchParams(window.location.search);
+  const out = {};
+  for (const [shortKey, longKey] of Object.entries(SHARE_KEYS)) {
+    if (!params.has(shortKey)) continue;
+    const raw = params.get(shortKey);
+    // Type-aware parsing
+    if (["mode", "triggerType", "pathology", "themeName"].includes(longKey)) {
+      out[longKey] = raw;
+    } else if (longKey === "aprvSpontEnabled") {
+      out[longKey] = raw === "1";
+    } else {
+      const num = Number(raw);
+      if (!isNaN(num)) out[longKey] = num;
+    }
+  }
+  return out;
+}
+function VentilatorWaveforms() {
+  // ---- Read shared state from URL on mount ----
+  const urlState = decodeStateFromUrl();
+  // ---- Vent settings ----
+  const [mode, setMode] = useState(urlState.mode ?? "VC");
+  const [Vt, setVt] = useState(urlState.Vt ?? 450);
+  const [RR, setRR] = useState(urlState.RR ?? 16);
+  const [ITime, setITime] = useState(urlState.ITime ?? 1.0);
+  const [PEEP, setPEEP] = useState(urlState.PEEP ?? 5);
+  const [PIP, setPIP] = useState(urlState.PIP ?? 20);
+  const [C, setC] = useState(urlState.C ?? 0.05);
+  const [R, setR] = useState(urlState.R ?? 10);
+  const [riseTime, setRiseTime] = useState(urlState.riseTime ?? 0.1);
+  const [flowCyclePct, setFlowCyclePct] = useState(urlState.flowCyclePct ?? 25);
+  const [trigSens, setTrigSens] = useState(urlState.trigSens ?? 2);
+  const [triggerType, setTriggerType] = useState(urlState.triggerType ?? "pressure");
+  const [FiO2, setFiO2] = useState(urlState.FiO2 ?? 40);
+  // APRV-specific settings
+  const [aprvPhigh, setAprvPhigh] = useState(urlState.aprvPhigh ?? 28);
+  const [aprvPlow, setAprvPlow] = useState(urlState.aprvPlow ?? 5);
+  const [aprvThigh, setAprvThigh] = useState(urlState.aprvThigh ?? 4.5);
+  const [aprvTlow, setAprvTlow] = useState(urlState.aprvTlow ?? 0.6);
+  const [aprvSpontEnabled, setAprvSpontEnabled] = useState(urlState.aprvSpontEnabled ?? true);
+  const [pathology, setPathology] = useState(urlState.pathology ?? "none");
+  const [themeName, setThemeName] = useState(urlState.themeName ?? "dark");
+  const theme = THEMES[themeName];
+  // ---- Hold state ----
+  const [holdMode, setHoldMode] = useState(null); // "insp" | "exp" | null
+  const [holdResult, setHoldResult] = useState(null); // { type, value, label }
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  pausedRef.current = paused;
+  // Crosshair: when paused, hovering the plots shows a vertical guide with values.
+  // Stored in a ref so we don't re-render on every mouse move.
+  const crosshairRef = useRef(null);
+  const handleCrosshairMove = (tSec) => {
+    if (!pausedRef.current) return;
+    crosshairRef.current = { tSec };
+  };
+  const handleCrosshairLeave = () => {
+    crosshairRef.current = null;
+  };
+  // ---- Display ranges ----
+  // APRV produces large peak flows (full P-high to P-low release) and large
+  // volumes (no Vt setpoint — depends on P-high × C), so axes need to scale up.
+  const Pmax = mode === "APRV"
+    ? Math.max(45, aprvPhigh + 8)
+    : Math.max(45, PIP + 8);
+  const Fabs = mode === "APRV"
+    ? Math.max(150, ((aprvPhigh - aprvPlow) / Math.max(5, R)) * 60 * 1.3)
+    : 80;
+  const Vmax = mode === "APRV"
+    ? Math.max(1500, Math.ceil(aprvPhigh * C * 1000 * 1.2))
+    : Math.max(700, Vt + 150);
+  const windowSec = 6; // visible time window in seconds (sweeping)
+  // ---- Refs that the animation loop reads (avoid restart on every change) ----
+  const settingsRef = useRef({});
+  settingsRef.current = { mode, Vt, RR, ITime, PEEP, PIP, C, R, riseTime, flowCyclePct, trigSens, triggerType, pathology, aprvPhigh, aprvPlow, aprvThigh, aprvTlow, aprvSpontEnabled };
+  const holdRef = useRef({ mode: null, startedAt: null });
+  // Circular sample buffer
+  const N = useRef(Math.ceil(windowSec / 0.01)); // 600 samples
+  const bufferRef = useRef({
+    t: new Array(N.current).fill(null),
+    P: new Array(N.current).fill(0),
+    F: new Array(N.current).fill(0),
+    V: new Array(N.current).fill(0),
+  });
+  const sweepRef = useRef(0); // current head time within window [0, windowSec)
+  const writeIdxRef = useRef(0);
+  // Sim state — persists across frames
+  const simRef = useRef({
+    cycleT: 0,        // time within current breath cycle
+    cycleStart: 0,    // wall time of current cycle start
+    volume: 0,        // current lung volume (L)
+    aprvPhase: 0,     // for APRV
+    simvBreathInCycle: 0,
+    simvT: 0,
+    expStartV: 0,     // volume at start of expiration (for analytic decay)
+    psInspActive: false, // PS state machine
+    psExpStartT: 0,
+    // Per-breath accumulators (reset at each cycle start)
+    breathPmax: -Infinity,
+    breathPmin: Infinity,
+    breathPsum: 0,
+    breathPsamples: 0,
+    breathFmax: -Infinity,
+    breathFmin: Infinity,
+    breathVmax: 0,
+    breathEndInspP: 0,
+    breathEndInspV: 0,
+    lastCycleStart: 0,
+    measuredRRavg: 0,
+  });
+  // Live measurements shown in the panel — updated once per breath
+  const [measurements, setMeasurements] = useState({
+    PIP: 0, Pmean: 0, Pplat: null, Cdyn: 0, Cstat: null, Raw: null,
+    VtExp: 0, MV: 0, peakInspFlow: 0, peakExpFlow: 0,
+    measuredRR: 0, IE: "1:2",
+  });
+  const measurementsRef = useRef(measurements); // for hold maneuvers
+  // Trends — last 30 breaths of key values
+  const TRENDS_LEN = 30;
+  const [trends, setTrends] = useState({
+    PIP: new Array(TRENDS_LEN).fill(null),
+    VtExp: new Array(TRENDS_LEN).fill(null),
+    Cdyn: new Array(TRENDS_LEN).fill(null),
+    Pmean: new Array(TRENDS_LEN).fill(null),
+  });
+  const trendsRef = useRef(trends);
+  // ---- Animation loop ----
+  useEffect(() => {
+    let raf;
+    let last = performance.now();
+    const dt = 0.01; // 10 ms per simulation sample
+    let acc = 0;
+    const step = (now) => {
+      const elapsed = (now - last) / 1000;
+      last = now;
+      acc += elapsed;
+      if (acc > 0.25) acc = 0.25;
+      // When paused, drain the accumulator without advancing simulation —
+      // canvas keeps painting its current state, so the trace freezes.
+      if (pausedRef.current) {
+        acc = 0;
+      } else {
+        while (acc >= dt) {
+          acc -= dt;
+          advanceOneSample(dt);
+        }
+      }
+      raf = requestAnimationFrame(step);
+    };
+    const advanceOneSample = (dt) => {
+      const s = settingsRef.current;
+      const sim = simRef.current;
+      const hold = holdRef.current;
+      const cycle = 60 / s.RR;
+      // Pathology mechanics
+      const { Ceff, Reff } = applyPathologyMechanics(s.C, s.R, s.pathology);
+      sim.cycleT += dt;
+      const inInsp = sim.cycleT <= s.ITime;
+      let pressure = s.PEEP;
+      let flow = 0;
+      // ---- HOLD MANEUVERS ----
+      // A hold has two phases: "pending" (waiting for the right cycle moment)
+      // and "active" (actually holding flow at zero). This matches real ventilators
+      // which queue the hold until the next end-inspiration / end-expiration.
+      if (hold.mode === "insp" && hold.pending) {
+        // Engage at end of next inspiration
+        if (sim.cycleT >= s.ITime - dt && sim.cycleT <= s.ITime + dt) {
+          hold.pending = false;
+        }
+      }
+      if (hold.mode === "exp" && hold.pending) {
+        // Engage at end of next expiration (= next cycle wrap)
+        if (sim.cycleT >= cycle - dt) {
+          hold.pending = false;
+        }
+      }
+      if (hold.mode === "insp" && !hold.pending) {
+        // Active inspiratory hold: zero flow, pressure equilibrates to V/C + PEEP
+        flow = 0;
+        pressure = sim.volume / Ceff + s.PEEP;
+        if (!hold.captured) {
+          hold.captured = true;
+          hold.value = pressure;
+        }
+      } else if (hold.mode === "exp" && !hold.pending) {
+        // Active expiratory hold: zero flow, pressure reveals total PEEP.
+        // Auto-PEEP arises naturally from whatever volume remains in the lung
+        // at the moment the hold was triggered (gas trapping in COPD,
+        // truncated exhalation in auto-PEEP scenarios). NO magic number needed.
+        flow = 0;
+        pressure = sim.volume / Ceff + s.PEEP;
+        if (!hold.captured) {
+          hold.captured = true;
+          hold.value = pressure;
+        }
+      } else if (hold.mode && hold.pending) {
+        // Pending phase — let normal operation continue until trigger moment
+        const stepper = MODE_STEPPERS[s.mode];
+        if (stepper) {
+          const result = stepper(s, sim, dt, Ceff, Reff);
+          pressure = result.pressure;
+          flow = result.flow;
+          const overlaid = applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff);
+          pressure = overlaid.pressure;
+          flow = overlaid.flow;
+        }
+      } else {
+        // ---- NORMAL OPERATION ----
+        const stepper = MODE_STEPPERS[s.mode];
+        if (stepper) {
+          const result = stepper(s, sim, dt, Ceff, Reff);
+          pressure = result.pressure;
+          flow = result.flow;
+          // Apply pathology overlays after the mode step
+          const overlaid = applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff);
+          pressure = overlaid.pressure;
+          flow = overlaid.flow;
+        }
+        // Cycle wrap (skip for APRV which uses its own phase)
+        if (s.mode !== "APRV" && s.mode !== "SIMV-VC" && s.mode !== "SIMV-PC") {
+          if (sim.cycleT >= cycle) {
+            // ---- Publish per-breath measurements ----
+            const PIP = sim.breathPmax;
+            const Pmean = sim.breathPsamples > 0 ? sim.breathPsum / sim.breathPsamples : s.PEEP;
+            const VtExp = sim.breathVmax * 1000; // mL
+            const MV = (VtExp / 1000) * s.RR;     // L/min
+            const peakInsp = sim.breathFmax;      // L/min
+            const peakExp = sim.breathFmin;       // L/min (negative)
+            const driveP = Math.max(0.1, PIP - s.PEEP);
+            const Cdyn = VtExp / driveP;          // mL/cmH2O
+            // End-inspiratory pressure (snapshot at end of insp) ≈ Pplat estimate
+            // when flow is near zero. Most accurate for PC/PRVC where flow decelerates to ~0.
+            const flowNearZeroAtEndInsp = Math.abs(sim.breathFmin) > 0; // we have a cycle
+            const PplatEst = sim.breathEndInspP;
+            const RawEst = peakInsp > 0 ? (PIP - PplatEst) / (peakInsp / 60) : null; // cmH2O/L/s
+            // I:E ratio
+            const eTime = cycle - s.ITime;
+            const ieRatio = `1:${(eTime / s.ITime).toFixed(1)}`;
+            // measured RR (running EMA from cycle period)
+            const measRR = sim.lastCycleStart > 0 ? 60 / cycle : s.RR;
+            sim.measuredRRavg = sim.measuredRRavg === 0 ? measRR : sim.measuredRRavg * 0.7 + measRR * 0.3;
+            const next = {
+              PIP, Pmean, Pplat: PplatEst, Cdyn, Cstat: null, Raw: RawEst,
+              VtExp, MV, peakInspFlow: peakInsp, peakExpFlow: peakExp,
+              measuredRR: sim.measuredRRavg, IE: ieRatio,
+            };
+            measurementsRef.current = next;
+            setMeasurements(next);
+            // Push to trends (FIFO, drop oldest)
+            const tr = trendsRef.current;
+            const newTrends = {
+              PIP: [...tr.PIP.slice(1), PIP],
+              VtExp: [...tr.VtExp.slice(1), VtExp],
+              Cdyn: [...tr.Cdyn.slice(1), Cdyn],
+              Pmean: [...tr.Pmean.slice(1), Pmean],
+            };
+            trendsRef.current = newTrends;
+            setTrends(newTrends);
+            // Reset accumulators for next breath
+            sim.breathPmax = -Infinity;
+            sim.breathPmin = Infinity;
+            sim.breathPsum = 0;
+            sim.breathPsamples = 0;
+            sim.breathFmax = -Infinity;
+            sim.breathFmin = Infinity;
+            sim.breathVmax = 0;
+            sim.breathEndInspP = 0;
+            sim.lastCycleStart = sim.cycleT;
+            sim.cycleT = 0;
+          }
+        }
+        if ((s.mode === "SIMV-VC" || s.mode === "SIMV-PC") && sim.simvT < dt) {
+          sim.cycleT = 0;
+        }
+      }
+      // ---- Per-sample accumulation for live measurements ----
+      if (pressure > sim.breathPmax) sim.breathPmax = pressure;
+      if (pressure < sim.breathPmin) sim.breathPmin = pressure;
+      sim.breathPsum += pressure;
+      sim.breathPsamples += 1;
+      const flowLpm = flow * 60;
+      if (flowLpm > sim.breathFmax) sim.breathFmax = flowLpm;
+      if (flowLpm < sim.breathFmin) sim.breathFmin = flowLpm;
+      const volMl = sim.volume * 1000;
+      if (volMl > sim.breathVmax) sim.breathVmax = volMl / 1000; // store in L for consistency
+      // Snapshot end-inspiratory pressure (sample just past ITime)
+      const sNow = settingsRef.current;
+      if (sNow.mode !== "APRV" && Math.abs(sim.cycleT - sNow.ITime) < 0.015) {
+        sim.breathEndInspP = pressure;
+      }
+      // ---- Write to circular buffer ----
+      sweepRef.current += dt;
+      if (sweepRef.current >= windowSec) sweepRef.current = 0;
+      const idx = writeIdxRef.current;
+      const buf = bufferRef.current;
+      buf.t[idx] = sweepRef.current;
+      buf.P[idx] = pressure;
+      buf.F[idx] = flow * 60;     // L/min
+      buf.V[idx] = sim.volume * 1000; // mL
+      writeIdxRef.current = (idx + 1) % N.current;
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  // ---- Reset buffer and sim state when mode or major settings change ----
+  // This prevents the visual "old mode bleeding in" artifact during the 6s
+  // it takes for new samples to overwrite the buffer.
+  useEffect(() => {
+    const buf = bufferRef.current;
+    for (let i = 0; i < N.current; i++) {
+      buf.t[i] = null;
+      buf.P[i] = 0;
+      buf.F[i] = 0;
+      buf.V[i] = 0;
+    }
+    sweepRef.current = 0;
+    writeIdxRef.current = 0;
+    // Reset sim cycle state so we don't carry mid-breath state across modes
+    const sim = simRef.current;
+    sim.cycleT = 0;
+    sim.simvT = 0;
+    sim.aprvPhase = 0;
+    sim.volume = 0;
+    sim.expStartV = 0;
+    sim.psInspActive = false;
+    sim.psExpStartT = 0;
+    sim.breathPmax = -Infinity;
+    sim.breathPmin = Infinity;
+    sim.breathPsum = 0;
+    sim.breathPsamples = 0;
+    sim.breathFmax = -Infinity;
+    sim.breathFmin = Infinity;
+    sim.breathVmax = 0;
+    sim.breathEndInspP = 0;
+    // Clear trends so old-mode values don't bleed into the new mode's trend graph
+    const blank = {
+      PIP: new Array(TRENDS_LEN).fill(null),
+      VtExp: new Array(TRENDS_LEN).fill(null),
+      Cdyn: new Array(TRENDS_LEN).fill(null),
+      Pmean: new Array(TRENDS_LEN).fill(null),
+    };
+    trendsRef.current = blank;
+    setTrends(blank);
+  }, [mode]);
+  // ---- Hold maneuver triggers ----
+  // ---- Share handler ----
+  // Encodes current settings into URL, copies to clipboard, shows confirmation.
+  const [shareCopied, setShareCopied] = useState(false);
+  const handleShare = async () => {
+    const url = encodeStateToUrl({
+      mode, Vt, RR, ITime, PEEP, PIP, C, R, riseTime, flowCyclePct, trigSens,
+      triggerType, FiO2, pathology,
+      aprvPhigh, aprvPlow, aprvThigh, aprvTlow, aprvSpontEnabled,
+      themeName,
+    });
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Fallback — show prompt if clipboard API unavailable
+      window.prompt("Copy this share link:", url);
+    }
+  };
+  const triggerHold = (which) => {
+    if (holdMode === which) {
+      holdRef.current = { mode: null, startedAt: null };
+      setHoldMode(null);
+      return;
+    }
+    holdRef.current = { mode: which, startedAt: performance.now(), captured: false, value: null, pending: true };
+    setHoldMode(which);
+    // Allow up to one full breath cycle for the hold to engage at the right
+    // moment (end-inspiration or end-expiration), then hold for HOLD_DURATION_SEC
+    const cycle = 60 / RR;
+    const totalHoldMs = (cycle + CONSTANTS.HOLD_DURATION_SEC) * 1000;
+    setTimeout(() => {
+      const captured = holdRef.current.value;
+      const label = which === "insp" ? "P-plat" : "Total PEEP";
+      setHoldResult({ type: which, value: captured, label });
+      // Update measurements panel with hold-derived values
+      if (captured !== null && captured !== undefined) {
+        const m = measurementsRef.current;
+        if (which === "insp") {
+          // Cstat = Vt / (Pplat - PEEP)
+          const Cstat = m.VtExp / Math.max(0.1, captured - PEEP);
+          // Refine Raw with true Pplat
+          const Raw = m.peakInspFlow > 0 ? (m.PIP - captured) / (m.peakInspFlow / 60) : null;
+          const next = { ...m, Pplat: captured, Cstat, Raw };
+          measurementsRef.current = next;
+          setMeasurements(next);
+        } else {
+          // exp hold reveals total PEEP — auto-PEEP component is captured separately
+          // Already shown in holdResult; no need to change panel
+        }
+      }
+      holdRef.current = { mode: null, startedAt: null };
+      setHoldMode(null);
+    }, totalHoldMs);
+  };
+  return (
+    <div className="min-h-screen w-full" style={{ background: theme.bg, fontFamily: "ui-serif, Georgia, serif", color: theme.text }}>
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        {/* Header */}
+        <header className="pb-4 mb-4 sm:pb-5 sm:mb-6 border-b" style={{ borderColor: theme.border }}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+            <div>
+              <div className="text-[10px] tracking-[0.3em] font-mono uppercase mb-1" style={{ color: theme.accentSoft }}>
+                Equation of Motion · Live
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight" style={{ color: theme.text }}>
+                Ventilator Waveform Engine
+              </h1>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <div className="hidden lg:block text-right text-[10px] font-mono leading-tight" style={{ color: theme.textMuted }}>
+                <span style={{ color: theme.accent }}>● LIVE</span> &nbsp; P<sub>aw</sub> = V/C + Flow·R + PEEP<br/>
+                <span style={{ color: theme.textFaint }}>
+                  {windowSec}s window · streaming
+                </span>
+              </div>
+              <button
+                onClick={handleShare}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: shareCopied ? theme.accent : "transparent",
+                  color: shareCopied ? theme.accentInk : theme.textMuted,
+                  borderColor: shareCopied ? theme.accent : theme.border,
+                }}
+                aria-label="Share current preset"
+              >
+                {shareCopied ? "✓ Copied" : "↗ Share"}
+              </button>
+              <button
+                onClick={() => exportWaveformsToPng({
+                  bufferRef, sweepRef, theme, mode, windowSec,
+                  Pmax, Fabs, Vmax,
+                  settings: settingsRef.current,
+                  measurements,
+                })}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: "transparent",
+                  color: theme.textMuted,
+                  borderColor: theme.border,
+                }}
+                aria-label="Export PNG"
+              >
+                ⬇ PNG
+              </button>
+              <button
+                onClick={() => setPaused(!paused)}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: paused ? theme.accent : "transparent",
+                  color: paused ? theme.accentInk : theme.textMuted,
+                  borderColor: paused ? theme.accent : theme.border,
+                }}
+                aria-label={paused ? "Resume" : "Pause"}
+              >
+                {paused ? "▶ Resume" : "⏸ Pause"}
+              </button>
+              <button
+                onClick={() => setThemeName(themeName === "dark" ? "light" : "dark")}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: "transparent",
+                  color: theme.textMuted,
+                  borderColor: theme.border,
+                }}
+                aria-label="Toggle theme"
+              >
+                {themeName === "dark" ? "☀ Light" : "☾ Dark"}
+              </button>
+            </div>
+          </div>
+        </header>
+        {/* Mode + Pathology selector */}
+        <div className="flex flex-wrap gap-3 mb-5 items-center">
+          <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
+            <span className="text-[10px] tracking-[0.2em] uppercase font-mono shrink-0" style={{ color: theme.textFaint }}>Mode</span>
+            <select
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+              className="px-3 py-1.5 text-xs font-mono border min-w-0 flex-1 sm:flex-initial"
+              style={{ background: theme.selectBg, color: theme.text, borderColor: theme.accent, maxWidth: "100%" }}
+            >
+              <optgroup label="Controlled">
+                <option value="VC">Volume Control (VC)</option>
+                <option value="PC">Pressure Control (PC)</option>
+                <option value="PRVC">Pressure-Regulated Volume Control (PRVC)</option>
+              </optgroup>
+              <optgroup label="Spontaneous / Mixed">
+                <option value="PS">Pressure Support (PS)</option>
+                <option value="SIMV-VC">SIMV (Volume Control)</option>
+                <option value="SIMV-PC">SIMV (Pressure Control)</option>
+                <option value="CPAP">CPAP</option>
+              </optgroup>
+              <optgroup label="Advanced">
+                <option value="APRV">APRV (Bi-level)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div className="flex-1" />
+          <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
+            <span className="text-[10px] tracking-[0.2em] uppercase font-mono shrink-0" style={{ color: theme.textFaint }}>Scenario</span>
+            <select
+              value={pathology}
+              onChange={(e) => setPathology(e.target.value)}
+              className="px-3 py-1.5 text-xs font-mono border min-w-0 flex-1 sm:flex-initial"
+              style={{ background: theme.selectBg, color: theme.text, borderColor: theme.border, maxWidth: "100%" }}
+            >
+              {PATHOLOGY_GROUPS.map((g) => (
+                <optgroup key={g.label} label={g.label}>
+                  {g.options.map((p) => (
+                    <option key={p.id} value={p.id}>{p.label}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+        </div>
+        {/* APRV-specific settings */}
+        {mode === "APRV" && (
+          <div className="mt-4 p-5 rounded-sm border-2" style={{ background: theme.surfaceAlt, borderColor: theme.accent }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.accent }}>
+                  APRV Settings
+                </span>
+                <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>
+                  Bi-level / Bi-vent
+                </span>
+              </div>
+              <button
+                onClick={() => setAprvSpontEnabled(!aprvSpontEnabled)}
+                className="px-3 py-1 text-[10px] font-mono tracking-widest uppercase border"
+                style={{
+                  background: aprvSpontEnabled ? theme.accent : "transparent",
+                  color: aprvSpontEnabled ? theme.accentInk : theme.textMuted,
+                  borderColor: aprvSpontEnabled ? theme.accent : theme.border,
+                }}
+              >
+                Spontaneous {aprvSpontEnabled ? "ON" : "OFF"}
+              </button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
+              <Slider label="P-high" unit="cmH₂O" value={aprvPhigh} min={15} max={40} step={1} onChange={setAprvPhigh} theme={theme} tooltipKey="aprvPhigh" />
+              <Slider label="P-low" unit="cmH₂O" value={aprvPlow} min={0} max={10} step={1} onChange={setAprvPlow} theme={theme} tooltipKey="aprvPlow" />
+              <Slider label="T-high" unit="s" value={aprvThigh} min={2.0} max={8.0} step={0.1} onChange={setAprvThigh} theme={theme} tooltipKey="aprvThigh" />
+              <Slider label="T-low" unit="s" value={aprvTlow} min={0.2} max={1.5} step={0.05} onChange={setAprvTlow} theme={theme} tooltipKey="aprvTlow" />
+            </div>
+            {/* Derived APRV metrics */}
+            <div className="mt-5 pt-4 border-t grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ borderColor: theme.border }}>
+              <div className="flex flex-col">
+                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Cycle</span>
+                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
+                  {(aprvThigh + aprvTlow).toFixed(2)} <span className="text-[9px]" style={{ color: theme.textFaint }}>s</span>
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Mand Freq</span>
+                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
+                  {(60 / (aprvThigh + aprvTlow)).toFixed(1)} <span className="text-[9px]" style={{ color: theme.textFaint }}>/min</span>
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>P-high : P-low</span>
+                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
+                  {aprvPhigh} : {aprvPlow}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>ΔP (release)</span>
+                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
+                  {aprvPhigh - aprvPlow} <span className="text-[9px]" style={{ color: theme.textFaint }}>cmH₂O</span>
+                </span>
+              </div>
+            </div>
+            {/* Teaching hint */}
+            <div className="mt-4 p-3 text-[10px] font-mono leading-relaxed" style={{ background: theme.surface, color: theme.textMuted, borderLeft: `2px solid ${theme.accent}` }}>
+              <span style={{ color: theme.accent, fontWeight: 700 }}>TIP</span> · T-low should terminate when expiratory flow reaches 50–75% of peak (prevents derecruitment). Watch the flow trace during release: T-low {aprvTlow.toFixed(2)}s = {(aprvTlow / (Math.max(0.001, R * C))).toFixed(1)}× time constant. Typical APRV uses 1 RC time constant (~0.5–0.75s).
+            </div>
+          </div>
+        )}
+        {/* Plots */}
+        <div className="rounded-sm overflow-hidden border relative" style={{ background: theme.surface, borderColor: theme.border }}>
+          {holdMode && (
+            <div className="absolute top-2 right-3 z-10 px-2 py-1 text-[10px] font-mono uppercase tracking-widest"
+                 style={{ background: theme.accent, color: theme.accentInk }}>
+              {holdMode === "insp" ? "▌ Inspiratory Hold" : "▌ Expiratory Hold"}
+            </div>
+          )}
+          {paused && !holdMode && (
+            <div className="absolute top-2 right-3 z-10 flex items-center gap-2 px-2 py-1 text-[10px] font-mono uppercase tracking-widest"
+                 style={{ background: theme.accent, color: theme.accentInk }}>
+              <span>⏸ Paused</span>
+              <span className="text-[8px] tracking-normal normal-case opacity-80">hover to inspect</span>
+            </div>
+          )}
+          <div className="border-b" style={{ borderColor: theme.border }}>
+            <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
+                          channel="P" color={theme.pressure}
+                          yLabel="PRESSURE  cmH₂O" yMin={0} yMax={Pmax} theme={theme} windowSec={windowSec}
+                          onHoverMove={paused ? handleCrosshairMove : null}
+                          onHoverLeave={paused ? handleCrosshairLeave : null} />
+          </div>
+          <div className="border-b" style={{ borderColor: theme.border }}>
+            <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
+                          channel="F" color={theme.flow}
+                          yLabel="FLOW  L/min" yMin={-Fabs} yMax={Fabs} theme={theme} windowSec={windowSec}
+                          onHoverMove={paused ? handleCrosshairMove : null}
+                          onHoverLeave={paused ? handleCrosshairLeave : null} />
+          </div>
+          <div>
+            <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
+                          channel="V" color={theme.volume}
+                          yLabel="VOLUME  mL" yMin={0} yMax={Vmax} theme={theme} windowSec={windowSec}
+                          onHoverMove={paused ? handleCrosshairMove : null}
+                          onHoverLeave={paused ? handleCrosshairLeave : null} />
+          </div>
+        </div>
+        {/* Live measurements panel */}
+        <div className="mt-4 rounded-sm border overflow-hidden" style={{ background: theme.surface, borderColor: theme.border }}>
+          <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: theme.border, background: theme.surfaceAlt }}>
+            <div className="flex items-center gap-2">
+              <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: theme.accent, boxShadow: `0 0 8px ${theme.accent}` }} />
+              <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.text }}>
+                Measured Values
+              </span>
+              <span className="text-[9px] font-mono ml-2" style={{ color: theme.textFaint }}>
+                updates per breath
+              </span>
+            </div>
+            <span className="hidden sm:inline text-[9px] font-mono" style={{ color: theme.textFaint }}>
+              Set RR {RR}/min · Set Vt {Vt} mL · {mode}
+            </span>
+          </div>
+          {/* Pressure metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-2 p-3 border-b" style={{ borderColor: theme.border }}>
+            <Stat label="PIP" value={measurements.PIP} unit="cmH₂O" theme={theme} color={theme.pressure}
+                  alert={measurements.PIP > 35}
+                  hint={measurements.PIP > 35 ? "high" : null} />
+            <Stat label="P-plat" value={measurements.Pplat} unit="cmH₂O" theme={theme} color={theme.pressure}
+                  alert={measurements.Pplat > 30}
+                  hint={measurements.Pplat ? (measurements.Pplat > 30 ? "high" : "estimated") : "hold to measure"} />
+            <Stat label="Mean Paw" value={measurements.Pmean} unit="cmH₂O" theme={theme} color={theme.pressure} />
+            <Stat label="PEEP" value={PEEP} unit="cmH₂O" theme={theme} color={theme.pressure} hint="set" />
+            <Stat label="ΔP (driving)" value={measurements.Pplat ? measurements.Pplat - PEEP : measurements.PIP - PEEP} unit="cmH₂O" theme={theme} color={theme.pressure}
+                  alert={(measurements.Pplat ? measurements.Pplat - PEEP : measurements.PIP - PEEP) > 15}
+                  hint={!measurements.Pplat ? "from PIP" : null} />
+            <Stat label="I:E" value={measurements.IE} theme={theme} />
+          </div>
+          {/* Volume / flow metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-2 p-3 border-b" style={{ borderColor: theme.border }}>
+            <Stat label="Vt exp" value={measurements.VtExp} unit="mL" theme={theme} color={theme.volume} />
+            <Stat label="Min Vent" value={measurements.MV} unit="L/min" theme={theme} color={theme.volume} />
+            <Stat label="Peak Insp Flow" value={measurements.peakInspFlow} unit="L/min" theme={theme} color={theme.flow} />
+            <Stat label="Peak Exp Flow" value={Math.abs(measurements.peakExpFlow || 0)} unit="L/min" theme={theme} color={theme.flow} />
+            <Stat label="Meas RR" value={measurements.measuredRR} unit="/min" theme={theme} />
+            <Stat label="FiO₂" value={FiO2} unit="%" theme={theme} hint="set" />
+          </div>
+          {/* Compliance / resistance */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-x-2 gap-y-2 p-3">
+            <Stat label="Cdyn" value={measurements.Cdyn} unit="mL/cmH₂O" theme={theme} color={theme.accent}
+                  hint="dynamic" />
+            <Stat label="Cstat" value={measurements.Cstat} unit="mL/cmH₂O" theme={theme} color={theme.accent}
+                  hint={measurements.Cstat ? "from hold" : "insp hold to measure"} />
+            <Stat label="Raw" value={measurements.Raw} unit="cmH₂O/L/s" theme={theme} color={theme.accent}
+                  hint={measurements.Cstat ? "from hold" : "estimate"}
+                  alert={measurements.Raw > 20} />
+          </div>
+        </div>
+        {/* Trends panel — last N breaths */}
+        {(() => {
+          // Estimate time window from measured RR (fallback to set RR)
+          const effectiveRR = measurements.measuredRR > 0 ? measurements.measuredRR : RR;
+          const validBreaths = trends.PIP.filter(v => v !== null).length;
+          const trendWindowSec = validBreaths > 0 ? (validBreaths * 60) / effectiveRR : 0;
+          const windowLabel = trendWindowSec >= 60
+            ? `~${(trendWindowSec / 60).toFixed(1)} min`
+            : `~${trendWindowSec.toFixed(0)}s`;
+          return (
+            <div className="mt-4 rounded-sm border overflow-hidden" style={{ background: theme.surface, borderColor: theme.border }}>
+              <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: theme.border, background: theme.surfaceAlt }}>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.text }}>
+                    Trends
+                  </span>
+                  <span className="text-[9px] font-mono ml-2" style={{ color: theme.textFaint }}>
+                    last {validBreaths} of {TRENDS_LEN} breaths · {windowLabel}
+                  </span>
+                </div>
+                <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>
+                  auto-scaled
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3">
+                <Sparkline values={trends.PIP} label="PIP" unit="cmH₂O" color={theme.pressure} theme={theme} alertHigh={35} windowSec={trendWindowSec} />
+                <Sparkline values={trends.Pmean} label="Mean Paw" unit="cmH₂O" color={theme.pressure} theme={theme} windowSec={trendWindowSec} />
+                <Sparkline values={trends.VtExp} label="Vt exp" unit="mL" color={theme.volume} theme={theme} windowSec={trendWindowSec} />
+                <Sparkline values={trends.Cdyn} label="Cdyn" unit="mL/cmH₂O" color={theme.accent} theme={theme} windowSec={trendWindowSec} />
+              </div>
+            </div>
+          );
+        })()}
+        {/* Hold maneuver bar */}
+        <div className="flex flex-wrap items-center gap-3 mt-4 p-3 rounded-sm border"
+             style={{ background: theme.surfaceAlt, borderColor: theme.border }}>
+          <span className="text-[10px] tracking-[0.2em] uppercase font-mono" style={{ color: theme.textFaint }}>
+            Maneuvers
+          </span>
+          <button
+            onClick={() => triggerHold("insp")}
+            className="px-4 py-1.5 text-xs font-mono tracking-widest uppercase border transition-all"
+            style={{
+              background: holdMode === "insp" ? theme.accent : "transparent",
+              color: holdMode === "insp" ? theme.accentInk : theme.text,
+              borderColor: holdMode === "insp" ? theme.accent : theme.border,
+            }}
+          >
+            Inspiratory Hold
+          </button>
+          <button
+            onClick={() => triggerHold("exp")}
+            className="px-4 py-1.5 text-xs font-mono tracking-widest uppercase border transition-all"
+            style={{
+              background: holdMode === "exp" ? theme.accent : "transparent",
+              color: holdMode === "exp" ? theme.accentInk : theme.text,
+              borderColor: holdMode === "exp" ? theme.accent : theme.border,
+            }}
+          >
+            Expiratory Hold
+          </button>
+          {holdResult && (
+            <div className="text-xs font-mono ml-2 px-3 py-1.5" style={{ color: theme.text, background: theme.surface, border: `1px solid ${theme.border}` }}>
+              <span style={{ color: theme.textFaint }}>{holdResult.label}:</span>{" "}
+              <span style={{ color: theme.accent, fontWeight: 700 }}>
+                {holdResult.value !== null && holdResult.value !== undefined ? holdResult.value.toFixed(1) : "—"}
+              </span>{" "}
+              <span style={{ color: theme.textFaint }}>cmH₂O</span>
+              {holdResult.type === "insp" && holdResult.value !== null && (
+                <span style={{ color: theme.textFaint }}> · ΔP = {(holdResult.value - PEEP).toFixed(1)} · Cstat = {((Vt) / Math.max(0.1, holdResult.value - PEEP)).toFixed(1)} mL/cmH₂O</span>
+              )}
+              {holdResult.type === "exp" && holdResult.value !== null && (
+                <span style={{ color: theme.textFaint }}> · auto-PEEP = {(holdResult.value - PEEP).toFixed(1)}</span>
+              )}
+            </div>
+          )}
+          <div className="flex-1" />
+          <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>
+            Holds last 2s · auto-release
+          </span>
+        </div>
+        {/* Settings */}
+        <div className="mt-4 p-5 rounded-sm border" style={{ background: theme.surfaceAlt, borderColor: theme.border }}>
+          <div className="text-[10px] tracking-[0.2em] uppercase font-mono mb-3" style={{ color: theme.textFaint }}>
+            {mode === "APRV" ? "Other Settings" : "Vent Settings"}
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
+            {mode !== "APRV" && (
+              <>
+                <Slider label="Tidal Vol" unit="mL" value={Vt} min={200} max={800} step={10} onChange={setVt} theme={theme} tooltipKey="Vt" />
+                <Slider label="Resp Rate" unit="/min" value={RR} min={8} max={35} step={1} onChange={setRR} theme={theme} tooltipKey="RR" />
+                <Slider label="I-Time" unit="s" value={ITime} min={0.5} max={2.0} step={0.1} onChange={setITime} theme={theme} tooltipKey="ITime" />
+                <Slider label="PEEP" unit="cmH₂O" value={PEEP} min={0} max={20} step={1} onChange={setPEEP} theme={theme} tooltipKey="PEEP" />
+                <Slider label="PIP (PC/PS)" unit="cmH₂O" value={PIP} min={10} max={45} step={1} onChange={setPIP} theme={theme} tooltipKey="PIP" />
+                <Slider label="Rise Time" unit="s" value={riseTime} min={0.05} max={0.5} step={0.05} onChange={setRiseTime} theme={theme} tooltipKey="riseTime" />
+                <Slider label="Flow Cycle" unit="% peak" value={flowCyclePct} min={5} max={50} step={5} onChange={setFlowCyclePct} theme={theme} tooltipKey="flowCyclePct" />
+                <Slider label="Trig Sens" unit={triggerType === "pressure" ? "cmH₂O" : "L/min"} value={trigSens} min={0.5} max={10} step={0.5} onChange={setTrigSens} theme={theme} tooltipKey="trigSens" />
+              </>
+            )}
+          </div>
+          {/* Trigger type selector */}
+          {mode !== "APRV" && (
+            <div className="flex flex-wrap items-center gap-3 mt-5 pt-4 border-t" style={{ borderColor: theme.border }}>
+              <span className="text-[10px] tracking-[0.2em] uppercase font-mono" style={{ color: theme.textFaint }}>
+                Trigger Type
+              </span>
+              {[
+                { id: "pressure", label: "Pressure", hint: "−1 to −2 cmH₂O" },
+                { id: "flow", label: "Flow", hint: "1–10 L/min" },
+                { id: "autotrack", label: "Auto-Trak", hint: "Shape-recognition" },
+              ].map((t) => {
+                const active = triggerType === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setTriggerType(t.id)}
+                    className="px-3 py-1.5 text-xs font-mono tracking-widest uppercase border transition-all flex flex-col items-start"
+                    style={{
+                      background: active ? theme.accent : "transparent",
+                      color: active ? theme.accentInk : theme.text,
+                      borderColor: active ? theme.accent : theme.border,
+                    }}
+                  >
+                    <span>{t.label}</span>
+                    <span className="text-[8px] tracking-normal normal-case mt-0.5"
+                          style={{ color: active ? theme.accentInk : theme.textFaint, opacity: 0.85 }}>
+                      {t.hint}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <div className="text-[10px] tracking-[0.2em] uppercase font-mono mt-6 mb-3" style={{ color: theme.textFaint }}>
+            Other
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
+            <Slider label="FiO₂" unit="%" value={FiO2} min={21} max={100} step={1} onChange={setFiO2} theme={theme} tooltipKey="FiO2" />
+          </div>
+        </div>
+        {/* Patient Mechanics — separate card, different visual treatment */}
+        <div className="mt-4 p-5 rounded-sm border-l-4" style={{ background: theme.surface, borderColor: theme.border, borderLeftColor: theme.flow }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.flow }}>
+                Patient Mechanics
+              </span>
+              <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>
+                simulated lung — not vent controls
+              </span>
+            </div>
+            <span className="text-[9px] font-mono tabular-nums" style={{ color: theme.textFaint }}>
+              τ = R·C = {(C * R).toFixed(2)}s
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
+            <Slider label="Compliance" unit="L/cmH₂O" value={C} min={0.015} max={0.10} step={0.005} onChange={setC} theme={theme} tooltipKey="C" />
+            <Slider label="Resistance" unit="cmH₂O/L/s" value={R} min={5} max={30} step={1} onChange={setR} theme={theme} tooltipKey="R" />
+          </div>
+        </div>
+        {/* Footer */}
+        <div className="mt-6 text-[11px] font-mono leading-relaxed pt-4 border-t"
+             style={{ color: theme.textFaint, borderColor: theme.border }}>
+          <span style={{ color: theme.accentSoft }}>NOTE</span> · Educational use. Single-compartment lung model rendered in real time. Inspiratory hold measures plateau pressure for static compliance; expiratory hold measures total PEEP to detect intrinsic PEEP (auto-PEEP).
+        </div>
+      </div>
+    </div>
+  );
+}
+    // Mount
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      React.createElement(VentilatorWaveforms)
+    );
+  </script>
+</body>
+</html>
