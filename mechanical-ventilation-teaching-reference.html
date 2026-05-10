@@ -3230,12 +3230,12 @@
         <!-- CENTER-RIGHT: Equation of motion (synthesis) -->
         <rect x="470" y="120" width="190" height="60" rx="6" fill="#dcfce7" stroke="#5da169"/>
         <text x="565" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#1d5a2c">Equation of motion</text>
-        <text x="565" y="164" text-anchor="middle" font-size="10" fill="#1d5a2c">P_aw = V/C + V̇·R + PEEP</text>
+        <text x="565" y="164" text-anchor="middle" font-size="10" fill="#1d5a2c">P<tspan dy="2" font-size="7">aw</tspan><tspan dy="-2"> = V/C + V̇·R + PEEP</tspan></text>
 
         <!-- FAR RIGHT: Vent settings (the four levers) -->
         <rect x="700" y="115" width="86" height="70" rx="6" fill="#dbeafe" stroke="#7b9fd1"/>
         <text x="743" y="138" text-anchor="middle" font-size="12" font-weight="600" fill="#1e3a8a">Vent settings</text>
-        <text x="743" y="156" text-anchor="middle" font-size="10" fill="#1e3a8a">V_T · RR</text>
+        <text x="743" y="156" text-anchor="middle" font-size="10" fill="#1e3a8a">V<tspan dy="2" font-size="7">T</tspan><tspan dy="-2"> · RR</tspan></text>
         <text x="743" y="172" text-anchor="middle" font-size="10" fill="#1e3a8a">PEEP · FiO₂</text>
         <text x="743" y="200" text-anchor="middle" font-size="10" font-style="italic" fill="#5a8ab8">your four levers</text>
 
@@ -4669,7 +4669,7 @@
     <caption>Variable key — equation of motion (and the equations that follow)</caption>
     <thead><tr><th>Symbol</th><th>Quantity</th><th>Typical units</th></tr></thead>
     <tbody>
-      <tr><td><strong>P_aw</strong></td><td>Airway pressure (instantaneous)</td><td>cmH₂O</td></tr>
+      <tr><td><strong>P<sub>aw</sub></strong></td><td>Airway pressure (instantaneous)</td><td>cmH₂O</td></tr>
       <tr><td><strong>V</strong></td><td>Lung volume above functional residual capacity (FRC) — i.e., delivered tidal volume at the moment in question</td><td>L (or mL)</td></tr>
       <tr><td><strong>C</strong></td><td>Respiratory-system compliance (lung + chest wall)</td><td>L/cmH₂O (or mL/cmH₂O)</td></tr>
       <tr><td><strong>V̇</strong> (V-dot)</td><td>Inspiratory flow rate at that instant</td><td>L/sec</td></tr>
@@ -4894,8 +4894,8 @@
         <td><strong>Normal mechanics</strong></td>
         <td>~ 0.5–0.8 s</td>
         <td>Moderate</td>
-        <td>~ Right</td>
-        <td>~ Right</td>
+        <td>Matched vent T<sub>i</sub></td>
+        <td>Matched neural T<sub>i</sub></td>
         <td>Synchronous</td>
         <td>Leave at 25%</td>
       </tr>
@@ -4921,33 +4921,7 @@
   </ol>
   <div class="pearl"><strong>The bedside τ check</strong>If you suspect auto-PEEP: pause the ventilator's flow trace and look at exhalation. Flow should reach zero before the next inspiration (≥ 3τ exhalation time). If it doesn't, you're hyperinflating — lower the rate or VT, lengthen T<sub>e</sub>, or both. This single visual check substitutes for the math in &gt; 90% of bedside cases.</div>
 
-  <h5>6.4.4 Stress index — reading regional mechanics from the pressure trace</h5>
-  <p>The <strong>stress index</strong> is a quantitative description of the <em>shape</em> of the airway-pressure-vs-time curve during a constant-flow VC inspiration. It tells you whether tidal breathing is occurring on the linear (uniform-compliance) portion of the lung's pressure–volume curve, or whether the breath is being driven into <em>overdistension</em> (above the upper inflection) or is still <em>recruiting</em> alveoli (below the lower inflection). Mathematically, during constant flow, airway pressure rises as a power function of time:</p>
-  <div class="eq">$$P_{aw}(t) \;=\; a \cdot t^{\beta} \;+\; c$$</div>
-  <p>Where the exponent β <em>is</em> the stress index. Three values matter at the bedside:</p>
-  <table>
-    <caption>Stress index — visual interpretation</caption>
-    <thead><tr><th>β value</th><th>Pressure-time shape</th><th>What's happening in the lung</th><th>Bedside action</th></tr></thead>
-    <tbody>
-      <tr><td><strong>β ≈ 1</strong></td><td>Linear pressure rise (a straight ramp)</td><td>Compliance is roughly constant during the breath — the lung is operating on the steep, linear portion of its P–V curve. Settings are appropriate.</td><td>Maintain.</td></tr>
-      <tr><td><strong>β &lt; 1</strong></td><td><em>Concave-up</em> (pressure rises fast initially, then flattens — curve sits below the straight line drawn from start to peak)</td><td>Compliance is <em>increasing</em> as volume rises — recruitment is ongoing during the breath. The lung is opening alveoli with each tidal cycle (atelectrauma). PEEP is too low.</td><td><strong>↑ PEEP</strong> to hold the alveoli open between breaths instead of recruiting them on each one.</td></tr>
-      <tr><td><strong>β &gt; 1</strong></td><td><em>Convex-up</em> (pressure rises slowly at first, then accelerates — curve sits above the straight line)</td><td>Compliance is <em>decreasing</em> as volume rises — the breath is being driven into overdistension. Tidal volume or PEEP is too high; the lung is on the upper flat region of its P–V curve.</td><td><strong>↓ V<sub>T</sub></strong> first (most direct lever), then consider ↓ PEEP if Pplat remains high.</td></tr>
-    </tbody>
-  </table>
-  <p><strong>Reading β by eye on the pressure-time scalar.</strong> You don't need the algorithm to use the stress index — the visual is fast and surprisingly reliable.</p>
-  <ol>
-    <li>Pause the pressure-time scalar during a passive constant-flow VC breath (no spontaneous effort).</li>
-    <li>Mentally draw a straight line from the start of the inspiratory ramp (just above PEEP) to the PIP.</li>
-    <li>Compare the actual pressure curve to that line: <em>below the line in the middle</em> → β &lt; 1, recruitment ongoing → consider raising PEEP. <em>Above the line in the middle</em> → β &gt; 1, overdistension → drop V<sub>T</sub>. <em>On the line</em> → β ≈ 1, leave it alone.</li>
-  </ol>
-
-  <p>Grasso and colleagues (2007) showed that this eyeball method correlates well with the algorithmic β, and that titrating PEEP to keep β in the linear (≈ 1) zone reduces overdistension as well as ICU-physician PEEP titration.<sup class="cite"><a href="#r40">40</a></sup> The stress index is one of the few tools that can be applied with no extra equipment — every modern vent shows the trace.</p>
-
-  <p><strong>How it fits in ARDS protective ventilation.</strong> Use it alongside, not instead of, the other two anchors: <em>P<sub>plat</sub> ≤ 30</em> as a ceiling, <em>driving pressure ΔP ≤ 15</em> as the strain proxy. The stress index gives the third dimension — the <em>shape</em> of the breath, which neither ceiling nor driving pressure captures. A patient can have an acceptable P<sub>plat</sub> and ΔP and still have β &gt; 1 (overdistension hidden inside an adequate-looking number) or β &lt; 1 (cyclic atelectrauma despite the right pressures).</p>
-
-  <div class="pitfall"><strong>Three caveats that ruin the stress index</strong>(1) The mode must be VC with a <em>square (constant-flow) waveform</em>. Decelerating-ramp VC and PC waveforms are non-linear by design — the resulting curve shape doesn't carry the same meaning. (2) The patient must be passive — any spontaneous inspiratory effort adds a P<sub>mus</sub> that distorts the trace and can fake either a β &lt; 1 or β &gt; 1 pattern. (3) The stress index reflects the <em>global</em> lung; in heterogeneous ARDS, regional β values vary, and a global β = 1 can hide pockets of both recruitment and overdistension.</div>
-
-  <h5>6.4.5 Try it — interactive time-constant filling</h5>
+  <p><strong>Try it — interactive time-constant filling.</strong> Drag τ and T<sub>i</sub> in the figure below to see how the lung fills as a function of how many time constants the vent gives it. The 1τ / 2τ / 3τ rule (63% / 86% / 95%) emerges directly. Use this to calibrate intuition before reading the stress-index section.</p>
   <div class="figure interactive-fig" id="if-tau">
     <style>
       .interactive-fig { background: var(--surface, #fff); border: 1px solid var(--rule, #e2e8f0); border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
@@ -4979,11 +4953,11 @@
       <button data-tau="0.4" data-ti="1.0">Normal lung</button>
       <button data-tau="0.25" data-ti="1.0">ARDS (short τ)</button>
       <button data-tau="1.4" data-ti="1.0">COPD (long τ)</button>
-      <button data-tau="1.4" data-ti="2.5">COPD with long T_i</button>
+      <button data-tau="1.4" data-ti="2.5">COPD with long T<sub>i</sub></button>
     </div>
     <div class="if-stats">
-      <div class="if-stat"><div class="if-stat-label">V_T at end-T_i</div><div class="if-stat-val" id="iftau-fill">63%</div><div class="if-stat-sub">of plateau V_T</div></div>
-      <div class="if-stat"><div class="if-stat-label">T_i / τ</div><div class="if-stat-val" id="iftau-ratio">1.7</div><div class="if-stat-sub">target ≥ 3</div></div>
+      <div class="if-stat"><div class="if-stat-label">V<sub>T</sub> at end-T<sub>i</sub></div><div class="if-stat-val" id="iftau-fill">63%</div><div class="if-stat-sub">of plateau V<sub>T</sub></div></div>
+      <div class="if-stat"><div class="if-stat-label">T<sub>i</sub> / τ</div><div class="if-stat-val" id="iftau-ratio">1.7</div><div class="if-stat-sub">target ≥ 3</div></div>
       <div class="if-stat"><div class="if-stat-label">Status</div><div class="if-stat-val" id="iftau-status" style="font-size:13px;padding-top:3px;">underfilled</div></div>
     </div>
     <svg class="if-chart" viewBox="0 0 620 280" role="img" aria-label="Exponential filling of a pressure-controlled breath. Volume rises asymptotically toward V_T_max with time constant tau; the vertical T_i marker shows the truncation point.">
@@ -4997,7 +4971,7 @@
         <line x1="60" y1="240" x2="600" y2="240" stroke="#475569" stroke-width="1.2"/>
         <line x1="60" y1="20" x2="60" y2="240" stroke="#475569" stroke-width="1.2"/>
         <line x1="60" y1="40" x2="600" y2="40" stroke="#cbd5e1" stroke-width="0.6" stroke-dasharray="3,3"/>
-        <text x="606" y="44" font-size="10">V_T_max (100%)</text>
+        <text x="606" y="44" font-size="10">V<tspan dy="2" font-size="7">T</tspan><tspan dy="-2">,max (100%)</tspan></text>
         <line x1="60" y1="80" x2="600" y2="80" stroke="#e2e8f0" stroke-width="0.5"/>
         <text x="54" y="84" text-anchor="end" font-size="10">75%</text>
         <line x1="60" y1="120" x2="600" y2="120" stroke="#e2e8f0" stroke-width="0.5"/>
@@ -5006,16 +4980,16 @@
         <text x="54" y="164" text-anchor="end" font-size="10">25%</text>
         <text x="54" y="244" text-anchor="end" font-size="10">0%</text>
         <text x="330" y="270" text-anchor="middle" font-size="11">time (s)</text>
-        <text x="20" y="130" text-anchor="middle" font-size="11" transform="rotate(-90 20 130)">% of plateau V_T</text>
+        <text x="20" y="130" text-anchor="middle" font-size="11" transform="rotate(-90 20 130)">% of plateau V<tspan dy="2" font-size="7">T</tspan></text>
         <path id="iftau-fillpath" d="" fill="url(#iftau-fillgrad)" stroke="none"/>
         <path id="iftau-curve" d="" stroke="#1f5f99" stroke-width="2.4" fill="none"/>
         <line id="iftau-timarker" x1="0" y1="40" x2="0" y2="240" stroke="#c4452f" stroke-width="1.6" stroke-dasharray="4,3"/>
         <circle id="iftau-tipoint" cx="0" cy="0" r="5" fill="#c4452f"/>
-        <text id="iftau-tilabel" x="0" y="32" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c4452f">T_i</text>
+        <text id="iftau-tilabel" x="0" y="32" text-anchor="middle" font-size="10.5" font-weight="600" fill="#c4452f">T<tspan dy="2" font-size="7">i</tspan></text>
         <g id="iftau-ticks" font-size="10" fill="#475569"></g>
       </g>
     </svg>
-    <div class="cap" style="margin-top: 6px;"><b>Figure 6.1 — Try it (interactive time-constant filling).</b> Drag τ and T<sub>i</sub> to see how filling evolves. The 1τ / 2τ / 3τ rule (63% / 86% / 95%) is visible: at T_i = τ the breath is only two-thirds in. Set τ to 1.4 s (COPD) and T_i to 1 s and see how V_T plateaus far below maximum — explaining why short T_i in obstructed patients delivers less than expected. Conversely, in ARDS short τ means even brief T_i achieves near-full equilibration.</div>
+    <div class="cap" style="margin-top: 6px;"><b>Figure 6.1 — Try it (interactive time-constant filling).</b> Drag τ and T<sub>i</sub> to see how filling evolves. The 1τ / 2τ / 3τ rule (63% / 86% / 95%) is visible: at T<sub>i</sub> = τ the breath is only two-thirds in. Set τ to 1.4 s (COPD) and T<sub>i</sub> to 1 s and see how V<sub>T</sub> plateaus far below maximum — explaining why short T<sub>i</sub> in obstructed patients delivers less than expected. Conversely, in ARDS short τ means even brief T<sub>i</sub> achieves near-full equilibration.</div>
   </div>
   <script>
   (function(){
@@ -5042,7 +5016,7 @@
         var fill = 1 - Math.exp(-Ti / t);
         fillEl.textContent = Math.round(fill * 100) + '%';
         ratioEl.textContent = (Ti / t).toFixed(1);
-        if (Ti / t < 1.5) { statusEl.textContent = 'underfilled (T_i < 1.5τ)'; statusEl.style.color = '#991b1b'; }
+        if (Ti / t < 1.5) { statusEl.textContent = 'underfilled (Ti < 1.5τ)'; statusEl.style.color = '#991b1b'; }
         else if (Ti / t < 3) { statusEl.textContent = 'suboptimal'; statusEl.style.color = '#854F0B'; }
         else { statusEl.textContent = 'plateau reached'; statusEl.style.color = '#166534'; }
         var Tmax = Math.max(Ti * 1.4, 3);
@@ -5080,6 +5054,112 @@
     } catch(err) { console.error('[interactive: time constant]', err); }
   })();
   </script>
+
+  <h5>6.4.4 Stress index — reading regional mechanics from the pressure trace</h5>
+  <p>The <strong>stress index</strong> is a quantitative description of the <em>shape</em> of the airway-pressure-vs-time curve during a constant-flow VC inspiration. It tells you whether tidal breathing is occurring on the linear (uniform-compliance) portion of the lung's pressure–volume curve, or whether the breath is being driven into <em>overdistension</em> (above the upper inflection) or is still <em>recruiting</em> alveoli (below the lower inflection). Mathematically, during a passive constant-flow inspiration, airway pressure rises as a power function of time:</p>
+  <div class="eq">$$P_{aw}(t) \;=\; a \cdot t^{\beta} \;+\; c$$</div>
+  <table>
+    <caption>Stress index equation — what each term is</caption>
+    <thead><tr><th>Term</th><th>What it represents</th><th>Determined by</th></tr></thead>
+    <tbody>
+      <tr><td><strong>P<sub>aw</sub>(t)</strong></td><td>Instantaneous airway pressure during the inspiratory ramp (cmH₂O)</td><td>What the vent measures and the screen plots</td></tr>
+      <tr><td><strong>t</strong></td><td>Time elapsed from the start of inspiration (sec)</td><td>The ramp itself; a fitting variable, not a setting</td></tr>
+      <tr><td><strong>a</strong></td><td>Scaling coefficient (cmH₂O · s<sup>−β</sup>) — sets the absolute pressure scale of the ramp</td><td>Patient mechanics (R, C) and the set inspiratory flow; not a knob you turn</td></tr>
+      <tr><td><strong>β</strong></td><td><em>The stress index itself</em> — the dimensionless exponent that captures how the curve bends across the breath</td><td>Regional lung mechanics during this breath: recruitment, linear compliance, or overdistension</td></tr>
+      <tr><td><strong>c</strong></td><td>Constant offset (cmH₂O) — pressure at the start of the ramp</td><td>≈ PEEP plus the resistive pressure drop at the moment flow begins</td></tr>
+    </tbody>
+  </table>
+  <p>Only β changes shape; <em>a</em> and <em>c</em> set the absolute pressure scale but not the curvature. Three values of β matter at the bedside:</p>
+
+  <div class="figure">
+    <svg class="anim-fig" viewBox="0 0 900 320" role="img" aria-label="Three pressure-time scalars during constant-flow VC inspiration: concave-up (stress index less than 1, ongoing recruitment), linear (stress index ≈ 1, matched compliance), and convex-up (stress index greater than 1, overdistension). Each panel shows the actual pressure curve in solid color and the straight reference line dashed." style="max-width:900px; width:100%; height:auto; display:block; margin:0 auto;">
+      <defs>
+        <marker id="siArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker>
+      </defs>
+      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
+        <text x="450" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#1f3a5f">Stress index — three shapes of the inspiratory pressure ramp</text>
+
+        <!-- Panel 1: β < 1 (concave-up) -->
+        <g transform="translate(20,40)">
+          <rect x="0" y="0" width="280" height="240" fill="#fafbfc" stroke="#cbd5e1" stroke-width="0.6"/>
+          <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#9b2c2c">β &lt; 1 — concave-down</text>
+          <text x="140" y="36" text-anchor="middle" font-size="10" fill="#475569" font-style="italic">Compliance increasing → ongoing recruitment</text>
+          <!-- axes -->
+          <line x1="40" y1="50" x2="40" y2="200" stroke="#475569" stroke-width="1" marker-end="url(#siArr)"/>
+          <line x1="40" y1="200" x2="260" y2="200" stroke="#475569" stroke-width="1" marker-end="url(#siArr)"/>
+          <text x="32" y="56" text-anchor="end" font-size="9" fill="#475569">P</text>
+          <text x="265" y="214" text-anchor="end" font-size="9" fill="#475569">t</text>
+          <!-- straight reference line (dashed) -->
+          <line x1="40" y1="190" x2="240" y2="60" stroke="#94a3b8" stroke-width="0.9" stroke-dasharray="4,3"/>
+          <!-- concave-up curve: rises fast then flattens -->
+          <path d="M 40 190 Q 80 105 140 80 T 240 60" fill="none" stroke="#9b2c2c" stroke-width="2.4"/>
+          <!-- bedside action -->
+          <text x="140" y="222" text-anchor="middle" font-size="10" font-weight="600" fill="#9b2c2c">↑ PEEP</text>
+        </g>
+
+        <!-- Panel 2: β ≈ 1 (linear) -->
+        <g transform="translate(310,40)">
+          <rect x="0" y="0" width="280" height="240" fill="#fafbfc" stroke="#cbd5e1" stroke-width="0.6"/>
+          <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#1d5a2c">β ≈ 1 — linear</text>
+          <text x="140" y="36" text-anchor="middle" font-size="10" fill="#475569" font-style="italic">Constant compliance — settings appropriate</text>
+          <!-- axes -->
+          <line x1="40" y1="50" x2="40" y2="200" stroke="#475569" stroke-width="1" marker-end="url(#siArr)"/>
+          <line x1="40" y1="200" x2="260" y2="200" stroke="#475569" stroke-width="1" marker-end="url(#siArr)"/>
+          <text x="32" y="56" text-anchor="end" font-size="9" fill="#475569">P</text>
+          <text x="265" y="214" text-anchor="end" font-size="9" fill="#475569">t</text>
+          <!-- linear ramp + straight reference line (overlap) -->
+          <line x1="40" y1="190" x2="240" y2="60" stroke="#94a3b8" stroke-width="0.9" stroke-dasharray="4,3"/>
+          <line x1="40" y1="190" x2="240" y2="60" stroke="#1d5a2c" stroke-width="2.4"/>
+          <!-- bedside action -->
+          <text x="140" y="222" text-anchor="middle" font-size="10" font-weight="600" fill="#1d5a2c">Maintain</text>
+        </g>
+
+        <!-- Panel 3: β > 1 (convex-up) -->
+        <g transform="translate(600,40)">
+          <rect x="0" y="0" width="280" height="240" fill="#fafbfc" stroke="#cbd5e1" stroke-width="0.6"/>
+          <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#7c2d12">β &gt; 1 — concave-up</text>
+          <text x="140" y="36" text-anchor="middle" font-size="10" fill="#475569" font-style="italic">Compliance falling → overdistension</text>
+          <!-- axes -->
+          <line x1="40" y1="50" x2="40" y2="200" stroke="#475569" stroke-width="1" marker-end="url(#siArr)"/>
+          <line x1="40" y1="200" x2="260" y2="200" stroke="#475569" stroke-width="1" marker-end="url(#siArr)"/>
+          <text x="32" y="56" text-anchor="end" font-size="9" fill="#475569">P</text>
+          <text x="265" y="214" text-anchor="end" font-size="9" fill="#475569">t</text>
+          <!-- straight reference line (dashed) -->
+          <line x1="40" y1="190" x2="240" y2="60" stroke="#94a3b8" stroke-width="0.9" stroke-dasharray="4,3"/>
+          <!-- convex-up curve: starts flat then accelerates -->
+          <path d="M 40 190 Q 100 175 140 145 T 240 60" fill="none" stroke="#7c2d12" stroke-width="2.4"/>
+          <!-- bedside action -->
+          <text x="140" y="222" text-anchor="middle" font-size="10" font-weight="600" fill="#7c2d12">↓ V<tspan dy="2" font-size="7">T</tspan></text>
+        </g>
+
+        <!-- Footer instruction -->
+        <text x="450" y="305" text-anchor="middle" font-size="10" fill="#475569" font-style="italic">Mentally draw the dashed line from start of ramp to PIP. The middle of the breath tells you which way you've drifted.</text>
+      </g>
+    </svg>
+    <div class="cap"><b>Figure 6.2 — The three shapes of the stress index.</b> A passive, constant-flow VC breath produces a pressure ramp whose <em>shape</em> reveals regional lung mechanics. <strong style="color:#9b2c2c;">β &lt; 1 (concave-down)</strong>: pressure rises quickly at first, then flattens — the curve bulges <em>above</em> the straight reference line; compliance is improving as alveoli recruit, and the lung is cyclically opening with each breath (atelectrauma). <strong style="color:#1d5a2c;">β ≈ 1 (linear)</strong>: pressure rises in a straight line, overlapping the reference; compliance is constant and the breath sits in the safe operating zone. <strong style="color:#7c2d12;">β &gt; 1 (concave-up)</strong>: pressure rises slowly at first, then accelerates — the curve sags <em>below</em> the reference; compliance is falling as alveoli reach the upper inflection, and the breath is being driven into overdistension. The dashed line in each panel is the straight reference drawn from the start of inspiration to PIP; comparing the actual trace to this reference is the eyeball read of β.</div>
+  </div>
+
+  <table>
+    <caption>Stress index — visual interpretation</caption>
+    <thead><tr><th>β value</th><th>Pressure-time shape</th><th>What's happening in the lung</th><th>Bedside action</th></tr></thead>
+    <tbody>
+      <tr><td><strong>β ≈ 1</strong></td><td>Linear pressure rise (a straight ramp)</td><td>Compliance is roughly constant during the breath — the lung is operating on the steep, linear portion of its P–V curve. Settings are appropriate.</td><td>Maintain.</td></tr>
+      <tr><td><strong>β &lt; 1</strong></td><td><em>Concave-down</em> (pressure rises fast initially, then flattens — curve sits <em>above</em> the straight line drawn from start to peak)</td><td>Compliance is <em>increasing</em> as volume rises — recruitment is ongoing during the breath. The lung is opening alveoli with each tidal cycle (atelectrauma). PEEP is too low.</td><td><strong>↑ PEEP</strong> to hold the alveoli open between breaths instead of recruiting them on each one.</td></tr>
+      <tr><td><strong>β &gt; 1</strong></td><td><em>Concave-up</em> (pressure rises slowly at first, then accelerates — curve sits <em>below</em> the straight line)</td><td>Compliance is <em>decreasing</em> as volume rises — the breath is being driven into overdistension. Tidal volume or PEEP is too high; the lung is on the upper flat region of its P–V curve.</td><td><strong>↓ V<sub>T</sub></strong> first (most direct lever), then consider ↓ PEEP if P<sub>plat</sub> remains high.</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Reading β by eye on the pressure-time scalar.</strong> You don't need the algorithm to use the stress index — the visual is fast and surprisingly reliable.</p>
+  <ol>
+    <li>Pause the pressure-time scalar during a passive constant-flow VC breath (no spontaneous effort).</li>
+    <li>Mentally draw a straight line from the start of the inspiratory ramp (just above PEEP) to the PIP.</li>
+    <li>Compare the actual pressure curve to that line: <em>above the line in the middle</em> → β &lt; 1, recruitment ongoing → consider raising PEEP. <em>Below the line in the middle</em> → β &gt; 1, overdistension → drop V<sub>T</sub>. <em>On the line</em> → β ≈ 1, leave it alone.</li>
+  </ol>
+
+  <p>Grasso and colleagues (2007) showed that this eyeball method correlates well with the algorithmic β, and that titrating PEEP to keep β in the linear (≈ 1) zone reduces overdistension as well as ICU-physician PEEP titration.<sup class="cite"><a href="#r40">40</a></sup> The stress index is one of the few tools that can be applied with no extra equipment — every modern vent shows the trace.</p>
+
+  <p><strong>How it fits in ARDS protective ventilation.</strong> Use it alongside, not instead of, the other two anchors: <em>P<sub>plat</sub> ≤ 30</em> as a ceiling, <em>driving pressure ΔP ≤ 15</em> as the strain proxy. The stress index gives the third dimension — the <em>shape</em> of the breath, which neither ceiling nor driving pressure captures. A patient can have an acceptable P<sub>plat</sub> and ΔP and still have β &gt; 1 (overdistension hidden inside an adequate-looking number) or β &lt; 1 (cyclic atelectrauma despite the right pressures).</p>
+
+  <div class="pitfall"><strong>Three caveats that ruin the stress index</strong>(1) The mode must be VC with a <em>square (constant-flow) waveform</em>. Decelerating-ramp VC and PC waveforms are non-linear by design — the resulting curve shape doesn't carry the same meaning. (2) The patient must be passive — any spontaneous inspiratory effort adds a P<sub>mus</sub> that distorts the trace and can fake either a β &lt; 1 or β &gt; 1 pattern. (3) The stress index reflects the <em>global</em> lung; in heterogeneous ARDS, regional β values vary, and a global β = 1 can hide pockets of both recruitment and overdistension.</div>
   </details>
   <details class="chap-acc" data-acc-id="c6-h4-6">
     <summary>
@@ -5099,7 +5179,7 @@
 <div class="takeaways">
     <h5>Key takeaways</h5>
     <ul>
-      <li>The equation of motion (P_aw = V/C + V̇×R + PEEP) explains every bedside pressure: elastic + resistive + baseline.</li>
+      <li>The equation of motion (P<sub>aw</sub> = V/C + V̇×R + PEEP) explains every bedside pressure: elastic + resistive + baseline.</li>
       <li>Compliance (Cstat) and resistance (Raw) decompose PIP into lung and airway problems — high PIP with normal Pplat = resistance; both high = stiff lung.</li>
       <li>Time constants (τ = R × C) dictate whether the lung empties in time; auto-PEEP occurs when expiratory time &lt; 3τ.</li>
       <li>Closing capacity vs FRC: when FRC drops below CC, tidal breathing happens inside collapsed airways — PEEP's job is to raise FRC above CC.</li>
@@ -5110,150 +5190,17 @@
 <section class="chap" id="c7" data-part="part1">
   <h3><span class="num">7</span>The lung's pressure–volume curve</h3>
   <div class="figure">
-    <img src="https://i.postimg.cc/bv5jL2ZQ/anatomy-of-the-pressure-volume-loop.jpg" alt="Anatomy of the pressure-volume loop — LIP, UIP, beaking, optimal compliance, PEEP" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 7.1.</b> Anatomy of the dynamic pressure-volume loop. The shaded inflation curve has two key inflection points: the <strong>lower inflection point (LIP)</strong> — the minimum pressure required for alveolar recruitment — and the <strong>upper inflection point (UIP)</strong> — the pressure at which regional overdistension begins. The flattening above the UIP is called "beaking." The pressure axis can be divided into four operational zones: PEEP (baseline); alveolar recruitment + airway resistance; the optimal-compliance segment between LIP and UIP (where tidal breaths should sit); and overdistension. Tidal volume is the vertical excursion across this loop.</div>
+    <svg class="anim-fig" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Static pressure–volume loop. The inflation limb (lower curve) and deflation limb (upper curve) form a sigmoidal hysteresis loop. The lower inflection point (LIP) marks the transition from the flat low-compliance segment into the steep linear segment of best compliance; the upper inflection point (UIP) marks where the curve flattens again into the beaking plateau. Tidal volume is bracketed on the volume axis; FRC sits at the origin. The pressure axis is divided into four operational zones: PEEP, alveolar recruitment and airway resistance, optimal compliance, and alveolar overdistension. Peak airway pressure is labeled at the top right." style="max-width:900px; width:100%; height:auto; display:block; margin:0 auto;"><rect width="1200" height="900" fill="white" data-bg="true"/><rect x="90" y="85" width="198.148" height="568.846" fill="#e2e8f0" opacity="0.6"/><rect x="288.148" y="85" width="192.189" height="568.846" fill="#fef3c7" opacity="0.55"/><rect x="480.337" y="85" width="404.747" height="568.846" fill="#dcfce7" opacity="0.55"/><rect x="885.084" y="85" width="195.793" height="568.846" fill="#fee2e2" opacity="0.55"/><line x1="90" y1="653.8461538461538" x2="1160" y2="653.8461538461538" stroke="#bbb" stroke-width="1.4"/><line x1="90" y1="653.8461538461538" x2="90" y2="101.84615384615381" stroke="#bbb" stroke-width="1.4"/><polygon points="84,101.84615384615381 96,101.84615384615381 90,75.30769230769226" fill="#bbb"/><polygon points="1144.1481481481483,647.8461538461538 1144.1481481481483,659.8461538461538 1158.0185185185185,653.8461538461538" fill="#bbb"/><g style="cursor: text; opacity: 1;"><text x="30" y="415" text-anchor="middle" font-size="18" fill="#888" transform="rotate(-90 30 415)" font-family="system-ui, sans-serif">Volume</text></g><g style="cursor: text; opacity: 1;"><text x="1112.4444444444443" y="703.8461538461538" text-anchor="end" font-size="18" fill="#888" font-family="system-ui, sans-serif">Pressure</text></g><g style="cursor: text; opacity: 1;"><text x="625" y="40" text-anchor="middle" font-size="22" font-weight="700" fill="#222" font-family="system-ui, sans-serif">Pressure–Volume Loop</text></g><line x1="288.14814814814815" y1="653.8461538461538" x2="288.14814814814815" y2="653.8461538461538" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="5,4" pointer-events="none" opacity="0.7"/><line x1="480.3374769422743" y1="653.8461538461538" x2="480.3374769422743" y2="412.84147000384314" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="5,4" pointer-events="none" opacity="0.7"/><line x1="885.0843867549193" y1="653.8461538461538" x2="885.0843867549193" y2="122.50923202474564" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="5,4" pointer-events="none" opacity="0.7"/><line x1="1080.8770978009259" y1="653.8461538461538" x2="1080.8770978009259" y2="111.0092632587141" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="5,4" pointer-events="none" opacity="0.7"/><line x1="90" y1="121.62464787409863" x2="1080.8770978009259" y2="121.62464787409863" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="5,4" pointer-events="none" opacity="0.7"/><path d="M 288.14814814814815 653.8461538461538 C 312.51878997425973 649.8335352188501, 390.578951800311 651.2000795022035, 434.3719991048177 629.7704420823317 C 478.1650464093243 608.3408046624598, 507.059498162917 567.2200286082732, 550.906431975188 525.2683293269231 C 594.753365787459 483.31663004557294, 641.4294235794633 435.88697302708573, 697.4536019784433 378.06024639423083 C 753.4777803774234 320.2335197613759, 837.2573268560715 219.2978798655364, 887.0515023690682 178.30796952979392 C 936.8456778820649 137.31805919405133, 963.9143891511138 141.56800465572496, 996.2186550564235 132.12078437977573 C 1028.522920961733 122.6735641038265, 1066.7673573435088 123.37400395837801, 1080.8770978009259 121.62464787409863 C 1056.5687493218315 121.39956852747468, 983.4855211046005 116.93076610211483, 935.0270069263598 120.27417179435542 C 886.568492748119 123.61757748659602, 839.2939739462769 119.69223871169277, 790.1260127314814 141.6850820275423 C 740.9580515166859 163.67792534339185, 694.7611788525995 203.7513096394216, 640.019239637587 252.23123168945307 C 585.2773004225744 300.7111537394844, 505.60924313392167 386.25692681880327, 461.6743774414062 432.5646143277306 C 417.7395117488907 478.8723018366578, 405.33108369803716 493.19710015661275, 376.4100454824941 530.0773567430166 C 347.48900726695115 566.9576133294205, 302.85846437053914 633.2180209956309, 288.14814814814815 653.8461538461538 Z" fill="#b8b0d4" fill-opacity="0.78" pointer-events="none"/><path d="M 288.14814814814815 653.8461538461538 C 312.51878997425973 649.8335352188501, 390.578951800311 651.2000795022035, 434.3719991048177 629.7704420823317 C 478.1650464093243 608.3408046624598, 507.059498162917 567.2200286082732, 550.906431975188 525.2683293269231 C 594.753365787459 483.31663004557294, 641.4294235794633 435.88697302708573, 697.4536019784433 378.06024639423083 C 753.4777803774234 320.2335197613759, 837.2573268560715 219.2978798655364, 887.0515023690682 178.30796952979392 C 936.8456778820649 137.31805919405133, 963.9143891511138 141.56800465572496, 996.2186550564235 132.12078437977573 C 1028.522920961733 122.6735641038265, 1066.7673573435088 123.37400395837801, 1080.8770978009259 121.62464787409863" stroke="#000500" stroke-width="3" fill="none" pointer-events="none"/><path d="M 288.14814814814815 653.8461538461538 C 302.85846437053914 633.2180209956309, 347.48900726695115 566.9576133294205, 376.4100454824941 530.0773567430166 C 405.33108369803716 493.19710015661275, 417.7395117488907 478.8723018366578, 461.6743774414062 432.5646143277306 C 505.60924313392167 386.25692681880327, 585.2773004225744 300.7111537394844, 640.019239637587 252.23123168945307 C 694.7611788525995 203.7513096394216, 740.9580515166859 163.67792534339185, 790.1260127314814 141.6850820275423 C 839.2939739462769 119.69223871169277, 886.568492748119 123.61757748659602, 935.0270069263598 120.27417179435542 C 983.4855211046005 116.93076610211483, 1056.5687493218315 121.39956852747468, 1080.8770978009259 121.62464787409863" stroke="#000500" stroke-width="3" fill="none" pointer-events="none"/><defs><marker id="pvloopArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#000500"/></marker></defs><line x1="581.5242043954356" y1="495.55366329137695" x2="674.785005922671" y2="401.410310805982" stroke="#000500" stroke-width="3" marker-end="url(#pvloopArrow)" pointer-events="none"/><line x1="674.785005922671" y1="221.77386669515704" x2="581.5242043954356" y2="307.9365484880575" stroke="#000500" stroke-width="3" marker-end="url(#pvloopArrow)" pointer-events="none"/><g style="cursor: grab; touch-action: none; opacity: 1;"><rect x="684.1778677481194" y="382.8838500976562" width="120" height="26" fill="transparent"/><text x="744.1778677481194" y="396.8838500976562" text-anchor="middle" font-size="16" font-weight="700" font-style="italic" fill="#000500" font-family="system-ui, sans-serif" pointer-events="none" dominant-baseline="middle">Inflation</text></g><g style="cursor: grab; touch-action: none; opacity: 1;"><rect x="344.1407210738569" y="265.787348820613" width="120" height="26" fill="transparent"/><text x="404.1407210738569" y="279.787348820613" text-anchor="middle" font-size="16" font-weight="700" font-style="italic" fill="#000500" font-family="system-ui, sans-serif" pointer-events="none" dominant-baseline="middle">Deflation</text></g><g style="cursor: grab; touch-action: none; opacity: 1;"><path d="M 538.001874005353 596.3277840823952 Q 508.98578050401466 596.6401825166125 479.9696870026764 596.9525809508299" stroke="#7a7a7a" stroke-width="1.7" fill="none" pointer-events="none"/><rect x="538.001874005353" y="581.3911085862379" width="174" height="28" rx="6" fill="white" stroke="#9a9a9a" stroke-width="1"/><text x="625.001874005353" y="601.3911085862379" text-anchor="middle" font-size="14" font-weight="700" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Lower inflection point</text></g><g style="cursor: grab; touch-action: none; opacity: 1;"><path d="M 934.5067668422015 252.780747633714 Q 911.777058280042 217.9665345324775 889.0473497178823 183.15232143124103" stroke="#7a7a7a" stroke-width="1.7" fill="none" pointer-events="none"/><rect x="856.6471693250867" y="252.780747633714" width="174" height="28" rx="6" fill="white" stroke="#9a9a9a" stroke-width="1"/><text x="943.6471693250867" y="272.780747633714" text-anchor="middle" font-size="14" font-weight="700" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Upper inflection point</text></g><g style="cursor: grab; touch-action: none; opacity: 1;"><path d="M 1018.3856723096933 167.7523099459131 Q 1007.241508866254 150.2072662908825 996.0973454228148 132.6622226358519" stroke="#7a7a7a" stroke-width="1.7" fill="none" pointer-events="none"/><rect x="985.7781146014179" y="167.7523099459131" width="83" height="28" rx="6" fill="white" stroke="#9a9a9a" stroke-width="1"/><text x="1027.2781146014179" y="187.7523099459131" text-anchor="middle" font-size="14" font-weight="400" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">"Beaking"</text></g><g style="cursor: grab; touch-action: none; opacity: 1;"><path d="M 1080.6797235936476 85.11654956524183 Q 1080.7784106972867 100.7167525658241 1080.8770978009259 116.31695556640636" stroke="#7a7a7a" stroke-width="1.7" fill="none" pointer-events="none"/><rect x="1000.5911593967012" y="57.116549565241826" width="160" height="28" rx="6" fill="white" stroke="#9a9a9a" stroke-width="1"/><text x="1080.5911593967012" y="77.11654956524183" text-anchor="middle" font-size="14" font-weight="400" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Peak airway pressure</text></g><g style="cursor: grab; touch-action: none; opacity: 1;"><rect x="100.35072326660162" y="89.13563772348255" width="104" height="28" rx="6" fill="white" stroke="#9a9a9a" stroke-width="1"/><text x="152.35072326660162" y="109.13563772348255" text-anchor="middle" font-size="14" font-weight="400" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Tidal volume</text></g><g><g style="cursor: grab; touch-action: none; opacity: 1;"><rect x="99.46058146158855" y="620.2337176983173" width="41" height="28" rx="6" fill="white" stroke="#9a9a9a" stroke-width="1"/><text x="119.96058146158855" y="640.2337176983173" text-anchor="middle" font-size="14" font-weight="400" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">FRC</text></g></g><g style="opacity: 1;"><line x1="90" y1="680.3846153846154" x2="288.14814814814815" y2="680.3846153846154" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="90" y1="680.3846153846154" x2="90" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="288.14814814814815" y1="680.3846153846154" x2="288.14814814814815" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><g style="cursor: text;"><rect x="167.07407407407408" y="718.776923076923" width="44" height="23" rx="5" fill="white" stroke="#7a7a7a" stroke-width="0.9"/><text x="189.07407407407408" y="735.776923076923" text-anchor="middle" font-size="13" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">PEEP</text></g></g><g style="opacity: 1;"><line x1="288.14814814814815" y1="680.3846153846154" x2="480.3374769422743" y2="680.3846153846154" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="288.14814814814815" y1="680.3846153846154" x2="288.14814814814815" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="480.3374769422743" y1="680.3846153846154" x2="480.3374769422743" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><g style="cursor: text;"><rect x="303.7428125452112" y="711.276923076923" width="161" height="38" rx="5" fill="white" stroke="#7a7a7a" stroke-width="0.9"/><text x="384.2428125452112" y="728.276923076923" text-anchor="middle" font-size="13" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Alveolar recruitment &amp;</text><text x="384.2428125452112" y="743.276923076923" text-anchor="middle" font-size="13" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">airway resistance</text></g></g><g style="opacity: 1;"><line x1="480.3374769422743" y1="680.3846153846154" x2="885.0843867549193" y2="680.3846153846154" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="480.3374769422743" y1="680.3846153846154" x2="480.3374769422743" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="885.0843867549193" y1="680.3846153846154" x2="885.0843867549193" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><g style="cursor: text;"><rect x="615.2109318485968" y="718.776923076923" width="135" height="23" rx="5" fill="white" stroke="#7a7a7a" stroke-width="0.9"/><text x="682.7109318485968" y="735.776923076923" text-anchor="middle" font-size="13" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Optimal compliance</text></g></g><g style="opacity: 1;"><line x1="885.0843867549193" y1="680.3846153846154" x2="1080.8770978009259" y2="680.3846153846154" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="885.0843867549193" y1="680.3846153846154" x2="885.0843867549193" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><line x1="1080.8770978009259" y1="680.3846153846154" x2="1080.8770978009259" y2="661.2769230769231" stroke="#7a7a7a" stroke-width="1.6" pointer-events="none"/><g style="cursor: text;"><rect x="928.4807422779226" y="711.276923076923" width="109" height="38" rx="5" fill="white" stroke="#7a7a7a" stroke-width="0.9"/><text x="982.9807422779226" y="728.276923076923" text-anchor="middle" font-size="13" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">Alveolar</text><text x="982.9807422779226" y="743.276923076923" text-anchor="middle" font-size="13" fill="#222" font-family="system-ui, sans-serif" pointer-events="none">overdistension</text></g></g></svg>
+    <div class="cap"><b>Figure 7.1 — The pressure–volume loop.</b> The sigmoidal <strong>inflation</strong> limb (lower curve) and <strong>deflation</strong> limb (upper curve) bound a hysteresis loop — the deflation limb sits to the upper-left of the inflation limb, so at any given pressure the lung holds more volume on the way down than it did on the way up. The inflation limb has two anatomic landmarks: the <strong>lower inflection point (LIP)</strong>, where the initial flat (low-compliance, recruitment) segment transitions into the steep linear segment of best compliance — recruitment is largely complete past this point — and the <strong>upper inflection point (UIP)</strong>, where the steep segment bends into the flat upper plateau ("beaking") at peak airway pressure, beyond which additional pressure delivers diminishing volume because individual alveoli have reached their distension limit. The pressure axis decomposes into four operational zones: <em>PEEP</em> (baseline floor at FRC), <em>alveolar recruitment &amp; airway resistance</em> (PEEP to LIP), <em>optimal compliance</em> (LIP to UIP — where tidal breaths belong), and <em>alveolar overdistension</em> (above UIP). The shaded area between the limbs is the energy lost per cycle to surface-tension forces, viscoelastic tissue stretch, and recruitment/derecruitment of marginal alveoli — clinically, hysteresis is what makes a recruitment maneuver followed by decremental PEEP titration work (see §7.1 bullet 2).</div>
   </div>
 
-  <div class="figure">
-    <svg class="anim-fig" viewBox="0 0 800 540" role="img" aria-label="Work of breathing on the P-V loop showing elastic, resistive inspiratory, and resistive expiratory components." style="max-width:800px; width:100%; height:auto; display:block; margin:0 auto;">
-      <defs>
-        <marker id="wobArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
-        </marker>
-      </defs>
-      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
-        <text x="40" y="28" font-size="14" font-weight="700" fill="#1a1f2b">Work of breathing</text>
+  <p><strong>From the quasi-static loop to a real breath.</strong> Figure 7.1 is the lung's <em>quasi-static</em> P-V loop — the trace you would record by inflating and then deflating the lung slowly enough that resistive flow effects are negligible. Even with no flow there are still two limbs, separated by the shaded hysteresis area; the lung holds more volume on the way down than on the way up. During an actual breath, resistance to flow widens both limbs further: the <em>dynamic</em> inspiratory limb sits to the right of the quasi-static inflation curve (resistance adds extra pressure on the way in) and the <em>dynamic</em> expiratory limb sits to the left of the quasi-static deflation curve (resistance opposes flow on the way out). The additional area enclosed beyond the quasi-static loop is the <em>resistive work</em> per breath. The diagonal from the loop's origin to its peak — the line the breath would take if the lung had only compliance and no resistance — is the <em>elastic line</em>. The wedge to the left of the dynamic inspiratory limb, bounded above by the tidal-volume horizontal, is the <em>elastic work</em>: the energy spent stretching the lung and chest wall. Total work per breath is the sum of those two areas. The bigger the resistance, the wider the dynamic loop relative to the quasi-static one; the stiffer the lung, the steeper the elastic line and the larger the elastic wedge.</p>
 
-        <!-- Y-axis arrow + "Volume →" rotated label -->
-        <line x1="140" y1="460" x2="140" y2="80" stroke="#94a3b8" stroke-width="0.9" marker-end="url(#wobArrow)"/>
-        <text x="100" y="270" text-anchor="middle" font-size="11" fill="#1f3a5f" font-weight="600" font-style="italic" transform="rotate(-90 100 270)">Volume →</text>
-
-        <!-- X-axis arrow + "Pressure →" label -->
-        <line x1="140" y1="460" x2="700" y2="460" stroke="#94a3b8" stroke-width="0.9" marker-end="url(#wobArrow)"/>
-        <text x="710" y="464" text-anchor="start" font-size="11" fill="#1f3a5f" font-weight="600" font-style="italic">Pressure →</text>
-
-        <!-- Elastic-work region: wedge to LEFT of inspiratory limb, capped above by V_T horizontal -->
-        <path d="M 140 460 L 140 100 L 560 100 C 480 380 380 440 140 460 Z" fill="#1f5f99" fill-opacity="0.10" stroke="none"/>
-
-        <!-- Resistive expiratory work: between elastic line and expiratory limb -->
-        <path d="M 140 460 L 560 100 C 360 200 200 280 140 460 Z" fill="#1f5f99" fill-opacity="0.42" stroke="none"/>
-
-        <!-- Resistive inspiratory work: between elastic line and inspiratory limb -->
-        <path d="M 140 460 C 380 440 480 380 560 100 L 140 460 Z" fill="#9b2c2c" fill-opacity="0.22" stroke="none"/>
-
-        <!-- Inspiratory + expiratory limb strokes -->
-        <path d="M 140 460 C 380 440 480 380 560 100" fill="none" stroke="#9b2c2c" stroke-width="2.2"/>
-        <path d="M 560 100 C 360 200 200 280 140 460" fill="none" stroke="#1f5f99" stroke-width="2.2"/>
-
-        <!-- Elastic-line reference (faint dashed diagonal) -->
-        <line x1="140" y1="460" x2="560" y2="100" stroke="#94a3b8" stroke-dasharray="3,3" stroke-width="0.7"/>
-
-        <!-- "Elastic work" callout -->
-        <rect x="200" y="100" width="115" height="22" rx="6" ry="6" fill="white" stroke="#5b7795" stroke-width="0.8"/>
-        <text x="257" y="115" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Elastic work</text>
-        <path d="M 257 122 Q 230 180 195 280" stroke="#5b7795" stroke-width="0.9" fill="none" marker-end="url(#wobArrow)"/>
-
-        <!-- "Resistive expiratory work" callout (dark blue), arrow into upper-left blue region -->
-        <rect x="345" y="100" width="195" height="22" rx="6" ry="6" fill="white" stroke="#1f5f99" stroke-width="1"/>
-        <text x="442" y="115" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Resistive expiratory work</text>
-        <path d="M 400 122 Q 350 200 305 286" stroke="#1f5f99" stroke-width="0.9" fill="none" marker-end="url(#wobArrow)"/>
-
-        <!-- "Resistive inspiratory work" callout (red), arrow into lower-right pink region -->
-        <rect x="490" y="240" width="200" height="22" rx="6" ry="6" fill="white" stroke="#9b2c2c" stroke-width="1"/>
-        <text x="590" y="255" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Resistive inspiratory work</text>
-        <path d="M 510 262 Q 460 290 405 320" stroke="#9b2c2c" stroke-width="0.9" fill="none" marker-end="url(#wobArrow)"/>
-      </g>
-    </svg>
-    <div class="cap"><b>Figure 7.2.</b> The work of breathing decomposed on a dynamic pressure-volume loop. The straight diagonal from origin to peak is the <em>elastic line</em> — the pressure–volume relationship if the lung had only compliance and no resistance. The triangular wedge to the LEFT of the inspiratory limb, bounded above by the tidal volume horizontal, is the <strong>elastic work</strong> done to stretch the lung. Inside the loop, the elastic line splits the area into two halves: the area between the elastic line and the inspiratory limb (lower-right) is the <strong>resistive inspiratory work</strong>; the area between the elastic line and the expiratory limb (upper-left) is the <strong>resistive expiratory work</strong>. Total work per breath = elastic + both resistive components.</div>
-  </div>
-
-  <div class="figure">
-    <svg class="anim-fig" viewBox="0 0 880 620" role="img" aria-label="Work of breathing with intrinsic PEEP and dynamic hyperinflation, showing additional elastic work attributable to PEEPi and the volume above natural FRC." style="max-width:880px; width:100%; height:auto; display:block; margin:0 auto;">
-      <defs>
-        <marker id="wobArrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
-        </marker>
-      </defs>
-      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
-        <text x="40" y="28" font-size="14" font-weight="700" fill="#1a1f2b">Work of breathing — with intrinsic PEEP and dynamic hyperinflation</text>
-
-        <!-- Y-axis arrow + "Volume →" rotated label -->
-        <line x1="140" y1="490" x2="140" y2="80" stroke="#94a3b8" stroke-width="0.9" marker-end="url(#wobArrow2)"/>
-        <text x="100" y="285" text-anchor="middle" font-size="11" fill="#1f3a5f" font-weight="600" font-style="italic" transform="rotate(-90 100 285)">Volume →</text>
-
-        <!-- X-axis arrow + "Pressure →" label -->
-        <line x1="140" y1="490" x2="780" y2="490" stroke="#94a3b8" stroke-width="0.9" marker-end="url(#wobArrow2)"/>
-        <text x="790" y="494" text-anchor="start" font-size="11" fill="#1f3a5f" font-weight="600" font-style="italic">Pressure →</text>
-
-        <!-- Vertical dashed line at x=240 (PEEPi level) -->
-        <line x1="240" y1="490" x2="240" y2="80" stroke="#94a3b8" stroke-dasharray="3,3" stroke-width="0.7"/>
-        <!-- Horizontal dashed line at y=410 (dynamic FRC level) -->
-        <line x1="140" y1="410" x2="780" y2="410" stroke="#94a3b8" stroke-dasharray="3,3" stroke-width="0.7"/>
-
-        <!-- Lavender/purple region: "Elastic work due to intrinsic PEEP" -->
-        <rect x="140" y="100" width="100" height="310" fill="#7c3aed" fill-opacity="0.10" stroke="none"/>
-
-        <!-- Elastic work region (above PEEPi): wedge from loop origin → up dashed line → V_T horizontal → back along inspiratory limb -->
-        <path d="M 240 410 L 240 100 L 620 100 C 555 340 470 395 240 410 Z" fill="#1f5f99" fill-opacity="0.10" stroke="none"/>
-
-        <!-- Resistive expiratory work: between elastic line (loop origin to peak) and expiratory limb -->
-        <path d="M 240 410 L 620 100 C 380 140 280 240 240 410 Z" fill="#1f5f99" fill-opacity="0.42" stroke="none"/>
-
-        <!-- Resistive inspiratory work: between elastic line and inspiratory limb -->
-        <path d="M 240 410 C 470 395 555 340 620 100 L 240 410 Z" fill="#9b2c2c" fill-opacity="0.22" stroke="none"/>
-
-        <!-- Inspiratory + expiratory limb strokes -->
-        <path d="M 240 410 C 470 395 555 340 620 100" fill="none" stroke="#9b2c2c" stroke-width="2.2"/>
-        <path d="M 620 100 C 380 140 280 240 240 410" fill="none" stroke="#1f5f99" stroke-width="2.2"/>
-
-        <!-- Elastic-line reference (faint dashed inside loop) -->
-        <line x1="240" y1="410" x2="620" y2="100" stroke="#94a3b8" stroke-dasharray="3,3" stroke-width="0.6"/>
-
-        <!-- "Elastic work due to intrinsic PEEP" callout (purple) -->
-        <rect x="40" y="100" width="170" height="36" rx="6" ry="6" fill="white" stroke="#7c3aed" stroke-width="1"/>
-        <text x="125" y="116" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Elastic work</text>
-        <text x="125" y="130" text-anchor="middle" font-size="10.5" fill="#1f3a5f">due to intrinsic PEEP</text>
-        <path d="M 145 136 Q 175 200 190 250" stroke="#7c3aed" stroke-width="0.9" fill="none" marker-end="url(#wobArrow2)"/>
-
-        <!-- "Elastic work" callout (light blue) -->
-        <rect x="295" y="100" width="115" height="22" rx="6" ry="6" fill="white" stroke="#5b7795" stroke-width="0.8"/>
-        <text x="352" y="115" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Elastic work</text>
-        <path d="M 352 122 Q 320 180 295 250" stroke="#5b7795" stroke-width="0.9" fill="none" marker-end="url(#wobArrow2)"/>
-
-        <!-- "Resistive expiratory work" callout (dark blue) -->
-        <rect x="440" y="100" width="195" height="22" rx="6" ry="6" fill="white" stroke="#1f5f99" stroke-width="1"/>
-        <text x="537" y="115" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Resistive expiratory work</text>
-        <path d="M 490 122 Q 420 200 320 290" stroke="#1f5f99" stroke-width="0.9" fill="none" marker-end="url(#wobArrow2)"/>
-
-        <!-- "Resistive inspiratory work" callout (red) -->
-        <rect x="555" y="240" width="210" height="22" rx="6" ry="6" fill="white" stroke="#9b2c2c" stroke-width="1"/>
-        <text x="660" y="255" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Resistive inspiratory work</text>
-        <path d="M 580 262 Q 520 290 480 285" stroke="#9b2c2c" stroke-width="0.9" fill="none" marker-end="url(#wobArrow2)"/>
-
-        <!-- Intrinsic PEEP bottom bracket -->
-        <line x1="140" y1="520" x2="240" y2="520" stroke="#475569" stroke-width="0.9"/>
-        <line x1="140" y1="520" x2="140" y2="515" stroke="#475569" stroke-width="0.9"/>
-        <line x1="240" y1="520" x2="240" y2="515" stroke="#475569" stroke-width="0.9"/>
-        <line x1="190" y1="520" x2="190" y2="528" stroke="#475569" stroke-width="0.9"/>
-        <rect x="125" y="555" width="130" height="22" rx="5" ry="5" fill="white" stroke="#475569" stroke-width="0.8"/>
-        <text x="190" y="570" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Intrinsic PEEP</text>
-        <line x1="190" y1="528" x2="190" y2="555" stroke="#475569" stroke-width="0.7" stroke-dasharray="2,2"/>
-
-        <!-- Dynamic Hyperinflation right bracket -->
-        <line x1="755" y1="410" x2="755" y2="490" stroke="#475569" stroke-width="0.9"/>
-        <line x1="750" y1="410" x2="760" y2="410" stroke="#475569" stroke-width="0.9"/>
-        <line x1="750" y1="490" x2="760" y2="490" stroke="#475569" stroke-width="0.9"/>
-        <line x1="755" y1="450" x2="763" y2="450" stroke="#475569" stroke-width="0.9"/>
-        <rect x="615" y="438" width="135" height="22" rx="5" ry="5" fill="white" stroke="#475569" stroke-width="0.8"/>
-        <text x="682" y="453" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Dynamic Hyperinflation</text>
-      </g>
-    </svg>
-    <div class="cap"><b>Figure 7.3.</b> Work of breathing in dynamic hyperinflation. The loop now sits to the right of the y-axis and above the natural FRC: the patient is breathing on top of an extra column of pressure (intrinsic PEEP, bottom bracket) and an extra volume (dynamic hyperinflation, right bracket). The lavender column on the left represents the additional <strong>elastic work due to intrinsic PEEP</strong> — work the patient must perform on every breath just to overcome PEEPi before any inspiratory flow begins. The three regions inside the loop (elastic, resistive expiratory, resistive inspiratory) carry their usual meanings, but each is bigger because the patient is now operating on a stiffer, more resistive part of the system. This is the work-of-breathing penalty that drives ineffective triggering and weaning failure in obstructive disease.</div>
-  </div>
+  <p><strong>What changes in dynamic hyperinflation.</strong> When the time constant exceeds the available expiratory time (severe COPD or asthma — see §17), the lung cannot fully empty before the next breath begins. The dynamic loop moves in two directions on the same axes. <em>Right-shift along the pressure axis</em>: at end-expiration the airway pressure is no longer atmospheric — it has been pushed up by the trapped volume to a value called <strong>intrinsic PEEP</strong> (auto-PEEP). The new starting point of the loop is therefore set in from the y-axis by the magnitude of PEEPi. <em>Up-shift along the volume axis</em>: tidal breathing no longer starts from the resting FRC but from a higher <em>dynamic FRC</em> — the lung is operating on a steeper, less-compliant region of the inflation limb. Three penalties accumulate. The elastic wedge enlarges because every breath now climbs a steeper part of the curve. Both resistive limbs widen because airway obstruction and dynamic small-airway compression are higher. And a new <strong>inspiratory threshold load</strong> appears: a rectangular column of pure pressure work to the left of the loop's origin that the inspiratory muscles must overcome <em>before</em> any flow begins — work that produces no ventilation. The total work-of-breathing penalty often doubles or triples compared with the same patient's loop without trapping, which is the physiologic basis of the air hunger, ineffective triggering, fatigue, and weaning failure characteristic of severe obstructive disease.</p>
   <p><strong>Clinical corollaries</strong>:</p>
   <ul>
     <li>Set PEEP so that tidal breaths sit on the linear-compliance portion of the curve (above LIP, below UIP).</li>
-    <li>Hysteresis is why a brief recruitment maneuver, followed by a decremental PEEP titration, keeps lung open at lower PEEP than was required to open it.</li>
+    <li><strong>Hysteresis</strong> — the shaded gap between the two limbs in Figure 7.1 is the energy lost per cycle to surface-tension forces, viscoelastic tissue stretch, and recruitment / derecruitment of marginal alveoli. <em>Surfactant</em> is the dominant determinant: it lowers surface tension at small radii, so an alveolus that has popped open during recruitment can be held open at a lower distending pressure than was required to open it — which is why the deflation limb sits to the upper-left of the inflation limb. <em>Clinical consequence:</em> a brief recruitment maneuver (sustained pressure that climbs the inflation limb past the UIP) shifts the operating point onto the deflation limb, where lower PEEP holds the same volume open. This is the physiologic justification for the "open the lung, then keep it open" approach — recruitment maneuver followed by a decremental PEEP titration finds the minimum PEEP that prevents end-expiratory collapse, which is reliably below the PEEP required to open the lung in the first place.</li>
     <li>The total respiratory-system P-V curve includes the chest wall — in obesity, ascites, ARDS with abdominal hypertension, the chest wall component dominates and PEEP requirements rise.</li>
   </ul>
 
@@ -5264,22 +5211,106 @@
       <h4>7.2 The Campbell diagram — separating the lung from the chest wall</h4>
     </summary>
 
-<p>The single static P-V curve above shows the <em>respiratory system</em> as a whole. To think clearly about heart-lung interaction, it helps to break that curve into its two components — the <strong>lung</strong> and the <strong>chest wall</strong> — and superimpose them. This is the Campbell diagram (E.J.M. Campbell, 1958), the most under-used teaching tool in mechanical ventilation.<sup class="cite"><a href="#r25">25</a></sup></p>
+<p>The P-V loop above shows the <em>respiratory system</em> as a whole. To think clearly about heart-lung interaction, it helps to break it into its two components — the <strong>lung</strong> and the <strong>chest wall</strong> — and superimpose them. This is the Campbell diagram (E.J.M. Campbell, 1958), the most under-used teaching tool in mechanical ventilation.<sup class="cite"><a href="#r25">25</a></sup></p>
   <div class="figure">
-    <img src="https://i.postimg.cc/q7DpY553/work-of-breathing-including-respiratory-resistance.jpg" alt="Campbell diagram with work of breathing — elastic curves of lung and chest wall plus shaded resistive work loop" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 7.4.</b> The Campbell diagram with work of breathing decomposed. The elastic recoil curve of the lung (blue, declining left) and that of the chest wall (red, sigmoid) intersect at functional residual capacity (FRC). Tidal breathing displaces the lung above FRC by the tidal volume shown on the right. The shaded loop in the lower-left depicts the <em>resistive</em> work the inspiratory muscles must perform on each breath — divided into work against airway resistance (e.g., bronchospasm) and work against apparatus resistance (e.g., the endotracheal tube). The total work of breathing per breath is the elastic component (area between the curves over the tidal range) plus this resistive loop.<sup class="cite"><a href="#r25">25</a></sup></div>
-  </div>
-  <div class="figure">
-    <img src="https://i.postimg.cc/pXM57Bhq/SCR-20260503-etnp.png" alt="Campbell diagram applied to dynamic hyperinflation — shifted FRC and increased resistive + elastic work" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 7.5.</b> The Campbell diagram applied to <strong>dynamic hyperinflation</strong> (the auto-PEEP physiology of severe COPD or asthma). The patient's operating tidal range is shifted up the curves to a higher lung volume — a "dynamic FRC" sits above the relaxed FRC because expiration is incomplete. Two consequences are visible: (1) <em>elastic work increases</em> because the lung is operating on the steeper, less-compliant portion of the lung-recoil curve; and (2) <em>resistive work increases</em> on both inspiration and expiration because of the added airway obstruction. The patient pays an enormous work-of-breathing penalty just to maintain ventilation at this higher operating volume — the physiologic basis for the inspiratory threshold load that drives ineffective triggering (§16.3.1).</div>
+    <svg class="anim-fig" viewBox="0 0 760 520" role="img" aria-label="Campbell diagram. The lung's elastic recoil curve and the chest wall's recoil curve are plotted on volume-vs-pressure axes. Functional residual capacity (FRC) is the volume at which the inward pull of the lung is exactly balanced by the outward push of the chest wall — the unforced resting position. A tidal breath above FRC is marked. The area between the two curves over the tidal range is the elastic work; a separate shaded loop to the left of the chest-wall curve represents the additional resistive inspiratory work." style="max-width:760px; width:100%; height:auto; display:block; margin:0 auto;">
+      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
+        <text x="380" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="#1f3a5f">Campbell diagram — work of breathing decomposed</text>
+
+        <!-- Plot area: x = 110..680 (570 wide); y = 460..70 (390 tall)
+             X-axis is pressure: x=380 corresponds to 0 cmH2O. 1 cmH2O = 9 px.
+             Y-axis is %VC: y=460 = 0%, y=70 = 100%. -->
+
+        <!-- Y-axis -->
+        <line x1="380" y1="460" x2="380" y2="55" stroke="#1f3a5f" stroke-width="1.4"/>
+        <text x="380" y="44" text-anchor="middle" font-size="12" font-weight="700" fill="#1f3a5f">Volume (% VC)</text>
+
+        <!-- X-axis (pressure) -->
+        <line x1="110" y1="460" x2="700" y2="460" stroke="#1f3a5f" stroke-width="1.4"/>
+        <text x="700" y="482" text-anchor="end" font-size="12" font-weight="700" fill="#1f3a5f">Pressure (cmH₂O)</text>
+        <!-- Pressure tick labels (sparse) -->
+        <text x="200" y="478" text-anchor="middle" font-size="10" fill="#64748b">−20</text>
+        <text x="290" y="478" text-anchor="middle" font-size="10" fill="#64748b">−10</text>
+        <text x="380" y="478" text-anchor="middle" font-size="10" fill="#64748b">0</text>
+        <text x="470" y="478" text-anchor="middle" font-size="10" fill="#64748b">+10</text>
+        <text x="560" y="478" text-anchor="middle" font-size="10" fill="#64748b">+20</text>
+        <line x1="200" y1="458" x2="200" y2="463" stroke="#1f3a5f" stroke-width="1"/>
+        <line x1="290" y1="458" x2="290" y2="463" stroke="#1f3a5f" stroke-width="1"/>
+        <line x1="470" y1="458" x2="470" y2="463" stroke="#1f3a5f" stroke-width="1"/>
+        <line x1="560" y1="458" x2="560" y2="463" stroke="#1f3a5f" stroke-width="1"/>
+
+        <!-- %VC labels along y-axis -->
+        <text x="370" y="464" text-anchor="end" font-size="10" fill="#64748b">RV</text>
+        <line x1="375" y1="460" x2="385" y2="460" stroke="#1f3a5f" stroke-width="1"/>
+        <text x="370" y="335" text-anchor="end" font-size="10" fill="#64748b">FRC ≈ 40%</text>
+        <line x1="375" y1="335" x2="385" y2="335" stroke="#1f3a5f" stroke-width="1"/>
+        <text x="370" y="190" text-anchor="end" font-size="10" fill="#64748b">~70%</text>
+        <line x1="375" y1="190" x2="385" y2="190" stroke="#1f3a5f" stroke-width="1"/>
+        <text x="370" y="80" text-anchor="end" font-size="10" fill="#64748b">TLC</text>
+        <line x1="375" y1="80" x2="385" y2="80" stroke="#1f3a5f" stroke-width="1"/>
+
+        <!-- Horizontal FRC reference line -->
+        <line x1="110" y1="335" x2="700" y2="335" stroke="#94a3b8" stroke-width="0.6" stroke-dasharray="3,3"/>
+        <!-- Top of tidal range (FRC + V_T) reference line -->
+        <line x1="110" y1="270" x2="700" y2="270" stroke="#94a3b8" stroke-width="0.6" stroke-dasharray="3,3"/>
+
+        <!-- Tidal-range band: shaded between FRC and FRC+V_T (the working volume range) -->
+        <rect x="110" y="270" width="590" height="65" fill="#dbeafe" opacity="0.30"/>
+
+        <!-- LUNG recoil curve: smooth sigmoid, mostly in positive pressure region.
+             Anchored: at RV (y=460) ~ 0 cmH2O (x=380); rises through FRC (y=335) at ~+5 cmH2O (x=425);
+             continues to (~y=190) at +12 (x=488); ends at TLC (y=80) at ~+27 (x=623). -->
+        <path d="M 380 460 C 395 430 415 395 425 335 C 440 280 470 210 488 190 C 530 130 580 95 623 80" fill="none" stroke="#1f5f99" stroke-width="2.8"/>
+
+        <!-- CHEST WALL recoil curve: at RV ~ -25 (x=155); FRC ~ -5 (x=335); 70%VC ~ 0 (x=380); TLC ~ +8 (x=452). -->
+        <path d="M 155 460 C 200 430 280 380 335 335 C 360 305 372 260 380 190 C 395 150 425 110 452 80" fill="none" stroke="#9b2c2c" stroke-width="2.8"/>
+
+        <!-- ELASTIC WORK area: bounded by chest-wall curve (left), lung curve (right),
+             FRC line (bottom), FRC+V_T line (top). -->
+        <path d="M 335 335 C 360 305 372 290 376 270 L 460 270 C 445 285 432 305 425 335 Z" fill="#dcfce7" opacity="0.9" stroke="#166534" stroke-width="0.8"/>
+        <text x="396" y="306" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">Elastic work</text>
+
+        <!-- RESISTIVE WORK loop: a separate elliptical loop sitting to the LEFT of the chest wall curve,
+             spanning the tidal range. Represents extra negative pleural pressure swing during inspiration. -->
+        <ellipse cx="290" cy="302" rx="55" ry="33" fill="#fef3c7" opacity="0.9" stroke="#854d0e" stroke-width="0.9"/>
+        <text x="290" y="298" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Resistive</text>
+        <text x="290" y="312" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">work</text>
+        <!-- Connector line from resistive loop to inspiratory limb -->
+        <line x1="345" y1="302" x2="365" y2="305" stroke="#854d0e" stroke-width="0.6" stroke-dasharray="2,2"/>
+
+        <!-- FRC marker: dot where the two pressures balance (lung +5 ≈ -[chest wall -5]).
+             Place a marker on the FRC line at x=380 (zero net pressure, the y-axis). -->
+        <circle cx="380" cy="335" r="6" fill="#1f3a5f" stroke="white" stroke-width="1.5"/>
+        <line x1="380" y1="335" x2="445" y2="375" stroke="#475569" stroke-width="0.8"/>
+        <rect x="442" y="365" width="160" height="24" rx="4" ry="4" fill="white" stroke="#1f3a5f" stroke-width="1"/>
+        <text x="522" y="381" text-anchor="middle" font-size="11" fill="#1f3a5f" font-weight="700">FRC — recoils balance</text>
+
+        <!-- V_T bracket on right edge -->
+        <line x1="715" y1="335" x2="715" y2="270" stroke="#1d5a2c" stroke-width="1.2"/>
+        <line x1="710" y1="335" x2="720" y2="335" stroke="#1d5a2c" stroke-width="1.2"/>
+        <line x1="710" y1="270" x2="720" y2="270" stroke="#1d5a2c" stroke-width="1.2"/>
+        <text x="725" y="306" font-size="11" fill="#1d5a2c" font-weight="700">V<tspan dy="2" font-size="9">T</tspan></text>
+
+        <!-- Lung curve label -->
+        <line x1="600" y1="100" x2="635" y2="80" stroke="#1f5f99" stroke-width="0.6"/>
+        <text x="640" y="78" font-size="12" font-weight="700" fill="#1f5f99">Lung</text>
+        <text x="640" y="92" font-size="9" font-style="italic" fill="#1f5f99">inward recoil</text>
+
+        <!-- Chest wall curve label -->
+        <line x1="180" y1="430" x2="145" y2="445" stroke="#9b2c2c" stroke-width="0.6"/>
+        <text x="115" y="438" font-size="12" font-weight="700" fill="#9b2c2c">Chest wall</text>
+        <text x="115" y="452" font-size="9" font-style="italic" fill="#9b2c2c">outward recoil ←  → inward recoil</text>
+      </g>
+    </svg>
+    <div class="cap"><b>Figure 7.4 — The Campbell diagram with work of breathing decomposed.</b> Volume on the y-axis (% vital capacity); pressure on the x-axis (zero centered). The <strong style="color:#1f5f99;">lung</strong>'s elastic recoil curve (blue) — the inward pull that grows with lung volume — and the <strong style="color:#9b2c2c;">chest wall</strong>'s recoil curve (red) — outward at low volumes, neutral at ~ 70% VC, inward above — are plotted together. <strong>Functional residual capacity (FRC)</strong> is the volume at which the lung's inward pull is exactly balanced by the chest wall's outward push: at that volume, no muscular work is needed to hold the system in place, which is why FRC is the unforced resting position. Tidal breathing displaces the lung above FRC by V<sub>T</sub> (right bracket). The green wedge between the two curves over the tidal range is the <em>elastic work</em> the inspiratory muscles must perform per breath. The yellow loop to the left of the chest-wall curve is the <em>resistive work</em> — the additional pleural-pressure swing required to drive gas through airway and apparatus resistance during inspiration. Total work of breathing per breath = elastic + resistive components. In dynamic hyperinflation (severe COPD or asthma) the operating point shifts up the curves to a higher dynamic FRC, both shaded areas grow, and an inspiratory threshold load appears at the new starting point — discussed in the prose above and in §17.<sup class="cite"><a href="#r25">25</a></sup></div>
   </div>
   <h5>Why this matters at the bedside</h5>
   <ul>
-    <li><strong>Pleural pressure (P_pl) is the bridge to the heart.</strong> What the lung &quot;sees&quot; mechanically and what the heart &quot;sees&quot; hemodynamically share the same pressure space. The Campbell diagram makes this explicit: every breath shifts P_pl, and that shift loads or unloads each cardiac chamber (see §29.4).</li>
-    <li><strong>An isolated drop in chest-wall compliance</strong> (e.g., obesity, ascites, abdominal hypertension) shifts the chest-wall curve to the right and increases P_mus markedly, but barely changes alveolar pressure. The patient feels heavier-to-breathe but their <em>lung</em> is fine — important when interpreting Pplat in obese ARDS (use esophageal manometry; see §29).</li>
-    <li><strong>An isolated drop in lung compliance</strong> (e.g., ARDS, edema, fibrosis) shifts the lung curve right; FRC falls; P_mus rises rapidly with volume; the patient compensates with rapid-shallow breathing.</li>
-    <li><strong>Both curves shift right (the typical ICU patient — ARDS plus edema plus ascites)</strong> — FRC drops, P_mus rises sharply, work of breathing dominates, and rapid-shallow breathing predicts weaning failure (high RSBI).</li>
-    <li><strong>Passive ventilation</strong> moves the patient along the chest-wall curve while the ventilator does the elastic work; the relevant pressure is now <em>airway pressure</em> minus <em>P_pl</em> = transpulmonary pressure (§29).</li>
+    <li><strong>Pleural pressure (P<sub>pl</sub>) is the bridge to the heart.</strong> What the lung &quot;sees&quot; mechanically and what the heart &quot;sees&quot; hemodynamically share the same pressure space. The Campbell diagram makes this explicit: every breath shifts P<sub>pl</sub>, and that shift loads or unloads each cardiac chamber (see §29.4).</li>
+    <li><strong>An isolated drop in chest-wall compliance</strong> (e.g., elevated body habitus, ascites, abdominal hypertension) shifts the chest-wall curve to the right and increases P<sub>mus</sub> markedly, but barely changes alveolar pressure. The patient feels heavier-to-breathe but their <em>lung</em> is fine — important when interpreting P<sub>plat</sub> in patients with reduced chest-wall compliance who develop ARDS (use esophageal manometry; see §29).</li>
+    <li><strong>An isolated drop in lung compliance</strong> (e.g., ARDS, edema, fibrosis) shifts the lung curve right; FRC falls; P<sub>mus</sub> rises rapidly with volume; the patient compensates with rapid-shallow breathing.</li>
+    <li><strong>Both curves shift right (the typical ICU patient — ARDS plus edema plus ascites)</strong> — FRC drops, P<sub>mus</sub> rises sharply, work of breathing dominates, and rapid-shallow breathing predicts weaning failure (high RSBI).</li>
+    <li><strong>Passive ventilation</strong> moves the patient along the chest-wall curve while the ventilator does the elastic work; the relevant pressure is now <em>airway pressure</em> minus <em>P<sub>pl</sub></em> = transpulmonary pressure (§29).</li>
   </ul>
   </details>
   <details class="chap-acc" data-acc-id="c7-h4-2">
@@ -5387,7 +5418,7 @@
 
 <section class="chap" id="c8" data-part="part2">
   <h3><span class="num">8</span>Anatomy of a ventilator breath</h3>
-  <p class="lead">Every breath the ventilator delivers — in any mode — is decomposed into the same four phases: <em>trigger</em> (when the breath starts), <em>inspiration</em> (how gas is delivered), <em>cycle</em> (when inspiration ends), and <em>expiration</em> (passive recoil to baseline). Master this anatomy and every mode in the next four chapters becomes a recombination of the same four parameters.</p>
+  <p class="lead">Every breath the ventilator delivers — in any mode — is composed of the same four phases: <em>trigger</em> (when the breath starts), <em>inspiration</em> (how gas is delivered), <em>cycle</em> (when inspiration ends), and <em>expiration</em> (passive recoil to baseline). Master this anatomy and every mode in the next four chapters becomes a recombination of the same four parameters.</p>
 
   
   
@@ -5452,7 +5483,7 @@
     <tbody>
       <tr><td><strong>Volume-cycled</strong></td><td>Pure VC (legacy)</td><td>If V<sub>T</sub> reached during a leak, you under-deliver and the patient receives less than set</td></tr>
       <tr><td><strong>Time-cycled</strong></td><td>VC (modern, with set T<sub>i</sub>) and PC</td><td>T<sub>i</sub> set too long → late-cycle dyssynchrony (patient wants to exhale, vent is still inflating). T<sub>i</sub> too short → premature cycling, double-trigger.</td></tr>
-      <tr><td><strong>Flow-cycled</strong></td><td>PSV; cycle threshold = % of peak inspiratory flow</td><td>Threshold too low (e.g., 10%) → late cycling in COPD. Too high (e.g., 40%) → premature cycling in stiff lung. Default 25% works for most.</td></tr>
+      <tr><td><strong>Flow-cycled</strong></td><td>PSV; cycle threshold = % of peak inspiratory flow</td><td>Threshold too low (e.g., 10%) → vent waits longer for flow to fall, so <em>longer T<sub>i</sub></em> → late cycling in COPD. Too high (e.g., 40%) → vent ends inspiration earlier, so <em>shorter T<sub>i</sub></em> → premature cycling in stiff lung. Default 25% works for most. (Inverse intuition: lower % = longer T<sub>i</sub>; higher % = shorter T<sub>i</sub>.)</td></tr>
     </tbody>
   </table>
   </details>
@@ -5528,7 +5559,7 @@
       <li>Inspiration: exactly one of {volume, pressure} is the set target; the other is dependent on lung mechanics.</li>
       <li>Three cycle mechanisms (volume, time, flow); time-cycle T<sub>i</sub> too short → double-trigger, too long → late-cycle dyssynchrony; flow-cycle threshold default 25% of peak.</li>
       <li>Expiration is passive — operator controls PEEP and (indirectly) T<sub>e</sub>; T<sub>e</sub> &lt; 3τ → auto-PEEP.</li>
-      <li>The equation of motion (P = V/C + V̇·R + PEEP) makes mode choice arithmetic: which of those three terms does the operator clamp?</li>
+      <li>The equation of motion (P<sub>vent</sub> + P<sub>mus</sub> = V/C + V̇·R + PEEP) makes mode choice arithmetic: which side does the operator clamp? VC fixes the right side (V is set; pressure is whatever it has to be). PC fixes the vent's contribution to the left side (P<sub>vent</sub> is set; volume is dependent). PSV fixes the vent's <em>support level</em> on the left side and lets P<sub>mus</sub> share the work — which is why the same setting feels different breath-to-breath as the patient's effort changes.</li>
     </ul>
   </div>
 </section>
@@ -6064,19 +6095,57 @@
         <strong style="color:#0072B2; font-size:0.95rem;">Live waveform simulator</strong>
         <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— manipulate the equation of motion in real time</span>
       </div>
-      <a href="mechanical-ventilation-waveform-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+      <a href="https://jonhunterhunter7-cell.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗
       </a>
     </div>
     <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#0a0e1a;">
       <iframe
-        src="mechanical-ventilation-waveform-simulator.html"
+        id="vent-sim-iframe"
+        src="https://jonhunterhunter7-cell.github.io/medical-education/mechanical-ventilation-waveform-simulator.html"
         title="Ventilator waveform simulator — pressure, flow, and volume traces driven by the equation of motion"
         loading="lazy"
         style="width:100%; height:2400px; border:0; display:block;"
         allow="clipboard-write"
       ></iframe>
     </div>
+    <script>
+      (function(){
+        const iframe = document.getElementById('vent-sim-iframe');
+        if (!iframe) return;
+        // Width-based starting estimate — overridden by postMessage when the
+        // iframed page reports its real document height (see height-sync
+        // script in mechanical-ventilation-waveform-simulator.html).
+        // Track whether the iframed page has reported its own height. Once it
+        // has, stop applying the width-based estimate so we don't fight the
+        // exact postMessage value.
+        let reportedExact = false;
+        function estimateHeight(w) {
+          if (w >= 1200) return 2200;
+          if (w >= 800)  return 2400;
+          return 2800;
+        }
+        function applyEstimated() {
+          if (reportedExact) return;
+          const w = iframe.clientWidth || iframe.getBoundingClientRect().width || 1000;
+          iframe.style.height = estimateHeight(w) + 'px';
+        }
+        applyEstimated();
+        if (typeof ResizeObserver !== 'undefined') {
+          const ro = new ResizeObserver(applyEstimated);
+          ro.observe(iframe);
+        } else {
+          window.addEventListener('resize', applyEstimated);
+        }
+        window.addEventListener('message', function(e){
+          if (e && e.data && e.data.type === 'vent-sim-height' && typeof e.data.height === 'number') {
+            reportedExact = true;
+            const h = Math.max(600, Math.min(6000, e.data.height + 20));
+            iframe.style.height = h + 'px';
+          }
+        });
+      })();
+    </script>
     <div class="cap" style="margin-top:0.6rem;">
       <b>Live simulator.</b> Sweep traces driven by P<sub>aw</sub>(t) = V(t)/C + Flow(t)·R + PEEP. Pick a <em>mode</em> (VC, PC, PRVC, PS, SIMV, CPAP, APRV) and a <em>scenario</em> (ARDS, COPD, auto-PEEP, ineffective triggering, double-triggering, reverse-triggering, premature/delayed cycling) and watch the shapes change. Drag <em>Compliance</em> and <em>Resistance</em> to feel how the slope of the pressure trace splits into elastic vs resistive components. Use <em>Inspiratory Hold</em> to read P<sub>plat</sub> and compute static compliance; use <em>Expiratory Hold</em> to unmask intrinsic PEEP. The simulator's traces are the same physiology this chapter walks through in static form — the figures below are snapshots of what you'll see here.
     </div>
@@ -7030,10 +7099,10 @@
       <button data-tau="1.6" data-rr="28" data-ti="1.5" data-vt="600">Asthma crisis</button>
     </div>
     <div class="if-stats">
-      <div class="if-stat"><div class="if-stat-label">T_e (expiratory time)</div><div class="if-stat-val" id="ifap-te">2.0 s</div><div class="if-stat-sub">need ≥ 3τ</div></div>
-      <div class="if-stat"><div class="if-stat-label">T_e / τ</div><div class="if-stat-val" id="ifap-teratio">2.5</div><div class="if-stat-sub" id="ifap-teclass">marginal</div></div>
+      <div class="if-stat"><div class="if-stat-label">T<sub>e</sub> (expiratory time)</div><div class="if-stat-val" id="ifap-te">2.0 s</div><div class="if-stat-sub">need ≥ 3τ</div></div>
+      <div class="if-stat"><div class="if-stat-label">T<sub>e</sub> / τ</div><div class="if-stat-val" id="ifap-teratio">2.5</div><div class="if-stat-sub" id="ifap-teclass">marginal</div></div>
       <div class="if-stat"><div class="if-stat-label">Auto-PEEP (steady)</div><div class="if-stat-val" id="ifap-peepi">0</div><div class="if-stat-sub">cmH₂O equivalent</div></div>
-      <div class="if-stat"><div class="if-stat-label">Trapped V_T (steady)</div><div class="if-stat-val" id="ifap-trapped">0</div><div class="if-stat-sub">mL above FRC</div></div>
+      <div class="if-stat"><div class="if-stat-label">Trapped V<sub>T</sub> (steady)</div><div class="if-stat-val" id="ifap-trapped">0</div><div class="if-stat-sub">mL above FRC</div></div>
     </div>
     <svg class="if-chart" viewBox="0 0 700 320" role="img" aria-label="Lung volume over six successive breaths showing baseline volume creep — dynamic hyperinflation. Auto-PEEP is the gap between end-expiratory baseline and FRC.">
       <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10.5" fill="#475569">
@@ -7049,7 +7118,7 @@
         <g id="ifap-ticks"></g>
       </g>
     </svg>
-    <div class="cap" style="margin-top: 6px;"><b>Figure 17.2 — Try it.</b> Six successive breaths. The blue trace is lung volume over time; the dashed red trace is the end-expiratory baseline. Watch the baseline drift up (auto-PEEP) when T_e &lt; 3τ. Press "COPD, fast RR" to see the trap, then "COPD, slow RR (fix)" — the same lung, lower rate, baseline returns to FRC.</div>
+    <div class="cap" style="margin-top: 6px;"><b>Figure 17.2 — Try it.</b> Six successive breaths. The blue trace is lung volume over time; the dashed red trace is the end-expiratory baseline. Watch the baseline drift up (auto-PEEP) when T<sub>e</sub> &lt; 3τ. Press "COPD, fast RR" to see the trap, then "COPD, slow RR (fix)" — the same lung, lower rate, baseline returns to FRC.</div>
   </div>
   <script>
   (function(){
@@ -7191,9 +7260,59 @@
   <h3><span class="num">18</span>Triggering &amp; patient-ventilator asynchrony</h3>
   <p>Triggering is the moment the ventilator detects patient effort and starts a breath. It is the single most clinically consequential interface between the patient and the machine — a bad trigger setup creates work of breathing, distress, sleep loss, P-SILI, prolonged liberation, and increased mortality. Asynchrony with an asynchrony index &gt; 10% is independently associated with mortality.<sup class="cite"><a href="#r6">6</a></sup><sup class="cite"><a href="#r24">24</a></sup></p>
 
-  <div class="figure">
-    <img src="https://i.postimg.cc/0jJdTh5t/SCR-20260503-dpte.png" alt="Asynchrony patterns overview — graphic representation, description, and causes" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.1 — Overview.</b> Comprehensive reference table covering the four major asynchrony types — graphic representation alongside description and causes. Use this as the at-a-glance summary; the subsections below add detail and individual waveform examples.</div>
+  <div class="figure" id="ch18-dyssynchrony-simulator" style="margin-bottom:1.4rem;">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
+      <div>
+        <strong style="color:#4F46E5; font-size:0.95rem;">Patient–ventilator dyssynchrony explorer</strong>
+        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— live waveforms for the eight common patterns</span>
+      </div>
+      <a href="https://jonhunterhunter7-cell.github.io/medical-education/dyssynchrony_identifier_v10.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+        Open full-screen ↗
+      </a>
+    </div>
+    <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#FAF9F5;">
+      <iframe
+        id="dys-explorer-iframe"
+        src="https://jonhunterhunter7-cell.github.io/medical-education/dyssynchrony_identifier_v10.html"
+        title="Patient–ventilator dyssynchrony explorer — live waveforms for the eight common patterns"
+        loading="lazy"
+        style="width:100%; height:1500px; border:0; display:block;"
+      ></iframe>
+    </div>
+    <script>
+      (function(){
+        const iframe = document.getElementById('dys-explorer-iframe');
+        if (!iframe) return;
+        // Width-based height estimator — uses the widget's known responsive
+        // breakpoints to set a sensible height without requiring the iframed
+        // page to cooperate. The exact postMessage handler below overrides
+        // this whenever the embedded page reports its real document height.
+        function estimateHeight(w) {
+          if (w >= 1000) return 1250;
+          if (w >= 760)  return 1500;
+          if (w >= 520)  return 1750;
+          return 1950;
+        }
+        function applyEstimated() {
+          const w = iframe.clientWidth || iframe.getBoundingClientRect().width || 800;
+          iframe.style.height = estimateHeight(w) + 'px';
+        }
+        applyEstimated();
+        if (typeof ResizeObserver !== 'undefined') {
+          const ro = new ResizeObserver(applyEstimated);
+          ro.observe(iframe);
+        } else {
+          window.addEventListener('resize', applyEstimated);
+        }
+        window.addEventListener('message', function(e){
+          if (e && e.data && e.data.type === 'dys-explorer-height' && typeof e.data.height === 'number') {
+            const h = Math.max(400, Math.min(3000, e.data.height + 20));
+            iframe.style.height = h + 'px';
+          }
+        });
+      })();
+    </script>
+    <div class="cap"><b>Figure 18.1 — Patient–ventilator dyssynchrony explorer.</b> Interactive overview of the eight common dyssynchrony patterns. Select a pattern to see live pressure and flow waveforms with annotated diagnostic features, the underlying mechanism, and corrective actions. Use this as the at-a-glance summary; the subsections below add detail and individual waveform examples.</div>
   </div>
 
   
@@ -7715,9 +7834,82 @@
       <h4>20.3 PEEP / FiO₂ tables</h4>
     </summary>
 
-<div class="figure">
-    <img src="https://i.postimg.cc/NGZddjJd/13-ards-peep-table.png" alt="ARDSNet low and high PEEP/FiO2 tables" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 20.1.</b> The two practical PEEP/FiO₂ ladders. Move to the right (more support) until SpO₂ is 88–95%; back off when oxygenation improves. Always re-check Pplat and driving pressure after a step.</div>
+<div class="figure" id="fig-20-1-peepfio2">
+    <style>
+      #fig-20-1-peepfio2 .ladder-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+      @media (min-width: 760px) { #fig-20-1-peepfio2 .ladder-grid { grid-template-columns: 1fr 1fr; } }
+      #fig-20-1-peepfio2 .ladder-card { border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #ffffff; }
+      #fig-20-1-peepfio2 .ladder-title { background: #1f3a5f; color: #ffffff; padding: 8px 12px; font-weight: 700; font-size: 12.5px; letter-spacing: 0.02em; }
+      #fig-20-1-peepfio2 .ladder-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+      #fig-20-1-peepfio2 .ladder-tbl th, #fig-20-1-peepfio2 .ladder-tbl td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: center; vertical-align: middle; }
+      #fig-20-1-peepfio2 .ladder-tbl thead th { background: #f1f5f9; font-weight: 700; color: #1f3a5f; }
+      #fig-20-1-peepfio2 .ladder-tbl thead .col-step { background: #e2e8f0; width: 18%; }
+      #fig-20-1-peepfio2 .ladder-tbl thead .col-fio2 { background: #fef3c7; color: #854d0e; width: 36%; }
+      #fig-20-1-peepfio2 .ladder-tbl thead .col-peep { background: #dbeafe; color: #1e3a8a; width: 46%; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-step { background: #f8fafc; font-weight: 600; color: #475569; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-fio2 { background: #fffbeb; font-weight: 600; color: #854d0e; font-variant-numeric: tabular-nums; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-peep { background: #eff6ff; font-weight: 700; color: #1e3a8a; font-variant-numeric: tabular-nums; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody tr { display: table-row !important; visibility: visible !important; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody tr:hover td { background: #f0f9ff; }
+      /* Override the global sticky-thead rule (~line 1647) — the ladder is
+         compact and the sticky thead was floating over the first tbody row,
+         visually clipping it. Keep the header in normal flow here. */
+      #fig-20-1-peepfio2 .ladder-tbl thead th { position: static !important; top: auto !important; z-index: auto !important; }
+      #fig-20-1-peepfio2 .ladder-note { font-size: 11.5px; color: #475569; padding: 8px 12px 10px; line-height: 1.45; background: #f8fafc; border-top: 1px solid #cbd5e1; }
+    </style>
+    <div class="ladder-grid">
+      <div class="ladder-card">
+        <div class="ladder-title">Low-PEEP / high-FiO₂ ladder<span style="font-weight:400; opacity:0.85; margin-left:6px;">— ARMA, ARDSNet</span><sup class="cite"><a href="#r8" style="color:#fde68a;">8</a></sup></div>
+        <table class="ladder-tbl">
+          <thead>
+            <tr><th class="col-step">Step</th><th class="col-fio2">FiO₂</th><th class="col-peep">PEEP (cmH₂O)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="cell-step">1</td><td class="cell-fio2">0.3</td><td class="cell-peep">5</td></tr>
+            <tr><td class="cell-step">2</td><td class="cell-fio2">0.4</td><td class="cell-peep">5</td></tr>
+            <tr><td class="cell-step">3</td><td class="cell-fio2">0.4</td><td class="cell-peep">8</td></tr>
+            <tr><td class="cell-step">4</td><td class="cell-fio2">0.5</td><td class="cell-peep">8</td></tr>
+            <tr><td class="cell-step">5</td><td class="cell-fio2">0.5</td><td class="cell-peep">10</td></tr>
+            <tr><td class="cell-step">6</td><td class="cell-fio2">0.6</td><td class="cell-peep">10</td></tr>
+            <tr><td class="cell-step">7</td><td class="cell-fio2">0.7</td><td class="cell-peep">10</td></tr>
+            <tr><td class="cell-step">8</td><td class="cell-fio2">0.7</td><td class="cell-peep">12</td></tr>
+            <tr><td class="cell-step">9</td><td class="cell-fio2">0.7</td><td class="cell-peep">14</td></tr>
+            <tr><td class="cell-step">10</td><td class="cell-fio2">0.8</td><td class="cell-peep">14</td></tr>
+            <tr><td class="cell-step">11</td><td class="cell-fio2">0.9</td><td class="cell-peep">14</td></tr>
+            <tr><td class="cell-step">12</td><td class="cell-fio2">0.9</td><td class="cell-peep">16</td></tr>
+            <tr><td class="cell-step">13</td><td class="cell-fio2">0.9</td><td class="cell-peep">18</td></tr>
+            <tr><td class="cell-step">14</td><td class="cell-fio2">1.0</td><td class="cell-peep">18–24</td></tr>
+          </tbody>
+        </table>
+        <div class="ladder-note">Default day-1 strategy. Useful when the patient is recruitable but you do not have evidence of severe ARDS.</div>
+      </div>
+      <div class="ladder-card">
+        <div class="ladder-title">High-PEEP / low-FiO₂ ladder<span style="font-weight:400; opacity:0.85; margin-left:6px;">— ALVEOLI / LOV-eD</span><sup class="cite"><a href="#r9" style="color:#fde68a;">9</a></sup></div>
+        <table class="ladder-tbl">
+          <thead>
+            <tr><th class="col-step">Step</th><th class="col-fio2">FiO₂</th><th class="col-peep">PEEP (cmH₂O)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="cell-step">1</td><td class="cell-fio2">0.3</td><td class="cell-peep">5</td></tr>
+            <tr><td class="cell-step">2</td><td class="cell-fio2">0.3</td><td class="cell-peep">8</td></tr>
+            <tr><td class="cell-step">3</td><td class="cell-fio2">0.3</td><td class="cell-peep">10</td></tr>
+            <tr><td class="cell-step">4</td><td class="cell-fio2">0.3</td><td class="cell-peep">12</td></tr>
+            <tr><td class="cell-step">5</td><td class="cell-fio2">0.3</td><td class="cell-peep">14</td></tr>
+            <tr><td class="cell-step">6</td><td class="cell-fio2">0.4</td><td class="cell-peep">14</td></tr>
+            <tr><td class="cell-step">7</td><td class="cell-fio2">0.4</td><td class="cell-peep">16</td></tr>
+            <tr><td class="cell-step">8</td><td class="cell-fio2">0.5</td><td class="cell-peep">16</td></tr>
+            <tr><td class="cell-step">9</td><td class="cell-fio2">0.5</td><td class="cell-peep">18</td></tr>
+            <tr><td class="cell-step">10</td><td class="cell-fio2">0.5–0.8</td><td class="cell-peep">20</td></tr>
+            <tr><td class="cell-step">11</td><td class="cell-fio2">0.8</td><td class="cell-peep">22</td></tr>
+            <tr><td class="cell-step">12</td><td class="cell-fio2">0.9</td><td class="cell-peep">22</td></tr>
+            <tr><td class="cell-step">13</td><td class="cell-fio2">1.0</td><td class="cell-peep">22</td></tr>
+            <tr><td class="cell-step">14</td><td class="cell-fio2">1.0</td><td class="cell-peep">22–24</td></tr>
+          </tbody>
+        </table>
+        <div class="ladder-note">Use in moderate-to-severe ARDS (P/F &lt; 200) and clearly recruitable phenotype — meta-analyses show benefit only in this subgroup.</div>
+      </div>
+    </div>
+    <div class="cap" style="margin-top:10px;"><b>Figure 20.1.</b> The two practical PEEP / FiO₂ ladders used in adult ARDS. Each row is one step. Read across: at each step, the FiO₂ (amber) and PEEP (blue) are paired together. Pick the step that matches the patient's current FiO₂; advance <em>down</em> the ladder (more support) until SpO₂ is 88–95% and the patient tolerates the step; back <em>up</em> the ladder when oxygenation improves and you can reduce. After every step, re-check P<sub>plat</sub> (≤ 30) and driving pressure (≤ 15) — a higher PEEP that worsens these numbers indicates over-recruitment, not adequate support. Step combinations shown are the original ARMA / ALVEOLI / LOV-eD protocols; they are guides, not prescriptions, and should be adapted to the individual patient using best-compliance, esophageal-guided, or response-based titration when available.</div>
   </div>
   <div class="pitfall"><strong>P-SILI</strong>Patient self-inflicted lung injury — large spontaneous tidal volumes / pendelluft / reverse triggering can mimic the vent's barotrauma and progress mild ARDS to moderate-severe. Recognize on the pressure scalar and esophageal manometry; sedate, paralyze, or lower support as appropriate.<sup class="cite"><a href="#r14">14</a></sup></div>
   </details>
@@ -8721,11 +8913,11 @@
 
 <section class="chap" id="c29" data-part="part5">
   <h3><span class="num">29</span>Esophageal manometry &amp; transpulmonary pressure</h3>
-  <p>The pleural pressure (P_pl) we cannot measure directly is approximated by esophageal pressure (P_es) measured with an esophageal balloon. The clinically useful quantity is <strong>transpulmonary pressure</strong>:</p>
+  <p>The pleural pressure (P<sub>pl</sub>) we cannot measure directly is approximated by esophageal pressure (P<sub>es</sub>) measured with an esophageal balloon. The clinically useful quantity is <strong>transpulmonary pressure</strong>:</p>
   <div class="eq">$$P_L \;=\; P_{alv} - P_{pl} \;\approx\; P_{aw} - P_{es}$$</div>
   <ul>
-    <li><strong>P_L,end-exp</strong> = end-expiratory P_aw (PEEP) − P_es,end-exp. <em>Target 0 to +5 cmH₂O</em>; negative values imply alveolar collapse → raise PEEP.</li>
-    <li><strong>P_L,end-insp</strong> = Pplat − P_es,end-insp. <em>Keep &lt; 25 cmH₂O</em>; higher implies overdistension → lower VT or PEEP.</li>
+    <li><strong>P<sub>L,end-exp</sub></strong> = end-expiratory P<sub>aw</sub> (PEEP) − P<sub>es,end-exp</sub>. <em>Target 0 to +5 cmH₂O</em>; negative values imply alveolar collapse → raise PEEP.</li>
+    <li><strong>P<sub>L,end-insp</sub></strong> = P<sub>plat</sub> − P<sub>es,end-insp</sub>. <em>Keep &lt; 25 cmH₂O</em>; higher implies overdistension → lower V<sub>T</sub> or PEEP.</li>
   </ul>
   <p>Highest yield in <strong>obesity, pregnancy, abdominal hypertension, severe chest-wall pathology</strong>, where airway pressures alone overestimate lung stress.</p>
 
@@ -8799,8 +8991,8 @@
 <div class="takeaways">
     <h5>Key takeaways</h5>
     <ul>
-      <li>Transpulmonary pressure (P_L) = P_alveolar − P_pleural ≈ P_airway − P_esophageal; target P_L,end-exp 0 to +5 cmH₂O (alveoli open), P_L,end-insp &lt; 25 cmH₂O (not overdistended).</li>
-      <li>Lung stress (P_L) and strain (ΔV/FRC) are the injury currency; stress &gt; 25 cmH₂O and strain &gt; 1.5–2.0 cross thresholds for VILI — esophageal manometry reveals when high airway pressure = high pleural pressure (chest wall), not lung injury.</li>
+      <li>Transpulmonary pressure (P<sub>L</sub>) = P<sub>alveolar</sub> − P<sub>pleural</sub> ≈ P<sub>airway</sub> − P<sub>esophageal</sub>; target P<sub>L,end-exp</sub> 0 to +5 cmH₂O (alveoli open), P<sub>L,end-insp</sub> &lt; 25 cmH₂O (not overdistended).</li>
+      <li>Lung stress (P<sub>L</sub>) and strain (ΔV/FRC) are the injury currency; stress &gt; 25 cmH₂O and strain &gt; 1.5–2.0 cross thresholds for VILI — esophageal manometry reveals when high airway pressure = high pleural pressure (chest wall), not lung injury.</li>
       <li>Cardiopulmonary interactions: ↑ intrathoracic pressure ↓ venous return + ↑ RV afterload; ↑ pleural pressure ↓ LV transmural pressure (afterload); every PEEP step has hemodynamic cost.</li>
       <li>Guyton curves: ↑ intrathoracic pressure drops venous-return plateau AND may shift Frank-Starling right via RV strain — track both; low-output state post-PEEP = volume, pressors, or lower PEEP.</li>
     </ul>
@@ -10862,7 +11054,7 @@
       <tr><td><strong>Atelectasis</strong></td><td>Gradual; focal CXR opacity; dependent lung; ↓ SpO₂</td><td>Recruit; ↑ PEEP; reposition; suction</td></tr>
       <tr><td><strong>Pneumothorax</strong></td><td>Acute; unilateral silence; deep sulcus on supine CXR</td><td>Emergent needle decompression / chest tube</td></tr>
       <tr><td><strong>Intra-abdominal hypertension</strong></td><td>Pplat ↑ but PIP near baseline; tense abdomen; bladder pressure &gt; 20 mmHg</td><td>Decompression (drainage, laparotomy if ACS); loosen binders</td></tr>
-      <tr><td><strong>Chest-wall stiffness (obesity, ascites, edema)</strong></td><td>Pplat ↑ but P_L (transpulmonary pressure) may be normal — esophageal manometry tells the truth</td><td>Accept Pplat 30–35 if oxygenation tolerable; place esophageal balloon if available</td></tr>
+      <tr><td><strong>Chest-wall stiffness (e.g., reduced compliance from body habitus, ascites, edema)</strong></td><td>P<sub>plat</sub> ↑ but P<sub>L</sub> (transpulmonary pressure) may be normal — esophageal manometry tells the truth</td><td>Accept P<sub>plat</sub> 30–35 if oxygenation tolerable; place esophageal balloon if available</td></tr>
       <tr><td><strong>Auto-PEEP / dynamic hyperinflation</strong></td><td>Expiratory flow doesn't reach zero before next breath; common in COPD/asthma</td><td>↓ RR; ↑ peak flow (lengthen Te); set PEEPe ~ 75% of auto-PEEP; bronchodilators</td></tr>
     </tbody>
   </table>
@@ -10981,11 +11173,11 @@
     <tr><td>I:E</td><td>Inspiratory : expiratory time ratio</td><td>LIP / UIP</td><td>Lower / upper inflection point</td></tr>
     <tr><td>MP</td><td>Mechanical power</td><td>NAVA</td><td>Neurally adjusted ventilatory assist</td></tr>
     <tr><td>NIV</td><td>Non-invasive ventilation</td><td>NMB</td><td>Neuromuscular blockade</td></tr>
-    <tr><td>P_aw / P_alv</td><td>Airway / alveolar pressure</td><td>PBW</td><td>Predicted body weight</td></tr>
+    <tr><td>P<sub>aw</sub> / P<sub>alv</sub></td><td>Airway / alveolar pressure</td><td>PBW</td><td>Predicted body weight</td></tr>
     <tr><td>PC</td><td>Pressure control</td><td>PEEP</td><td>Positive end-expiratory pressure</td></tr>
     <tr><td>PEEPi</td><td>Intrinsic PEEP (auto-PEEP)</td><td>Pes</td><td>Esophageal pressure</td></tr>
     <tr><td>P/F</td><td>PaO₂ / FiO₂</td><td>PIP</td><td>Peak inspiratory pressure</td></tr>
-    <tr><td>P_L</td><td>Transpulmonary pressure</td><td>Pplat</td><td>Plateau pressure</td></tr>
+    <tr><td>P<sub>L</sub></td><td>Transpulmonary pressure</td><td>P<sub>plat</sub></td><td>Plateau pressure</td></tr>
     <tr><td>PRVC</td><td>Pressure-regulated volume control</td><td>PSV</td><td>Pressure support ventilation</td></tr>
     <tr><td>P-SILI</td><td>Patient self-inflicted lung injury</td><td>RASS</td><td>Richmond Agitation–Sedation Scale</td></tr>
     <tr><td>Raw</td><td>Airway resistance</td><td>RSBI</td><td>Rapid shallow breathing index (f/Vt)</td></tr>
@@ -11274,9 +11466,12 @@
         children.forEach(walk);
       }
     }
-    // Walk prose, callouts, takeaways, figure captions, table cells, and
-    // table captions so abbreviations in any of those locations get wrapped.
-    document.querySelectorAll('main p, main li, main .pearl, main .pitfall, main .note, main .phys, main .takeaways, main .cap, main td, main caption').forEach(walk);
+    // Walk prose, callouts, takeaways, figure captions, table cells AND
+    // table headers, table captions, and lead paragraphs so abbreviations
+    // in any of those locations get wrapped. (table-header cells `<th>` were
+    // previously missed; figure captions and table cells now share the same
+    // coverage.)
+    document.querySelectorAll('main p, main .lead, main li, main .pearl, main .pitfall, main .note, main .phys, main .takeaways, main .cap, main figcaption, main td, main th, main caption, main dt, main dd, main blockquote').forEach(walk);
   }
   // Run after a short delay to avoid blocking initial paint
   setTimeout(autoWrapAbbreviations, 50);
@@ -12032,10 +12227,16 @@ saveInputs();
     document.body.style.overflow = '';
     lbSvgHost.innerHTML = '';
   }
-  lbClose.addEventListener('click', closeLb);
-  lb.addEventListener('click', (e) => {
-    if (e.target === lb || e.target === lbImg || e.target === lbSvgHost) closeLb();
+  lbClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeLb();
   });
+  // Close on any click anywhere inside the open lightbox — including a second
+  // click on the enlarged image or anywhere inside the cloned SVG (whose nested
+  // child elements were previously not matched by the strict equality test).
+  // The close button has its own handler with stopPropagation, so it doesn't
+  // double-fire.
+  lb.addEventListener('click', () => closeLb());
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && lb.classList.contains('show')) closeLb();
   });
