@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capnography Waveform Library</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; }
+    #root:empty::before {
+      content: "Loading capnography simulator…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: ui-monospace, monospace;
+      color: #94a3b8;
+      background: #0a0e1a;
+    }
+    #error-display {
+      display: none;
+      padding: 2rem;
+      background: #1a0a0a;
+      color: #fca5a5;
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="error-display"></div>
+  <script>
+    window.addEventListener('error', function(e) {
+      var ed = document.getElementById('error-display');
+      var root = document.getElementById('root');
+      if (ed) {
+        ed.style.display = 'block';
+        ed.textContent = 'Error loading capnography simulator:\n\n' +
+          (e.message || 'Unknown error') +
+          (e.filename ? '\n\nFile: ' + e.filename : '') +
+          (e.lineno ? '\nLine: ' + e.lineno : '') +
+          (e.error && e.error.stack ? '\n\nStack:\n' + e.error.stack : '');
+      }
+      if (root) root.style.display = 'none';
+    });
+  </script>
+  <script type="text/babel" data-presets="react">
+const { useState, useRef, useEffect, useCallback, useMemo } = React;
+
+// ──────────────────────────────────────────────────────────────────────────
+// THEMES (matched to chapter 14 simulator)
+// ──────────────────────────────────────────────────────────────────────────
+const THEMES = {
+  dark: {
+    bg: "linear-gradient(135deg, #050810 0%, #0a0f1f 100%)",
+    surface: "#0a0e1a",
+    surfaceAlt: "rgba(15, 23, 42, 0.4)",
+    border: "#1e293b",
+    grid: "#1a2238",
+    zeroLine: "#3a4868",
+    text: "#e2e8f0",
+    textMuted: "#94a3b8",
+    textFaint: "#64748b",
+    tickText: "#7a89aa",
+    accent: "#22d3ee",      // cyan — distinct from ch14's amber pressure trace
+    accentInk: "#0f172a",
+    accentSoft: "rgba(34, 211, 238, 0.8)",
+    co2: "#22d3ee",
+    annotation: "#fb923c",
+    selectBg: "#0f172a",
+  },
+  light: {
+    bg: "linear-gradient(135deg, #fafaf7 0%, #f1f0e9 100%)",
+    surface: "#ffffff",
+    surfaceAlt: "rgba(241, 240, 233, 0.5)",
+    border: "#d6d3c7",
+    grid: "#e8e5d8",
+    zeroLine: "#b8b3a3",
+    text: "#1c1917",
+    textMuted: "#57534e",
+    textFaint: "#78716c",
+    tickText: "#78716c",
+    accent: "#0891b2",
+    accentInk: "#fafaf7",
+    accentSoft: "rgba(8, 145, 178, 0.85)",
+    co2: "#0891b2",
+    annotation: "#c2410c",
+    selectBg: "#ffffff",
+  },
+};
+
+// ──────────────────────────────────────────────────────────────────────────
+// CAPNOGRAM ENGINE — pure functions
+// Generates CO2(t) for the six classic patterns, parameterized by RR, peak
+// ETCO2, Phase III slope, baseline, and I:E ratio.
+// ──────────────────────────────────────────────────────────────────────────
+const PATTERNS = [
+  {
+    id: "normal",
+    name: "Normal",
+    short: "Square waveform · slight Phase III upslope",
+    description:
+      "Sharp rise through Phase II, a near-flat alveolar plateau (Phase III) with a 0–3° upslope, and a sharp drop to baseline at inspiration. α-angle ≈ 100°, β-angle ≈ 90°.",
+    teaches: ["Four phases", "α and β angles", "Plateau = ETCO₂"],
+  },
+  {
+    id: "obstructive",
+    name: "Obstructive (shark-fin)",
+    short: "Sloped Phase II + steep Phase III",
+    description:
+      "COPD / asthma. Heterogeneous emptying drags Phase II out and gives Phase III a continuous upslope — no true plateau. α-angle widens to 110–130°. Severity tracks with the slope.",
+    teaches: ["α-angle widening", "V/Q heterogeneity", "Bronchospasm grading"],
+  },
+  {
+    id: "curareCleft",
+    name: "Curare cleft",
+    short: "Mid-Phase III notch from returning effort",
+    description:
+      "Small downward notch in mid-Phase III. Returning diaphragmatic activity during paralysis recovery — patient effort momentarily entrains fresh gas into the airway. Notch depth tracks effort strength.",
+    teaches: ["NMB recovery", "Patient effort detection", "Sedation timing"],
+  },
+  {
+    id: "cardiogenicOsc",
+    name: "Cardiogenic oscillations",
+    short: "Heart-rate ripples on the plateau",
+    description:
+      "Small regular ripples superimposed on the Phase III plateau at the cardiac rate. Each cardiac contraction propels a tiny bolus of alveolar gas out — visible in low V/Q and at slow respiratory rates.",
+    teaches: ["Cardiac–pulmonary coupling", "End of expiration accuracy"],
+  },
+  {
+    id: "rebreathing",
+    name: "Rebreathing",
+    short: "Baseline rises breath-by-breath",
+    description:
+      "β-angle exceeds 90° and the baseline drifts upward over successive breaths as CO₂ accumulates in the inspired limb. Causes: exhausted absorber, faulty inspiratory valve, mainstem-CO₂-sampling artifact, or inadequate fresh gas flow on an anesthesia circuit. The longer you watch, the higher the baseline climbs.",
+    teaches: ["β-angle pathology", "Progressive CO₂ accumulation", "Circuit troubleshooting"],
+  },
+  {
+    id: "suddenDrop",
+    name: "Sudden drop to zero",
+    short: "Disconnection, dislodged ETT, or arrest",
+    description:
+      "Trace falls from normal to zero in one or two breaths. Differential: circuit disconnection, dislodged or esophageal ETT, complete airway obstruction, cardiac arrest. Immediate physical exam + breath sounds + pulse check.",
+    teaches: ["Bedside emergency", "DOPES mnemonic", "CPR / ROSC monitoring"],
+  },
+];
+
+const PATTERN_BY_ID = Object.fromEntries(PATTERNS.map((p) => [p.id, p]));
+
+/**
+ * Effective baseline at time t. For the "rebreathing" pattern, baseline drifts
+ * upward breath-by-breath (mimicking progressive CO₂ accumulation from an
+ * exhausted absorber, faulty inspiratory valve, or inadequate fresh-gas flow).
+ * Rises 1.0 mmHg per breath, caps at +14 mmHg above the slider value, then
+ * holds. Resets when the user re-picks the pattern (time origin resets).
+ */
+function effectiveBaselineAt(t, p) {
+  if (p.pattern !== "rebreathing" || t <= 0) return p.baseline;
+  const breathT = 60 / p.rr;
+  const idx = Math.floor(t / breathT);
+  const rise = Math.min(idx * 1.0, 14);
+  return p.baseline + rise;
+}
+
+/** Compute CO2 (mmHg) at absolute time t (seconds) for a given pattern + params. */
+function co2At(t, p) {
+  const { pattern, rr, etco2, slopeDeg, ieRatio, hr } = p;
+  const baseline = effectiveBaselineAt(t, p);
+  const breathT = 60 / rr;                      // seconds per breath
+  const tIn = breathT / (1 + ieRatio);          // inspiratory time
+  const tEx = breathT - tIn;                    // expiratory time
+  const tCycle = t % breathT;
+  const breathIdx = Math.floor(t / breathT);
+
+  // "Sudden drop" — repeating 4-breath cycle: 2 normal, then 2 dropped to 0.
+  // Lets the learner watch the transition again and again instead of leaving
+  // the trace flat forever.
+  if (pattern === "suddenDrop" && (breathIdx % 4) >= 2) {
+    return 0;
+  }
+
+  // Inspiration: at baseline (0 for normal; elevated and drifting for rebreathing)
+  if (tCycle < tIn) {
+    return baseline;
+  }
+
+  // Expiration timing
+  const tExp = tCycle - tIn;                    // 0 → tEx
+  let phase1Dur = 0.10 * tEx;                   // anatomic dead space
+  let phase2Dur = 0.20 * tEx;                   // rapid rise
+  // phase3 is the remainder
+
+  // Obstructive: lengthen Phase II, shorten Phase III
+  if (pattern === "obstructive") {
+    phase1Dur = 0.05 * tEx;
+    phase2Dur = 0.55 * tEx;                     // slow, sloped rise
+  }
+
+  const phase3Dur = tEx - phase1Dur - phase2Dur;
+  const slopeRad = (slopeDeg * Math.PI) / 180;
+  const plateauSlopePerSec = Math.tan(slopeRad) * (etco2 / 8);
+
+  // Phase I — near baseline
+  if (tExp < phase1Dur) {
+    return baseline + (etco2 - baseline) * 0.02 * (tExp / phase1Dur);
+  }
+
+  // Phase II — rise from baseline toward plateau
+  if (tExp < phase1Dur + phase2Dur) {
+    const u = (tExp - phase1Dur) / phase2Dur;
+    let v;
+    if (pattern === "obstructive") {
+      // Linear-ish (slow) rise → shark-fin
+      v = baseline + (etco2 - baseline) * (0.20 + 0.80 * u);
+    } else {
+      // Sharp ease-out
+      v = baseline + (etco2 - baseline) * (1 - Math.pow(1 - u, 2.6));
+    }
+    return v;
+  }
+
+  // Phase III — plateau (with optional pattern modifications)
+  const tInPhase3 = tExp - phase1Dur - phase2Dur;
+  let v = etco2 + plateauSlopePerSec * tInPhase3;
+
+  // Obstructive: steeper Phase III upslope
+  if (pattern === "obstructive") {
+    v = etco2 + (etco2 * 0.18) * (tInPhase3 / phase3Dur);
+  }
+
+  // Curare cleft: a notch centered at 55% of Phase III, ~80 ms wide
+  if (pattern === "curareCleft") {
+    const center = phase3Dur * 0.55;
+    const half = Math.min(0.12, phase3Dur * 0.18);
+    if (tInPhase3 > center - half && tInPhase3 < center + half) {
+      const u = (tInPhase3 - (center - half)) / (2 * half); // 0..1
+      const dip = Math.sin(u * Math.PI);                     // 0 → 1 → 0
+      v -= etco2 * 0.32 * dip;
+    }
+  }
+
+  // Cardiogenic oscillations: small sinusoid at the heart rate
+  if (pattern === "cardiogenicOsc") {
+    const hz = hr / 60;
+    v += 1.1 * Math.sin(2 * Math.PI * hz * t);
+  }
+
+  return Math.max(0, v);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// SWEEPING CAPNOGRAPHY CANVAS
+// ──────────────────────────────────────────────────────────────────────────
+function CapnogramPlot({ params, theme, running, showLabels, height = 280 }) {
+  const canvasRef = useRef(null);
+  const tStartRef = useRef(performance.now() / 1000);
+  const frozenTRef = useRef(null); // captures simulated time when paused
+  const animRef = useRef(null);
+  const paramsRef = useRef(params);
+  const runningRef = useRef(running);
+  const themeRef = useRef(theme);
+  const showLabelsRef = useRef(showLabels);
+
+  // Keep refs in sync without re-spawning the animation loop.
+  useEffect(() => { paramsRef.current = params; }, [params]);
+  useEffect(() => { runningRef.current = running; }, [running]);
+  useEffect(() => { themeRef.current = theme; }, [theme]);
+  useEffect(() => { showLabelsRef.current = showLabels; }, [showLabels]);
+
+  // Reset the time origin whenever the pattern changes — so the trace
+  // restarts cleanly without a phase-shifted leftover.
+  useEffect(() => {
+    tStartRef.current = performance.now() / 1000;
+    frozenTRef.current = null;
+  }, [params.pattern]);
+
+  useEffect(() => {
+    const cvs = canvasRef.current;
+    if (!cvs) return;
+    const dpr = window.devicePixelRatio || 1;
+    let W = Math.max(360, cvs.clientWidth || 800);
+    const H = height;
+    const padL = 56, padR = 16, padT = 24, padB = 28;
+    let plotW = W - padL - padR;
+    const plotH = H - padT - padB;
+    const yMax = 60, yMin = 0;
+    const WINDOW_SEC = 8;
+
+    function sizeCanvas() {
+      cvs.width = W * dpr;
+      cvs.height = H * dpr;
+    }
+    sizeCanvas();
+    const ctx = cvs.getContext("2d");
+    ctx.scale(dpr, dpr);
+
+    let ro;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(() => {
+        const newW = Math.max(360, cvs.clientWidth || W);
+        if (newW !== W) {
+          W = newW;
+          plotW = W - padL - padR;
+          sizeCanvas();
+          ctx.scale(dpr, dpr);
+        }
+      });
+      ro.observe(cvs);
+    }
+
+    const xFromT = (tSec) => padL + (tSec / WINDOW_SEC) * plotW;
+    const yFromV = (v) => padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+
+    function draw() {
+      // Compute simulated time. When paused, freeze at frozenT. When running,
+      // advance with wall-clock; on resume, shift tStart so the trace picks
+      // up from where it paused (no jump).
+      let t;
+      const now = performance.now() / 1000;
+      if (runningRef.current) {
+        if (frozenTRef.current !== null) {
+          tStartRef.current = now - frozenTRef.current;
+          frozenTRef.current = null;
+        }
+        t = now - tStartRef.current;
+      } else {
+        if (frozenTRef.current === null) {
+          frozenTRef.current = now - tStartRef.current;
+        }
+        t = frozenTRef.current;
+      }
+      const theme = themeRef.current;
+      const p = paramsRef.current;
+
+      // Background
+      ctx.fillStyle = theme.surface;
+      ctx.fillRect(0, 0, W, H);
+
+      // Title strip
+      ctx.fillStyle = theme.textMuted;
+      ctx.font = "bold 10px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("CO₂  ·  mmHg", padL, 14);
+      ctx.textAlign = "right";
+      ctx.fillStyle = theme.textFaint;
+      ctx.fillText(`${WINDOW_SEC}s window · streaming`, W - padR, 14);
+
+      // Y grid + tick labels
+      ctx.strokeStyle = theme.grid;
+      ctx.lineWidth = 0.5;
+      const yTicks = [0, 10, 20, 30, 40, 50, 60];
+      yTicks.forEach((v) => {
+        const yy = yFromV(v);
+        ctx.beginPath();
+        ctx.moveTo(padL, yy);
+        ctx.lineTo(W - padR, yy);
+        ctx.stroke();
+        ctx.fillStyle = theme.tickText;
+        ctx.font = "9.5px ui-monospace, monospace";
+        ctx.textAlign = "end";
+        ctx.fillText(v, padL - 6, yy + 3);
+      });
+
+      // X grid (each second)
+      for (let i = 0; i <= WINDOW_SEC; i++) {
+        const xx = padL + (i / WINDOW_SEC) * plotW;
+        ctx.beginPath();
+        ctx.moveTo(xx, padT);
+        ctx.lineTo(xx, H - padB);
+        ctx.stroke();
+        ctx.fillStyle = theme.tickText;
+        ctx.textAlign = "center";
+        ctx.fillText(`${i}s`, xx, H - 8);
+      }
+
+      // 40 mmHg reference line (normal ETCO2)
+      ctx.strokeStyle = theme.zeroLine;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      const ref = yFromV(40);
+      ctx.moveTo(padL, ref);
+      ctx.lineTo(W - padR, ref);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = theme.textFaint;
+      ctx.font = "9px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText("40", W - padR + 2, ref + 3);
+
+      // Compute and draw the trace within [t - WINDOW_SEC, t]
+      const N = Math.max(240, Math.floor(plotW));
+      const dt = WINDOW_SEC / N;
+      ctx.strokeStyle = theme.co2;
+      ctx.lineWidth = 1.7;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      for (let i = 0; i <= N; i++) {
+        const tWindow = i * dt;
+        const tAbs = t - WINDOW_SEC + tWindow;
+        const v = tAbs < 0 ? p.baseline : co2At(tAbs, p);
+        const xx = padL + tWindow / WINDOW_SEC * plotW;
+        const yy = yFromV(v);
+        if (i === 0) ctx.moveTo(xx, yy);
+        else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+
+      // Soft fill under the trace
+      ctx.lineTo(W - padR, padT + plotH);
+      ctx.lineTo(padL, padT + plotH);
+      ctx.closePath();
+      ctx.fillStyle = theme.co2;
+      ctx.globalAlpha = 0.08;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Trailing cursor at the right edge (where "now" sits)
+      const cx = padL + plotW;
+      ctx.strokeStyle = theme.accentSoft;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.6;
+      ctx.beginPath();
+      ctx.moveTo(cx, padT);
+      ctx.lineTo(cx, H - padB);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // ───────── Phase + angle annotations (every visible breath) ─────────
+      // Label every completed breath currently in the window — so as the
+      // trace sweeps, labels slide left smoothly with their breath instead
+      // of being pinned to a single "most recent" breath that pops to a new
+      // position each cycle.
+      if (showLabelsRef.current && t > 0) {
+        const breathT = 60 / p.rr;
+        const tIn = breathT / (1 + p.ieRatio);
+        const tEx = breathT - tIn;
+        let p1Frac = 0.10;
+        let p2Frac = 0.20;
+        if (p.pattern === "obstructive") { p1Frac = 0.05; p2Frac = 0.55; }
+
+        const tWindowStart = t - WINDOW_SEC;
+        const xAtT = (tAbs) => padL + ((tAbs - tWindowStart) / WINDOW_SEC) * plotW;
+        // Plateau height is constant across breaths; baseline is per-breath
+        // because the rebreathing pattern drifts upward over time.
+        const plateauY = yFromV(p.etco2);
+
+        // Range of completed breaths whose annotations could touch the window.
+        // Breath n runs from (n-1)*breathT to n*breathT; we want n*breathT ≤ t
+        // (completed) and (n-1)*breathT ≥ tWindowStart - breathT (some overlap).
+        const minN = Math.max(1, Math.floor(tWindowStart / breathT));
+        const maxN = Math.floor(t / breathT);
+
+        ctx.save();
+        ctx.fillStyle = theme.annotation;
+        ctx.strokeStyle = theme.annotation;
+
+        // Helper — only render text whose x falls in the visible plot region
+        // (with a small margin so a label half-on-screen still appears partially).
+        const drawText = (txt, x, y, align) => {
+          if (x < padL - 14 || x > W - padR + 14) return;
+          ctx.textAlign = align;
+          ctx.fillText(txt, x, y);
+        };
+        const drawDot = (x, y) => {
+          if (x < padL - 4 || x > W - padR + 4) return;
+          ctx.beginPath();
+          ctx.arc(x, y, 3.5, 0, 2 * Math.PI);
+          ctx.fill();
+        };
+
+        for (let n = minN; n <= maxN; n++) {
+          // Skip dropped breaths in suddenDrop pattern — no phases to label.
+          if (p.pattern === "suddenDrop" && ((n - 1) % 4) >= 2) continue;
+          const bStart = (n - 1) * breathT;
+          const bEnd = n * breathT;
+          const xInspStart = xAtT(bStart);
+          const xInspEnd   = xAtT(bStart + tIn);
+          const xP1End     = xAtT(bStart + tIn + p1Frac * tEx);
+          const xP2End     = xAtT(bStart + tIn + (p1Frac + p2Frac) * tEx);
+          const xExpEnd    = xAtT(bEnd);
+
+          // Skip breaths entirely off-screen (with a generous margin for labels).
+          if (xExpEnd < padL - 30 || xInspStart > W - padR + 30) continue;
+
+          // Per-breath baseline — rises over time during rebreathing pattern,
+          // so each breath's labels track the trace at its own moment.
+          const breathBaseline = effectiveBaselineAt(bStart, p);
+          const baseY = yFromV(breathBaseline);
+          const midRiseY = yFromV((breathBaseline + p.etco2) / 2);
+
+          // Subtle vertical guide lines at phase boundaries within this breath
+          ctx.globalAlpha = 0.16;
+          ctx.setLineDash([2, 3]);
+          ctx.lineWidth = 1;
+          [xInspEnd, xP1End, xP2End, xExpEnd].forEach((xx) => {
+            if (xx < padL || xx > W - padR) return;
+            ctx.beginPath();
+            ctx.moveTo(xx, padT + 6);
+            ctx.lineTo(xx, H - padB - 2);
+            ctx.stroke();
+          });
+          ctx.setLineDash([]);
+          ctx.globalAlpha = 1;
+
+          // Phase text labels — Bhavani-Shankar four-phase model:
+          //   I   = inspiratory baseline + dead-space gas
+          //   II  = expiratory upstroke
+          //   III = alveolar plateau
+          //   IV  = inspiratory downstroke
+          ctx.font = "bold 10px ui-monospace, monospace";
+          drawText("I",   (xInspStart + xP1End) / 2,  baseY - 8,                       "center");
+          drawText("II",  (xP1End + xP2End) / 2 + 6,  midRiseY + 4,                    "center");
+          drawText("III", (xP2End + xExpEnd) / 2,     plateauY - 8,                    "center");
+          drawText("IV",  xExpEnd + 6,                (plateauY + baseY) / 2 + 4,      "left");
+
+          // α corner — Phase II ↔ III junction (normal ≈ 100°)
+          drawDot(xP2End, plateauY);
+          ctx.font = "bold 11px ui-monospace, monospace";
+          drawText("α", xP2End + 6, plateauY - 4, "left");
+
+          // β corner — Phase III ↔ IV junction (normal ≈ 90°)
+          drawDot(xExpEnd, plateauY);
+          drawText("β", xExpEnd - 6, plateauY - 4, "right");
+        }
+
+        ctx.restore();
+      }
+
+      animRef.current = requestAnimationFrame(draw);
+    }
+
+    animRef.current = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      if (ro) ro.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [height]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        width: "100%",
+        height: `${height}px`,
+        display: "block",
+        background: theme.surface,
+        borderRadius: 4,
+      }}
+    />
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// CONTROLS
+// ──────────────────────────────────────────────────────────────────────────
+function Slider({ label, value, min, max, step, onChange, unit, theme, fmt }) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-1">
+        <span className="text-[10px] tracking-[0.16em] uppercase font-mono" style={{ color: theme.textFaint }}>
+          {label}
+        </span>
+        <span className="text-[13px] font-mono tabular-nums" style={{ color: theme.accent }}>
+          {fmt ? fmt(value) : value}
+          {unit && <span className="ml-1 text-[9px]" style={{ color: theme.textFaint }}>{unit}</span>}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="w-full"
+        style={{ accentColor: theme.accent }}
+      />
+    </div>
+  );
+}
+
+function PatternCard({ p, active, onClick, theme }) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-left w-full p-3 rounded transition-all"
+      style={{
+        background: active ? theme.accent : theme.surfaceAlt,
+        color: active ? theme.accentInk : theme.text,
+        border: `1px solid ${active ? theme.accent : theme.border}`,
+        cursor: "pointer",
+      }}
+    >
+      <div className="flex items-center gap-2 mb-0.5">
+        <span
+          className="inline-block w-1.5 h-1.5 rounded-full"
+          style={{ background: active ? theme.accentInk : theme.accentSoft }}
+        ></span>
+        <span className="text-[13px] font-semibold tracking-tight">{p.name}</span>
+      </div>
+      <div className="text-[11px] leading-snug font-mono" style={{
+        color: active ? theme.accentInk : theme.textMuted,
+        opacity: active ? 0.85 : 1,
+      }}>{p.short}</div>
+    </button>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// MAIN
+// ──────────────────────────────────────────────────────────────────────────
+function CapnographySimulator() {
+  const [themeKey, setThemeKey] = useState(
+    typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "dark"  // default to dark to match ch14 monitor
+  );
+  const theme = THEMES[themeKey];
+
+  const [pattern, setPattern] = useState("normal");
+  const [rr, setRR] = useState(14);
+  const [etco2, setEtco2] = useState(38);
+  const [slope, setSlope] = useState(2.5);
+  const [baseline, setBaseline] = useState(0);
+  const [ieRatio, setIeRatio] = useState(2);
+  const [hr, setHr] = useState(72);
+  const [running, setRunning] = useState(true);
+  const [showLabels, setShowLabels] = useState(true);
+
+  // Pattern presets — tune the sliders to characteristic values when a
+  // pattern is picked. The user can keep adjusting from there.
+  useEffect(() => {
+    const presets = {
+      normal:          { rr: 14, etco2: 38, slope: 2.5, baseline: 0, ieRatio: 2,   hr: 72 },
+      obstructive:     { rr: 22, etco2: 48, slope: 7,   baseline: 0, ieRatio: 2.5, hr: 90 },
+      curareCleft:     { rr: 14, etco2: 38, slope: 2.5, baseline: 0, ieRatio: 2,   hr: 78 },
+      cardiogenicOsc:  { rr: 8,  etco2: 36, slope: 1.5, baseline: 0, ieRatio: 3,   hr: 72 },
+      rebreathing:     { rr: 14, etco2: 42, slope: 2.5, baseline: 8, ieRatio: 2,   hr: 80 },
+      suddenDrop:      { rr: 14, etco2: 38, slope: 2.5, baseline: 0, ieRatio: 2,   hr: 78 },
+    };
+    const v = presets[pattern];
+    if (!v) return;
+    setRR(v.rr);
+    setEtco2(v.etco2);
+    setSlope(v.slope);
+    setBaseline(v.baseline);
+    setIeRatio(v.ieRatio);
+    setHr(v.hr);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pattern]);
+
+  const params = useMemo(
+    () => ({ pattern, rr, etco2, slopeDeg: slope, baseline, ieRatio, hr }),
+    [pattern, rr, etco2, slope, baseline, ieRatio, hr]
+  );
+
+  const current = PATTERN_BY_ID[pattern];
+
+  // Live readouts
+  const tNow = useRef(performance.now() / 1000);
+  const [readouts, setReadouts] = useState({ etco2: etco2, mv: rr * 8.4, rr });
+  useEffect(() => {
+    let raf;
+    const tick = () => {
+      const t = performance.now() / 1000;
+      // Sample CO2 at peak of the current breath (mid Phase III) to estimate "ETCO2 reading"
+      const breathT = 60 / rr;
+      const tIn = breathT / (1 + ieRatio);
+      const tEx = breathT - tIn;
+      const sample = co2At(t - 0.05, params);
+      setReadouts({ etco2: sample, rr });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [rr, etco2, ieRatio, params]);
+
+  return (
+    <div className="min-h-screen w-full" style={{ background: theme.bg, fontFamily: "ui-serif, Georgia, serif", color: theme.text }}>
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        {/* Header */}
+        <header className="pb-4 mb-4 sm:pb-5 sm:mb-6 border-b" style={{ borderColor: theme.border }}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+            <div>
+              <div className="text-[10px] tracking-[0.3em] font-mono uppercase mb-1" style={{ color: theme.accentSoft }}>
+                Capnography Library · Live
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight" style={{ color: theme.text }}>
+                Capnography Waveform Engine
+              </h1>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <div className="hidden lg:block text-right text-[10px] font-mono leading-tight" style={{ color: theme.textMuted }}>
+                <span style={{ color: theme.accent }}>● LIVE</span> &nbsp; PETCO₂ · 4 phases · α / β angles<br/>
+                <span style={{ color: theme.textFaint }}>8s window · streaming</span>
+              </div>
+              <button
+                onClick={() => setShowLabels(!showLabels)}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: showLabels ? theme.accentSoft : "transparent",
+                  color: showLabels ? theme.accentInk : theme.textMuted,
+                  borderColor: showLabels ? theme.accent : theme.border,
+                  cursor: "pointer",
+                }}
+                title="Toggle phase + angle annotations on the trace"
+              >
+                {showLabels ? "● Labels" : "○ Labels"}
+              </button>
+              <button
+                onClick={() => setRunning(!running)}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: "transparent",
+                  color: theme.textMuted,
+                  borderColor: theme.border,
+                  cursor: "pointer",
+                }}
+              >
+                {running ? "❚❚ Pause" : "▶ Play"}
+              </button>
+              <button
+                onClick={() => setThemeKey(themeKey === "dark" ? "light" : "dark")}
+                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
+                style={{
+                  background: "transparent",
+                  color: theme.textMuted,
+                  borderColor: theme.border,
+                  cursor: "pointer",
+                }}
+              >
+                {themeKey === "dark" ? "☼ Light" : "☾ Dark"}
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Live plot + readouts */}
+        <div className="rounded-sm border overflow-hidden" style={{ background: theme.surface, borderColor: theme.border }}>
+          <div className="flex items-center justify-between px-3 pt-2 pb-1" style={{ borderBottom: `1px solid ${theme.border}` }}>
+            <span className="text-[10px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Pattern</span>
+            <span className="text-[12px] font-semibold tracking-tight" style={{ color: theme.text }}>{current.name}</span>
+          </div>
+          <CapnogramPlot params={params} theme={theme} running={running} showLabels={showLabels} />
+          <div className="grid grid-cols-3 sm:grid-cols-3 gap-px" style={{ background: theme.border, borderTop: `1px solid ${theme.border}` }}>
+            <Readout label="ETCO₂ (sampled)" value={readouts.etco2.toFixed(0)} unit="mmHg" theme={theme} accent />
+            <Readout label="Set RR" value={rr} unit="/min" theme={theme} />
+            <Readout label="Set ETCO₂ peak" value={etco2} unit="mmHg" theme={theme} />
+          </div>
+        </div>
+
+        {/* Pattern picker */}
+        <div className="mt-6">
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-[10px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Pattern Library</span>
+            <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>Six classic shapes</span>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+            {PATTERNS.map((p) => (
+              <PatternCard key={p.id} p={p} active={pattern === p.id} onClick={() => setPattern(p.id)} theme={theme} />
+            ))}
+          </div>
+        </div>
+
+        {/* Description card for the selected pattern */}
+        <div className="mt-4 p-3 rounded-sm border" style={{ background: theme.surfaceAlt, borderColor: theme.border }}>
+          <div className="text-[10px] tracking-[0.18em] uppercase font-mono mb-1" style={{ color: theme.textFaint }}>
+            About this pattern
+          </div>
+          <p className="text-[13px] leading-relaxed" style={{ color: theme.text, fontFamily: "ui-serif, Georgia, serif" }}>
+            {current.description}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {current.teaches.map((t, i) => (
+              <span key={i} className="text-[10px] font-mono px-2 py-0.5 rounded-sm"
+                    style={{ background: theme.surface, color: theme.accent, border: `1px solid ${theme.border}` }}>
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Parameter sliders */}
+        <div className="mt-6 rounded-sm border p-4 sm:p-5" style={{ background: theme.surfaceAlt, borderColor: theme.border }}>
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="text-[10px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Physiology</span>
+            <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>Drag to recreate the bedside trace</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+            <Slider label="Respiratory rate" value={rr} min={6} max={32} step={1} unit="breaths/min" onChange={setRR} theme={theme} />
+            <Slider label="Peak ETCO₂" value={etco2} min={10} max={60} step={1} unit="mmHg" onChange={setEtco2} theme={theme} />
+            <Slider label="Phase III slope" value={slope} min={0} max={10} step={0.5} unit="°" onChange={setSlope} theme={theme} />
+            <Slider label="Baseline (β-angle)" value={baseline} min={0} max={15} step={1} unit="mmHg" onChange={setBaseline} theme={theme} />
+            <Slider label="I:E ratio (E side)" value={ieRatio} min={1} max={5} step={0.25} unit="1:E" onChange={setIeRatio} theme={theme} fmt={(v) => `1:${v.toFixed(2)}`} />
+            <Slider label="Heart rate (cardiogenic osc)" value={hr} min={40} max={140} step={1} unit="bpm" onChange={setHr} theme={theme} />
+          </div>
+          <div className="mt-3 text-[11px] font-mono leading-relaxed" style={{ color: theme.textFaint }}>
+            <span style={{ color: theme.accentSoft }}>HINT</span> · Picking a pattern presets some sliders to characteristic values; you can keep adjusting from there. Heart rate only matters for the cardiogenic-oscillations pattern.
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 text-[11px] font-mono leading-relaxed pt-4 border-t" style={{ color: theme.textFaint, borderColor: theme.border }}>
+          <span style={{ color: theme.accentSoft }}>NOTE</span> · Educational simulation. The six patterns and parametric model are pedagogical idealizations of real capnograms. At the bedside, scan in this order: Phase III plateau height (ETCO₂) → Phase II steepness → baseline return to zero → trend across breaths.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Readout({ label, value, unit, theme, accent }) {
+  return (
+    <div className="px-3 py-2.5" style={{ background: theme.surface }}>
+      <div className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>{label}</div>
+      <div className="mt-0.5">
+        <span className="text-xl font-mono font-semibold tabular-nums" style={{ color: accent ? theme.accent : theme.text }}>
+          {value}
+        </span>
+        {unit && <span className="ml-1 text-[10px] font-mono" style={{ color: theme.textFaint }}>{unit}</span>}
+      </div>
+    </div>
+  );
+}
+
+// Mount
+ReactDOM.createRoot(document.getElementById('root')).render(
+  React.createElement(CapnographySimulator)
+);
+  </script>
+  <script>
+    // Height-sync for iframe embedding — same pattern as ch14 simulator.
+    // Uses leaf-only measurement so min-h-screen wrappers can't inflate the value.
+    (function(){
+      function measureContentHeight() {
+        let maxBottom = 0;
+        const all = document.body.getElementsByTagName('*');
+        for (let i = 0; i < all.length; i++) {
+          const el = all[i];
+          if (el.children && el.children.length > 0) continue;
+          const tag = el.tagName;
+          if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK' || tag === 'META') continue;
+          const cs = window.getComputedStyle(el);
+          if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+          const rect = el.getBoundingClientRect();
+          if (rect.width <= 0 && rect.height <= 0) continue;
+          const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
+          if (bottom > maxBottom) maxBottom = bottom;
+        }
+        return Math.ceil(maxBottom);
+      }
+      function postHeight() {
+        try {
+          const h = measureContentHeight();
+          if (h > 0 && window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'capno-sim-height', height: h }, '*');
+          }
+        } catch (e) {}
+      }
+      window.addEventListener('load', postHeight);
+      window.addEventListener('resize', postHeight);
+      if (typeof ResizeObserver !== 'undefined' && document.body) {
+        const ro = new ResizeObserver(postHeight);
+        ro.observe(document.body);
+      }
+      setTimeout(postHeight, 200);
+      setTimeout(postHeight, 800);
+      setTimeout(postHeight, 2000);
+      setTimeout(postHeight, 4000);
+    })();
+  </script>
+</body>
+</html>
