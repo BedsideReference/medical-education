@@ -2190,18 +2190,49 @@ function VentilatorWaveforms() {
     // Height-sync for iframe embedding — posts document height to parent so
     // the embedding page can size the iframe to fit content exactly. No-op
     // when this page is loaded standalone (window.parent === window).
+    //
+    // Subtlety: the React root uses Tailwind's min-h-screen (min-height:100vh).
+    // Inside an iframe, 100vh == iframe height, so body.scrollHeight tracks the
+    // iframe size and creates a positive feedback loop (iframe grows -> root
+    // grows -> postHeight reports a bigger number -> iframe grows again).
+    // We temporarily neutralize any min-height >= 90% of viewport height while
+    // measuring, then restore the original inline value.
     (function(){
+      let postingInFlight = false; // re-entry guard for ResizeObserver during restore
       function postHeight() {
+        if (postingInFlight) return;
+        postingInFlight = true;
         try {
+          const affected = [];
+          // Walk all elements; cheap because we only stash a few.
+          const all = document.querySelectorAll('*');
+          for (let i = 0; i < all.length; i++) {
+            const el = all[i];
+            const cs = window.getComputedStyle(el);
+            const mh = parseFloat(cs.minHeight);
+            if (!isNaN(mh) && mh >= window.innerHeight * 0.9) {
+              affected.push({ el: el, original: el.style.minHeight });
+              el.style.minHeight = '0px';
+            }
+          }
+          // Force a synchronous reflow before measuring.
+          void document.body.offsetHeight;
           const h = Math.max(
             document.documentElement.scrollHeight,
             document.body ? document.body.scrollHeight : 0,
             document.body ? document.body.offsetHeight : 0
           );
+          // Restore originals.
+          for (let i = 0; i < affected.length; i++) {
+            affected[i].el.style.minHeight = affected[i].original;
+          }
           if (window.parent && window.parent !== window) {
             window.parent.postMessage({ type: 'vent-sim-height', height: h }, '*');
           }
         } catch (e) {}
+        // Release on next frame so ResizeObserver firing from our restore
+        // doesn't re-enter immediately.
+        requestAnimationFrame(function(){ postingInFlight = false; });
       }
       window.addEventListener('load', postHeight);
       window.addEventListener('resize', postHeight);
