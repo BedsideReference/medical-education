@@ -985,3 +985,32 @@
   }
 })();
 </script>
+<script>
+// Height-sync for iframe embedding — posts document height to parent so the
+// embedding page can size the iframe to fit content exactly. No-op when this
+// page is loaded standalone (window.parent === window).
+(function(){
+  function postHeight() {
+    try {
+      const h = Math.max(
+        document.documentElement.scrollHeight,
+        document.body ? document.body.scrollHeight : 0,
+        document.body ? document.body.offsetHeight : 0
+      );
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'dys-explorer-height', height: h }, '*');
+      }
+    } catch (e) {}
+  }
+  window.addEventListener('load', postHeight);
+  window.addEventListener('resize', postHeight);
+  if (typeof ResizeObserver !== 'undefined' && document.body) {
+    const ro = new ResizeObserver(postHeight);
+    ro.observe(document.body);
+  }
+  // Catch later layout shifts (font loading, case-button rendering, theme change)
+  setTimeout(postHeight, 100);
+  setTimeout(postHeight, 500);
+  setTimeout(postHeight, 1500);
+})();
+</script>
