@@ -2198,41 +2198,45 @@ function VentilatorWaveforms() {
     // We temporarily neutralize any min-height >= 90% of viewport height while
     // measuring, then restore the original inline value.
     (function(){
-      let postingInFlight = false; // re-entry guard for ResizeObserver during restore
+      // Measure content height by walking descendants of <body>, finding the
+      // maximum bottom-edge of any visible non-script element — BUT skipping
+      // any element whose own min-height inflates it to fill the viewport
+      // (e.g., Tailwind's min-h-screen on the React root). The inflated
+      // element's bottom would otherwise dominate the measurement and create
+      // the feedback loop. Its non-inflated descendants are still measured,
+      // so the deepest visible content (the footer) gives the real height.
+      function measureContentHeight() {
+        let maxBottom = 0;
+        const stack = Array.from(document.body.children);
+        while (stack.length) {
+          const el = stack.pop();
+          if (!el || !el.tagName) continue;
+          const tag = el.tagName;
+          if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK' || tag === 'META') continue;
+          const cs = window.getComputedStyle(el);
+          if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+          const mh = parseFloat(cs.minHeight);
+          const isInflated = !isNaN(mh) && mh >= window.innerHeight * 0.9;
+          if (!isInflated) {
+            const rect = el.getBoundingClientRect();
+            const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
+            if (bottom > maxBottom) maxBottom = bottom;
+          }
+          // Always recurse — the inflated parent's non-inflated children
+          // (header, sections, footer) carry the real content geometry.
+          if (el.children && el.children.length) {
+            for (let i = 0; i < el.children.length; i++) stack.push(el.children[i]);
+          }
+        }
+        return Math.ceil(maxBottom);
+      }
       function postHeight() {
-        if (postingInFlight) return;
-        postingInFlight = true;
         try {
-          const affected = [];
-          // Walk all elements; cheap because we only stash a few.
-          const all = document.querySelectorAll('*');
-          for (let i = 0; i < all.length; i++) {
-            const el = all[i];
-            const cs = window.getComputedStyle(el);
-            const mh = parseFloat(cs.minHeight);
-            if (!isNaN(mh) && mh >= window.innerHeight * 0.9) {
-              affected.push({ el: el, original: el.style.minHeight });
-              el.style.minHeight = '0px';
-            }
-          }
-          // Force a synchronous reflow before measuring.
-          void document.body.offsetHeight;
-          const h = Math.max(
-            document.documentElement.scrollHeight,
-            document.body ? document.body.scrollHeight : 0,
-            document.body ? document.body.offsetHeight : 0
-          );
-          // Restore originals.
-          for (let i = 0; i < affected.length; i++) {
-            affected[i].el.style.minHeight = affected[i].original;
-          }
-          if (window.parent && window.parent !== window) {
+          const h = measureContentHeight();
+          if (h > 0 && window.parent && window.parent !== window) {
             window.parent.postMessage({ type: 'vent-sim-height', height: h }, '*');
           }
         } catch (e) {}
-        // Release on next frame so ResizeObserver firing from our restore
-        // doesn't re-enter immediately.
-        requestAnimationFrame(function(){ postingInFlight = false; });
       }
       window.addEventListener('load', postHeight);
       window.addEventListener('resize', postHeight);
