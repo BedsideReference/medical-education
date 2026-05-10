@@ -2198,35 +2198,32 @@ function VentilatorWaveforms() {
     // We temporarily neutralize any min-height >= 90% of viewport height while
     // measuring, then restore the original inline value.
     (function(){
-      // Measure content height by walking descendants of <body>, finding the
-      // maximum bottom-edge of any visible non-script element — BUT skipping
-      // any element whose own min-height inflates it to fill the viewport
-      // (e.g., Tailwind's min-h-screen on the React root). The inflated
-      // element's bottom would otherwise dominate the measurement and create
-      // the feedback loop. Its non-inflated descendants are still measured,
-      // so the deepest visible content (the footer) gives the real height.
+      // Measure content height by finding the maximum bottom-edge of any
+      // visible LEAF element (no element children) in the page. Leaves are
+      // never inflated by min-height: 100vh on their children — they only
+      // occupy the space their own content needs. The deepest visible leaf
+      // (typically the footer text) reflects the true content end.
+      //
+      // Why this matters: the React root has Tailwind's min-h-screen, so its
+      // bounding box stretches to fill the iframe viewport. So does its
+      // parent <div id="root">. Measuring either of their bottoms gives us
+      // the iframe height back, creating a feedback loop. Leaves never have
+      // children, so they're immune to this.
       function measureContentHeight() {
         let maxBottom = 0;
-        const stack = Array.from(document.body.children);
-        while (stack.length) {
-          const el = stack.pop();
-          if (!el || !el.tagName) continue;
+        const all = document.body.getElementsByTagName('*');
+        for (let i = 0; i < all.length; i++) {
+          const el = all[i];
+          if (el.children && el.children.length > 0) continue; // not a leaf
           const tag = el.tagName;
           if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK' || tag === 'META') continue;
           const cs = window.getComputedStyle(el);
           if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-          const mh = parseFloat(cs.minHeight);
-          const isInflated = !isNaN(mh) && mh >= window.innerHeight * 0.9;
-          if (!isInflated) {
-            const rect = el.getBoundingClientRect();
-            const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
-            if (bottom > maxBottom) maxBottom = bottom;
-          }
-          // Always recurse — the inflated parent's non-inflated children
-          // (header, sections, footer) carry the real content geometry.
-          if (el.children && el.children.length) {
-            for (let i = 0; i < el.children.length; i++) stack.push(el.children[i]);
-          }
+          const rect = el.getBoundingClientRect();
+          // Ignore zero-size and off-screen-left elements (positioned outside viewport)
+          if (rect.width <= 0 && rect.height <= 0) continue;
+          const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
+          if (bottom > maxBottom) maxBottom = bottom;
         }
         return Math.ceil(maxBottom);
       }
