@@ -989,15 +989,36 @@
 // Height-sync for iframe embedding — posts document height to parent so the
 // embedding page can size the iframe to fit content exactly. No-op when this
 // page is loaded standalone (window.parent === window).
+//
+// Why leaf-only measurement: when this page is iframed, document.documentElement
+// .scrollHeight returns max(iframe-viewport, content-height). If the iframe is
+// taller than the content (initial 1500px inline, while widget renders at ~1100px),
+// the script would post 1500 and the parent would never shrink to fit, leaving
+// a slab of empty space below the widget. Walking only leaf elements (no element
+// children) and finding the maximum bottom edge gives the natural content end
+// regardless of the iframe's outer dimensions.
 (function(){
+  function measureContentHeight() {
+    let maxBottom = 0;
+    const all = document.body ? document.body.getElementsByTagName('*') : [];
+    for (let i = 0; i < all.length; i++) {
+      const el = all[i];
+      if (el.children && el.children.length > 0) continue; // not a leaf
+      const tag = el.tagName;
+      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK' || tag === 'META') continue;
+      const cs = window.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.width <= 0 && rect.height <= 0) continue;
+      const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
+      if (bottom > maxBottom) maxBottom = bottom;
+    }
+    return Math.ceil(maxBottom);
+  }
   function postHeight() {
     try {
-      const h = Math.max(
-        document.documentElement.scrollHeight,
-        document.body ? document.body.scrollHeight : 0,
-        document.body ? document.body.offsetHeight : 0
-      );
-      if (window.parent && window.parent !== window) {
+      const h = measureContentHeight();
+      if (h > 0 && window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'dys-explorer-height', height: h }, '*');
       }
     } catch (e) {}
