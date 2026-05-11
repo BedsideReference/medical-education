@@ -7170,171 +7170,6 @@
     <div class="cap"><b>Figure 17.1.</b> Auto-PEEP and dynamic hyperinflation across three simultaneous traces. <em>Top (pressure):</em> end-expiratory alveolar pressure rises progressively breath-over-breath — this is intrinsic PEEP. <em>Middle (flow):</em> expiratory flow does not return to zero before the next inspiration — gas trapping. <em>Bottom (volume):</em> end-expiratory lung volume escalates with each breath — dynamic hyperinflation. The vicious cycle: incomplete emptying → ↑ end-expiratory volume → ↑ alveolar pressure → ↓ venous return + ↑ work to trigger. Most common in obstructive lung disease (COPD, asthma) and any time the set RR or VT outpaces what the lung can exhale.</div>
   </div>
 
-  <h5>Try it — interactive auto-PEEP demonstration</h5>
-  <div class="figure interactive-fig" id="if-autopeep">
-    <div class="if-controls">
-      <div class="if-control">
-        <label>Time constant τ: <span class="if-val" id="ifap-tauv">0.80 s</span></label>
-        <input type="range" min="0.3" max="2.0" step="0.05" value="0.8" id="ifap-tau"/>
-      </div>
-      <div class="if-control">
-        <label>Respiratory rate: <span class="if-val" id="ifap-rrv">20 /min</span></label>
-        <input type="range" min="10" max="35" step="1" value="20" id="ifap-rr"/>
-      </div>
-      <div class="if-control">
-        <label>Inspiratory time T<sub>i</sub>: <span class="if-val" id="ifap-tiv">1.00 s</span></label>
-        <input type="range" min="0.5" max="2.0" step="0.05" value="1.0" id="ifap-ti"/>
-      </div>
-      <div class="if-control">
-        <label>Tidal volume: <span class="if-val" id="ifap-vtv">500 mL</span></label>
-        <input type="range" min="300" max="700" step="10" value="500" id="ifap-vt"/>
-      </div>
-    </div>
-    <div class="if-presets">
-      <button data-tau="0.4" data-rr="14" data-ti="1.0" data-vt="500">Normal</button>
-      <button data-tau="1.4" data-rr="22" data-ti="1.2" data-vt="550">COPD, fast RR</button>
-      <button data-tau="1.4" data-rr="10" data-ti="1.0" data-vt="500">COPD, slow RR (fix)</button>
-      <button data-tau="1.6" data-rr="28" data-ti="1.5" data-vt="600">Asthma crisis</button>
-    </div>
-    <div class="if-stats">
-      <div class="if-stat"><div class="if-stat-label">T<sub>e</sub> (expiratory time)</div><div class="if-stat-val" id="ifap-te">2.0 s</div><div class="if-stat-sub">need ≥ 3τ</div></div>
-      <div class="if-stat"><div class="if-stat-label">T<sub>e</sub> / τ</div><div class="if-stat-val" id="ifap-teratio">2.5</div><div class="if-stat-sub" id="ifap-teclass">marginal</div></div>
-      <div class="if-stat"><div class="if-stat-label">Auto-PEEP (steady)</div><div class="if-stat-val" id="ifap-peepi">0</div><div class="if-stat-sub">cmH₂O equivalent</div></div>
-      <div class="if-stat"><div class="if-stat-label">Trapped V<sub>T</sub> (steady)</div><div class="if-stat-val" id="ifap-trapped">0</div><div class="if-stat-sub">mL above FRC</div></div>
-    </div>
-    <svg class="if-chart" viewBox="0 0 700 320" role="img" aria-label="Lung volume over six successive breaths showing baseline volume creep — dynamic hyperinflation. Auto-PEEP is the gap between end-expiratory baseline and FRC.">
-      <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="10.5" fill="#475569">
-        <line x1="60" y1="280" x2="680" y2="280" stroke="#475569" stroke-width="1.2"/>
-        <line x1="60" y1="20" x2="60" y2="280" stroke="#475569" stroke-width="1.2"/>
-        <line x1="60" y1="240" x2="680" y2="240" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5,3"/>
-        <text x="56" y="244" text-anchor="end" font-size="10">FRC</text>
-        <text x="370" y="306" text-anchor="middle" font-size="11">time (s)</text>
-        <text x="20" y="150" text-anchor="middle" font-size="11" transform="rotate(-90 20 150)">lung volume (mL above RV)</text>
-        <path id="ifap-volpath" d="" stroke="#1f5f99" stroke-width="2.2" fill="none"/>
-        <path id="ifap-baseline" d="" stroke="#c4452f" stroke-width="1.6" stroke-dasharray="4,3" fill="none"/>
-        <text id="ifap-trapped-label" x="640" y="0" text-anchor="end" font-size="11" font-weight="600" fill="#c4452f"></text>
-        <g id="ifap-ticks"></g>
-      </g>
-    </svg>
-    <div class="cap" style="margin-top: 6px;"><b>Figure 17.2 — Try it.</b> Six successive breaths. The blue trace is lung volume over time; the dashed red trace is the end-expiratory baseline. Watch the baseline drift up (auto-PEEP) when T<sub>e</sub> &lt; 3τ. Press "COPD, fast RR" to see the trap, then "COPD, slow RR (fix)" — the same lung, lower rate, baseline returns to FRC.</div>
-  </div>
-  <script>
-  (function(){
-    try {
-      var tau = document.getElementById('ifap-tau');
-      var rr = document.getElementById('ifap-rr');
-      var ti = document.getElementById('ifap-ti');
-      var vt = document.getElementById('ifap-vt');
-      if (!tau) return;
-      var els = {
-        tauv: document.getElementById('ifap-tauv'),
-        rrv: document.getElementById('ifap-rrv'),
-        tiv: document.getElementById('ifap-tiv'),
-        vtv: document.getElementById('ifap-vtv'),
-        te: document.getElementById('ifap-te'),
-        teratio: document.getElementById('ifap-teratio'),
-        teclass: document.getElementById('ifap-teclass'),
-        peepi: document.getElementById('ifap-peepi'),
-        trapped: document.getElementById('ifap-trapped'),
-        volpath: document.getElementById('ifap-volpath'),
-        baseline: document.getElementById('ifap-baseline'),
-        trappedLabel: document.getElementById('ifap-trapped-label'),
-        ticks: document.getElementById('ifap-ticks')
-      };
-      var XL = 60, XR = 680, YT = 30, YB = 280;
-      var FRC_Y = 240;
-      var FRC_VOL = 0;
-      var COMPLIANCE_ASSUMED = 0.05;
-
-      function update() {
-        var t = parseFloat(tau.value);
-        var RR = parseFloat(rr.value);
-        var Ti = parseFloat(ti.value);
-        var Vt = parseFloat(vt.value);
-        els.tauv.textContent = t.toFixed(2) + ' s';
-        els.rrv.textContent = RR + ' /min';
-        els.tiv.textContent = Ti.toFixed(2) + ' s';
-        els.vtv.textContent = Math.round(Vt) + ' mL';
-
-        var Tcyc = 60 / RR;
-        var Te = Math.max(0.1, Tcyc - Ti);
-        els.te.textContent = Te.toFixed(2) + ' s';
-        els.teratio.textContent = (Te / t).toFixed(1);
-        if (Te / t < 2) { els.teclass.textContent = 'gas trapping'; els.teclass.style.color = '#991b1b'; }
-        else if (Te / t < 3) { els.teclass.textContent = 'marginal'; els.teclass.style.color = '#854F0B'; }
-        else { els.teclass.textContent = 'safe'; els.teclass.style.color = '#166534'; }
-
-        var fillFraction = 1 - Math.exp(-Ti / t);
-        var emptyFraction = 1 - Math.exp(-Te / t);
-        var deliveredEachBreath = Vt * fillFraction;
-        var trappedVol = 0;
-        var nBreaths = 6;
-        for (var i = 0; i < nBreaths; i++) {
-          trappedVol = trappedVol + deliveredEachBreath;
-          trappedVol = trappedVol * (1 - emptyFraction);
-        }
-        var steadyTrapped = deliveredEachBreath * (1 - emptyFraction) / emptyFraction;
-        els.trapped.textContent = Math.round(steadyTrapped);
-        els.peepi.textContent = (steadyTrapped / 1000 / COMPLIANCE_ASSUMED).toFixed(1);
-
-        var totalT = nBreaths * Tcyc;
-        function xT(time) { return XL + (time / totalT) * (XR - XL); }
-        var maxVol = Vt + steadyTrapped + 200;
-        function yV(volAboveFRC) { return FRC_Y - (volAboveFRC / maxVol) * (FRC_Y - YT); }
-
-        var d = 'M' + XL + ',' + FRC_Y + ' ';
-        var baselined = '';
-        var trapped = 0;
-        var STEPS = 80;
-        for (var b = 0; b < nBreaths; b++) {
-          var bStart = b * Tcyc;
-          for (var s = 0; s <= STEPS; s++) {
-            var localT = (s / STEPS) * Ti;
-            var time = bStart + localT;
-            var newVol = (Vt - trapped * Math.exp(-localT / t) - (Vt - trapped) * Math.exp(-localT / t));
-            var vol = trapped + (Vt - trapped) * (1 - Math.exp(-localT / t));
-            d += 'L' + xT(time).toFixed(1) + ',' + yV(vol).toFixed(1) + ' ';
-          }
-          var endInspVol = trapped + (Vt - trapped) * (1 - Math.exp(-Ti / t));
-          for (var s2 = 0; s2 <= STEPS; s2++) {
-            var localT2 = (s2 / STEPS) * Te;
-            var time2 = bStart + Ti + localT2;
-            var vol2 = endInspVol * Math.exp(-localT2 / t);
-            d += 'L' + xT(time2).toFixed(1) + ',' + yV(vol2).toFixed(1) + ' ';
-          }
-          trapped = endInspVol * Math.exp(-Te / t);
-          baselined += (b === 0 ? 'M' : 'L') + xT((b + 1) * Tcyc).toFixed(1) + ',' + yV(trapped).toFixed(1) + ' ';
-        }
-        els.volpath.setAttribute('d', d);
-        els.baseline.setAttribute('d', baselined);
-
-        var trappedY = yV(steadyTrapped);
-        els.trappedLabel.setAttribute('y', trappedY - 4);
-        els.trappedLabel.textContent = steadyTrapped > 30 ? 'auto-PEEP' : '';
-
-        var tickHTML = '';
-        for (var bi = 0; bi <= nBreaths; bi++) {
-          var time = bi * Tcyc;
-          var x = xT(time);
-          tickHTML += '<line x1="' + x + '" y1="280" x2="' + x + '" y2="284" stroke="#475569" stroke-width="0.8"/>';
-          tickHTML += '<text x="' + x + '" y="296" text-anchor="middle">' + time.toFixed(1) + '</text>';
-        }
-        els.ticks.innerHTML = tickHTML;
-      }
-
-      [tau, rr, ti, vt].forEach(function(el){ el.addEventListener('input', update); });
-      document.querySelectorAll('#if-autopeep .if-presets button').forEach(function(b){
-        b.addEventListener('click', function(){
-          tau.value = b.dataset.tau; rr.value = b.dataset.rr;
-          ti.value = b.dataset.ti; vt.value = b.dataset.vt;
-          update();
-        });
-      });
-      update();
-    } catch(err) { console.error('[interactive: auto-PEEP]', err); }
-  })();
-  </script>
-
   <h5>How to fix</h5>
   <ul>
     <li>Reduce minute ventilation: ↓ RR (most effective), ↓ VT, accept hypercapnia.</li>
@@ -7383,8 +7218,12 @@
         if (!iframe) return;
         // Width-based height estimator — uses the widget's known responsive
         // breakpoints to set a sensible height without requiring the iframed
-        // page to cooperate. The exact postMessage handler below overrides
-        // this whenever the embedded page reports its real document height.
+        // page to cooperate. Once the embedded page reports its real document
+        // height via postMessage, `reportedExact` is latched true so the
+        // estimator stops running — otherwise the ResizeObserver on the
+        // iframe would fire on every postMessage-driven resize and bounce
+        // the height between the estimate and the exact value.
+        let reportedExact = false;
         function estimateHeight(w) {
           if (w >= 1000) return 1250;
           if (w >= 760)  return 1500;
@@ -7392,6 +7231,7 @@
           return 1950;
         }
         function applyEstimated() {
+          if (reportedExact) return;
           const w = iframe.clientWidth || iframe.getBoundingClientRect().width || 800;
           iframe.style.height = estimateHeight(w) + 'px';
         }
@@ -7404,6 +7244,7 @@
         }
         window.addEventListener('message', function(e){
           if (e && e.data && e.data.type === 'dys-explorer-height' && typeof e.data.height === 'number') {
+            reportedExact = true;
             const h = Math.max(400, Math.min(3000, e.data.height + 20));
             iframe.style.height = h + 'px';
           }
