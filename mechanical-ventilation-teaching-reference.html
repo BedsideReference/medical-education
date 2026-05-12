@@ -2642,7 +2642,6 @@
   <ol>
     <li><a href="#drugs">Drug dosing reference</a></li>
     <li><a href="#equations">Equations &amp; numbers</a></li>
-    <li><a href="#c_imaging">Imaging atlas</a></li>
     <li><a href="#c_alarms">Alarm reference</a></li>
     <li><a href="#abbr">Abbreviations</a></li>
     <li><a href="#refs">References</a></li>
@@ -3697,7 +3696,7 @@
         <g id="ifabg-xticks"></g>
       </g>
     </svg>
-    <div class="cap" style="margin-top: 6px;"><b>Figure 3.5 — Try it (interactive ABG playground).</b> Drag the four sliders to model any ABG. The marker rides the OHbDC; A–a gradient and P/F update live. Try the presets to see the canonical phenotypes; the "100% O₂ test" preset shows what a non-shunting patient achieves on FiO₂ 1.0 (PaO₂ &gt; 500). Persistent hypoxemia at FiO₂ 1.0 implies true shunt (<a class="xref" href="#c3" data-xref-chap="3">§3.3</a>) — recruit and PEEP, not more FiO₂.</div>
+    <div class="cap" style="margin-top: 6px;"><b>Figure 3.3 — Try it (interactive ABG playground).</b> Drag the four sliders to model any ABG. The marker rides the OHbDC; A–a gradient and P/F update live. Try the presets to see the canonical phenotypes; the "100% O₂ test" preset shows what a non-shunting patient achieves on FiO₂ 1.0 (PaO₂ &gt; 500). Persistent hypoxemia at FiO₂ 1.0 implies true shunt (<a class="xref" href="#c3" data-xref-chap="3">§3.3</a>) — recruit and PEEP, not more FiO₂.</div>
   </div>
   <script>
   (function(){
@@ -3869,7 +3868,7 @@
         </g>
       </g>
     </svg>
-    <div class="cap"><b>Figure 3.6 — The oxyhemoglobin dissociation curve.</b> The "edge of the cliff" sits at PaO₂ 60 / SaO₂ 90 — small drops below this cause big saturation drops. P₅₀ (the PaO₂ at 50% saturation) is normally 26.5 mmHg; right shifts (acidosis, hypercapnia, hyperthermia, ↑ 2,3-BPG) raise P₅₀ and unload O₂ at the tissue; left shifts do the opposite.<sup class="cite"><a href="#r28">28</a></sup></div>
+    <div class="cap"><b>Figure 3.4 — The oxyhemoglobin dissociation curve.</b> The "edge of the cliff" sits at PaO₂ 60 / SaO₂ 90 — small drops below this cause big saturation drops. P₅₀ (the PaO₂ at 50% saturation) is normally 26.5 mmHg; right shifts (acidosis, hypercapnia, hyperthermia, ↑ 2,3-BPG) raise P₅₀ and unload O₂ at the tissue; left shifts do the opposite.<sup class="cite"><a href="#r28">28</a></sup></div>
   </div>
 
   <h5>3.5a Try it — interactive shift explorer</h5>
@@ -3931,7 +3930,7 @@
         <text x="510" y="224" text-anchor="start" font-size="10" fill="#2c5282" font-style="italic">━━ active</text>
       </g>
     </svg>
-    <div class="cap" style="margin-top: 6px;"><b>Figure 3.7 — Try it (shift explorer).</b> Move the pH, PaCO₂, and temperature sliders to shift the active curve. The amber P₅₀ marker (50% saturation) and red 90%-saturation marker both slide horizontally with the curve — that lateral movement is the right- or left-shift. The static gray dot at P₅₀ = 26.5 mmHg is the reference. Right shift (acidemia, hypercapnia, fever) raises P₅₀, drops SaO₂ at any given PaO₂, and unloads O₂ to tissue; left shift does the opposite.</div>
+    <div class="cap" style="margin-top: 6px;"><b>Figure 3.5 — Try it (shift explorer).</b> Move the pH, PaCO₂, and temperature sliders to shift the active curve. The amber P₅₀ marker (50% saturation) and red 90%-saturation marker both slide horizontally with the curve — that lateral movement is the right- or left-shift. The static gray dot at P₅₀ = 26.5 mmHg is the reference. Right shift (acidemia, hypercapnia, fever) raises P₅₀, drops SaO₂ at any given PaO₂, and unloads O₂ to tissue; left shift does the opposite.</div>
   </div>
   <script>
   (function(){
@@ -5967,10 +5966,6 @@
     <img src="https://i.postimg.cc/3rg6F4rH/aprv-waveforms.png" alt="APRV pressure-flow waveforms — sustained P_high with periodic short releases to P_low and superimposed spontaneous breaths" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
     <div class="cap"><b>Figure 12.1 — APRV pressure and flow tracings.</b> The pressure scalar shows sustained <strong>P<sub>high</sub></strong> (25–30 cmH₂O) interrupted by brief drops to <strong>P<sub>low</sub></strong> (0 cmH₂O) lasting <strong>T<sub>low</sub></strong> (0.4–0.8 s). The patient breathes spontaneously throughout — spontaneous breaths appear as small pressure deflections superimposed on the P<sub>high</sub> plateau. The short T<sub>low</sub> prevents de-recruitment despite the P<sub>low</sub> of zero, because the lung does not have time to empty (T<sub>low</sub> &lt; expiratory time constant). T<sub>low</sub> is titrated so that expiratory flow terminates at ~75% of peak — the trick that makes APRV work.</div>
   </div>
-  <div class="figure">
-    <img src="https://i.postimg.cc/qvZZv2w1/aprv-setup.png" alt="APRV initial setup decision flowchart — start settings, ABG check, oxygenation and ventilation adjustment branches" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 12.2 — APRV setup algorithm.</b> Initial settings: P<sub>high</sub> 30 / P<sub>low</sub> 0 / T<sub>high</sub> 4.0 s / T<sub>low</sub> 0.8 s (titrated for PEFR change 25–75%) / FiO₂ 1.0. After the first ABG, two simultaneous decision branches: <em>oxygenation</em> (if PaO₂ &lt; 55 or SpO₂ &lt; 88: ↑ P<sub>high</sub> to max 35, ↑ T<sub>high</sub>, ↓ T<sub>low</sub> to min 25% PEFR change, ↑ P<sub>low</sub> to max 10) and <em>ventilation</em> (if pH &lt; 7.24 or PaCO₂ &gt; 60: allow permissive hypercapnia first, then ↓ T<sub>high</sub> to min 3.0 s, then ↑ T<sub>low</sub> to max 75% PEFR change). Reassess ABG after each adjustment.</div>
-  </div>
   </details>
   <details class="chap-acc" data-acc-id="c12-h4-3">
     <summary>
@@ -7104,7 +7099,7 @@
   </ul>
   <div class="figure">
     <img src="https://i.postimg.cc/QCWk2vN9/SCR-20260503-douz.png" alt="Ineffective triggering — flow and pressure waveforms with failed-effort arrow" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.3.1.</b> Ineffective triggering. Flow-time and pressure-time waveforms; the arrow marks an inspiratory effort that did not generate enough negative pressure (or flow change) to cross the trigger threshold, so no ventilator breath was delivered. Common in auto-PEEP and over-sedation.</div>
+    <div class="cap"><b>Figure 18.2.</b> Ineffective triggering. Flow-time and pressure-time waveforms; the arrow marks an inspiratory effort that did not generate enough negative pressure (or flow change) to cross the trigger threshold, so no ventilator breath was delivered. Common in auto-PEEP and over-sedation.</div>
   </div>
 
   <h5>18.3.2 Auto-triggering (false triggering)</h5>
@@ -7117,11 +7112,11 @@
   </ul>
   <div class="figure">
     <img src="https://i.postimg.cc/hv7bkN4r/SCR-20260503-dsjv.png" alt="Auto-triggering — vent delivers breath without patient initiation" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.3.2a.</b> Auto-triggering. The ventilator delivers a positive-pressure breath without patient initiation. Look for breath rate higher than expected and (when the patient is paralyzed/disconnected) breaths still being delivered.</div>
+    <div class="cap"><b>Figure 18.3.</b> Auto-triggering. The ventilator delivers a positive-pressure breath without patient initiation. Look for breath rate higher than expected and (when the patient is paralyzed/disconnected) breaths still being delivered.</div>
   </div>
   <div class="figure">
     <img src="https://i.postimg.cc/2yBFsgj7/SCR-20260503-dwzt.png" alt="Auto-trigger causes — circuit condensation, cardiac oscillation, circuit leak" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.3.2b.</b> The three classic causes of auto-triggering. <em>Left:</em> circuit condensation — sawtooth oscillations on the flow trace from water moving in the tubing. <em>Center:</em> cardiac oscillations — small regular oscillations synchronized with heartbeat. <em>Right:</em> circuit leak — expired tidal volume (Vte) is less than inspired (Vti) and volume scalar fails to return to zero. Each has a different fix (drain water / switch to pressure trigger / find and seal the leak).</div>
+    <div class="cap"><b>Figure 18.4.</b> The three classic causes of auto-triggering. <em>Left:</em> circuit condensation — sawtooth oscillations on the flow trace from water moving in the tubing. <em>Center:</em> cardiac oscillations — small regular oscillations synchronized with heartbeat. <em>Right:</em> circuit leak — expired tidal volume (Vte) is less than inspired (Vti) and volume scalar fails to return to zero. Each has a different fix (drain water / switch to pressure trigger / find and seal the leak).</div>
   </div>
 
   <h5>18.3.3 Double triggering (breath stacking)</h5>
@@ -7141,7 +7136,7 @@
   </ul>
   <div class="figure">
     <img src="https://i.postimg.cc/VvbBx2s4/SCR-20260503-drtk.png" alt="Double triggering — back-to-back positive pressure breaths without complete expiration" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.3.3.</b> Double triggering. Two ventilator breaths delivered back-to-back with no expiration in between. The arrow marks the second stacked breath; the resulting effective tidal volume can be 2× the set V<sub>T</sub> — direct volutrauma in ARDS.</div>
+    <div class="cap"><b>Figure 18.5.</b> Double triggering. Two ventilator breaths delivered back-to-back with no expiration in between. The arrow marks the second stacked breath; the resulting effective tidal volume can be 2× the set V<sub>T</sub> — direct volutrauma in ARDS.</div>
   </div>
 
   <h5>18.3.4 Reverse triggering (entrainment)</h5>
@@ -7175,7 +7170,7 @@
   </ul>
   <div class="figure">
     <img src="https://i.postimg.cc/ZnyFGXYH/SCR-20260503-dsqe.png" alt="Flow dyssynchrony — concave inspiratory pressure deflections from flow starvation" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.4.</b> Flow dyssynchrony. Set flow is too low for patient demand; the patient generates negative inspiratory pressure to recruit more flow, producing concave deflections in the pressure tracing (arrows). Increasing ventilator flow typically resolves it.</div>
+    <div class="cap"><b>Figure 18.6.</b> Flow dyssynchrony. Set flow is too low for patient demand; the patient generates negative inspiratory pressure to recruit more flow, producing concave deflections in the pressure tracing (arrows). Increasing ventilator flow typically resolves it.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c18-h4-5">
@@ -7191,7 +7186,7 @@
   </ul>
   <div class="figure">
     <img src="https://i.postimg.cc/zvRSs4Dk/SCR-20260503-dswc.png" alt="Premature cycling — reversal of expiratory flow from continued patient effort" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.5.</b> Premature cycling (cycle dyssynchrony — early termination). The ventilator ends inspiration before the patient does; the pressure curve is pulled downward and a brief reversal of expiratory flow appears as the patient continues to pull air in.</div>
+    <div class="cap"><b>Figure 18.7.</b> Premature cycling (cycle dyssynchrony — early termination). The ventilator ends inspiration before the patient does; the pressure curve is pulled downward and a brief reversal of expiratory flow appears as the patient continues to pull air in.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c18-h4-6">
@@ -7206,7 +7201,7 @@
   </ul>
   <div class="figure">
     <img src="https://i.postimg.cc/vT6LJC8W/SCR-20260503-dthj.png" alt="Delayed cycling — peak inspiratory pressure spikes from patient expiratory effort" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.6.</b> Delayed cycling (cycle dyssynchrony — delayed termination). Green arrows on the flow trace show expiratory flow variation; blue arrows on the pressure trace show end-inspiratory pressure spikes from the patient's expiratory effort against the still-open vent.</div>
+    <div class="cap"><b>Figure 18.8.</b> Delayed cycling (cycle dyssynchrony — delayed termination). Green arrows on the flow trace show expiratory flow variation; blue arrows on the pressure trace show end-inspiratory pressure spikes from the patient's expiratory effort against the still-open vent.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c18-h4-7">
@@ -7217,7 +7212,7 @@
 <p>The pattern of late-cycle dyssynchrony differs by mode. In <strong>pressure control</strong>, the patient's neural inspiratory time can be longer than the vent's set T<sub>i</sub>; pressure remains constant but the patient's effort continues. In <strong>volume control</strong>, the vent continues delivering volume even after the patient wants to exhale, producing pressure elevation as the patient pushes against the still-inflating breath.</p>
   <div class="figure">
     <img src="https://i.postimg.cc/6qGLkF6L/SCR-20260503-dxnk.png" alt="Late cycle dyssynchrony — pressure control vs volume control comparison" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.7.</b> Late-cycle dyssynchrony in PC (left) vs VC (right). Both show the patient's neural inspiratory time (I<sub>t</sub>) ending before the vent's set inspiratory time. Optimal synchrony in VC-CMV is achieved by directly shortening T<sub>i</sub> or increasing flow; in PC-CMV by decreasing T<sub>i</sub> to match the patient's neural T<sub>i</sub>.</div>
+    <div class="cap"><b>Figure 18.9.</b> Late-cycle dyssynchrony in PC (left) vs VC (right). Both show the patient's neural inspiratory time (I<sub>t</sub>) ending before the vent's set inspiratory time. Optimal synchrony in VC-CMV is achieved by directly shortening T<sub>i</sub> or increasing flow; in PC-CMV by decreasing T<sub>i</sub> to match the patient's neural T<sub>i</sub>.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c18-h4-8">
@@ -7228,7 +7223,7 @@
 <p>Early termination of the vent breath while the patient is still inhaling. Expressed differently in three settings: VC with decelerating flow, VC with square (constant) flow, and PC.</p>
   <div class="figure">
     <img src="https://i.postimg.cc/br2H74Yx/SCR-20260503-dxua.png" alt="Early cycle dyssynchrony — VC decelerating ramp, VC square form, PC mode" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 18.8.</b> Early-cycle dyssynchrony in three modes. <em>Top:</em> VC, decelerating ramp — flow falls before patient effort ends. <em>Middle:</em> VC, square waveform — abrupt termination with continued patient effort visible on the P<sub>mus</sub> trace. <em>Bottom:</em> PC mode — early opening of the expiratory valve before the patient effort is complete; the patient may attempt to inhale during exhalation, producing a double-trigger.</div>
+    <div class="cap"><b>Figure 18.10.</b> Early-cycle dyssynchrony in three modes. <em>Top:</em> VC, decelerating ramp — flow falls before patient effort ends. <em>Middle:</em> VC, square waveform — abrupt termination with continued patient effort visible on the P<sub>mus</sub> trace. <em>Bottom:</em> PC mode — early opening of the expiratory valve before the patient effort is complete; the patient may attempt to inhale during exhalation, producing a double-trigger.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c18-h4-9">
@@ -8691,8 +8686,8 @@
 
 <p>Positive-pressure ventilation does not just oxygenate — it changes preload, afterload, and the transmural pressures the heart sees. Understanding this is what separates the pulmonologist from the critical-care physician at the bedside.</p>
   <div class="figure">
-    <img src="https://i.postimg.cc/jjtrFX5x/14-cardiopulmonary-interactions.png" alt="Cardiopulmonary interactions of mechanical ventilation" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 29.1.</b> Cardiopulmonary interactions of positive-pressure ventilation. Increased intrathoracic pressure has predictable effects on each chamber's filling and ejection — exploited therapeutically in cardiogenic edema, problematic in hypovolemia and RV failure.</div>
+    <img src="cp-interactions.png" alt="Cardiopulmonary interactions of positive-pressure ventilation — effects on lungs, heart mechanisms, and net hemodynamic effects" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
+    <div class="cap"><b>Figure 29.1 — Cardiopulmonary interactions of positive-pressure ventilation.</b> ↑ intrathoracic pressure has predictable, chamber-specific effects: venous return falls (RA), pulmonary vascular resistance rises (RV), LA filling drops as a downstream consequence, and LV transmural pressure falls — meaning the LV ejects against a lower effective afterload. Exploited therapeutically in cardiogenic pulmonary edema; problematic in hypovolemia and RV failure.</div>
   </div>
   <h5>Practical implications</h5>
   <ul>
@@ -8704,24 +8699,7 @@
     <li><strong>Auto-PEEP</strong> obstructs venous return; abrupt hypotension on the vent in COPD/asthma often = auto-PEEP. Disconnect the circuit and let the chest empty.</li>
   </ul>
   <div class="phys"><strong>The single equation worth remembering</strong>LV transmural pressure = LV cavity pressure − pleural pressure. When pleural pressure rises (positive-pressure inspiration, or tightening Pplat), LV transmural pressure falls — the heart "feels" less afterload. Same in reverse: a large negative inspiratory effort raises transmural pressure (afterload) and can precipitate flash edema in the failing LV.</div>
-  </details>
-  <details class="chap-acc" data-acc-id="c29-h4-3">
-    <summary>
-      <h4>29.5 The Guyton view — venous return × Frank-Starling, and how the ventilator moves both curves</h4>
-    </summary>
-
-<p>Arthur Guyton's insight (1955) was that the cardiac output a patient generates is the intersection of two curves that share the same axes: the <strong>venous-return curve</strong> (cardiac output as a function of right atrial pressure, P<sub>RA</sub>) and the <strong>Frank-Starling curve</strong> (cardiac output as a function of preload). Mechanical ventilation moves both curves — and seeing this on one figure clarifies almost every hemodynamic question in critical care.<sup class="cite"><a href="#r25">25</a></sup></p>
-  <div class="figure">
-    <img src="https://i.postimg.cc/MGq8FDTZ/15-guyton-diagram.png" alt="Guyton diagram — venous return and cardiac function curves" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 29.2.</b> Guyton's two-curve model. Cardiac output sits where the venous-return curve and the Frank-Starling curve cross. <em>Mechanical ventilation moves both curves</em>: ↑ intrathoracic pressure compresses the great veins → drops the plateau of the venous-return curve (less venous return at any P<sub>RA</sub>); high lung volume / hyperinflation also raises pulmonary vascular resistance and shifts the Frank-Starling curve right (the RV needs more preload to pump the same output). The new operating point sits at lower CO. After Kenny's integration of the Guyton and Campbell frameworks.<sup class="cite"><a href="#r25">25</a></sup></div>
-  </div>
-  <ul>
-    <li><strong>Mean systemic filling pressure (MSFP)</strong> — the x-intercept of the venous-return curve. This is the upstream "head" pressure driving blood back to the right heart, set by total blood volume and venous tone. Volume-loading or vasopressors raise MSFP and shift the venous-return curve up; vasodilation, sedation, and bleeding drop it.</li>
-    <li><strong>Resistance to venous return (R<sub>VR</sub>)</strong> — the slope. ↑ R<sub>VR</sub> (high PEEP, hyperinflation, abdominal compartment syndrome) lowers cardiac output at every P<sub>RA</sub>.</li>
-    <li><strong>Frank-Starling reserve</strong> — a patient on the steep portion is preload-responsive (will benefit from a fluid bolus); a patient on the flat plateau is not (and may decompensate).</li>
-    <li><strong>The mechanical ventilator's hemodynamic move</strong> — every PEEP increase (a) drops the venous-return plateau via raised intrathoracic pressure and (b) may shift Frank-Starling right via increased RV afterload. Track MAP, lactate, and (if available) Doppler/echo stroke-volume response with each step.</li>
-  </ul>
-  <div class="phys"><strong>Reading the diagram clinically</strong>If the patient is hypotensive after PEEP up-titration: ask whether the venous-return curve dropped (volume / pressors), whether the Frank-Starling curve shifted right (RV strain — echo, troponin), or both. The intervention follows the diagnosis: more volume / vasopressor, lower PEEP, recruit only what helps oxygenation, treat the RV.</div>
+  <div class="phys"><strong>Hypotension after a PEEP step — the bedside triage</strong>Decide which mechanism: <em>dropped venous return</em> (raised intrathoracic pressure compressing the great veins → preload-responsive patient now under-filled) or <em>RV strain</em> (hyperinflation ↑ PVR → RV can't accept the preload). Intervention follows the diagnosis: volume / vasopressor if venous-return limited; lower PEEP, treat RV, and consider inhaled pulmonary vasodilator if RV-limited; recruit only what actually helps oxygenation. Bedside echo (RV size/function, IVC, stroke-volume response) is the fastest way to sort it.<sup class="cite"><a href="#r25">25</a></sup></div>
   </details>
 <div class="takeaways">
     <h5>Key takeaways</h5>
@@ -8729,7 +8707,7 @@
       <li>Transpulmonary pressure (P<sub>L</sub>) = P<sub>alveolar</sub> − P<sub>pleural</sub> ≈ P<sub>airway</sub> − P<sub>esophageal</sub>; target P<sub>L,end-exp</sub> 0 to +5 cmH₂O (alveoli open), P<sub>L,end-insp</sub> &lt; 25 cmH₂O (not overdistended).</li>
       <li>Lung stress (P<sub>L</sub>) and strain (ΔV/FRC) are the injury currency; stress &gt; 25 cmH₂O and strain &gt; 1.5–2.0 cross thresholds for VILI — esophageal manometry reveals when high airway pressure = high pleural pressure (chest wall), not lung injury.</li>
       <li>Cardiopulmonary interactions: ↑ intrathoracic pressure ↓ venous return + ↑ RV afterload; ↑ pleural pressure ↓ LV transmural pressure (afterload); every PEEP step has hemodynamic cost.</li>
-      <li>Guyton curves: ↑ intrathoracic pressure drops venous-return plateau AND may shift Frank-Starling right via RV strain — track both; low-output state post-PEEP = volume, pressors, or lower PEEP.</li>
+      <li>Hypotension after a PEEP step: diagnose venous-return drop (give volume / pressors) vs RV strain (echo, troponin → lower PEEP, treat RV) before reflexively bolusing or escalating support.</li>
     </ul>
   </div>
 </section>
@@ -9387,8 +9365,105 @@
     <li>No agitation, diaphoresis, accessory muscle use, hemodynamic deterioration.</li>
   </ul>
   <div class="figure">
-    <img src="https://i.postimg.cc/q7wdV3hH/16-liberation-algorithm.png" alt="Daily liberation algorithm" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 36.1.</b> A daily liberation pathway: readiness screen → SBT → tolerance check → extubation gate. Each step prevents the most common errors at the next.</div>
+    <svg class="anim-fig" viewBox="0 0 760 980" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Daily liberation algorithm — readiness screen, SBT, tolerance check, extubation gate" style="max-width:100%; height:auto; display:block; margin:0 auto; font-family: system-ui, -apple-system, sans-serif;">
+      <defs>
+        <marker id="arrow361" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#2c5282"/>
+        </marker>
+        <marker id="arrow361r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#a14b3a"/>
+        </marker>
+      </defs>
+
+      <!-- Step 1: Readiness screen -->
+      <rect x="120" y="20" width="520" height="160" rx="10" fill="#ebf2fa" stroke="#2c5282" stroke-width="2"/>
+      <text x="380" y="46" text-anchor="middle" font-size="13" font-weight="700" fill="#2c5282" letter-spacing="0.08em">STEP 1 — DAILY READINESS SCREEN</text>
+      <line x1="160" y1="56" x2="600" y2="56" stroke="#2c5282" stroke-width="1" opacity="0.3"/>
+      <text x="140" y="82" font-size="13.5" fill="#1a1f2b">• Underlying problem improving</text>
+      <text x="140" y="103" font-size="13.5" fill="#1a1f2b">• SpO₂ ≥ 90% on FiO₂ ≤ 0.4, PEEP ≤ 5–8</text>
+      <text x="140" y="124" font-size="13.5" fill="#1a1f2b">• Hemodynamically stable, no escalating pressors</text>
+      <text x="140" y="145" font-size="13.5" fill="#1a1f2b">• Adequate cough, manageable secretions</text>
+      <text x="140" y="166" font-size="13.5" fill="#1a1f2b">• Awake, follows commands (RASS −1 to 0)</text>
+
+      <!-- Arrow down to SAT -->
+      <line x1="380" y1="180" x2="380" y2="218" stroke="#2c5282" stroke-width="2.5" marker-end="url(#arrow361)"/>
+      <text x="392" y="203" font-size="12" font-style="italic" fill="#4a5568">all met</text>
+
+      <!-- Fail branch right (from step 1) -->
+      <line x1="640" y1="100" x2="700" y2="100" stroke="#a14b3a" stroke-width="2" marker-end="url(#arrow361r)" stroke-dasharray="5,4"/>
+      <rect x="650" y="115" width="100" height="60" rx="8" fill="#fdf2ed" stroke="#a14b3a" stroke-width="1.5"/>
+      <text x="700" y="138" text-anchor="middle" font-size="11.5" fill="#a14b3a" font-weight="600">Not ready</text>
+      <text x="700" y="154" text-anchor="middle" font-size="11" fill="#4a5568">Maintain support,</text>
+      <text x="700" y="168" text-anchor="middle" font-size="11" fill="#4a5568">reassess daily</text>
+
+      <!-- Step 2: SAT -->
+      <rect x="180" y="220" width="400" height="60" rx="10" fill="#fff" stroke="#2c5282" stroke-width="2"/>
+      <text x="380" y="244" text-anchor="middle" font-size="13" font-weight="700" fill="#2c5282" letter-spacing="0.08em">STEP 2 — SPONTANEOUS AWAKENING TRIAL</text>
+      <text x="380" y="265" text-anchor="middle" font-size="13" fill="#1a1f2b">Hold sedation; if comfortable and stable, proceed.</text>
+
+      <!-- Arrow to SBT -->
+      <line x1="380" y1="280" x2="380" y2="318" stroke="#2c5282" stroke-width="2.5" marker-end="url(#arrow361)"/>
+
+      <!-- Step 3: SBT -->
+      <rect x="120" y="320" width="520" height="120" rx="10" fill="#ebf2fa" stroke="#2c5282" stroke-width="2"/>
+      <text x="380" y="346" text-anchor="middle" font-size="13" font-weight="700" fill="#2c5282" letter-spacing="0.08em">STEP 3 — SPONTANEOUS BREATHING TRIAL</text>
+      <line x1="160" y1="356" x2="600" y2="356" stroke="#2c5282" stroke-width="1" opacity="0.3"/>
+      <text x="140" y="382" font-size="13.5" fill="#1a1f2b"><tspan font-weight="600">PSV 5–8</tspan> over <tspan font-weight="600">PEEP 5</tspan> × 30–120 min <tspan fill="#4a5568" font-style="italic">(most common)</tspan></text>
+      <text x="140" y="403" font-size="13.5" fill="#1a1f2b"><tspan font-weight="600">T-piece</tspan> 30 min <tspan fill="#4a5568" font-style="italic">(most rigorous)</tspan></text>
+      <text x="140" y="424" font-size="13.5" fill="#1a1f2b">Monitor continuously; do not "babysit" — watch and document.</text>
+
+      <!-- Arrow to tolerance -->
+      <line x1="380" y1="440" x2="380" y2="478" stroke="#2c5282" stroke-width="2.5" marker-end="url(#arrow361)"/>
+
+      <!-- Step 4: Tolerance check -->
+      <rect x="120" y="480" width="520" height="160" rx="10" fill="#fff" stroke="#2c5282" stroke-width="2"/>
+      <text x="380" y="506" text-anchor="middle" font-size="13" font-weight="700" fill="#2c5282" letter-spacing="0.08em">STEP 4 — TOLERANCE CHECK</text>
+      <line x1="160" y1="516" x2="600" y2="516" stroke="#2c5282" stroke-width="1" opacity="0.3"/>
+      <text x="140" y="542" font-size="13.5" fill="#1a1f2b">• <tspan font-weight="600">RSBI &lt; 105</tspan> (RR ÷ V<tspan font-size="10" baseline-shift="sub">T</tspan> in L)</text>
+      <text x="140" y="563" font-size="13.5" fill="#1a1f2b">• V<tspan font-size="10" baseline-shift="sub">T</tspan> &gt; 5 mL/kg PBW; RR &lt; 35</text>
+      <text x="140" y="584" font-size="13.5" fill="#1a1f2b">• SpO₂ ≥ 90%; pH stable; PaCO₂ not climbing &gt; 10</text>
+      <text x="140" y="605" font-size="13.5" fill="#1a1f2b">• No agitation, diaphoresis, accessory muscle use</text>
+      <text x="140" y="626" font-size="13.5" fill="#1a1f2b">• HR &lt; 140 and stable; SBP 90–180</text>
+
+      <!-- Fail branch -->
+      <line x1="640" y1="560" x2="700" y2="560" stroke="#a14b3a" stroke-width="2" marker-end="url(#arrow361r)" stroke-dasharray="5,4"/>
+      <rect x="650" y="575" width="100" height="76" rx="8" fill="#fdf2ed" stroke="#a14b3a" stroke-width="1.5"/>
+      <text x="700" y="598" text-anchor="middle" font-size="11.5" fill="#a14b3a" font-weight="600">SBT failure</text>
+      <text x="700" y="614" text-anchor="middle" font-size="11" fill="#4a5568">Return to prior</text>
+      <text x="700" y="628" text-anchor="middle" font-size="11" fill="#4a5568">support; address</text>
+      <text x="700" y="642" text-anchor="middle" font-size="11" fill="#4a5568">cause; retry 24h</text>
+
+      <!-- Arrow to extubation gate -->
+      <line x1="380" y1="640" x2="380" y2="678" stroke="#2c5282" stroke-width="2.5" marker-end="url(#arrow361)"/>
+      <text x="392" y="663" font-size="12" font-style="italic" fill="#4a5568">tolerated</text>
+
+      <!-- Step 5: Extubation gate -->
+      <rect x="120" y="680" width="520" height="160" rx="10" fill="#ebf2fa" stroke="#2c5282" stroke-width="2"/>
+      <text x="380" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#2c5282" letter-spacing="0.08em">STEP 5 — EXTUBATION GATE</text>
+      <line x1="160" y1="716" x2="600" y2="716" stroke="#2c5282" stroke-width="1" opacity="0.3"/>
+      <text x="140" y="742" font-size="13.5" fill="#1a1f2b">• <tspan font-weight="600">Cuff leak test</tspan> if at risk for laryngeal edema</text>
+      <text x="140" y="763" font-size="13.5" fill="#1a1f2b">• <tspan font-weight="600">Secretions</tspan> manageable (suction &lt; q2h)</text>
+      <text x="140" y="784" font-size="13.5" fill="#1a1f2b">• <tspan font-weight="600">Mental status</tspan> — GCS ≥ 8, follows commands</text>
+      <text x="140" y="805" font-size="13.5" fill="#1a1f2b">• <tspan font-weight="600">Cough strength</tspan> adequate (white-card test)</text>
+      <text x="140" y="826" font-size="13.5" fill="#1a1f2b">• Plan for post-extubation support (HFNC/NIV if high-risk)</text>
+
+      <!-- Fail branch -->
+      <line x1="640" y1="760" x2="700" y2="760" stroke="#a14b3a" stroke-width="2" marker-end="url(#arrow361r)" stroke-dasharray="5,4"/>
+      <rect x="650" y="775" width="100" height="76" rx="8" fill="#fdf2ed" stroke="#a14b3a" stroke-width="1.5"/>
+      <text x="700" y="798" text-anchor="middle" font-size="11.5" fill="#a14b3a" font-weight="600">Gate fail</text>
+      <text x="700" y="814" text-anchor="middle" font-size="11" fill="#4a5568">Steroids (leak),</text>
+      <text x="700" y="828" text-anchor="middle" font-size="11" fill="#4a5568">suction protocol,</text>
+      <text x="700" y="842" text-anchor="middle" font-size="11" fill="#4a5568">trach discussion</text>
+
+      <!-- Arrow to extubate -->
+      <line x1="380" y1="840" x2="380" y2="878" stroke="#2c5282" stroke-width="2.5" marker-end="url(#arrow361)"/>
+
+      <!-- Extubate terminal -->
+      <rect x="240" y="880" width="280" height="60" rx="30" fill="#2c5282" stroke="#2c5282" stroke-width="2"/>
+      <text x="380" y="908" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" letter-spacing="0.06em">EXTUBATE</text>
+      <text x="380" y="928" text-anchor="middle" font-size="12" fill="#ebf2fa">reassess at 1h, 4h, 24h post-extubation</text>
+    </svg>
+    <div class="cap"><b>Figure 36.1 — Daily liberation pathway.</b> Five sequential gates: readiness screen → SAT → SBT → tolerance check → extubation gate. Each step prevents the most common errors at the next; failure at any gate routes back to current support with a 24-hour reassessment, not abandonment of the plan.</div>
   </div>
   <div class="phys"><strong>Nutrition affects weaning — overfeeding is a hidden cause of SBT failure</strong>The PaCO₂ ∝ V̇CO₂ / V̇<sub>A</sub> equation (<a class="xref" href="#c4" data-xref-chap="4">§4.1</a>) cuts both ways: more CO₂ production from the metabolic side requires more ventilation to maintain the same PaCO₂. Overfeeding raises V̇CO₂ and the respiratory quotient (RQ), and can be the difference between a passed and a failed SBT.
     <ul style="margin: 6px 0 0;">
@@ -10560,13 +10635,11 @@
   </div>
 </section>
 
-<!-- =========================== CHAPTER 32 — IMAGING ATLAS =========================== -->
-
 <!-- =========================== APPENDIX =========================== -->
-<div class="part" id="appendix"><div class="pno">Appendix</div><h2>Equations, drugs, abbreviations, references</h2><p class="sum">Quick-reference materials: equation cheat sheet, drug-dosing tables (filterable by class), imaging atlas, alarm reference, abbreviations glossary, and citations.</p></div>
+<div class="part" id="appendix"><div class="pno">Appendix</div><h2>Equations, drugs, abbreviations, references</h2><p class="sum">Quick-reference materials: equation cheat sheet, drug-dosing tables (filterable by class), alarm reference, abbreviations glossary, and citations.</p></div>
 
 <section class="chap" id="drugs" data-part="appendix">
-  <h3><span class="num">D</span>Drug dosing reference</h3>
+  <h3>Drug dosing reference</h3>
   <p class="lead">Compact reference for all drugs you'll order in the first 72 hours of mechanical ventilation. Verify each dose against your institutional formulary; renal/hepatic adjustment may be required.</p>
 
   <div class="drugs-toolbar" id="drugs-toolbar" role="toolbar" aria-label="Filter drug tables">
@@ -10672,7 +10745,7 @@
 </section>
 
 <section class="chap" id="equations" data-part="appendix">
-  <h3><span class="num">A</span>Equations &amp; numbers worth memorizing</h3>
+  <h3>Equations &amp; numbers worth memorizing</h3>
   <table>
     <tr><th>Quantity</th><th>Formula / value</th></tr>
     <tr><td>Predicted body weight (men)</td><td>\(\text{PBW} = 50 + 2.3 \times (\text{height}_{in} - 60)\)</td></tr>
@@ -10690,77 +10763,9 @@
     <tr><td>Permissive hypercapnia floor</td><td>pH 7.20 (severe ARDS) — 7.15 (asthma)</td></tr>
   </table>
 </section>
-<section class="chap" id="c_imaging" data-part="appendix">
-  <h3><span class="num">E</span>Imaging atlas — the radiographs every vent doc should recognize</h3>
-  <p class="lead">Eight portable-film findings that change ventilator management at the bedside. Each thumbnail expands on click. All images are licensed under Creative Commons via Wikimedia Commons; attribution accompanies each figure.</p>
-
-  
-  <h4>E.1 Acute respiratory failure — the alveolar patterns</h4>
-<div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Chest_radiograph_of_a_lung_with_Kerley_B_lines.jpg" alt="Cardiogenic pulmonary edema — Kerley B lines and perihilar haziness" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.1 — Cardiogenic pulmonary edema.</b> Look for short horizontal lines at the lung bases (Kerley B), perihilar "bat-wing" haziness, cephalization of upper-lobe vessels, peribronchial cuffing, and often a widened cardiac silhouette and pleural effusions. These point you toward diuresis + afterload reduction; if intubation is required, NIV (CPAP/BiPAP) is the first-line ventilatory mode (see §21). <em>Image: Mikael Häggström, CC BY-SA 4.0, via Wikimedia Commons.</em></div>
-  </div>
-
-  <div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/X-ray_of_lobar_pneumonia.jpg" alt="Right middle lobe lobar pneumonia with air bronchograms" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.2 — Lobar pneumonia.</b> Homogeneous opacification of a single lobe (here, right middle lobe) bounded by a fissure, often with air bronchograms. No volume loss (vs atelectasis). Treat the underlying infection; ventilator strategy is lung-protective and mode-neutral unless the consolidation evolves into ARDS (bilateral, diffuse). <em>Image: Mikael Häggström, CC0, via Wikimedia Commons.</em></div>
-  </div>
-  <h4>E.2 Air where it doesn't belong — pneumothorax</h4>
-<div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Deep_sulcus_sign_59jm_-_Roe_-_001.jpg" alt="Supine pneumothorax with deep sulcus sign" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.3 — The deep sulcus sign.</b> On a <em>supine</em> film (i.e., almost every ICU patient), free pleural air rises anteriorly and accumulates in the costophrenic sulcus rather than at the apex. The affected sulcus appears abnormally deep and lucent. A patient who acutely "fights the vent," desaturates, and develops rising peak airway pressures with unilateral absent breath sounds gets a stat needle decompression — <em>do not wait</em> for confirmatory imaging if hemodynamics are crashing. <em>Image: Hellerhoff, CC BY-SA 3.0, via Wikimedia Commons.</em></div>
-  </div>
-  <h4>E.3 Fluid in the wrong space — pleural effusion</h4>
-<div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Bilateral_Pleural_Effusion.jpg" alt="Bilateral pleural effusions with blunted costophrenic angles" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.4 — Bilateral pleural effusions.</b> Costophrenic blunting is the earliest sign (~200 mL needed on upright PA; ≥ 500 mL on supine portable). Large effusions impair lung mechanics and oxygenation; drainage of &gt; 1 L often improves PaO₂/FiO₂ and tidal-volume compliance. Beware re-expansion pulmonary edema if &gt; 1.5 L is removed too quickly. <em>Image: Sara Nabih, CC BY-SA 4.0, via Wikimedia Commons.</em></div>
-  </div>
-  <h4>E.4 ETT position — the most common postoperative or post-intubation question</h4>
-<div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4b/ETTubeandNGtubeMarked.png" alt="Properly positioned endotracheal and nasogastric tubes" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.5 — ETT in good position.</b> Tip 3–5 cm above the carina (about T2–T4 vertebral level) with neck in neutral position. The carina shifts: chin tucked → tube advances ~2 cm; chin extended → tube retracts ~2 cm. NGT seen entering the stomach below the diaphragm. <em>Image: James Heilman MD, CC BY-SA 4.0, via Wikimedia Commons.</em></div>
-  </div>
-
-  <div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tubusfehllage_im_rechten_Hauptbronchus_57W_-_CR_ap_-_001.jpg" alt="Right mainstem intubation with left lung atelectasis" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.6 — Right mainstem intubation.</b> ETT tip below the carina with whole-lung opacification on the contralateral (here, left) side from collapse. New asymmetric breath sounds + new desaturation + peak-pressure rise after a tube manipulation = pull back to ~22 cm at the lip (women) / 24 cm (men), reconfirm bilateral breath sounds, and re-image. The right mainstem is straighter and shorter, so almost all malpositions go right. <em>Image: Hellerhoff, CC BY-SA 4.0, via Wikimedia Commons.</em></div>
-  </div>
-  <h4>E.5 The hyperinflated lung — COPD</h4>
-<div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/X-ray_of_COPD_exacerbation_-_anteroposterior_view.jpg" alt="COPD exacerbation with hyperinflation and flat diaphragms" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.7 — COPD with hyperinflation.</b> Flat diaphragms (lowest border below the anterior 7th rib), increased AP diameter, narrowed cardiac silhouette, and increased retrosternal airspace on the lateral. The visual mirror of dynamic hyperinflation: high closing volumes, prolonged expiratory time constants, auto-PEEP. Set low rates and long Te (see §16). <em>Image: Mikael Häggström, CC0, via Wikimedia Commons.</em></div>
-  </div>
-  <h4>E.6 Vascular emergencies — pulmonary embolism</h4>
-<div class="figure">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Hampton_hump_bei_schwerer_Lungenembolie_-_Roe_Thorax.jpg" alt="Hampton hump — wedge-shaped peripheral opacity from pulmonary infarction" style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure E.8 — Hampton's hump.</b> Pleural-based, wedge-shaped peripheral opacity pointing toward the hilum, classic for pulmonary infarction from PE. CXR is otherwise <em>insensitive</em> for PE — Westermark sign (focal oligemia) and Hampton's hump are specific but rarely seen. CTPA remains the diagnostic standard. RV strain/dilation on bedside echo is the actionable bedside finding (see §29). <em>Image: Hellerhoff, CC BY-SA 3.0, via Wikimedia Commons.</em></div>
-  </div>
-
-  <div class="pearl"><b>How to read a portable ICU film in 30 seconds — the systematic look:</b><br/>
-    <strong>1. Lines &amp; tubes:</strong> ETT 3–5 cm above carina, NGT through diaphragm, central line tip at SVC–RA junction, chest tube along the chest wall.<br/>
-    <strong>2. Heart silhouette:</strong> size and shape (cardiomegaly &gt; 50% of thorax on good PA).<br/>
-    <strong>3. Mediastinum:</strong> shifted? widened?<br/>
-    <strong>4. Lungs:</strong> symmetric aeration; new opacities (alveolar vs interstitial); pneumothorax (deep sulcus on supine).<br/>
-    <strong>5. Pleura:</strong> blunted costophrenic angles, layering effusion.<br/>
-    <strong>6. Diaphragms &amp; below:</strong> free air, NG position, gastric distension.<br/>
-    <strong>7. Bones &amp; soft tissues:</strong> rib fractures, subcutaneous emphysema (a tip-off to occult pneumothorax).
-  </div>
-<div class="takeaways">
-    <h5>Key takeaways</h5>
-    <ul>
-      <li>On a supine portable film, the deep sulcus sign is the pneumothorax of the ICU. Don't miss it.</li>
-      <li>ETT tip 3–5 cm above carina; almost all malpositions are right mainstem.</li>
-      <li>Lobar pneumonia has consolidation without volume loss; lobar atelectasis has volume loss with mediastinal shift toward the affected side.</li>
-      <li>Cardiogenic edema → bat-wing + Kerley B + cephalization + cardiomegaly. ARDS → bilateral diffuse infiltrates that <em>spare</em> the costophrenic angles and have a normal heart size.</li>
-      <li>CXR is insensitive for PE — use bedside echo for RV strain and CTPA for diagnosis.</li>
-      <li>Always read ICU films systematically: lines &amp; tubes → heart → mediastinum → lungs → pleura → diaphragms → bones.</li>
-    </ul>
-  </div>
-</section>
-
 <!-- =========================== CHAPTER 41 — VENT ALARM REFERENCE =========================== -->
 <section class="chap" id="c_alarms" data-part="appendix">
-  <h3><span class="num">F</span>Ventilator alarm reference — the differential for every common alarm</h3>
+  <h3>Ventilator alarm reference — the differential for every common alarm</h3>
   <p class="lead">Alarms aren't noise; each is a question your ventilator is asking. This chapter is a consolidated card: every common alarm, its 3–5 likely causes, the distinguishing feature for each, and the immediate fix.</p>
 
   
@@ -10894,7 +10899,7 @@
 
 
 <section class="chap" id="abbr" data-part="appendix">
-  <h3><span class="num">B</span>Abbreviations</h3>
+  <h3>Abbreviations</h3>
   <table>
     <tr><th>Abbr.</th><th>Meaning</th><th>Abbr.</th><th>Meaning</th></tr>
     <tr><td>A/C</td><td>Assist-control</td><td>APRV</td><td>Airway pressure release ventilation</td></tr>
@@ -10945,7 +10950,7 @@
 </section>
 
 <section class="chap" id="refs" data-part="appendix">
-  <h3><span class="num">C</span>References</h3>
+  <h3>References</h3>
   <ol class="refs">
     <li id="r1">Matthay MA, Arabi Y, Arroliga AC, et al. A new global definition of acute respiratory distress syndrome. <em>Am J Respir Crit Care Med</em>. 2024;209(1):37-47.</li>
     <li id="r2">Rittayamai N, Katsios CM, Beloncle F, et al. Pressure-controlled vs volume-controlled ventilation in acute respiratory failure: a physiology-based narrative and systematic review. <em>Chest</em>. 2015;148(2):340-355.</li>
@@ -13577,7 +13582,7 @@ saveInputs();
       totalWords += words;
       // Inject reading time into the matching sidebar TOC link
       const id = chap.id;
-      if (id && id !== 'cheatsheet' && id !== 'calc-tools' && !['drugs','equations','abbr','refs','c_imaging','c_alarms'].includes(id)) {
+      if (id && id !== 'cheatsheet' && id !== 'calc-tools' && !['drugs','equations','abbr','refs','c_alarms'].includes(id)) {
         realChapters += 1;
         const minutes = Math.max(1, Math.round(words / 220));
         const tocLink = document.querySelector('nav.toc a[href="#' + id + '"]');
