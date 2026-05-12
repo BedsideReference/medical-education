@@ -1,12 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient–ventilator dyssynchrony explorer</title>
+  <style>
+    html, body { margin: 0; padding: 0; background: #FAF9F5; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 20px;
+      box-sizing: border-box;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    @media (max-width: 600px) { body { padding: 12px; } }
+    @media (prefers-color-scheme: dark) {
+      html, body { background: #0F0F0F; }
+    }
+  </style>
 <style>
-  /* ─────────────────────────────────────────────────────
-   * Ventilator dyssynchrony identifier — v10
-   * Professional clinical UI with inline SVG icons (no font deps)
-   * ─────────────────────────────────────────────────── */
+  /* Ventilator dyssynchrony identifier — v10
+     Professional clinical UI with inline SVG icons (no font deps) */
   .dys-app { font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); color: var(--color-text-primary, #1F1F1E); --dys-page: var(--color-background-primary, #FAF9F5); --dys-card: #FFFFFF; --dys-elev: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04); --dys-elev-hi: 0 1px 3px rgba(15, 23, 42, 0.08), 0 8px 24px rgba(15, 23, 42, 0.08); --dys-text: #1F1F1E; --dys-text-muted: #6B6B68; --dys-text-subtle: #9C9C97; --dys-border: rgba(15, 23, 42, 0.10); --dys-border-strong: rgba(15, 23, 42, 0.18); --dys-divider: rgba(15, 23, 42, 0.06); --dys-accent: #4F46E5; --dys-accent-soft: rgba(79, 70, 229, 0.08); }
   .dys-app[data-dys-theme="dark"] { --dys-page: #0F0F0F; --dys-card: #1A1A19; --dys-elev: 0 1px 2px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4); --dys-elev-hi: 0 1px 3px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.5); --dys-text: #E8E6E1; --dys-text-muted: #A0A09B; --dys-text-subtle: #6B6B68; --dys-border: rgba(255,255,255,0.10); --dys-border-strong: rgba(255,255,255,0.20); --dys-divider: rgba(255,255,255,0.06); --dys-accent: #818CF8; --dys-accent-soft: rgba(129, 140, 248, 0.12); }
-
-  /* ── Title block ────────────────────────────────────── */
   .dys-app-header { display:flex; align-items:center; gap:14px; margin:0 0 24px; padding:0 0 20px; border-bottom:1px solid var(--dys-divider); }
   .dys-app-icon { display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:12px; background:linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%); box-shadow: var(--dys-elev), inset 0 1px 0 rgba(255,255,255,0.15); color:#FFFFFF; }
   .dys-app-icon svg { width:24px; height:24px; }
@@ -14,14 +30,10 @@
   .dys-app-title { font-size:24px; font-weight:700; color:var(--dys-text); margin:0 0 2px; letter-spacing:-0.02em; line-height:1.15; }
   .dys-app-subtitle { font-size:13px; color:var(--dys-text-muted); margin:0; line-height:1.5; }
   .dys-app-actions { display:flex; gap:8px; align-items:center; flex-shrink:0; }
-
-  /* ── Action buttons (theme + play/pause) ────────────── */
   .dys-action-btn { display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; padding:0; border-radius:10px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; color:var(--dys-text); transition: all 0.15s ease; box-shadow: var(--dys-elev); }
   .dys-action-btn:hover { background:var(--dys-page); border-color:var(--dys-border-strong); transform:translateY(-1px); box-shadow: var(--dys-elev-hi); }
   .dys-action-btn:active { transform:translateY(0); }
   .dys-action-btn svg { width:18px; height:18px; }
-
-  /* ── Case selector — grid of mini-waveform cards ────── */
   .dys-cases-eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--dys-text-muted); font-weight:600; margin-bottom:10px; display:block; }
   .dys-cases { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin:0 0 24px; }
   @media (max-width: 1000px) { .dys-cases { grid-template-columns:repeat(2, 1fr); } }
@@ -38,13 +50,9 @@
   .dys-case-spark { width:100%; height:22px; opacity:0.55; transition: opacity 0.15s; }
   .dys-case-btn.active .dys-case-spark { opacity:1; }
   .dys-case-btn:hover .dys-case-spark { opacity:0.85; }
-
-  /* Severity dots */
   .sev-dot-danger  { background:#EF4444; box-shadow:0 0 0 2px rgba(239,68,68,0.15); }
   .sev-dot-warning { background:#F59E0B; box-shadow:0 0 0 2px rgba(245,158,11,0.15); }
   .sev-dot-success { background:#22C55E; box-shadow:0 0 0 2px rgba(34,197,94,0.15); }
-
-  /* ── Current case header ─────────────────────────────── */
   .dys-current { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:16px 18px; border-radius:13px; background:var(--dys-card); border:1px solid var(--dys-border); box-shadow: var(--dys-elev); }
   .dys-current-info { flex:1; min-width:200px; }
   .dys-current-title { display:flex; align-items:center; gap:9px; font-size:18px; font-weight:700; color:var(--dys-text); margin:0 0 4px; letter-spacing:-0.015em; }
@@ -63,8 +71,6 @@
   .dys-app[data-dys-theme="dark"] .sev-pill-success { background:rgba(34,197,94,0.18);  color:#86EFAC; }
   .sev-pill-danger .dot { background:#EF4444; } .sev-pill-warning .dot { background:#F59E0B; } .sev-pill-success .dot { background:#22C55E; }
   .dys-mode-pill { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:11px; font-weight:600; padding:4px 9px; border-radius:6px; background:var(--dys-page); color:var(--dys-text-muted); border:1px solid var(--dys-border); }
-
-  /* ── Monitor panel (always dark — ICU display) ──────── */
   .dys-monitor { position:relative; background:linear-gradient(168deg, #061026 0%, #0E1B36 50%, #0A1426 100%); border-radius:14px; padding:14px 16px 12px; margin-bottom:18px; box-shadow: 0 1px 3px rgba(0,0,0,0.20), 0 8px 24px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(148,163,184,0.06); overflow:hidden; }
   .dys-monitor::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at top right, rgba(99,102,241,0.10), transparent 70%); pointer-events:none; }
   .dys-mon-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 2px; position:relative; }
@@ -86,8 +92,6 @@
   .dys-lead.p { color:#FFD23F; }
   .dys-lead.f { color:#5EE5FF; }
   .dys-units { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:9.5px; color:rgba(226,232,240,0.4); }
-
-  /* ── Info cards: signs + mechanism + actions ────────── */
   .dys-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width: 760px) { .dys-info-grid { grid-template-columns:1fr; } }
   .dys-info-card { position:relative; background:var(--dys-card); border:1px solid var(--dys-border); border-radius:13px; padding:18px 20px 18px 22px; box-shadow: var(--dys-elev); transition: box-shadow 0.15s; overflow:hidden; }
@@ -103,23 +107,19 @@
   .dys-app[data-dys-theme="dark"] .dys-info-icon.signs   { background:rgba(245,158,11,0.18); color:#FCD34D; }
   .dys-app[data-dys-theme="dark"] .dys-info-icon.actions { background:rgba(34,197,94,0.18);  color:#86EFAC; }
   .dys-info-label { font-size:14.5px; font-weight:700; color:var(--dys-text); letter-spacing:-0.015em; }
-
-  /* Signs list — bulleted */
   .dys-signs-list { list-style:none; padding:0; margin:0 0 14px; }
   .dys-signs-list li { display:flex; gap:9px; align-items:flex-start; padding:5px 0; font-size:13.5px; color:var(--dys-text); line-height:1.5; }
   .dys-signs-list li::before { content:""; flex-shrink:0; width:6px; height:6px; border-radius:50%; background:#F59E0B; margin-top:8px; box-shadow:0 0 0 2px rgba(245,158,11,0.15); }
   .dys-mechanism { font-size:12.5px; color:var(--dys-text-muted); line-height:1.55; padding-top:12px; border-top:1px solid var(--dys-divider); }
   .dys-mechanism-eyebrow { font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--dys-text-subtle); font-weight:700; margin-bottom:5px; }
-
-  /* Actions list — numbered */
   .dys-actions-list { list-style:none; padding:0; margin:0; counter-reset: dys-action; }
   .dys-actions-list li { counter-increment: dys-action; display:flex; gap:11px; align-items:flex-start; padding:7px 0; font-size:13.5px; color:var(--dys-text); line-height:1.5; }
   .dys-actions-list li::before { content:counter(dys-action); flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:rgba(34,197,94,0.12); color:#16A34A; font-size:11.5px; font-weight:700; margin-top:1px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
   .dys-app[data-dys-theme="dark"] .dys-actions-list li::before { background:rgba(34,197,94,0.20); color:#86EFAC; }
 </style>
-
+</head>
+<body>
 <div class="dys-app" data-dys-theme="light">
-
   <div class="dys-app-header">
     <div class="dys-app-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -135,6 +135,14 @@
       <p class="dys-app-subtitle">Live waveforms for the eight common patient–ventilator dyssynchrony patterns.</p>
     </div>
     <div class="dys-app-actions">
+      <button id="dys-expand" class="dys-action-btn" aria-label="Open full interactive view in new tab" title="Click to expand — open full view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 4h4v4"/>
+          <path d="M14 10l6-6"/>
+          <path d="M8 20H4v-4"/>
+          <path d="M10 14l-6 6"/>
+        </svg>
+      </button>
       <button id="dys-theme" class="dys-action-btn" aria-label="Switch to dark theme" title="Switch to dark theme">
         <svg id="dys-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -148,10 +156,8 @@
       </button>
     </div>
   </div>
-
   <span class="dys-cases-eyebrow">Select pattern</span>
   <div id="dys-cases" class="dys-cases" role="tablist"></div>
-
   <div class="dys-current">
     <div class="dys-current-info">
       <div class="dys-current-title">
@@ -165,7 +171,6 @@
       <span class="dys-mode-pill" id="dys-mode">PSV / AC</span>
     </div>
   </div>
-
   <div class="dys-monitor">
     <div class="dys-mon-header">
       <div class="dys-mon-status">
@@ -186,7 +191,6 @@
       <svg id="dys-f" viewBox="0 0 800 130" style="width:100%; height:130px; display:block;"></svg>
     </div>
   </div>
-
   <div class="dys-info-grid">
     <div class="dys-info-card signs">
       <div class="dys-info-head">
@@ -220,11 +224,9 @@
     </div>
   </div>
 </div>
-
 <script>
 (function(){
   const PEEP = 5;
-
   function pcvBreath(t, tStart, tEnd, peakP) {
     if (t < tStart || t > tEnd) return null;
     const dt = t - tStart, rise = 0.025;
@@ -246,7 +248,6 @@
     if (dt < flowRise) return PEEP + resistivePressure * (dt / flowRise);
     return PEEP + resistivePressure + compliance * (dt - flowRise);
   }
-
   const cases = {
     ineffective: {
       title: "Ineffective triggering",
@@ -287,7 +288,6 @@
         {tNorm: 0.45, type:"f", label:"Expiratory flow interrupted", offsetY:-35, offsetX:10}
       ]
     },
-
     auto: {
       title: "Auto-triggering",
       tagline: "Ventilator delivers breaths without any patient effort.",
@@ -327,7 +327,6 @@
         {tNorm: 0.45, type:"f", label:"Cardiac oscillations", offsetY:35, offsetX:5}
       ]
     },
-
     double: {
       title: "Double triggering",
       tagline: "Two ventilator breaths separated by a very short expiratory time — breath stacking.",
@@ -373,7 +372,6 @@
         {tNorm: 0.21, type:"f", label:"Expiration too short", offsetY:25, offsetX:8}
       ]
     },
-
     reverse: {
       title: "Reverse triggering",
       tagline: "Mechanical insufflation entrains the diaphragm via reflex coupling.",
@@ -419,7 +417,6 @@
         {tNorm: 0.25, type:"f", label:"Effort distorts expiration", offsetY:-35, offsetX:8}
       ]
     },
-
     trigDelay: {
       title: "Trigger delay",
       tagline: "Excessive lag (>200 ms) between patient effort and machine breath delivery.",
@@ -461,7 +458,6 @@
         {tNorm: 0.09, type:"f", label:"Pre-trigger flow deflection", offsetY:-30, offsetX:10}
       ]
     },
-
     flow: {
       title: "Flow asynchrony",
       tagline: "Mismatch between set inspiratory flow and patient demand — most often air hunger.",
@@ -518,7 +514,6 @@
         {tNorm: 0.25, type:"f", label:"M-shape from dual targeting", offsetY:35, offsetX:8}
       ]
     },
-
     cycle: {
       title: "Premature cycling",
       tagline: "Ventilator ends inspiration before the patient's neural inspiration completes.",
@@ -563,7 +558,6 @@
         {tNorm: 0.30, type:"p", label:"Pressure dip post-cycle", offsetY:-25, offsetX:8}
       ]
     },
-
     delayedCycle: {
       title: "Delayed cycling",
       tagline: "Mechanical insufflation continues past the end of the patient's neural inspiration.",
@@ -612,17 +606,14 @@
       ]
     }
   };
-
   const ORDER = ['ineffective','auto','double','reverse','trigDelay','flow','cycle','delayedCycle'];
   let current = "ineffective";
   const SVG_NS = "http://www.w3.org/2000/svg";
-
   let W = 800;
   const H = 130;
   const padL = 40, padR = 14, padT = 8, padB = 14;
   let plotW = W - padL - padR;
   const plotH = H - padT - padB;
-
   function updateDimensions() {
     const psvg = document.getElementById('dys-p');
     if (!psvg) return false;
@@ -630,7 +621,6 @@
     if (newW > 0 && newW !== W) { W = newW; plotW = W - padL - padR; return true; }
     return false;
   }
-
   const COL_GRID  = 'rgba(148,163,184,0.10)';
   const COL_REF   = 'rgba(148,163,184,0.32)';
   const COL_AXIS  = 'rgba(148,163,184,0.50)';
@@ -638,18 +628,15 @@
   const COL_FLOW  = '#5EE5FF';
   const COL_ANN   = '#FF8A5C';
   const COL_ANN_BG = '#0F1D38';
-
   let animProgress = 0;
   let animRunning = true;
   let lastFrameTime = 0;
   const SWEEP_DURATION_MS = 6000;
   let curPressureFn = null, curFlowFn = null;
-
   function yFromValue(v, isFlow) {
     const yMin = isFlow ? -60 : 0, yMax = isFlow ? 60 : 40;
     return padT + plotH * (yMax - v) / (yMax - yMin);
   }
-
   function buildSparkline(fn, w, h) {
     const N = 80;
     const yMin = 0, yMax = 40;
@@ -663,7 +650,6 @@
     }
     return path;
   }
-
   function renderCaseButtons() {
     const container = document.getElementById('dys-cases');
     container.innerHTML = '';
@@ -685,15 +671,12 @@
       container.appendChild(btn);
     });
   }
-
   function draw(svgId, fn, isFlow, annotations) {
     const svg = document.getElementById(svgId);
     while(svg.firstChild) svg.removeChild(svg.firstChild);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-
     const yMin = isFlow ? -60 : 0, yMax = isFlow ? 60 : 40;
     const traceColor = isFlow ? COL_FLOW : COL_PRESS;
-
     const defs = document.createElementNS(SVG_NS, "defs");
     const clipPath = document.createElementNS(SVG_NS, "clipPath");
     const clipId = 'sweep-clip-' + svgId;
@@ -710,7 +693,6 @@
     clipPath.appendChild(rightRect);
     defs.appendChild(clipPath);
     svg.appendChild(defs);
-
     for(let i=0; i<=4; i++){
       if(isFlow && i === 2) continue;
       const y = padT + (plotH * i / 4);
@@ -720,7 +702,6 @@
       line.setAttribute("stroke", COL_GRID); line.setAttribute("stroke-width", "0.5");
       svg.appendChild(line);
     }
-
     if(isFlow){
       const zeroY = padT + plotH * (yMax - 0) / (yMax - yMin);
       const zline = document.createElementNS(SVG_NS, "line");
@@ -745,7 +726,6 @@
       peepLabel.textContent = "PEEP";
       svg.appendChild(peepLabel);
     }
-
     const labels = isFlow ? [60, 30, 0, -30, -60] : [40, 30, 20, 10, 0];
     labels.forEach((val, i) => {
       const y = padT + (plotH * i / 4);
@@ -756,10 +736,8 @@
       text.setAttribute("font-variant-numeric", "tabular-nums"); text.textContent = val;
       svg.appendChild(text);
     });
-
     const clippedGroup = document.createElementNS(SVG_NS, "g");
     clippedGroup.setAttribute("clip-path", "url(#" + clipId + ")");
-
     let path = "";
     const samples = 600;
     for(let i=0; i<=samples; i++){
@@ -775,13 +753,11 @@
     glow.setAttribute("stroke-linejoin", "round"); glow.setAttribute("opacity", "0.18");
     glow.setAttribute("filter", "blur(0.5px)");
     clippedGroup.appendChild(glow);
-
     const pathEl = document.createElementNS(SVG_NS, "path");
     pathEl.setAttribute("d", path); pathEl.setAttribute("stroke", traceColor);
     pathEl.setAttribute("stroke-width", "1.5"); pathEl.setAttribute("fill", "none");
     pathEl.setAttribute("stroke-linejoin", "round");
     clippedGroup.appendChild(pathEl);
-
     if(annotations){
       annotations.filter(a => (isFlow && a.type === "f") || (!isFlow && a.type === "p")).forEach(a => {
         const t = a.tNorm, v = fn(t);
@@ -792,7 +768,6 @@
         circle.setAttribute("r", "5"); circle.setAttribute("fill", "none");
         circle.setAttribute("stroke", COL_ANN); circle.setAttribute("stroke-width", "1.5");
         clippedGroup.appendChild(circle);
-
         const labelX = x + a.offsetX + 8, labelY = y + a.offsetY;
         const leader = document.createElementNS(SVG_NS, "line");
         leader.setAttribute("x1", x + (a.offsetX > 0 ? 5 : -5));
@@ -801,7 +776,6 @@
         leader.setAttribute("stroke", COL_ANN); leader.setAttribute("stroke-width", "0.7");
         leader.setAttribute("stroke-dasharray", "2,2");
         clippedGroup.appendChild(leader);
-
         const tempText = document.createElementNS(SVG_NS, "text");
         tempText.setAttribute("font-size", "10.5");
         tempText.setAttribute("font-family", "var(--font-sans, sans-serif)");
@@ -809,13 +783,11 @@
         tempText.style.visibility = "hidden"; tempText.textContent = a.label;
         svg.appendChild(tempText);
         const bbox = tempText.getBBox(); svg.removeChild(tempText);
-
         const bg = document.createElementNS(SVG_NS, "rect");
         bg.setAttribute("x", labelX - 4); bg.setAttribute("y", labelY - bbox.height + 1);
         bg.setAttribute("width", bbox.width + 8); bg.setAttribute("height", bbox.height + 3);
         bg.setAttribute("rx", "3"); bg.setAttribute("fill", COL_ANN_BG); bg.setAttribute("opacity", "0.85");
         clippedGroup.appendChild(bg);
-
         const label = document.createElementNS(SVG_NS, "text");
         label.setAttribute("x", labelX); label.setAttribute("y", labelY);
         label.setAttribute("fill", COL_ANN); label.setAttribute("font-size", "10.5");
@@ -825,7 +797,6 @@
       });
     }
     svg.appendChild(clippedGroup);
-
     const cursorGlow = document.createElementNS(SVG_NS, "line");
     cursorGlow.setAttribute("class", "sweep-cursor-glow");
     cursorGlow.setAttribute("x1", padL); cursorGlow.setAttribute("x2", padL);
@@ -840,7 +811,6 @@
     cursor.setAttribute("stroke", traceColor); cursor.setAttribute("stroke-width", "1");
     cursor.setAttribute("opacity", "0.55");
     svg.appendChild(cursor);
-
     const dotHalo = document.createElementNS(SVG_NS, "circle");
     dotHalo.setAttribute("class", "sweep-dot-halo");
     dotHalo.setAttribute("cx", padL); dotHalo.setAttribute("cy", yFromValue(fn(0), isFlow));
@@ -852,22 +822,18 @@
     dot.setAttribute("cx", padL); dot.setAttribute("cy", yFromValue(fn(0), isFlow));
     dot.setAttribute("r", "3"); dot.setAttribute("fill", traceColor);
     svg.appendChild(dot);
-
     applySweep(svg, fn, isFlow);
   }
-
   function applySweep(svg, fn, isFlow) {
     const cursorX = padL + animProgress * plotW;
     const eraseW = plotW * 0.04;
     const eraseRight = Math.min(cursorX + eraseW, W - padR);
-
     const leftRect = svg.querySelector('.sweep-clip-left');
     const rightRect = svg.querySelector('.sweep-clip-right');
     const cursor = svg.querySelector('.sweep-cursor');
     const cursorGlow = svg.querySelector('.sweep-cursor-glow');
     const dot = svg.querySelector('.sweep-dot');
     const dotHalo = svg.querySelector('.sweep-dot-halo');
-
     if (leftRect)  leftRect.setAttribute('width', Math.max(0, cursorX - padL));
     if (rightRect) { rightRect.setAttribute('x', eraseRight); rightRect.setAttribute('width', Math.max(0, W - padR - eraseRight)); }
     if (cursor)      { cursor.setAttribute('x1', cursorX); cursor.setAttribute('x2', cursorX); }
@@ -878,7 +844,6 @@
       if (dotHalo) { dotHalo.setAttribute('cx', cursorX); dotHalo.setAttribute('cy', cy); }
     }
   }
-
   function updateReadouts() {
     if (!curPressureFn || !curFlowFn) return;
     const pVal = curPressureFn(animProgress), fVal = curFlowFn(animProgress);
@@ -887,7 +852,6 @@
     if (pEl) pEl.textContent = pVal.toFixed(1);
     if (fEl) fEl.textContent = (fVal >= 0 ? '+' : '') + fVal.toFixed(0);
   }
-
   function tick(now) {
     if (lastFrameTime === 0) lastFrameTime = now;
     const dt = now - lastFrameTime; lastFrameTime = now;
@@ -901,7 +865,6 @@
     }
     requestAnimationFrame(tick);
   }
-
   function render() {
     const c = cases[current];
     document.getElementById("dys-titletext").textContent = c.title;
@@ -911,24 +874,18 @@
     sevText.textContent = c.sev;
     sevPill.className = 'dys-sev-pill sev-pill-' + c.sevType;
     document.getElementById("dys-mode").textContent = c.mode;
-
     const signsList = document.getElementById('dys-signs');
     signsList.innerHTML = '';
     c.signs.forEach(s => { const li = document.createElement('li'); li.textContent = s; signsList.appendChild(li); });
-
     document.getElementById('dys-mechanism').textContent = c.mechanism;
-
     const actionsList = document.getElementById('dys-actions');
     actionsList.innerHTML = '';
     c.actions.forEach(a => { const li = document.createElement('li'); li.textContent = a; actionsList.appendChild(li); });
-
     curPressureFn = c.pressure; curFlowFn = c.flow;
     draw("dys-p", c.pressure, false, c.ann);
     draw("dys-f", c.flow, true, c.ann);
     updateReadouts();
   }
-
-  // Theme toggle (default to system preference if dark)
   const appEl = document.querySelector('.dys-app');
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
     appEl.setAttribute('data-dys-theme', 'dark');
@@ -951,7 +908,6 @@
     const cur = appEl.getAttribute('data-dys-theme');
     setTheme(cur === 'dark' ? 'light' : 'dark');
   });
-
   function setPlayState(running) {
     animRunning = running;
     const iconEl = document.getElementById('dys-playpause-icon');
@@ -971,11 +927,12 @@
     if (liveDot) liveDot.classList.toggle('paused', !running);
   }
   document.getElementById("dys-playpause").addEventListener("click", () => setPlayState(!animRunning));
-
+  document.getElementById("dys-expand").addEventListener("click", () => {
+    window.open('https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html', '_blank', 'noopener');
+  });
   renderCaseButtons();
   render();
   requestAnimationFrame(tick);
-
   const psvgForObserver = document.getElementById('dys-p');
   if (psvgForObserver && typeof ResizeObserver !== 'undefined') {
     const ro = new ResizeObserver(() => { if (updateDimensions()) render(); });
@@ -987,51 +944,30 @@
 </script>
 <script>
 // Height-sync for iframe embedding — posts document height to parent so the
-// embedding page can size the iframe to fit content exactly. No-op when this
-// page is loaded standalone (window.parent === window).
-//
-// Why leaf-only measurement: when this page is iframed, document.documentElement
-// .scrollHeight returns max(iframe-viewport, content-height). If the iframe is
-// taller than the content (initial 1500px inline, while widget renders at ~1100px),
-// the script would post 1500 and the parent would never shrink to fit, leaving
-// a slab of empty space below the widget. Walking only leaf elements (no element
-// children) and finding the maximum bottom edge gives the natural content end
-// regardless of the iframe's outer dimensions.
+// vent book can size the iframe to fit content exactly. No-op if loaded standalone.
 (function(){
-  function measureContentHeight() {
-    let maxBottom = 0;
-    const all = document.body ? document.body.getElementsByTagName('*') : [];
-    for (let i = 0; i < all.length; i++) {
-      const el = all[i];
-      if (el.children && el.children.length > 0) continue; // not a leaf
-      const tag = el.tagName;
-      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK' || tag === 'META') continue;
-      const cs = window.getComputedStyle(el);
-      if (cs.display === 'none' || cs.visibility === 'hidden') continue;
-      const rect = el.getBoundingClientRect();
-      if (rect.width <= 0 && rect.height <= 0) continue;
-      const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
-      if (bottom > maxBottom) maxBottom = bottom;
-    }
-    return Math.ceil(maxBottom);
-  }
   function postHeight() {
     try {
-      const h = measureContentHeight();
-      if (h > 0 && window.parent && window.parent !== window) {
+      const h = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+        document.body.offsetHeight
+      );
+      if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'dys-explorer-height', height: h }, '*');
       }
-    } catch (e) {}
+    } catch(e) {}
   }
   window.addEventListener('load', postHeight);
   window.addEventListener('resize', postHeight);
-  if (typeof ResizeObserver !== 'undefined' && document.body) {
+  if (typeof ResizeObserver !== 'undefined') {
     const ro = new ResizeObserver(postHeight);
     ro.observe(document.body);
   }
-  // Catch later layout shifts (font loading, case-button rendering, theme change)
   setTimeout(postHeight, 100);
   setTimeout(postHeight, 500);
   setTimeout(postHeight, 1500);
 })();
 </script>
+</body>
+</html>
