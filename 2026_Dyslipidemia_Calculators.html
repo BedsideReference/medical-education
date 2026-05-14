@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2026 Dyslipidemia Calculators</title>
+<style>
+
+  :root {
+    --navy:#0B3D6B;
+    --teal:#0F7B8A;
+    --gold:#B8860B;
+    --light:#EAF2F7;
+    --hilite:#FFF4D6;
+    --rule:#C9D3DB;
+    --text:#1A1A1A;
+    --muted:#555;
+    --bg:#fff;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #f4f4f4; color: var(--text); font-family: Calibri, "Segoe UI", Arial, sans-serif; }
+  .page {
+    max-width: 8.5in;
+    margin: 24px auto;
+    padding: 0.45in;
+    background: var(--bg);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  h1, h2, h3 { margin: 0; }
+  .banner {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 4px;
+  }
+  .banner h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; }
+  .banner .sub { color: #CFE2F3; font-size: 11px; font-style: italic; margin-top: 2px; }
+  .ldl-box {
+    border: 2px solid var(--gold);
+    background: var(--hilite);
+    padding: 10px 14px;
+    margin-top: 10px;
+    border-radius: 4px;
+  }
+  .ldl-box .title { color: var(--gold); font-weight: 700; text-transform: uppercase; font-size: 13px; }
+  .ldl-box .sub { color: var(--muted); font-style: italic; font-size: 11px; margin-left: 6px; }
+  .ldl-box .body { margin-top: 6px; font-size: 12px; }
+  .ldl-box .eq { font-size: 11px; margin-top: 4px; }
+  .ldl-box .eq strong { color: var(--navy); }
+  .ldl-box code { font-family: Consolas, "Courier New", monospace; }
+  .section-title {
+    text-transform: uppercase;
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 13px;
+    border-bottom: 1.5px solid var(--navy);
+    padding-bottom: 2px;
+    margin-top: 14px;
+  }
+  .section-title.teal { color: var(--teal); border-bottom-color: var(--teal); }
+  .subtitle { font-size: 11px; color: var(--muted); font-style: italic; margin: 2px 0 4px; }
+  table.grid {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  table.grid th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+    padding: 5px 7px;
+    border: 0.5px solid var(--rule);
+  }
+  table.grid.teal th { background: var(--teal); }
+  table.grid td {
+    padding: 5px 7px;
+    border: 0.5px solid var(--rule);
+    vertical-align: top;
+  }
+  table.grid td:first-child { background: var(--light); font-weight: 600; }
+  .cac-when {
+    border: 1px solid var(--teal);
+    background: var(--light);
+    padding: 8px 12px;
+    margin-top: 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .cac-when .title { color: var(--teal); font-weight: 700; text-transform: uppercase; font-size: 12px; margin-bottom: 4px; }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  .col h4 {
+    color: var(--navy);
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    border-bottom: 0.5px solid var(--navy);
+    padding-bottom: 1px;
+    margin: 8px 0 4px;
+  }
+  .col.right h4 { color: var(--teal); border-bottom-color: var(--teal); }
+  .col p { margin: 3px 0; font-size: 11px; line-height: 1.4; }
+  .col ul { margin: 3px 0; padding-left: 18px; }
+  .col li { font-size: 11px; line-height: 1.4; margin-bottom: 2px; }
+  .footnote { font-size: 10px; color: var(--muted); margin-top: 10px; }
+  .footnote em { font-style: italic; }
+
+  /* Calculator */
+  .calc-section { page-break-before: always; margin-top: 24px; }
+  .calc-section h2 {
+    color: var(--navy);
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+  }
+  .calc-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .calc-inputs label {
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .calc-inputs .iw { position: relative; }
+  .calc-inputs input {
+    width: 100%;
+    padding: 8px 50px 8px 10px;
+    font-size: 14px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-family: inherit;
+  }
+  .calc-inputs input:focus { outline: 2px solid var(--navy); outline-offset: -1px; border-color: var(--navy); }
+  .calc-inputs .unit {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .nonhdl-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 12px;
+    background: var(--light);
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .nonhdl-row .v { font-weight: 600; }
+  .results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .result-card {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 12px 14px;
+    background: #fff;
+  }
+  .result-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .result-label { font-size: 12px; color: var(--muted); }
+  .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #DEEAF5;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .result-value { font-size: 26px; font-weight: 600; line-height: 1.1; color: var(--navy); }
+  .result-value small { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .result-detail { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .alert {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+  .alert.info { background: #E1F0F7; color: #114a66; }
+  .alert.warn { background: #FFF0D6; color: #7a5b00; }
+  .alert.hide { display: none; }
+  .eq-ref {
+    background: var(--light);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .eq-ref strong { color: var(--navy); }
+
+  /* PREVENT Calculator */
+  .toggle-group { display: flex; gap: 0; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  .toggle-group label { flex: 1; text-align: center; padding: 7px 10px; font-size: 12px; cursor: pointer; background: #f7f9fb; color: var(--muted); transition: background 0.15s; }
+  .toggle-group input[type=radio] { display: none; }
+  .toggle-group input[type=radio]:checked + label { background: var(--navy); color: #fff; font-weight: 700; }
+  .prevent-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 10px; }
+  .prevent-inputs label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 3px; }
+  .prevent-inputs .iw { position: relative; }
+  .prevent-inputs input[type=number] { width: 100%; padding: 8px 50px 8px 10px; font-size: 14px; border: 1px solid var(--rule); border-radius: 4px; font-family: inherit; }
+  .prevent-inputs input[type=number]:focus { outline: 2px solid var(--navy); outline-offset: -1px; border-color: var(--navy); }
+  .prevent-inputs .unit { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--muted); }
+  .check-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px; margin-bottom: 10px; }
+  .check-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+  .check-item input[type=checkbox] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--navy); }
+  .prevent-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 10px; }
+  .p-card { border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; background: #fff; }
+  .p-card.highlight { border-color: var(--navy); background: #F0F6FF; }
+  .p-card .ph { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .p-card .pv { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1.1; }
+  .p-card .pv small { font-size: 12px; font-weight: 400; color: var(--muted); }
+  .p-card .pd { font-size: 10px; color: var(--muted); margin-top: 3px; }
+  .cat-box { padding: 10px 14px; border-radius: 6px; margin-bottom: 10px; font-size: 12px; }
+  .cat-box .cat-label { font-weight: 700; font-size: 14px; }
+  .cat-box .cat-rec { margin-top: 4px; line-height: 1.45; }
+  .cat-low    { background: #E8F5E9; border: 1.5px solid #66BB6A; color: #1B5E20; }
+  .cat-border { background: #FFF8E1; border: 1.5px solid #FFC107; color: #6D4C00; }
+  .cat-inter  { background: #FFF3E0; border: 1.5px solid #FF9800; color: #7B3500; }
+  .cat-high   { background: #FFEBEE; border: 1.5px solid #E53935; color: #7F0000; }
+  .cat-lowe   { background: #F3F0FF; border: 1.5px solid #9575CD; color: #311B92; }
+  .cat-hide   { display: none; }
+  .prevent-note { font-size: 10px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+  .copy-link { font-size: 10px; color: var(--teal); cursor: pointer; text-decoration: underline; margin-left: 6px; }
+
+  @media print {
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; padding: 0.4in; max-width: 100%; }
+    .calc-section { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="banner" style="margin-bottom:14px;">
+  <h1>Dyslipidemia Calculators</h1>
+  <div class="sub">LDL-C Estimation (Martin/Hopkins &amp; Sampson/NIH) &nbsp;·&nbsp; PREVENT-ASCVD Risk (AHA 2024) &nbsp;·&nbsp; 2026 ACC/AHA Guideline</div>
+</div>
+<div class="calc-section">
+    <h2>Interactive LDL-C Calculator — Martin/Hopkins &amp; Sampson/NIH</h2>
+
+    <div class="calc-inputs">
+      <div>
+        <label for="tc">Total cholesterol</label>
+        <div class="iw"><input id="tc" type="number" min="50" max="500" step="1" value="220" /><span class="unit">mg/dL</span></div>
+      </div>
+      <div>
+        <label for="hdl">HDL-C</label>
+        <div class="iw"><input id="hdl" type="number" min="10" max="150" step="1" value="45" /><span class="unit">mg/dL</span></div>
+      </div>
+      <div>
+        <label for="tg">Triglycerides</label>
+        <div class="iw"><input id="tg" type="number" min="20" max="1500" step="1" value="180" /><span class="unit">mg/dL</span></div>
+      </div>
+    </div>
+
+    <div class="nonhdl-row">
+      <span>Non–HDL-C (TC − HDL)</span>
+      <span class="v" id="nonhdl">— mg/dL</span>
+    </div>
+
+    <div class="results">
+      <div class="result-card">
+        <div class="result-head">
+          <span class="result-label">Martin/Hopkins LDL-C</span>
+          <span class="badge">2026 ACC/AHA</span>
+        </div>
+        <div class="result-value" id="mh-val">— <small>mg/dL</small></div>
+        <div class="result-detail" id="mh-detail">VLDL = TG ÷ adjustable factor</div>
+      </div>
+      <div class="result-card">
+        <div class="result-head">
+          <span class="result-label">Sampson/NIH LDL-C</span>
+          <span class="badge">2026 ACC/AHA</span>
+        </div>
+        <div class="result-value" id="sa-val">— <small>mg/dL</small></div>
+        <div class="result-detail">Closed-form polynomial</div>
+      </div>
+    </div>
+
+    <div class="alert info hide" id="goal-row"><span id="goal-text"></span></div>
+    <div class="alert warn hide" id="warn"><span id="warn-text"></span></div>
+
+    <div class="eq-ref">
+      <div><strong>Martin/Hopkins:</strong> LDL = TC − HDL − (TG ÷ adjustable factor); factor from a 180-cell lookup of non-HDL × TG strata (range 3.1–11.9).</div>
+      <div style="margin-top:4px;"><strong>Sampson/NIH:</strong> LDL = (TC ÷ 0.948) − (HDL ÷ 0.971) − [TG ÷ 8.56 + (TG × non-HDL) ÷ 2140 − TG² ÷ 16100] − 9.44</div>
+    </div>
+  </div>
+
+  <!-- ═══ PREVENT-ASCVD Calculator ═══ -->
+  <div class="calc-section">
+    <h2>PREVENT-ASCVD Risk Calculator — AHA 2024 Base Equations</h2>
+
+    <!-- Sex -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px;">
+      <div style="font-size:11px;color:var(--muted);min-width:32px;">Sex</div>
+      <div class="toggle-group" style="max-width:200px;">
+        <input type="radio" name="p-sex" id="p-sex-f" value="f" checked>
+        <label for="p-sex-f">Female</label>
+        <input type="radio" name="p-sex" id="p-sex-m" value="m">
+        <label for="p-sex-m">Male</label>
+      </div>
+    </div>
+
+    <!-- Numeric inputs -->
+    <div class="prevent-inputs">
+      <div>
+        <label for="p-age">Age <span style="color:var(--muted);font-style:italic">(30–79 yr)</span></label>
+        <div class="iw"><input id="p-age" type="number" min="30" max="79" step="1" value="55"><span class="unit">yr</span></div>
+      </div>
+      <div>
+        <label for="p-tc">Total cholesterol <span class="copy-link" onclick="copyFromLDL()">↑ copy from above</span><span style="display:block;color:var(--muted);font-style:italic;font-size:10px">130–320 mg/dL</span></label>
+        <div class="iw"><input id="p-tc" type="number" min="130" max="320" step="1" value="200"><span class="unit">mg/dL</span></div>
+      </div>
+      <div>
+        <label for="p-hdl">HDL-C <span class="copy-link" onclick="copyFromLDL()">↑ copy from above</span><span style="display:block;color:var(--muted);font-style:italic;font-size:10px">20–100 mg/dL</span></label>
+        <div class="iw"><input id="p-hdl" type="number" min="20" max="100" step="1" value="50"><span class="unit">mg/dL</span></div>
+      </div>
+      <div>
+        <label for="p-sbp">Systolic BP <span style="display:block;color:var(--muted);font-style:italic;font-size:10px">90–180 mmHg</span></label>
+        <div class="iw"><input id="p-sbp" type="number" min="90" max="180" step="1" value="130"><span class="unit">mmHg</span></div>
+      </div>
+      <div>
+        <label for="p-bmi">BMI <span style="display:block;color:var(--muted);font-style:italic;font-size:10px">18.5–39.9 kg/m²</span></label>
+        <div class="iw"><input id="p-bmi" type="number" min="18.5" max="39.9" step="0.1" value="27"><span class="unit">kg/m²</span></div>
+      </div>
+      <div>
+        <label for="p-egfr">eGFR (CKD-EPI) <span style="display:block;color:var(--muted);font-style:italic;font-size:10px">15–140 ml/min</span></label>
+        <div class="iw"><input id="p-egfr" type="number" min="15" max="140" step="1" value="90"><span class="unit">ml/min</span></div>
+      </div>
+    </div>
+
+    <!-- Checkboxes -->
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox" id="p-bptx"> On antihypertensive med(s)</label>
+      <label class="check-item"><input type="checkbox" id="p-statin"> Currently on statin</label>
+      <label class="check-item"><input type="checkbox" id="p-dm"> Diabetes (type 1 or 2)</label>
+      <label class="check-item"><input type="checkbox" id="p-smoking"> Current smoker</label>
+    </div>
+
+    <!-- Optional add-on inputs -->
+    <div style="font-size:11px;color:var(--teal);font-weight:700;text-transform:uppercase;margin:8px 0 5px;border-top:1px solid var(--rule);padding-top:8px;">Optional — upgrades to augmented model when entered</div>
+    <div class="prevent-inputs" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));">
+      <div>
+        <label for="p-uacr">UACR <span style="display:block;color:var(--muted);font-style:italic;font-size:10px">0.1–25000 mg/g · leave blank if N/A</span></label>
+        <div class="iw"><input id="p-uacr" type="number" min="0.1" max="25000" step="0.1" placeholder="blank = N/A"><span class="unit">mg/g</span></div>
+      </div>
+      <div>
+        <label for="p-hba1c">HbA1c <span style="display:block;color:var(--muted);font-style:italic;font-size:10px">4.5–15% · leave blank if N/A</span></label>
+        <div class="iw"><input id="p-hba1c" type="number" min="4.5" max="15" step="0.1" placeholder="blank = N/A"><span class="unit">%</span></div>
+      </div>
+    </div>
+    <div id="p-model-badge" style="font-size:10px;color:var(--muted);margin-bottom:8px;">Model: <strong id="p-model-name">Base</strong></div>
+
+    <!-- Risk results -->
+    <div class="prevent-results" id="p-results">
+      <div class="p-card highlight">
+        <div class="ph">10-yr ASCVD Risk</div>
+        <div class="pv" id="p-10yr">—<small> %</small></div>
+        <div class="pd">Primary endpoint · 2026 LLT thresholds</div>
+      </div>
+      <div class="p-card">
+        <div class="ph">30-yr ASCVD Risk</div>
+        <div class="pv" id="p-30yr">—<small> %</small></div>
+        <div class="pd">Ages 30–59: refines low 10-yr risk</div>
+      </div>
+      <div class="p-card">
+        <div class="ph">10-yr Total CVD Risk</div>
+        <div class="pv" id="p-cvd">—<small> %</small></div>
+        <div class="pd">ASCVD + HF · HTN Stage 1 threshold ≥7.5%</div>
+      </div>
+    </div>
+
+    <!-- Category + recommendation -->
+    <div id="p-cat-low"   class="cat-box cat-low   cat-hide"><span class="cat-label">Low risk — 10-yr ASCVD &lt; 3%</span><div class="cat-rec">Lifestyle counseling. If age 30–59 and LDL-C &lt; 160 mg/dL and 30-yr risk &lt; 10%: no statin indicated. Reassess in 4–6 yr.</div></div>
+    <div id="p-cat-lowe"  class="cat-box cat-lowe  cat-hide"><span class="cat-label">Low risk — elevated exposure</span><div class="cat-rec">10-yr &lt; 3% but LDL-C 160–189 <strong>or</strong> 30-yr ASCVD ≥ 10% (ages 30–59). <strong>Consider moderate-intensity statin</strong> to reduce cumulative atherogenic burden.</div></div>
+    <div id="p-cat-border" class="cat-box cat-border cat-hide"><span class="cat-label">Borderline risk — 10-yr ASCVD 3% to &lt;5%</span><div class="cat-rec"><strong>Consider moderate-intensity statin</strong> after clinician–patient discussion. Risk-enhancers (Lp(a), hsCRP, ABI) or CAC can tip toward treatment. Goal: LDL &lt; 100 · non-HDL &lt; 130 mg/dL.</div></div>
+    <div id="p-cat-inter" class="cat-box cat-inter cat-hide"><span class="cat-label">Intermediate risk — 10-yr ASCVD 5% to &lt;10%</span><div class="cat-rec"><strong>At least moderate-intensity statin recommended (COR 1)</strong>; high-intensity at upper range or with risk enhancers. Consider CAC if statin decision uncertain. Goal: LDL &lt; 100 · non-HDL &lt; 130 mg/dL (≥30% LDL-C reduction).</div></div>
+    <div id="p-cat-high"  class="cat-box cat-high  cat-hide"><span class="cat-label">High risk — 10-yr ASCVD ≥ 10%</span><div class="cat-rec"><strong>High-intensity statin recommended (COR 1)</strong>. Add ezetimibe if LDL-C goal not met; add PCSK9 inhibitor or bempedoic acid if still above goal. Target: LDL &lt; 70 · non-HDL &lt; 100 mg/dL (≥50% LDL-C reduction).</div></div>
+
+    <div class="alert warn cat-hide" id="p-age-warn">⚠ PREVENT is validated for ages 30–79. Values outside this range should be interpreted with caution.</div>
+
+    <div class="prevent-note">
+      <strong>Source:</strong> Khan SS et al. Development and Validation of the American Heart Association's PREVENT Equations. <em>Circulation</em> 2024;149:430–449. Base model (no UACR/HbA1c/SDI). Logistic regression; risk = e<sup>LP</sup>/(1+e<sup>LP</sup>). Centered at: age 55 yr, non-HDL-C 3.5 mmol/L, HDL-C 1.3 mmol/L, SBP 130 mmHg, BMI 25 kg/m², eGFR 90 ml/min. <strong>Not valid in known ASCVD, HeFH/HoFH, LDL &lt; 70 or ≥ 190, or age &lt; 30/&gt; 79.</strong>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+(function(){
+  var MH = [
+    {min:0,max:49,    f:[3.5,3.4,3.3,3.3,3.2,3.1]},
+    {min:50,max:56,   f:[4.0,3.9,3.7,3.6,3.6,3.4]},
+    {min:57,max:61,   f:[4.3,4.1,4.0,3.9,3.8,3.6]},
+    {min:62,max:66,   f:[4.5,4.3,4.1,4.0,3.9,3.9]},
+    {min:67,max:71,   f:[4.7,4.4,4.3,4.2,4.1,3.9]},
+    {min:72,max:75,   f:[4.8,4.6,4.4,4.2,4.2,4.1]},
+    {min:76,max:79,   f:[4.9,4.6,4.5,4.3,4.3,4.2]},
+    {min:80,max:83,   f:[5.0,4.8,4.6,4.4,4.3,4.2]},
+    {min:84,max:87,   f:[5.1,4.8,4.6,4.5,4.4,4.3]},
+    {min:88,max:92,   f:[5.2,4.9,4.7,4.6,4.4,4.3]},
+    {min:93,max:96,   f:[5.3,5.0,4.8,4.7,4.5,4.4]},
+    {min:97,max:100,  f:[5.4,5.1,4.8,4.7,4.5,4.3]},
+    {min:101,max:105, f:[5.5,5.2,5.0,4.7,4.6,4.5]},
+    {min:106,max:110, f:[5.6,5.3,5.0,4.8,4.6,4.5]},
+    {min:111,max:115, f:[5.7,5.4,5.1,4.9,4.7,4.5]},
+    {min:116,max:120, f:[5.8,5.5,5.2,5.0,4.8,4.6]},
+    {min:121,max:126, f:[6.0,5.5,5.3,5.0,4.8,4.6]},
+    {min:127,max:132, f:[6.1,5.7,5.3,5.1,4.9,4.7]},
+    {min:133,max:138, f:[6.2,5.8,5.4,5.2,5.0,4.7]},
+    {min:139,max:146, f:[6.3,5.9,5.6,5.3,5.0,4.8]},
+    {min:147,max:154, f:[6.5,6.0,5.7,5.4,5.1,4.8]},
+    {min:155,max:163, f:[6.7,6.2,5.8,5.4,5.2,4.9]},
+    {min:164,max:173, f:[6.8,6.3,5.9,5.5,5.3,5.0]},
+    {min:174,max:185, f:[7.0,6.5,6.0,5.7,5.4,5.1]},
+    {min:186,max:201, f:[7.3,6.7,6.2,5.8,5.5,5.2]},
+    {min:202,max:220, f:[7.6,6.9,6.4,6.0,5.6,5.3]},
+    {min:221,max:247, f:[8.0,7.2,6.6,6.2,5.9,5.4]},
+    {min:248,max:292, f:[8.5,7.6,7.0,6.5,6.1,5.6]},
+    {min:293,max:399, f:[9.5,8.3,7.5,7.0,6.5,5.9]},
+    {min:400,max:99999,f:[11.9,10.0,8.8,8.1,7.5,6.7]}
+  ];
+
+  function nonHdlCol(n){
+    if (n < 100) return 0;
+    if (n <= 129) return 1;
+    if (n <= 159) return 2;
+    if (n <= 189) return 3;
+    if (n <= 219) return 4;
+    return 5;
+  }
+  function mhFactor(tg, nonHdl){
+    var col = nonHdlCol(nonHdl);
+    for (var i=0;i<MH.length;i++){
+      if (tg >= MH[i].min && tg <= MH[i].max) return MH[i].f[col];
+    }
+    return 5;
+  }
+
+  function calc(){
+    var tc = parseFloat(document.getElementById('tc').value);
+    var hdl = parseFloat(document.getElementById('hdl').value);
+    var tg = parseFloat(document.getElementById('tg').value);
+    var mhEl = document.getElementById('mh-val');
+    var saEl = document.getElementById('sa-val');
+    var mhDet = document.getElementById('mh-detail');
+    var nhEl = document.getElementById('nonhdl');
+    var warn = document.getElementById('warn');
+    var warnText = document.getElementById('warn-text');
+    var goalRow = document.getElementById('goal-row');
+    var goalText = document.getElementById('goal-text');
+
+    if (!(tc>0) || !(hdl>0) || !(tg>0)) {
+      mhEl.innerHTML = '— <small>mg/dL</small>';
+      saEl.innerHTML = '— <small>mg/dL</small>';
+      nhEl.textContent = '— mg/dL';
+      warn.classList.add('hide');
+      goalRow.classList.add('hide');
+      return;
+    }
+
+    var nonHdl = tc - hdl;
+    nhEl.textContent = Math.round(nonHdl) + ' mg/dL';
+
+    var f = mhFactor(tg, nonHdl);
+    var mh = tc - hdl - (tg / f);
+    var sa = (tc/0.948) - (hdl/0.971) - (tg/8.56 + (tg*nonHdl)/2140 - (tg*tg)/16100) - 9.44;
+
+    mhEl.innerHTML = Math.max(0, Math.round(mh)) + ' <small>mg/dL</small>';
+    saEl.innerHTML = Math.max(0, Math.round(sa)) + ' <small>mg/dL</small>';
+    mhDet.textContent = 'Factor = ' + f.toFixed(1) + ' (TG ' + tg + ', non-HDL ' + Math.round(nonHdl) + ')';
+
+    var ldl = mh;
+    var goalMsg = '';
+    if (ldl < 55) goalMsg = 'LDL < 55 — meets very-high-risk ASCVD goal.';
+    else if (ldl < 70) goalMsg = 'LDL < 70 — meets secondary-prevention and high-risk primary-prevention goal.';
+    else if (ldl < 100) goalMsg = 'LDL < 100 — meets borderline / intermediate-risk primary-prevention goal.';
+    else if (ldl >= 190) goalMsg = 'LDL ≥ 190 — severe hypercholesterolemia; high-intensity statin regardless of risk; consider FH workup.';
+    else if (ldl >= 160) goalMsg = 'LDL 160–189 — risk-enhancing range; consider moderate-intensity statin even if 10-yr risk < 3%.';
+
+    if (goalMsg) { goalRow.classList.remove('hide'); goalText.textContent = goalMsg; }
+    else { goalRow.classList.add('hide'); }
+
+    var msgs = [];
+    if (tg >= 400) msgs.push('TG ≥ 400 — interpret calculated LDL with caution; consider direct LDL measurement or apoB.');
+    if (tg >= 1000) msgs.push('TG ≥ 1000 — pancreatitis risk; aggressive TG-lowering and lipid-specialist referral.');
+
+    if (msgs.length) { warn.classList.remove('hide'); warnText.textContent = msgs.join(' '); }
+    else { warn.classList.add('hide'); }
+  }
+
+  ['tc','hdl','tg'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', calc);
+  });
+  calc();
+})();
+
+// ═══ PREVENT-ASCVD Calculator ═══
+(function(){
+
+  // ── Base 10yr ─────────────────────────────────────────────
+  // Predictor order (23): age, nonHDL, HDL, sbpLt110, sbpGte110, dm, smoking,
+  //   bmiLt30, bmiGte30, egrLt60, egrGte60, bpTx, statin,
+  //   bpTxSbpGte110, statinNonHDL, ageNonHDL, ageHDL, ageSbpGte110,
+  //   ageDm, ageSmoking, ageBmiGte30, ageEgrLt60, constant
+  var B10_F_ASCVD = [0.719883,0.117697,-0.151185,-0.083536,0.359285,0.834858,0.483108,0,0,0.486462,0.039778,0.226531,-0.059237,-0.039576,0.084442,-0.056784,0.032569,-0.103598,-0.241754,-0.079114,0,-0.167149,-3.819975];
+  var B10_M_ASCVD = [0.709985,0.165866,-0.114429,-0.283721,0.323998,0.718960,0.395697,0,0,0.369007,0.020362,0.203652,-0.086558,-0.032292,0.114563,-0.030000,0.023275,-0.092702,-0.201852,-0.097053,0,-0.121708,-3.500655];
+  var B10_F_CVD   = [0.793933,0.030524,-0.160686,-0.239400,0.360078,0.866760,0.536074,0,0,0.604592,0.043377,0.315167,-0.147765,-0.066361,0.119788,-0.081972,0.030677,-0.094635,-0.270570,-0.078715,0,-0.163781,-3.307728];
+  var B10_M_CVD   = [0.768853,0.073617,-0.095443,-0.434735,0.336266,0.769286,0.438687,0,0,0.537898,0.016483,0.288879,-0.133735,-0.047592,0.150273,-0.051787,0.019117,-0.104948,-0.225195,-0.089507,0,-0.154370,-3.031168];
+
+  // ── Base 30yr ─────────────────────────────────────────────
+  // Adds ageSq at position 1 (24 elements)
+  var B30_F_ASCVD = [0.466920,-0.089312,0.125690,-0.154225,-0.001809,0.322949,0.629671,0.268292,0,0,0.100106,0.049966,0.187529,0.015248,-0.027612,0.073615,-0.052196,0.031692,-0.104610,-0.272779,-0.153091,0,-0.129915,-1.974074];
+  var B30_M_ASCVD = [0.399410,-0.093748,0.174464,-0.120203,-0.066512,0.275304,0.479026,0.178263,0,0,-0.021879,0.060255,0.142118,0.013600,-0.021826,0.101315,-0.031262,0.020673,-0.092093,-0.215995,-0.154881,0,-0.071255,-1.736444];
+
+  // ── UACR 10yr ─────────────────────────────────────────────
+  // Adds ln_uacr, miss_uacr at 22-23 (25 elements)
+  var U10_F_ASCVD = [0.720200,0.113577,-0.149351,-0.072668,0.343626,0.777309,0.474666,0,0,0.382465,0.039418,0.212518,-0.060305,-0.046605,0.073312,-0.053426,0.032569,-0.099989,-0.241176,-0.082694,0,-0.144474,0.150122,0.005026,-4.174614];
+  var U10_M_ASCVD = [0.714172,0.160219,-0.113909,-0.271946,0.305872,0.660063,0.388402,0,0,0.246632,0.015185,0.186167,-0.089440,-0.041188,0.105821,-0.028089,0.024043,-0.091232,-0.200489,-0.096936,0,-0.102287,0.151007,0.055600,-3.851460];
+  var U10_F_CVD   = [0.796925,0.025663,-0.158811,-0.225570,0.339665,0.804751,0.528534,0,0,0.480351,0.043447,0.298521,-0.149779,-0.074289,0.106756,-0.077813,0.030677,-0.090717,-0.270512,-0.083056,0,-0.138925,0.179304,0.013207,-3.738341];
+  var U10_M_CVD   = [0.776865,0.065995,-0.095111,-0.420667,0.312015,0.698521,0.431467,0,0,0.384136,0.009384,0.267649,-0.139097,-0.057931,0.138372,-0.048833,0.020041,-0.102454,-0.223635,-0.089485,0,-0.132185,0.188797,0.091698,-3.510705];
+
+  // ── UACR 30yr ─────────────────────────────────────────────
+  // (26 elements: base30 layout + ln_uacr, miss_uacr)
+  var U30_F_ASCVD = [0.462967,-0.090278,0.121521,-0.152207,0.009268,0.311361,0.581256,0.263167,0,0,0.039173,0.049296,0.178618,0.013106,-0.032514,0.061709,-0.048919,0.032108,-0.100319,-0.268457,-0.154730,0,-0.113070,0.090347,-0.014582,-2.178888];
+  var U30_M_ASCVD = [0.399561,-0.094557,0.168669,-0.120215,-0.055556,0.263357,0.436204,0.171623,0,0,-0.077528,0.056124,0.131933,0.010243,-0.026929,0.092056,-0.029702,0.021794,-0.089335,-0.208147,-0.154272,0,-0.059725,0.068487,0.019396,-1.873449];
+
+  // ── HbA1c 10yr ────────────────────────────────────────────
+  // Adds hba1c_dm, hba1c_nodm, miss_hba1c at 22-24 (26 elements)
+  var H10_F_ASCVD = [0.711183,0.106797,-0.142574,-0.073682,0.348084,0.511295,0.488029,0,0,0.475500,0.043813,0.225909,-0.064887,-0.043764,0.069708,-0.050638,0.032747,-0.099644,-0.192434,-0.080354,0,-0.168259,0.133906,0.159646,0.001568,-3.838746];
+  var H10_M_ASCVD = [0.706415,0.153227,-0.108217,-0.267529,0.317381,0.432604,0.395884,0,0,0.366501,0.025024,0.206116,-0.089999,-0.033496,0.103417,-0.025541,0.024754,-0.091744,-0.149920,-0.098089,0,-0.130523,0.115716,0.128830,-0.001000,-3.518350];
+  var H10_F_CVD   = [0.785818,0.019444,-0.152196,-0.229668,0.346578,0.536624,0.541168,0,0,0.593190,0.047246,0.315857,-0.153517,-0.068775,0.105475,-0.076112,0.030747,-0.090597,-0.224186,-0.080186,0,-0.166729,0.133835,0.162241,-0.014250,-3.306162];
+  var H10_M_CVD   = [0.769918,0.060509,-0.088853,-0.417713,0.328866,0.475947,0.438566,0,0,0.533462,0.020643,0.291752,-0.138331,-0.048262,0.139380,-0.046350,0.020593,-0.103772,-0.173770,-0.091584,0,-0.163704,0.131590,0.129519,-0.012837,-3.040901];
+
+  // ── HbA1c 30yr ────────────────────────────────────────────
+  // (27 elements: base30 layout + hba1c_dm, hba1c_nodm, miss_hba1c)
+  var H30_F_ASCVD = [0.455557,-0.090350,0.114832,-0.145875,0.008932,0.313903,0.386281,0.271431,0,0,0.093099,0.053222,0.186218,0.010696,-0.032971,0.058361,-0.046327,0.032472,-0.100478,-0.226694,-0.154186,0,-0.128601,0.087583,0.112642,0.012436,-2.011533];
+  var H30_M_ASCVD = [0.388327,-0.095811,0.161337,-0.114442,-0.047434,0.269128,0.285977,0.175955,0,0,-0.024290,0.064452,0.142874,0.011506,-0.023330,0.089966,-0.027548,0.022573,-0.090802,-0.177189,-0.154885,0,-0.073275,0.059109,0.082116,0.017975,-1.777708];
+
+  // ── Full model 10yr (UACR + HbA1c, SDI treated as missing) ──
+  // Adds sdi46, sdi710, miss_sdi, ln_uacr, miss_uacr, hba1c_dm, hba1c_nodm, miss_hba1c at 22-29 (31 elements)
+  var F10_F_ASCVD = [0.702307,0.089876,-0.140732,-0.025665,0.314511,0.479922,0.406205,0,0,0.384774,0.049517,0.213386,-0.067855,-0.045142,0.078819,-0.053599,0.029176,-0.096184,-0.200147,-0.058647,0,-0.153779,0.141397,0.228136,0.158891,0.137182,0.006161,0.123192,0.141057,0.005866,-4.291503];
+  var F10_M_ASCVD = [0.712874,0.146520,-0.112579,-0.338722,0.298025,0.399583,0.337911,0,0,0.258260,0.014777,0.168662,-0.107362,-0.038104,0.103417,-0.022876,0.026745,-0.089745,-0.149746,-0.077206,0,-0.119837,0.065112,0.267668,0.138849,0.137584,0.065294,0.101282,0.109273,-0.011285,-3.969788];
+  var F10_F_CVD   = [0.771679,0.006211,-0.154776,-0.193312,0.307122,0.496753,0.466605,0,0,0.478070,0.052908,0.303489,-0.155652,-0.066703,0.106182,-0.074227,0.028824,-0.087519,-0.226710,-0.067613,0,-0.149323,0.136199,0.226160,0.180451,0.164592,0.019841,0.129851,0.141256,-0.003166,-3.860385];
+  var F10_M_CVD   = [0.784758,0.053449,-0.091128,-0.492197,0.297241,0.452705,0.372664,0,0,0.388685,0.008166,0.250805,-0.153848,-0.047469,0.141538,-0.043645,0.019955,-0.102269,-0.176251,-0.071587,0,-0.142867,0.080243,0.275073,0.144759,0.177285,0.109567,0.116570,0.104830,-0.023007,-3.631387];
+
+  // ── Full model 30yr ───────────────────────────────────────
+  // (32 elements: base30 + sdi46, sdi710, miss_sdi, ln_uacr, miss_uacr, hba1c_dm, hba1c_nodm, miss_hba1c)
+  var F30_F_ASCVD = [0.438674,-0.092196,0.097773,-0.145352,0.059092,0.286286,0.366914,0.235469,0,0,0.035434,0.057309,0.184008,0.011750,-0.033195,0.066431,-0.049283,0.028889,-0.096471,-0.227965,-0.120405,0,-0.115764,0.110763,0.184037,0.130896,0.081074,-0.014778,0.079471,0.100262,0.017301,-2.314066];
+  var F30_M_ASCVD = [0.374357,-0.099550,0.154481,-0.121530,-0.108397,0.255518,0.269700,0.162843,0,0,-0.077507,0.058341,0.112032,-0.002506,-0.025612,0.088675,-0.025451,0.024464,-0.086915,-0.165745,-0.124471,0,-0.062455,0.015675,0.186423,0.084570,0.056017,0.025224,0.050142,0.072290,0.011494,-1.985368];
+
+  function mg2mmol(v){ return v / 38.665; }
+  function dot(a,b){ return a.reduce(function(s,v,i){return s+v*b[i];},0); }
+  function logistic(lp){ return Math.exp(lp)/(1+Math.exp(lp)); }
+  function pct(r){ return (r*100).toFixed(1); }
+
+  function buildBase(age, tc, hdl, sbp, bmi, egfr, bt, st, dm, sm) {
+    var a  = (age - 55) / 10;
+    var nh = mg2mmol(tc - hdl) - 3.5;
+    var h  = (mg2mmol(hdl) - 1.3) / 0.3;
+    var sl = (Math.min(sbp, 110) - 110) / 20;
+    var sg = (Math.max(sbp, 110) - 130) / 20;
+    var bl = (Math.min(bmi, 30) - 25) / 5;
+    var bg = (Math.max(bmi, 30) - 30) / 5;
+    var el = (Math.min(egfr, 60) - 60) / -15;
+    var eg = (Math.max(egfr, 60) - 90) / -15;
+    return {a:a, aSq:a*a, nh:nh, h:h, sl:sl, sg:sg, bl:bl, bg:bg, el:el, eg:eg,
+            bt:bt, st:st, dm:dm, sm:sm,
+            p10base: [a, nh, h, sl, sg, dm, sm, bl, bg, el, eg, bt, st,
+                      bt*sg, st*nh, a*nh, a*h, a*sg, a*dm, a*sm, a*bg, a*el, 1],
+            p30base: [a, a*a, nh, h, sl, sg, dm, sm, bl, bg, el, eg, bt, st,
+                      bt*sg, st*nh, a*nh, a*h, a*sg, a*dm, a*sm, a*bg, a*el, 1]};
+  }
+
+  function modelPreds(t, uacr, hba1c, dm) {
+    var hasUACR  = uacr !== null;
+    var hasHBA1C = hba1c !== null;
+
+    // UACR terms
+    var ln_u    = hasUACR  ? Math.log(uacr) : 0;
+    var miss_u  = hasUACR  ? 0 : 1;
+
+    // HbA1c terms (centered at 5.3)
+    var hba1c_dm    = (hasHBA1C && dm) ? (hba1c - 5.3) : 0;
+    var hba1c_nodm  = (hasHBA1C && !dm) ? (hba1c - 5.3) : 0;
+    var miss_h      = hasHBA1C ? 0 : 1;
+
+    // SDI: always missing (user excluded it); sdi_4_6=0, sdi_7_10=0, miss_sdi=1
+    var sdi = [0, 0, 1];
+
+    var p10 = t.p10base;
+    var p30 = t.p30base;
+
+    if (!hasUACR && !hasHBA1C) {
+      return { model:'base', p10:p10, p30:p30 };
+    }
+    if (hasUACR && !hasHBA1C) {
+      return { model:'uacr',
+        p10: p10.slice(0,-1).concat([ln_u, miss_u, 1]),
+        p30: p30.slice(0,-1).concat([ln_u, miss_u, 1]) };
+    }
+    if (!hasUACR && hasHBA1C) {
+      return { model:'hba1c',
+        p10: p10.slice(0,-1).concat([hba1c_dm, hba1c_nodm, miss_h, 1]),
+        p30: p30.slice(0,-1).concat([hba1c_dm, hba1c_nodm, miss_h, 1]) };
+    }
+    // Both provided → full model (SDI missing)
+    return { model:'full',
+      p10: p10.slice(0,-1).concat(sdi).concat([ln_u, miss_u, hba1c_dm, hba1c_nodm, miss_h, 1]),
+      p30: p30.slice(0,-1).concat(sdi).concat([ln_u, miss_u, hba1c_dm, hba1c_nodm, miss_h, 1]) };
+  }
+
+  function getBetas(model, sex) {
+    var f = sex === 'f';
+    switch(model) {
+      case 'base':  return { a10: f?B10_F_ASCVD:B10_M_ASCVD, c10: f?B10_F_CVD:B10_M_CVD, a30: f?B30_F_ASCVD:B30_M_ASCVD };
+      case 'uacr':  return { a10: f?U10_F_ASCVD:U10_M_ASCVD, c10: f?U10_F_CVD:U10_M_CVD, a30: f?U30_F_ASCVD:U30_M_ASCVD };
+      case 'hba1c': return { a10: f?H10_F_ASCVD:H10_M_ASCVD, c10: f?H10_F_CVD:H10_M_CVD, a30: f?H30_F_ASCVD:H30_M_ASCVD };
+      case 'full':  return { a10: f?F10_F_ASCVD:F10_M_ASCVD, c10: f?F10_F_CVD:F10_M_CVD, a30: f?F30_F_ASCVD:F30_M_ASCVD };
+    }
+  }
+
+  var MODEL_LABELS = {
+    base:  'Base',
+    uacr:  'Base + UACR',
+    hba1c: 'Base + HbA1c',
+    full:  'Base + UACR + HbA1c (SDI excluded)'
+  };
+
+  function catInfo(r10, r30, ldl) {
+    if (r10 >= 0.10) return 'p-cat-high';
+    if (r10 >= 0.05) return 'p-cat-inter';
+    if (r10 >= 0.03) return 'p-cat-border';
+    if ((ldl >= 160 && ldl < 190) || (r30 !== null && r30 >= 0.10)) return 'p-cat-lowe';
+    return 'p-cat-low';
+  }
+
+  var ALL_CATS = ['p-cat-low','p-cat-lowe','p-cat-border','p-cat-inter','p-cat-high'];
+
+  function calcPrevent() {
+    var age  = parseFloat(document.getElementById('p-age').value);
+    var sex  = document.querySelector('input[name="p-sex"]:checked').value;
+    var tc   = parseFloat(document.getElementById('p-tc').value);
+    var hdl  = parseFloat(document.getElementById('p-hdl').value);
+    var sbp  = parseFloat(document.getElementById('p-sbp').value);
+    var bmi  = parseFloat(document.getElementById('p-bmi').value);
+    var egfr = parseFloat(document.getElementById('p-egfr').value);
+    var bt   = document.getElementById('p-bptx').checked;
+    var st   = document.getElementById('p-statin').checked;
+    var dm   = document.getElementById('p-dm').checked;
+    var sm   = document.getElementById('p-smoking').checked;
+
+    var uacrVal  = document.getElementById('p-uacr').value.trim();
+    var hba1cVal = document.getElementById('p-hba1c').value.trim();
+    var uacr  = uacrVal  !== '' ? parseFloat(uacrVal)  : null;
+    var hba1c = hba1cVal !== '' ? parseFloat(hba1cVal) : null;
+
+    var warn = document.getElementById('p-age-warn');
+    ALL_CATS.forEach(function(id){ document.getElementById(id).classList.add('cat-hide'); });
+
+    // Per-field range validation
+    var RANGES = {
+      'p-age':  [30,   79],
+      'p-tc':   [130,  320],
+      'p-hdl':  [20,   100],
+      'p-sbp':  [90,   180],
+      'p-bmi':  [18.5, 39.9],
+      'p-egfr': [15,   140],
+      'p-uacr': [0.1,  25000],
+      'p-hba1c':[4.5,  15]
+    };
+    var vals = {
+      'p-age':age,'p-tc':tc,'p-hdl':hdl,'p-sbp':sbp,'p-bmi':bmi,'p-egfr':egfr
+    };
+    if (uacr  !== null) vals['p-uacr']  = uacr;
+    if (hba1c !== null) vals['p-hba1c'] = hba1c;
+
+    Object.keys(vals).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var v = vals[id], r = RANGES[id];
+      if (!isNaN(v) && r && (v < r[0] || v > r[1])) {
+        el.style.outline = '2px solid #E53935';
+        el.style.borderColor = '#E53935';
+      } else {
+        el.style.outline = '';
+        el.style.borderColor = '';
+      }
+    });
+
+    if (isNaN(age)||isNaN(tc)||isNaN(hdl)||isNaN(sbp)||isNaN(bmi)||isNaN(egfr)) {
+      ['p-10yr','p-30yr','p-cvd'].forEach(function(id){
+        document.getElementById(id).innerHTML = '—<small> %</small>';
+      });
+      document.getElementById('p-model-name').textContent = 'Base';
+      warn.classList.add('cat-hide');
+      return;
+    }
+
+    warn.classList[age < 30 || age > 79 ? 'remove' : 'add']('cat-hide');
+    var age_c = Math.max(30,   Math.min(79,   age));
+    var tc_c  = Math.max(130,  Math.min(320,  tc));
+    var hdl_c = Math.max(20,   Math.min(100,  hdl));
+    var sbp_c = Math.max(90,   Math.min(180,  sbp));
+    var bmi_c = Math.max(18.5, Math.min(39.9, bmi));
+    var egfr_c= Math.max(15,   Math.min(140,  egfr));
+    var bt_ = bt?1:0, st_ = st?1:0, dm_ = dm?1:0, sm_ = sm?1:0;
+
+    var t = buildBase(age_c, tc_c, hdl_c, sbp_c, bmi_c, egfr_c, bt_, st_, dm_, sm_);
+    var mp = modelPreds(t, uacr, hba1c, dm);
+    var betas = getBetas(mp.model, sex);
+
+    var r10a = logistic(dot(mp.p10, betas.a10));
+    var r10c = logistic(dot(mp.p10, betas.c10));
+    var r30a = logistic(dot(mp.p30, betas.a30));
+
+    document.getElementById('p-10yr').innerHTML = pct(r10a)+'<small> %</small>';
+    document.getElementById('p-30yr').innerHTML = pct(r30a)+'<small> %</small>';
+    document.getElementById('p-cvd').innerHTML  = pct(r10c)+'<small> %</small>';
+    document.getElementById('p-model-name').textContent = MODEL_LABELS[mp.model];
+
+    var ldl = tc - hdl;
+    var mhEl = document.getElementById('mh-val');
+    if (mhEl) { var v = parseFloat(mhEl.textContent); if (!isNaN(v)) ldl = v; }
+
+    document.getElementById(catInfo(r10a, r30a, ldl)).classList.remove('cat-hide');
+  }
+
+  ['p-age','p-tc','p-hdl','p-sbp','p-bmi','p-egfr','p-uacr','p-hba1c'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', calcPrevent);
+  });
+  ['p-bptx','p-statin','p-dm','p-smoking'].forEach(function(id){
+    document.getElementById(id).addEventListener('change', calcPrevent);
+  });
+  document.querySelectorAll('input[name="p-sex"]').forEach(function(el){
+    el.addEventListener('change', calcPrevent);
+  });
+  calcPrevent();
+
+})();
+
+function copyFromLDL() {
+  var tc  = document.getElementById('tc');
+  var hdl = document.getElementById('hdl');
+  if (tc)  document.getElementById('p-tc').value  = tc.value;
+  if (hdl) document.getElementById('p-hdl').value = hdl.value;
+  document.getElementById('p-tc').dispatchEvent(new Event('input'));
+}
+
+</script>
+</body>
+</html>
