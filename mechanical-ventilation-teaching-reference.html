@@ -15834,6 +15834,48 @@ saveInputs();
     setStat('hs-figures', document.querySelectorAll('.figure').length);
   } catch (err) { console.error('[READING TIME / STATS] error:', err); }
 
+  // ============== SCROLL-PRESERVING LAYOUT TOGGLE ==============
+  // Layout toggles (reader mode, TOC collapse) reflow the page and shift the
+  // user's reading position. preserveScrollAround() pins the topmost visible
+  // landmark element, runs the toggle, then re-scrolls so that same element
+  // keeps the same viewport offset — so the user stays on the same paragraph.
+  // Smooth-scroll is suppressed during the restore so it feels instant, not
+  // like a glide.
+  window.__preserveScrollAround = function (fn, opts) {
+    const duration = (opts && opts.duration) || 260; // ms — covers CSS reflow transitions
+    let anchor = null, anchorOffset = 0;
+    try {
+      const candidates = document.querySelectorAll(
+        'main section.chap, main .part, main section.chap h3, main section.chap h4, main p'
+      );
+      for (const el of candidates) {
+        const r = el.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight) {
+          anchor = el; anchorOffset = r.top; break;
+        }
+      }
+    } catch (e) {}
+    try { fn(); } catch (e) { console.error('[preserveScrollAround fn]', e); }
+    if (!anchor) return;
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+    const start = performance.now();
+    function pin() {
+      try {
+        const r = anchor.getBoundingClientRect();
+        const delta = r.top - anchorOffset;
+        if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+      } catch (e) {}
+      if (performance.now() - start < duration) {
+        requestAnimationFrame(pin);
+      } else {
+        html.style.scrollBehavior = prev;
+      }
+    }
+    requestAnimationFrame(pin);
+  };
+
   // ============== READER MODE ==============
   // Toolbar 📖 Read button toggles a distraction-free single-column layout.
   // Floating ✕ Exit button restores the full chrome.
@@ -15844,9 +15886,13 @@ saveInputs();
       document.body.classList.toggle('reader-mode', !!on);
       try { localStorage.setItem('mv-reader-mode', on ? '1' : ''); } catch (e) {}
     }
-    if (readBtn) readBtn.addEventListener('click', () => setReaderMode(!document.body.classList.contains('reader-mode')));
-    if (readExit) readExit.addEventListener('click', () => setReaderMode(false));
-    // Restore from localStorage
+    if (readBtn) readBtn.addEventListener('click', () => {
+      window.__preserveScrollAround(() => setReaderMode(!document.body.classList.contains('reader-mode')));
+    });
+    if (readExit) readExit.addEventListener('click', () => {
+      window.__preserveScrollAround(() => setReaderMode(false));
+    });
+    // Restore from localStorage (page just loaded — no scroll to preserve)
     try {
       if (localStorage.getItem('mv-reader-mode')) setReaderMode(true);
     } catch (e) {}
@@ -16670,7 +16716,9 @@ saveInputs();
     applyTocState(saved);
     if (btn) btn.addEventListener('click', () => {
       const next = !document.body.classList.contains('toc-hidden');
-      applyTocState(next);
+      const apply = () => applyTocState(next);
+      if (window.__preserveScrollAround) window.__preserveScrollAround(apply);
+      else apply();
       try { localStorage.setItem(TOC_KEY, next ? '1' : '0'); } catch (e) {}
     });
   } catch (err) { console.error('[TOC COLLAPSE] error:', err); }
