@@ -16,13 +16,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Invasive Mechanical Ventilation — Bedside Reference</title>
-<meta name="description" content="Physiology-first teaching reference on invasive mechanical ventilation for IM residents, hospitalists, and PCCM fellows. Free under CC BY-NC 4.0." />
+<meta name="description" content="Physiology-first teaching reference on invasive mechanical ventilation for IM residents, hospitalists, and PCCM fellows. A physiology-first reference, written for the bedside." />
 <meta name="author" content="Bedside Reference" />
 <!-- Open Graph (Slack, iMessage, LinkedIn, Facebook unfurls) -->
 <meta property="og:type" content="book" />
 <meta property="og:site_name" content="Bedside Reference" />
 <meta property="og:title" content="Invasive Mechanical Ventilation — Bedside Reference" />
-<meta property="og:description" content="Physiology-first teaching reference for IM residents, hospitalists, and PCCM fellows. Free under CC BY-NC 4.0." />
+<meta property="og:description" content="Physiology-first teaching reference for IM residents, hospitalists, and PCCM fellows. A physiology-first reference, written for the bedside." />
 <meta property="og:image" content="figures/og-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -30,7 +30,7 @@
 <!-- Twitter / X card -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Invasive Mechanical Ventilation — Bedside Reference" />
-<meta name="twitter:description" content="Physiology-first teaching reference for IM residents, hospitalists, and PCCM fellows. Free under CC BY-NC 4.0." />
+<meta name="twitter:description" content="Physiology-first teaching reference for IM residents, hospitalists, and PCCM fellows. A physiology-first reference, written for the bedside." />
 <meta name="twitter:image" content="figures/og-card.png" />
 <style>
   :root {
@@ -169,14 +169,23 @@
   .disclaimer-block p + p { margin-top: 8px; }
 
   /* ============ FOOTER ============ */
+  /* Footer lives OUTSIDE the .layout grid (so it can't collide with the
+     sticky nav.toc column). It mirrors the layout's max-width and
+     horizontal padding to keep the visual margin consistent. */
   footer.colophon {
-    grid-column: 1 / -1;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 28px 36px 36px;
     border-top: 1px solid var(--rule);
-    margin-top: 48px;
-    padding: 28px 0 12px;
     color: var(--muted);
     font-size: 13px;
     line-height: 1.6;
+  }
+  @media (max-width: 1200px) {
+    footer.colophon { max-width: 1240px; padding: 28px 28px 36px; }
+  }
+  @media (max-width: 920px) {
+    footer.colophon { padding: 24px 16px 32px; }
   }
   footer.colophon .brand-line {
     color: var(--ink);
@@ -257,6 +266,26 @@
   th, td { border: 1px solid var(--rule); padding: 8px 10px; text-align: left; vertical-align: top; }
   th { background: #f5f7fa; font-weight: 600; }
   caption { caption-side: top; text-align: left; font-size: 13px; color: var(--muted); padding-bottom: 6px; }
+  /* MOBILE: phones are ~380 px; tables with 5+ columns overflow.
+     Make tables horizontally scrollable inside their own container, with a
+     subtle right-edge gradient cue so the reader knows there's more to see.
+     Calculator/widget tables are exempt (they have their own layout). */
+  @media (max-width: 700px) {
+    main > section table:not(.calc-mini-tbl):not(.ladder-tbl):not(.snap-table) {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+    /* Loosen the no-wrap on cells so long sentence cells still wrap; only the
+       overall column layout stays horizontal. */
+    main > section table:not(.calc-mini-tbl):not(.ladder-tbl):not(.snap-table) td,
+    main > section table:not(.calc-mini-tbl):not(.ladder-tbl):not(.snap-table) th {
+      white-space: normal;
+      min-width: 7em;
+    }
+  }
   .pearl, .pitfall, .note, .phys {
     border-left: 3px solid var(--accent); background: var(--accent-soft);
     padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0;
@@ -308,6 +337,12 @@
     pointer-events: none; opacity: 0; transition: opacity 0.15s;
   }
   .figure.figure-zoomable:hover::before { opacity: 1; }
+  /* On touch devices (no hover), keep the badge visible at all times so users
+     know the figure can be tapped to enlarge. Critical at phone widths where
+     SVG text scales down past readable size. */
+  @media (hover: none) and (pointer: coarse) {
+    .figure.figure-zoomable::before { opacity: 0.85; content: "⤢ tap to expand"; }
+  }
   /* SVG figures (matplotlib/inline) — render full width */
   .figure svg { max-height: none; cursor: default; }
   .figure .cap { font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
@@ -2637,7 +2672,7 @@
     <label>VT (mL)<input type="number" id="mc-vt" placeholder="450" min="100" max="1500" step="10"/></label>
     <label>RR<input type="number" id="mc-rr" placeholder="20" min="4" max="60" step="1"/></label>
     <label>PIP<input type="number" id="mc-pip" placeholder="32" min="0" max="80" step="1"/></label>
-    <label>Pplat<input type="number" id="mc-pplat" placeholder="24" min="0" max="60" step="1"/></label>
+    <label>P<sub>plat</sub><input type="number" id="mc-pplat" placeholder="24" min="0" max="60" step="1"/></label>
     <label>PEEP<input type="number" id="mc-peep" placeholder="8" min="0" max="30" step="1"/></label>
     <label>Flow (L/min)<input type="number" id="mc-flow" placeholder="60" min="0" max="200" step="1"/></label>
     <label>FiO₂<input type="number" id="mc-fio2" placeholder="0.4" min="0.21" max="1" step="0.05"/></label>
@@ -2647,7 +2682,7 @@
   <div class="mini-calc-bundle" id="mc-bundle" aria-label="Lung-protective bundle status">
     <span class="mc-bundle-lbl">LPV bundle</span>
     <span class="mc-bundle-item" id="mc-b-vt"   data-tip="VT/PBW target ≤ 8 mL/kg (lung-protective)">VT/kg</span>
-    <span class="mc-bundle-item" id="mc-b-pplat" data-tip="Pplat target ≤ 30 cmH₂O">Pplat</span>
+    <span class="mc-bundle-item" id="mc-b-pplat" data-tip="Pplat target ≤ 30 cmH₂O">P<sub>plat</sub></span>
     <span class="mc-bundle-item" id="mc-b-dp"   data-tip="ΔP target ≤ 15 cmH₂O (Amato 2015)">ΔP</span>
     <span class="mc-bundle-item" id="mc-b-mp"   data-tip="Mechanical power target ≤ 17 J/min">MP</span>
   </div>
@@ -2669,12 +2704,12 @@
       <span class="mc-target">≤ 15 cmH₂O</span>
     </div>
     <div class="mc-row">
-      <span class="mc-lbl" data-tip="VT / ΔP — static compliance">Cstat</span>
+      <span class="mc-lbl" data-tip="VT / ΔP — static compliance">C<sub>stat</sub></span>
       <span class="mc-val" id="mc-cstat">—</span>
       <span class="mc-target">&gt; 30 ↑</span>
     </div>
     <div class="mc-row">
-      <span class="mc-lbl" data-tip="(PIP − Pplat) / V̇ — airway resistance">Raw</span>
+      <span class="mc-lbl" data-tip="(PIP − Pplat) / V̇ — airway resistance">R<sub>aw</sub></span>
       <span class="mc-val" id="mc-raw">—</span>
       <span class="mc-target">&lt; 10 ↓</span>
     </div>
@@ -3203,14 +3238,14 @@
           <span class="interpret" id="i-dp"></span>
         </div>
         <div class="calc-result" id="r-card-cstat">
-          <span class="lbl">Cstat — static compliance</span>
+          <span class="lbl">C<sub>stat</sub> — static compliance</span>
           <span class="val"><span id="r-cstat">—</span><span class="unit">mL/cmH₂O</span></span>
           <span class="formula-base">\(C_\text{stat} = V_T / \Delta P\)</span>
           <span class="formula" id="f-cstat"></span>
           <span class="interpret" id="i-cstat"></span>
         </div>
         <div class="calc-result" id="r-card-raw">
-          <span class="lbl">Raw — airway resistance</span>
+          <span class="lbl">R<sub>aw</sub> — airway resistance</span>
           <span class="val"><span id="r-raw">—</span><span class="unit">cmH₂O·s/L</span></span>
           <span class="formula-base">\(R_\text{aw} = (PIP - P_\text{plat}) / \dot{V}\) (\(\dot{V}\) = peak flow, L/s)</span>
           <span class="formula" id="f-raw"></span>
@@ -3251,7 +3286,7 @@
       <h5 class="calc-section-h calc-section-results">Power &amp; lung protection</h5>
       <div class="calc-results-row">
         <div class="calc-result" id="r-card-vtpbw">
-          <span class="lbl">VT / PBW</span>
+          <span class="lbl">V<sub>T</sub> / PBW</span>
           <span class="val"><span id="r-vtpbw">—</span><span class="unit">mL/kg</span></span>
           <span class="formula-base">\(V_T / \text{PBW}\) — target 4–8 mL/kg lung-protective</span>
           <span class="formula" id="f-vtpbw"></span>
@@ -3332,7 +3367,7 @@
       Vd/Vt = (PaCO₂ − ETCO₂)/PaCO₂. OI = MAP × FiO₂ × 100 / PaO₂. DO₂ = CO × CaO₂ × 10.
       <strong>P<sub>L,insp</sub></strong> = Pplat − P<sub>esoph,insp</sub>;
       <strong>P<sub>L,exp</sub></strong> = PEEP − P<sub>esoph,exp</sub>.
-      <strong>Raw</strong> = (PIP − Pplat) / flow_L/s. τ = Raw × Cstat (in L/cmH₂O); T<sub>e</sub> ≥ 3τ avoids air-trapping.
+      <strong>R<sub>aw</sub></strong> = (PIP − P<sub>plat</sub>) / flow (L/s). τ = R<sub>aw</sub> × C<sub>stat</sub> (in L/cmH₂O); T<sub>e</sub> ≥ 3τ avoids air-trapping.
     </p>
 
     <div class="calc-actions">
@@ -4023,7 +4058,7 @@
       <button data-fio2="1.0" data-paco2="40" data-pao2="500" data-hb="14">100% O₂ test</button>
     </div>
     <div class="if-stats" style="grid-template-columns: repeat(5, 1fr);">
-      <div class="if-stat"><div class="if-stat-label">P_AO₂</div><div class="if-stat-val" id="ifabg-paalv">100</div><div class="if-stat-sub">alveolar (mmHg)</div></div>
+      <div class="if-stat"><div class="if-stat-label">P<sub>A</sub>O₂</div><div class="if-stat-val" id="ifabg-paalv">100</div><div class="if-stat-sub">alveolar (mmHg)</div></div>
       <div class="if-stat"><div class="if-stat-label">A–a gradient</div><div class="if-stat-val" id="ifabg-aa">5</div><div class="if-stat-sub" id="ifabg-aastatus">normal</div></div>
       <div class="if-stat"><div class="if-stat-label">P/F ratio</div><div class="if-stat-val" id="ifabg-pf">452</div><div class="if-stat-sub" id="ifabg-pfstatus">normal</div></div>
       <div class="if-stat"><div class="if-stat-label">SaO₂</div><div class="if-stat-val" id="ifabg-sao2">97.0%</div><div class="if-stat-sub">via Severinghaus</div></div>
@@ -11524,10 +11559,10 @@
       <text x="55" y="397" font-size="10" fill="#1f3a5f">• abdominal HTN (bladder pressure)</text>
       <rect x="350" y="130" width="300" height="48" rx="6" fill="#1f3a5f"/>
       <text x="500" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Volume / flow alarm</text>
-      <text x="500" y="169" text-anchor="middle" font-size="10.5" fill="#bcd4ec">low V_T · low V̇_E · low PIP · apnea</text>
+      <text x="500" y="169" text-anchor="middle" font-size="10.5" fill="#bcd4ec">low V<tspan baseline-shift="sub" font-size="0.75em">T</tspan> · low V̇<tspan baseline-shift="sub" font-size="0.75em">E</tspan> · low PIP · apnea</text>
       <rect x="350" y="186" width="300" height="216" rx="8" fill="url(#ts-vol-c39)" stroke="#c79f3a" stroke-width="1.4"/>
       <text x="500" y="208" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7a5a14">Where is the leak?</text>
-      <text x="500" y="224" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Compare V_Ti vs V_Te; check pilot pressure</text>
+      <text x="500" y="224" text-anchor="middle" font-size="10.5" fill="#1f3a5f">Compare V<tspan baseline-shift="sub" font-size="0.75em">Ti</tspan> vs V<tspan baseline-shift="sub" font-size="0.75em">Te</tspan>; check pilot pressure</text>
       <line x1="365" y1="232" x2="635" y2="232" stroke="#c79f3a" stroke-width="0.6" opacity="0.5"/>
       <text x="365" y="250" font-size="10" fill="#1f3a5f">• Circuit disconnect → reconnect</text>
       <text x="365" y="266" font-size="10" fill="#1f3a5f">• Cuff leak → check pilot pressure</text>
@@ -11560,7 +11595,7 @@
       <rect x="40" y="420" width="920" height="86" rx="8" fill="#1f3a5f"/>
       <text x="500" y="442" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">EMERGENCY — Obstructive crash (asthma / COPD), the auto-PEEP killer</text>
       <text x="500" y="462" text-anchor="middle" font-size="11" fill="#bcd4ec">Sudden post-intubation hypotension or hypoxemia in an obstructive patient → assume <tspan font-weight="700" fill="#fff">stacked breaths</tspan> until proven otherwise.</text>
-      <text x="500" y="482" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">DISCONNECT the circuit, let the chest passively empty 20–30 s, resume bagging RR 6–8, slow flow, long T_E.</text>
+      <text x="500" y="482" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">DISCONNECT the circuit, let the chest passively empty 20–30 s, resume bagging RR 6–8, slow flow, long T<tspan baseline-shift="sub" font-size="0.75em">e</tspan>.</text>
       <text x="500" y="498" text-anchor="middle" font-size="10" font-style="italic" fill="#bcd4ec">Deep dive: §17.3 (induction collapse, DOPES, the disconnect rescue)</text>
       <rect x="40" y="524" width="450" height="100" rx="8" fill="url(#ts-action-c39)" stroke="#5da169" stroke-width="1.4"/>
       <text x="265" y="546" text-anchor="middle" font-size="12" font-weight="700" fill="#1d5a2c">Acute hypoxemia — first 2 minutes</text>
@@ -11572,7 +11607,7 @@
       <text x="735" y="546" text-anchor="middle" font-size="12" font-weight="700" fill="#1d5a2c">Unexpected hypercapnia — three buckets</text>
       <text x="525" y="566" font-size="10.5" fill="#1f3a5f">↑ VCO₂: fever, sepsis, shivering, seizures, overfeeding</text>
       <text x="525" y="582" font-size="10.5" fill="#1f3a5f">↑ dead space: PE, low CO, high PEEP overdistension</text>
-      <text x="525" y="598" font-size="10.5" fill="#1f3a5f">↓ V̇_A: auto-PEEP, leak, sedation, NMD, mode change</text>
+      <text x="525" y="598" font-size="10.5" fill="#1f3a5f">↓ V̇<tspan baseline-shift="sub" font-size="0.75em">A</tspan>: auto-PEEP, leak, sedation, NMD, mode change</text>
       <text x="525" y="616" font-size="9.5" font-style="italic" fill="#1d5a2c">Deep dive: §4.1a (VCO₂ drivers), §17 (auto-PEEP), §18 (trigger/leak)</text>
       <rect x="40" y="642" width="920" height="100" rx="6" fill="#fff" stroke="#cbd5e0" stroke-width="1"/>
       <text x="500" y="664" text-anchor="middle" font-size="12" font-weight="700" fill="#1f3a5f">Cross-reference map</text>
@@ -11809,7 +11844,7 @@
 <p>Three patients at three points on the severity spectrum. For each: vignette, the bedside calculations, the changes that follow.</p>
 
   <h5>Case A — Mild ARDS, post-pneumonia, average build</h5>
-  <p><strong>Vignette.</strong> 68F, 5'4" (64 in), 80 kg actual, post-pneumonia ARDS. VC-A/C, VT 480 mL, RR 18, PEEP 8, FiO₂ 0.50. ABG pH 7.32 / PaCO₂ 50 / PaO₂ 88 (P/F 176). Pplat 24, PIP 28.</p>
+  <p><strong>Vignette.</strong> 68F, 5'4" (64 in), 80 kg actual, post-pneumonia ARDS. VC-A/C, V<sub>T</sub> 480 mL, RR 18, PEEP 8, FiO₂ 0.50. ABG pH 7.32 / PaCO₂ 50 / PaO₂ 88 (P/F 176). P<sub>plat</sub> 24, PIP 28.</p>
   <p>1. PBW (women) = \(45.5 + 2.3 \times (64 - 60) = 54.7\) kg.</p>
   <p>2. VT/PBW = \(480 / 54.7 = 8.8\) mL/kg — <strong>too high</strong> (target 6 mL/kg = ~330 mL).</p>
   <p>3. Driving pressure ΔP = \(P_{plat} - \text{PEEP} = 24 - 8 = 16\) cmH₂O — <strong>above target ≤ 15</strong>.</p>
@@ -11832,8 +11867,8 @@
   <p>4. PIP 28 vs Pplat 20 = a 8 cmH₂O resistive pressure (high airflow obstruction).</p>
   <p><strong>Plan.</strong></p>
   <ul>
-    <li><strong>Lengthen Te.</strong> Drop set RR to 12 (more time per breath to exhale).</li>
-    <li><strong>Shorten Ti.</strong> Raise peak flow from 60 → 80 L/min (gets the breath in faster, frees expiratory time).</li>
+    <li><strong>Lengthen T<sub>e</sub>.</strong> Drop set RR to 12 (more time per breath to exhale).</li>
+    <li><strong>Shorten T<sub>i</sub>.</strong> Raise peak flow from 60 → 80 L/min (gets the breath in faster, frees expiratory time).</li>
     <li><strong>Set extrinsic PEEP ≈ 6</strong> (~75% of auto-PEEP). Counterintuitive: adding PEEP <em>reduces</em> trigger work because the patient now starts each breath from 6 cmH₂O instead of 13.</li>
     <li><strong>Bronchodilators on full schedule</strong> (continuous albuterol or stacked nebs + ipratropium); <strong>steroids</strong> (methylprednisolone 60–125 mg IV q6 h).</li>
     <li><strong>Sedation</strong> — fentanyl + propofol — to take the edge off the air-trapping sensation.</li>
@@ -13009,17 +13044,20 @@
 </section>
 
 </main>
+</div>
 
+<!-- Footer moved OUTSIDE the layout grid so it can't share a row with the
+     sticky nav.toc and visually overlap it. Gets its own centered container
+     mirroring the layout's max-width and horizontal padding. -->
 <footer class="colophon" role="contentinfo">
   <div class="brand-line">Bedside Reference · Invasive Mechanical Ventilation</div>
   <div>Version 1.0 · Last reviewed May 2026</div>
-  <div>© 2026 <em>Bedside Reference</em>. Licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC&nbsp;BY-NC&nbsp;4.0</a> — free to share and adapt with attribution; commercial use prohibited.</div>
+  <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
   <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
   <div class="foot-nav">
     <a href="#disclaimer">Disclaimer</a> · <a href="#how-to-read">How to read</a> · <a href="#refs">References</a> · <a href="#abbr">Abbreviations</a> · <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Back to top</a>
   </div>
 </footer>
-</div>
 
 <button class="back-top" id="back-top" aria-label="Back to top" title="Back to top (g h)">↑</button>
 <button class="reader-exit" id="reader-exit" type="button" aria-label="Exit reader mode" title="Exit reader mode">✕ Exit reader</button>
@@ -13205,6 +13243,15 @@
       if (node.nodeType === 3) {
         const text = node.nodeValue;
         if (!text || text.length < 2) return;
+        // Skip text nodes that contain LaTeX delimiters. KaTeX needs the
+        // delimiter content intact to render; inserting <abbr> inside
+        // \(...\) or $$...$$ breaks math rendering (it would show raw
+        // LaTeX source instead of typeset math). Also skip nodes that
+        // are already inside a KaTeX-rendered subtree (.katex).
+        if (text.indexOf('\\(') !== -1 || text.indexOf('\\)') !== -1 ||
+            text.indexOf('\\[') !== -1 || text.indexOf('\\]') !== -1 ||
+            text.indexOf('$$') !== -1) return;
+        if (node.parentElement && node.parentElement.closest('.katex, .katex-display')) return;
         const matches = [...text.matchAll(regex)];
         if (!matches.length) return;
         const frag = document.createDocumentFragment();
@@ -13219,7 +13266,7 @@
         });
         if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
         node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType === 1 && !skip.has(node.tagName) && !node.closest('#abbr') && !node.closest('#drugs') && !node.classList.contains('toolbar')) {
+      } else if (node.nodeType === 1 && !skip.has(node.tagName) && !node.closest('#abbr') && !node.closest('#drugs') && !node.classList.contains('toolbar') && !node.closest('.katex') && !node.closest('.katex-display')) {
         // (Previously skipped all <table> contents — now we descend into tables
         //  too, so abbreviations in cells get wrapped. The #abbr / #drugs
         //  guards above still keep the glossary and drug-reference tables
@@ -13490,7 +13537,7 @@
               + (isFinite(rr_new) ? ` (≈ RR ${Math.round(rr_new)} at same VT)` : '') + `  · ${dir}`;
             setHTML('r-paco2-target', `factor ${factor.toFixed(2)}× — ${dir}`);
             setFormula('f-paco2target',
-              `Vd assumed constant: VE_new = ${f(ve,1)} × (${f(paco2,0)}/${f(paco2target,0)}) = ${f(ve_new,1)} L/min`);
+              `Vd assumed constant: new V̇ₑ = ${f(ve,1)} × (${f(paco2,0)}/${f(paco2target,0)}) = ${f(ve_new,1)} L/min`);
           } else { setHTML('r-paco2-target','—'); setFormula('f-paco2target',''); }
           const iEl = $('i-paco2target'); if (iEl) iEl.innerHTML = paco2recommend;
 
@@ -13527,7 +13574,7 @@
               setText(id, '≤ ' + Math.floor(rrMax));
             } else setText(id, '—');
           });
-          setFormula('f-rrmax', isFinite(tau) ? `with τ = ${f(tau,2)} s, T_e = 3τ = ${f(3*tau,2)} s` : '');
+          setFormula('f-rrmax', isFinite(tau) ? `with τ = ${f(tau,2)} s, Tₑ = 3τ = ${f(3*tau,2)} s` : '');
 
           let mp = NaN, mpFormula = '';
           if (isFinite(rr) && isFinite(vt) && isFinite(dp)) {
