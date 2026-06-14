@@ -3796,6 +3796,7 @@
     <div class="calc-grid">
       <label>VT (mL)<input type="number" id="c-vt" min="100" max="1500" step="10" placeholder="450"/></label>
       <label>RR (breaths/min)<input type="number" id="c-rr" min="4" max="60" step="1" placeholder="20"/></label>
+      <label>ROX time<select id="c-rox-time"><option value="12">12 h</option><option value="2">2 h</option><option value="6">6 h</option></select></label>
       <label>PIP (cmH₂O)<input type="number" id="c-pip" min="0" max="80" step="1" placeholder="32"/></label>
       <label>Pplat (cmH₂O)<input type="number" id="c-pplat" min="0" max="60" step="1" placeholder="24"/></label>
       <label>PEEP (cmH₂O)<input type="number" id="c-peep" min="0" max="30" step="1" placeholder="8"/></label>
@@ -14791,7 +14792,7 @@
         dp:    v => !isFinite(v) ? null : v <= 14 ? 'ok' : v <= 18 ? 'warn' : 'bad',
         mp:    v => !isFinite(v) ? null : v <  17 ? 'ok' : v <= 22 ? 'warn' : 'bad',
         rsbi:  v => !isFinite(v) ? null : v < 105 ? 'ok' : 'bad',
-        rox:   v => !isFinite(v) ? null : v >= 4.88 ? 'ok' : v >= 3.85 ? 'warn' : 'bad',
+        rox:   (v, t) => { if (!isFinite(v)) return null; const fail = {2:2.85,6:3.47,12:3.85}[t] || 3.85; return v >= 4.88 ? 'ok' : v >= fail ? 'warn' : 'bad'; },
         vdvt:  v => !isFinite(v) ? null : v <= 0.4 ? 'ok' : v <= 0.6 ? 'warn' : 'bad',
         cstat: v => !isFinite(v) ? null : v >= 50 ? 'ok' : v >= 30 ? 'warn' : 'bad',
         raw:   v => !isFinite(v) ? null : v <= 10 ? 'ok' : v <= 15 ? 'warn' : 'bad',
@@ -14825,12 +14826,14 @@
              : 'Within 4–8 mL/kg target.',
         rsbi: v => !isFinite(v) ? '' : v < 105 ? 'Favorable — proceed with SBT if other criteria met.'
              : 'High failure risk — defer SBT, address underlying cause.',
-        rox: v => !isFinite(v) ? '' : v >= 4.88 ? 'HFNC likely succeeding (Roca 2019, ≥ 4.88 at 12h).'
-             : v >= 3.85 ? 'Borderline — re-evaluate within an hour.'
-             : 'High HFNC-failure risk — escalate to NIV or intubation.',
-        vdvt: v => !isFinite(v) ? '' : v >  0.6 ? 'Severely elevated — predicts wean failure (Nuckton 2002).'
+        rox: (v, t) => { if (!isFinite(v)) return ''; const fail = {2:2.85,6:3.47,12:3.85}[t] || 3.85;
+             return v >= 4.88 ? 'HFNC likely succeeding (Roca 2019, ≥ 4.88).'
+             : v >= fail ? ('Borderline at ' + t + 'h — re-evaluate within an hour.')
+             : ('High HFNC-failure risk at ' + t + 'h (< ' + fail + ') — escalate to NIV or intubation.'); },
+        vdvt: v => { if (!isFinite(v)) return ''; const note = ' (ETCO₂ used as a surrogate for mixed-expired CO₂ — underestimates true dead space).';
+             return (v >  0.6 ? 'Severely elevated — predicts wean failure (Nuckton 2002).'
              : v >  0.4 ? 'Elevated — consider cause: PE, hyperinflation, low CO.'
-             : 'Within physiologic range.',
+             : 'Within physiologic range.') + note; },
         cstat: v => !isFinite(v) ? '' : v <  30 ? 'Stiff lung — recruit, optimize PEEP, watch ΔP.'
              : v <  50 ? 'Reduced — typical of moderate ARDS / restriction.'
              : 'Within or above normal range.',
@@ -14869,7 +14872,7 @@
 
       let cwMode = 'VC';
       const inputIds = ['c-sex','c-ht','c-age','c-hb','c-fio2','c-pao2','c-paco2','c-spo2','c-sao2',
-                        'c-vt','c-rr','c-pip','c-pplat','c-peep','c-flow','c-map',
+                        'c-vt','c-rr','c-rox-time','c-pip','c-pplat','c-peep','c-flow','c-map',
                         'c-etco2','c-paco2-target','c-co','c-pes-insp','c-pes-exp'];
 
       function calc() {
@@ -14922,10 +14925,11 @@
           setFormula('f-sf', isFinite(sf) ? `= ${f(spo2,0)} / ${f(fio2,2)} = ${f(sf,0)}` : '');
 
           const rox = (isFinite(sf) && isFinite(rr) && rr > 0) ? sf/rr : NaN;
+          const roxTime = parseInt((document.getElementById('c-rox-time') || {}).value || '12', 10);
           setText('r-rox', fmt(rox, 2));
-          setFormula('f-rox', isFinite(rox) ? `= ${f(sf,0)}/${f(rr,0)} = ${f(rox,2)}` : '');
-          setCardClass('r-card-rox', band.rox(rox));
-          setInterpret('i-rox', interpret.rox(rox));
+          setFormula('f-rox', isFinite(rox) ? `= ${f(sf,0)}/${f(rr,0)} = ${f(rox,2)} (at ${roxTime}h)` : '');
+          setCardClass('r-card-rox', band.rox(rox, roxTime));
+          setInterpret('i-rox', interpret.rox(rox, roxTime));
 
           const cao2bound = (isFinite(hb) && isFinite(sao2)) ? 1.34*hb*sao2 : NaN;
           const cao2dis = isFinite(pao2) ? 0.003*pao2 : 0;
