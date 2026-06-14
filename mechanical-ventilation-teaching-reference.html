@@ -17,6 +17,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Guide to Ventilation — Bedside Reference</title>
 <meta name="description" content="Physiology-first teaching reference on invasive mechanical ventilation for medical students, IM residents, hospitalists, PCCM fellows, and other healthcare trainees and practitioners. Written for the bedside." />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0b1f3a" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Vent Guide" />
 <meta name="author" content="Bedside Reference" />
 <!-- Open Graph (Slack, iMessage, LinkedIn, Facebook unfurls) -->
 <meta property="og:type" content="book" />
@@ -17571,8 +17580,8 @@ saveInputs();
     if (e.target.matches('input, textarea')) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const k = e.key;
-    if (k === '/') { e.preventDefault(); searchInput.focus(); }
-    else if (k === 'd') { themeBtn.click(); }
+    if (k === '/') { e.preventDefault(); const si = document.getElementById('tb-search'); if (si) si.focus(); }
+    else if (k === 'd') { const tb = document.getElementById('btn-theme'); if (tb) tb.click(); }
     else if (k === 'j') { e.preventDefault(); window.scrollBy({top: window.innerHeight*0.85, behavior:'smooth'}); }
     else if (k === 'k') { e.preventDefault(); window.scrollBy({top: -window.innerHeight*0.85, behavior:'smooth'}); }
     else if (k === '?') {
@@ -17588,7 +17597,8 @@ saveInputs();
       lastG = 0;
     }
     if (k === 'Escape') {
-      if (lb.classList.contains('show')) closeLb();
+      const lbEl = document.getElementById('lightbox');
+      if (lbEl && lbEl.classList.contains('show')) lbEl.classList.remove('show');
     }
   });
   } catch (err) { console.error('[KEYBOARD SHORTCUTS] error:', err); }
