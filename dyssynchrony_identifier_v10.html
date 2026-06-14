@@ -5,32 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Patient–ventilator dyssynchrony explorer</title>
   <style>
-    html, body { margin: 0; padding: 0; background: #FAF9F5; }
+    html, body { margin: 0; padding: 0; background: #0a0f1f; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      padding: 20px;
+      font-family: ui-serif, Georgia, 'Times New Roman', serif;
+      padding: 0;
       box-sizing: border-box;
       max-width: 1400px;
       margin: 0 auto;
     }
-    @media (max-width: 600px) { body { padding: 12px; } }
     @media (prefers-color-scheme: dark) {
-      html, body { background: #0F0F0F; }
+      html, body { background: #0a0f1f; }
     }
   </style>
 <style>
   /* Ventilator dyssynchrony identifier — v10
      Professional clinical UI with inline SVG icons (no font deps) */
-  .dys-app { font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); color: var(--color-text-primary, #1F1F1E); --dys-page: var(--color-background-primary, #FAF9F5); --dys-card: #FFFFFF; --dys-elev: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.04); --dys-elev-hi: 0 1px 3px rgba(15, 23, 42, 0.08), 0 8px 24px rgba(15, 23, 42, 0.08); --dys-text: #1F1F1E; --dys-text-muted: #6B6B68; --dys-text-subtle: #9C9C97; --dys-border: rgba(15, 23, 42, 0.10); --dys-border-strong: rgba(15, 23, 42, 0.18); --dys-divider: rgba(15, 23, 42, 0.06); --dys-accent: #4F46E5; --dys-accent-soft: rgba(79, 70, 229, 0.08); }
-  .dys-app[data-dys-theme="dark"] { --dys-page: #0F0F0F; --dys-card: #1A1A19; --dys-elev: 0 1px 2px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.4); --dys-elev-hi: 0 1px 3px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.5); --dys-text: #E8E6E1; --dys-text-muted: #A0A09B; --dys-text-subtle: #6B6B68; --dys-border: rgba(255,255,255,0.10); --dys-border-strong: rgba(255,255,255,0.20); --dys-divider: rgba(255,255,255,0.06); --dys-accent: #818CF8; --dys-accent-soft: rgba(129, 140, 248, 0.12); }
+  .dys-app { font-family: ui-serif, Georgia, 'Times New Roman', serif; color: var(--dys-text); background: linear-gradient(135deg, #fafaf7 0%, #f1f0e9 100%); padding: 22px; min-height: 100vh; box-sizing: border-box; --dys-page: #f1f0e9; --dys-card: #ffffff; --dys-elev: 0 1px 2px rgba(15,23,42,0.04); --dys-elev-hi: 0 2px 6px rgba(15,23,42,0.08); --dys-text: #1c1917; --dys-text-muted: #57534e; --dys-text-subtle: #78716c; --dys-border: #d6d3c7; --dys-border-strong: #c4c0b4; --dys-divider: #e8e5d8; --dys-accent: #0891b2; --dys-accent-soft: rgba(8,145,178,0.10); }
+  .dys-app[data-dys-theme="dark"] { background: linear-gradient(135deg, #050810 0%, #0a0f1f 100%); --dys-page: #0f172a; --dys-card: #0a0e1a; --dys-elev: 0 1px 2px rgba(0,0,0,0.4); --dys-elev-hi: 0 2px 8px rgba(0,0,0,0.5); --dys-text: #e2e8f0; --dys-text-muted: #94a3b8; --dys-text-subtle: #64748b; --dys-border: #1e293b; --dys-border-strong: #334155; --dys-divider: rgba(148,163,184,0.10); --dys-accent: #22d3ee; --dys-accent-soft: rgba(34,211,238,0.14); }
   .dys-app-header { display:flex; align-items:center; gap:14px; margin:0 0 24px; padding:0 0 20px; border-bottom:1px solid var(--dys-divider); }
-  .dys-app-icon { display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:12px; background:linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%); box-shadow: var(--dys-elev), inset 0 1px 0 rgba(255,255,255,0.15); color:#FFFFFF; }
+  .dys-app-icon { display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:8px; background:linear-gradient(135deg, #0891b2 0%, #22d3ee 100%); box-shadow: var(--dys-elev), inset 0 1px 0 rgba(255,255,255,0.15); color:#0f172a; }
   .dys-app-icon svg { width:24px; height:24px; }
   .dys-app-title-wrap { flex:1; min-width:0; }
   .dys-app-title { font-size:24px; font-weight:700; color:var(--dys-text); margin:0 0 2px; letter-spacing:-0.02em; line-height:1.15; }
   .dys-app-subtitle { font-size:13px; color:var(--dys-text-muted); margin:0; line-height:1.5; }
   .dys-app-actions { display:flex; gap:8px; align-items:center; flex-shrink:0; }
-  .dys-action-btn { display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; padding:0; border-radius:10px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; color:var(--dys-text); transition: all 0.15s ease; box-shadow: var(--dys-elev); }
+  .dys-action-btn { display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; padding:0; border-radius:6px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; color:var(--dys-text); transition: all 0.15s ease; box-shadow: var(--dys-elev); }
   .dys-action-btn:hover { background:var(--dys-page); border-color:var(--dys-border-strong); transform:translateY(-1px); box-shadow: var(--dys-elev-hi); }
   .dys-action-btn:active { transform:translateY(0); }
   .dys-action-btn svg { width:18px; height:18px; }
@@ -38,7 +37,7 @@
   .dys-cases { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin:0 0 24px; }
   @media (max-width: 1000px) { .dys-cases { grid-template-columns:repeat(2, 1fr); } }
   @media (max-width: 520px) { .dys-cases { grid-template-columns:1fr; } }
-  .dys-case-btn { position:relative; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:11px 13px 9px; border-radius:11px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; text-align:left; font-family:inherit; transition: all 0.15s ease; box-shadow: var(--dys-elev); overflow:hidden; }
+  .dys-case-btn { position:relative; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:11px 13px 9px; border-radius:6px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; text-align:left; font-family:inherit; transition: all 0.15s ease; box-shadow: var(--dys-elev); overflow:hidden; }
   .dys-case-btn:hover { transform:translateY(-1px); box-shadow: var(--dys-elev-hi); border-color:var(--dys-border-strong); }
   .dys-case-btn.active { border-color:var(--dys-accent); box-shadow: var(--dys-elev-hi), 0 0 0 1px var(--dys-accent); }
   .dys-case-btn.active::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--dys-accent); }
@@ -53,7 +52,7 @@
   .sev-dot-danger  { background:#EF4444; box-shadow:0 0 0 2px rgba(239,68,68,0.15); }
   .sev-dot-warning { background:#F59E0B; box-shadow:0 0 0 2px rgba(245,158,11,0.15); }
   .sev-dot-success { background:#22C55E; box-shadow:0 0 0 2px rgba(34,197,94,0.15); }
-  .dys-current { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:16px 18px; border-radius:13px; background:var(--dys-card); border:1px solid var(--dys-border); box-shadow: var(--dys-elev); }
+  .dys-current { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:16px 18px; border-radius:6px; background:var(--dys-card); border:1px solid var(--dys-border); box-shadow: var(--dys-elev); }
   .dys-current-info { flex:1; min-width:200px; }
   .dys-current-title { display:flex; align-items:center; gap:9px; font-size:18px; font-weight:700; color:var(--dys-text); margin:0 0 4px; letter-spacing:-0.015em; }
   .dys-livedot { width:8px; height:8px; border-radius:50%; background:#22C55E; box-shadow: 0 0 0 4px rgba(34,197,94,0.18); animation: dys-pulse 2.2s ease-in-out infinite; flex-shrink:0; }
@@ -71,8 +70,8 @@
   .dys-app[data-dys-theme="dark"] .sev-pill-success { background:rgba(34,197,94,0.18);  color:#86EFAC; }
   .sev-pill-danger .dot { background:#EF4444; } .sev-pill-warning .dot { background:#F59E0B; } .sev-pill-success .dot { background:#22C55E; }
   .dys-mode-pill { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:11px; font-weight:600; padding:4px 9px; border-radius:6px; background:var(--dys-page); color:var(--dys-text-muted); border:1px solid var(--dys-border); }
-  .dys-monitor { position:relative; background:linear-gradient(168deg, #061026 0%, #0E1B36 50%, #0A1426 100%); border-radius:14px; padding:14px 16px 12px; margin-bottom:18px; box-shadow: 0 1px 3px rgba(0,0,0,0.20), 0 8px 24px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(148,163,184,0.06); overflow:hidden; }
-  .dys-monitor::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at top right, rgba(99,102,241,0.10), transparent 70%); pointer-events:none; }
+  .dys-monitor { position:relative; background:linear-gradient(168deg, #061026 0%, #0E1B36 50%, #0A1426 100%); border-radius:8px; padding:14px 16px 12px; margin-bottom:18px; box-shadow: 0 1px 3px rgba(0,0,0,0.20), 0 8px 24px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(148,163,184,0.06); overflow:hidden; }
+  .dys-monitor::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at top right, rgba(34,211,238,0.10), transparent 70%); pointer-events:none; }
   .dys-mon-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 2px; position:relative; }
   .dys-mon-status { display:flex; align-items:center; gap:8px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:10px; color:rgba(226,232,240,0.55); letter-spacing:0.08em; text-transform:uppercase; font-weight:600; }
   .dys-rec-dot { width:7px; height:7px; border-radius:50%; background:#EF4444; box-shadow: 0 0 8px rgba(239,68,68,0.7); animation: dys-rec 1.6s ease-in-out infinite; }
@@ -94,13 +93,13 @@
   .dys-units { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:9.5px; color:rgba(226,232,240,0.4); }
   .dys-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width: 760px) { .dys-info-grid { grid-template-columns:1fr; } }
-  .dys-info-card { position:relative; background:var(--dys-card); border:1px solid var(--dys-border); border-radius:13px; padding:18px 20px 18px 22px; box-shadow: var(--dys-elev); transition: box-shadow 0.15s; overflow:hidden; }
+  .dys-info-card { position:relative; background:var(--dys-card); border:1px solid var(--dys-border); border-radius:6px; padding:18px 20px 18px 22px; box-shadow: var(--dys-elev); transition: box-shadow 0.15s; overflow:hidden; }
   .dys-info-card:hover { box-shadow: var(--dys-elev-hi); }
   .dys-info-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; }
   .dys-info-card.signs::before    { background:linear-gradient(180deg, #F59E0B 0%, #D97706 100%); }
   .dys-info-card.actions::before  { background:linear-gradient(180deg, #22C55E 0%, #16A34A 100%); }
   .dys-info-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
-  .dys-info-icon { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:9px; flex-shrink:0; }
+  .dys-info-icon { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:6px; flex-shrink:0; }
   .dys-info-icon svg { width:16px; height:16px; }
   .dys-info-icon.signs   { background:rgba(245,158,11,0.12); color:#D97706; }
   .dys-info-icon.actions { background:rgba(34,197,94,0.12);  color:#16A34A; }
@@ -119,7 +118,7 @@
 </style>
 </head>
 <body>
-<div class="dys-app" data-dys-theme="light">
+<div class="dys-app" data-dys-theme="dark">
   <div class="dys-app-header">
     <div class="dys-app-icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -570,7 +569,7 @@
       ],
       mechanism: "Most common in obstructive disease where flow takes longer to decay to the cycle threshold. The patient begins active exhalation against a still-pressurized circuit, producing the pathognomonic end-inspiratory pressure spike. Worsens dynamic hyperinflation.",
       actions: [
-        "Raise expiratory cycle threshold (e.g., 25% → 50–70% of peak flow)",
+        "Raise expiratory cycle threshold (e.g., 25% → 35–45% of peak flow)",
         "Shorten inspiratory time in VC",
         "Set a maximum inspiratory time",
         "Address air leaks (which falsely prolong the flow tail)"
