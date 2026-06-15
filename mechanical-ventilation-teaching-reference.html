@@ -38,6 +38,8 @@
   @media print {
     section.chap { content-visibility: visible; }
   }
+  /* Prevent accidental horizontal overscroll / swipe-back gestures on mobile. */
+  html { overscroll-behavior-x: none; }
 </style>
 <!-- Open Graph (Slack, iMessage, LinkedIn, Facebook unfurls) -->
 <meta property="og:type" content="book" />
@@ -292,14 +294,14 @@
   /* scroll-margin-top is set globally above via --scroll-pad-top. */
   section.chap { margin-bottom: 30px; }
   section.chap h3 {
-    font-size: 19px; margin: 18px 0 6px;
+    font-size: 1.19em; margin: 18px 0 6px;
     letter-spacing: -0.005em;
     border-left: 3px solid var(--accent); padding-left: 10px;
   }
   section.chap h3 .num { color: var(--muted); font-weight: 500; margin-right: 8px; }
-  section.chap h4 { font-size: 15px; margin: 14px 0 4px; color: var(--ink); }
+  section.chap h4 { font-size: 0.94em; margin: 14px 0 4px; color: var(--ink); }
   section.chap h5 {
-    font-size: 12.5px; margin: 12px 0 4px; color: var(--accent);
+    font-size: 0.78em; margin: 12px 0 4px; color: var(--accent);
     text-transform: uppercase; letter-spacing: 0.06em;
   }
   p { margin: 8px 0; }
@@ -459,6 +461,9 @@
     --misc-soft: #221833;
   }
   html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
+  /* True-black (OLED) — layered on top of the dark theme; just darkens surfaces. */
+  html[data-oled="1"] body { --bg: #000000; --surface: #0b0b0d; --rule: #1d2026; --accent-soft: #11202f; }
+  html[data-oled="1"] th, html[data-oled="1"] code, html[data-oled="1"] kbd, html[data-oled="1"] .eq { background: #141519; }
   html[data-theme="dark"] th { background: #232a35; }
   html[data-theme="dark"] code, html[data-theme="dark"] kbd { background: #232a35; }
   html[data-theme="dark"] .eq { background: #232a35; color: var(--ink); }
@@ -591,15 +596,17 @@
     }
     .toolbar::-webkit-scrollbar { display: none; }   /* WebKit/Blink */
     .toolbar .spacer { display: none; }              /* drop the flex:1 gap that pushed buttons off-screen */
-    .toolbar .tb-btn { flex: 0 0 auto; }             /* buttons keep size, don't get squished */
+    .toolbar .tb-btn { flex: 0 0 auto; min-height: 40px; min-width: 38px; padding: 8px 11px; }  /* bigger tap targets */
+    nav.toc a { padding-top: 9px; padding-bottom: 9px; }   /* easier to tap TOC entries */
     .toolbar input.tb-search { flex: 1 1 110px; min-width: 84px; max-width: none; }
     /* Declutter: hide desktop/keyboard-oriented controls on small screens
        (the quick-search palette duplicates the search box; hide-TOC is a
-       desktop reading-width toggle; expand-all and print are rarely used on
-       a phone). Reader mode, Notes, font-size, dark, Library and Bedside stay. */
+       desktop reading-width toggle; print is rarely used on a phone).
+       Keep Expand-all — chapters default to one-subsection-at-a-time, so the
+       expand toggle is genuinely useful on mobile. Reader mode, Notes,
+       font-size, dark, Library and Bedside also stay. */
     .toolbar #btn-cmdk,
     .toolbar #btn-toc-collapse,
-    .toolbar #btn-expand-all,
     .toolbar #btn-print { display: none; }
   }
   .search-hit {
@@ -1875,9 +1882,15 @@
     .chip-nav-bar { padding: 5px 0 4px; margin: 4px 0 10px; }
     .chip-nav-chip { padding: 3px 10px; font-size: 12px; }
   }
-  /* When the chip nav is sticky, hide the breadcrumb in the same chapter.
-     The chip nav is more informative anyway. */
-  body:has(.chip-nav-bar) .crumb.show { transform: translateY(-100%); }
+  /* Desktop: when the chip nav is present, hide the breadcrumb (the chip nav is
+     more informative there). On mobile the chip nav is hidden, so the breadcrumb
+     "where am I" context strip takes over. */
+  @media (min-width: 921px) {
+    body:has(.chip-nav-bar) .crumb.show { transform: translateY(-100%); }
+  }
+  @media (max-width: 920px) {
+    .chip-nav-bar { display: none; }
+  }
 
   /* Mini-table for the RR-by-I:E ceiling card */
   .calc-result .rr-mini { width: 100%; border-collapse: collapse; margin-top: 3px; font-size: 12.5px; }
@@ -2831,6 +2844,18 @@ window.softJump = function (el) {
   if (!el || !el.getBoundingClientRect) return;
   var padVar = (getComputedStyle(document.documentElement).getPropertyValue('--scroll-pad-top') || '');
   var pad = parseInt(padVar, 10); if (!pad || isNaN(pad)) pad = 110;
+  // Auto-expand the destination chapter. Chapters default to one-subsection-at-
+  // a-time; when the reader selects a chapter (TOC, cross-ref, Cmd-K, deep link)
+  // open all of its subsections so the chapter is readable on arrival.
+  try {
+    var chap = el.closest ? el.closest('section.chap') : null;
+    if (chap && chap.querySelector(':scope > details.chap-acc')) {
+      chap.classList.add('chip-nav-expanded');
+      chap.querySelectorAll(':scope > details.chap-acc').forEach(function (a) { a.open = true; });
+      var tog = chap.querySelector(':scope > .chip-nav-bar .chip-nav-expand-toggle');
+      if (tog) { tog.textContent = 'Collapse to one'; tog.setAttribute('aria-pressed', 'true'); }
+    }
+  } catch (e) {}
   // On mobile, content-visibility:auto gives off-screen chapters only an
   // ESTIMATED height, so a normal jump lands in the wrong place. Briefly force
   // the target chapter and everything ABOVE it to render real layout, do ONE
@@ -14610,18 +14635,37 @@ document.addEventListener('click', function (e) {
   // ============== DARK MODE ==============
   try {
   const themeBtn = document.getElementById('btn-theme');
-  const stored = localStorage.getItem('mv-theme');
-  if (stored) html.setAttribute('data-theme', stored);
+  const THEME_ORDER = ['light', 'dark', 'black'];
+  function applyTheme(mode) {
+    if (mode === 'black') { html.setAttribute('data-theme', 'dark'); html.setAttribute('data-oled', '1'); }
+    else if (mode === 'dark') { html.setAttribute('data-theme', 'dark'); html.removeAttribute('data-oled'); }
+    else { html.setAttribute('data-theme', 'light'); html.removeAttribute('data-oled'); }
+  }
+  let themeMode = localStorage.getItem('mv-theme');
+  if (themeMode !== 'light' && themeMode !== 'dark' && themeMode !== 'black') {
+    themeMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  applyTheme(themeMode);
+  // Follow the system live until the user makes an explicit choice.
+  if (window.matchMedia) {
+    try {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('mv-theme')) { themeMode = e.matches ? 'dark' : 'light'; applyTheme(themeMode); updateThemeBtn(); }
+      });
+    } catch (e) {}
+  }
   function updateThemeBtn() {
-    const dark = html.getAttribute('data-theme') === 'dark';
-    themeBtn.innerHTML = dark ? '☀ <span class="tb-label">Light</span>' : '🌙 <span class="tb-label">Dark</span>';
-    themeBtn.setAttribute('aria-pressed', dark);
+    const icon = themeMode === 'light' ? '🌙' : themeMode === 'dark' ? '◐' : '⬤';
+    const nextLabel = themeMode === 'light' ? 'Dark' : themeMode === 'dark' ? 'Black' : 'Light';
+    themeBtn.innerHTML = icon + ' <span class="tb-label">' + nextLabel + '</span>';
+    themeBtn.setAttribute('aria-label', 'Theme: ' + themeMode + ' — tap for ' + nextLabel.toLowerCase());
+    themeBtn.setAttribute('aria-pressed', themeMode !== 'light');
   }
   updateThemeBtn();
   themeBtn.addEventListener('click', () => {
-    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('mv-theme', next);
+    themeMode = THEME_ORDER[(THEME_ORDER.indexOf(themeMode) + 1) % THEME_ORDER.length];
+    localStorage.setItem('mv-theme', themeMode);
+    applyTheme(themeMode);
     updateThemeBtn();
   });
   } catch (err) { console.error('[DARK MODE] error:', err); }
@@ -18600,6 +18644,83 @@ saveInputs();
       frames.forEach(load);
     }
   })();
+</script>
+
+<script>
+/* Subtle haptic tap on key controls, where the device supports it. */
+document.addEventListener('click', function (e) {
+  if (!navigator.vibrate) return;
+  var t = e.target.closest && e.target.closest('.tb-btn, nav.toc a, .lib-card, .chip-nav-bar button, summary, .sim-facade, #back-top');
+  if (t) { try { navigator.vibrate(8); } catch (_) {} }
+}, true);
+
+/* Edge-swipe from the left to open the Contents drawer; swipe left to close it. */
+(function () {
+  var cb = document.getElementById('toc-toggle');
+  if (!cb) return;
+  var x0 = 0, y0 = 0, mode = null;
+  document.addEventListener('touchstart', function (e) {
+    var p = e.touches[0]; x0 = p.clientX; y0 = p.clientY; mode = null;
+    if (!cb.checked && x0 < 24) mode = 'open';
+    else if (cb.checked) mode = 'close';
+  }, { passive: true });
+  document.addEventListener('touchmove', function (e) {
+    if (!mode) return;
+    var p = e.touches[0], dx = p.clientX - x0, dy = Math.abs(p.clientY - y0);
+    if (dy > 45) { mode = null; return; }
+    if (mode === 'open' && dx > 55) { cb.checked = true; mode = null; }
+    else if (mode === 'close' && dx < -55) { cb.checked = false; mode = null; }
+  }, { passive: true });
+})();
+</script>
+
+<style>
+  .mobile-actionbar { display: none; }
+  @media (max-width: 920px) {
+    .mobile-actionbar {
+      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 945;
+      background: var(--surface); border-top: 1px solid var(--rule);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .mobile-actionbar button {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: 0; color: var(--muted); font-family: inherit;
+      padding: 8px 0 9px; cursor: pointer; min-height: 50px;
+    }
+    .mobile-actionbar button:active { background: var(--accent-soft); }
+    .mobile-actionbar .mab-icon { font-size: 19px; line-height: 1; }
+    .mobile-actionbar .mab-label { font-size: 10.5px; letter-spacing: 0.01em; }
+    .mobile-actionbar .mab-bedside { color: var(--warn); }
+    body { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0)); }
+    .back-top { bottom: calc(70px + env(safe-area-inset-bottom, 0)) !important; }
+    body.reader-mode .mobile-actionbar { display: none; }
+  }
+</style>
+<nav class="mobile-actionbar" aria-label="Quick actions">
+  <button type="button" id="mab-search"><span class="mab-icon" aria-hidden="true">🔍</span><span class="mab-label">Search</span></button>
+  <button type="button" id="mab-contents"><span class="mab-icon" aria-hidden="true">☰</span><span class="mab-label">Contents</span></button>
+  <button type="button" class="mab-bedside" id="mab-bedside"><span class="mab-icon" aria-hidden="true">🚨</span><span class="mab-label">Bedside</span></button>
+</nav>
+<script>
+(function () {
+  var s = document.getElementById('mab-search');
+  var c = document.getElementById('mab-contents');
+  var b = document.getElementById('mab-bedside');
+  if (s) s.addEventListener('click', function () {
+    var i = document.getElementById('tb-search');
+    if (i) { window.scrollTo({ top: 0, behavior: 'auto' }); i.focus(); }
+  });
+  if (c) c.addEventListener('click', function () {
+    var cb = document.getElementById('toc-toggle');
+    if (cb) cb.checked = !cb.checked;
+  });
+  if (b) b.addEventListener('click', function () {
+    var t = document.getElementById('bedside-now');
+    if (t && window.softJump) window.softJump(t);
+    else if (t) t.scrollIntoView();
+  });
+})();
 </script>
 
 </body>
