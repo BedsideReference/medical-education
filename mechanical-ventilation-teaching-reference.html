@@ -972,8 +972,10 @@
   }
   .bn-search:focus { outline: none; border-color: var(--accent); }
   .bn-search-wrap::before {
-    content: "🔍"; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-    font-size: 14px; opacity: 0.5;
+    content: ""; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; color: var(--muted); background: currentColor; opacity: 0.7;
+    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>') center/contain no-repeat;
+    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>') center/contain no-repeat;
   }
   .bn-filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 16px; }
   .bn-filter-chip {
@@ -2961,7 +2963,7 @@ document.addEventListener('click', function (e) {
   <div class="lib-modal" id="lib-modal">
     <div class="lib-modal-head">
       <div>
-        <h2 class="lib-modal-title">📚 Library</h2>
+        <h2 class="lib-modal-title"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>Library</h2>
         <div class="lib-modal-sub">Pick a Part to focus on. The rest of the doc stays one click away.</div>
       </div>
       <button class="lib-modal-close" id="lib-modal-close" aria-label="Close library">×</button>
@@ -3079,7 +3081,7 @@ document.addEventListener('click', function (e) {
   </div>
 
   <div class="mini-calc-actions">
-    <button type="button" id="mc-copy" class="mc-copy-btn" title="Copy a one-line snapshot to clipboard">📋 Copy snapshot</button>
+    <button type="button" id="mc-copy" class="mc-copy-btn" title="Copy a one-line snapshot to clipboard"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy snapshot</button>
     <span id="mc-copy-confirm" class="mc-copy-confirm" aria-live="polite"></span>
   </div>
 </div>
@@ -3135,7 +3137,7 @@ document.addEventListener('click', function (e) {
 
 <nav class="toc" aria-label="Contents">
   <a class="part-link" href="#cheatsheet"><h4>★ Bedside cheat sheet</h4></a>
-  <a class="part-link" href="#bedside-now"><h4>🚨 Bedside-Now</h4></a>
+  <a class="part-link" href="#bedside-now"><h4><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><path d="M3 12h3.5l2.2-6.5 4 13 2.3-6.5H21"/></svg>Bedside-Now</h4></a>
   <a class="part-link" href="#calc-tools"><h4>∑ Bedside calculator</h4></a>
   <a class="part-link" href="#part1"><h4>Part I · Foundations</h4></a>
   <ol>
@@ -3429,7 +3431,7 @@ document.addEventListener('click', function (e) {
 </section>
 
 <section class="chap" id="bedside-now">
-  <h3><span class="num">🚨</span>Bedside-Now</h3>
+  <h3><span class="num"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.1em" aria-hidden="true"><path d="M3 12h3.5l2.2-6.5 4 13 2.3-6.5H21"/></svg></span>Bedside-Now</h3>
   <p class="lead">A triage index over the teaching chapters &mdash; organized by what&rsquo;s happening to the patient, not by topic. Find the alarm, symptom, situation, or procedure; jump into the chapter that solves it. Designed for &lt; 60-second lookup at a vent that&rsquo;s alarming. Not a substitute for the chapters themselves &mdash; the chapters teach the physiology you need to reason from when this index isn&rsquo;t enough.</p>
 
   <div class="bn-search-wrap">
@@ -4178,7 +4180,7 @@ document.addEventListener('click', function (e) {
     <div class="calc-actions">
       <button id="calc-btn-clear" type="button" title="Clear all input fields">Clear all</button>
       <button id="calc-btn-example" type="button" title="Load Case A: mild ARDS (68F, 64in, FiO₂ 0.5)">Load example (Case A)</button>
-      <button id="calc-btn-copy" type="button" title="Copy a chart-ready snapshot to clipboard">📋 Copy snapshot</button>
+      <button id="calc-btn-copy" type="button" title="Copy a chart-ready snapshot to clipboard"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copy snapshot</button>
       <button id="calc-btn-print" type="button" title="Print just the calculator">Print</button>
       <span id="calc-copy-confirm" class="calc-copy-confirm" aria-live="polite"></span>
     </div>
@@ -17764,7 +17766,7 @@ saveInputs();
     else if (k === 'k') { e.preventDefault(); window.scrollBy({top: -window.innerHeight*0.85, behavior:'smooth'}); }
     else if (k === '?') {
       e.preventDefault();
-      alert('Keyboard shortcuts:\n\n  /  Focus search\n  d  Toggle dark mode\n  j  Scroll down (one screen)\n  k  Scroll up (one screen)\n  g h  Back to top\n  g e  Jump to end\n  Enter / Shift+Enter  Next / previous search hit\n  Esc  Clear search\n  Click any figure to enlarge');
+      alert(window.__kbdHelp || 'Press the Help (Keys) button for keyboard shortcuts.');
     }
     else if (k === 'g') {
       lastG = Date.now();
@@ -17811,7 +17813,7 @@ saveInputs();
     const panel = document.createElement('aside');
     panel.className = 'annotate-panel';
     panel.setAttribute('aria-label', 'Saved notes');
-    panel.innerHTML = '<div class="annotate-panel-header"><strong>📝 My notes</strong>' +
+    panel.innerHTML = '<div class="annotate-panel-header"><strong><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><path d="M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>My notes</strong>' +
       '<button class="close-panel" type="button" aria-label="Close notes panel">×</button></div>' +
       '<div class="annotate-panel-list" id="annotate-list"></div>';
     document.body.appendChild(panel);
@@ -18053,7 +18055,7 @@ saveInputs();
         '<span class="focus-banner-title" id="focus-banner-title">—</span>' +
       '</div>' +
       '<div class="focus-banner-actions">' +
-        '<button type="button" id="focus-banner-library">📚 Switch Part</button>' +
+        '<button type="button" id="focus-banner-library"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="13.5" width="7" height="7" rx="1"/></svg>Switch Part</button>' +
         '<button type="button" id="focus-banner-exit">← All parts</button>' +
       '</div>';
 
@@ -18287,9 +18289,9 @@ saveInputs();
 
   // ============== HELP BUTTON ==============
   try {
-  document.getElementById('btn-help').addEventListener('click', () => {
-    alert('Keyboard shortcuts:\n\n  /  Focus search\n  b  Jump to Bedside-Now section\n  d  Toggle dark mode\n  j  Scroll down (one screen)\n  k  Scroll up (one screen)\n  g h  Back to top\n  g e  Jump to end\n  Enter / Shift+Enter  Next / previous search hit\n  Esc  Clear search / Close overlay\n  Click any figure to enlarge\n  Shift+click sidebar Part header to collapse');
-  });
+  // Single source of truth for the shortcuts list (shared with the "?" key handler).
+  window.__kbdHelp = 'Keyboard shortcuts:\n\n  /  Focus search\n  b  Jump to Bedside-Now section\n  d  Cycle theme (Auto / Light / Dark)\n  j  Scroll down (one screen)\n  k  Scroll up (one screen)\n  g h  Back to top\n  g e  Jump to end\n  Enter / Shift+Enter  Next / previous search hit\n  Esc  Clear search / Close overlay\n  Click any figure to enlarge\n  Shift+click sidebar Part header to collapse';
+  document.getElementById('btn-help').addEventListener('click', () => { alert(window.__kbdHelp); });
   } catch (err) { console.error('[HELP BUTTON] error:', err); }
 
 
@@ -19126,8 +19128,10 @@ document.addEventListener('click', function (e) {
     var bar = document.querySelector('.toolbar');
     if (!bar) return;
     function sync() {
-      var h = Math.round(bar.getBoundingClientRect().height);
-      if (h > 0) document.documentElement.style.setProperty('--crumb-offset', h + 'px');
+      // Toolbar height when visible (desktop); 0 when hidden (mobile, no header)
+      // so the breadcrumb sits flush at the top instead of floating mid-screen.
+      var h = (getComputedStyle(bar).display === 'none') ? 0 : Math.round(bar.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--crumb-offset', h + 'px');
     }
     sync();
     window.addEventListener('resize', sync, { passive: true });
