@@ -3095,12 +3095,12 @@ document.addEventListener('click', function (e) {
   <div class="eyebrow">Bedside Reference · Critical Care</div>
   <h1>Guide to Ventilation</h1>
   <p class="lede">Mechanical ventilation as a teaching reference, written for the people learning to manage vented patients — from the <strong>medical student</strong> on their first ICU rotation to the <strong>IM resident</strong> covering nights, the <strong>hospitalist</strong> running a stepdown, the <strong>PCCM fellow</strong> building toward independent ICU practice, and other <strong>healthcare trainees and practitioners</strong> who need a working knowledge of the vent. Physiology-first and decision-driven: the framework to walk up to a ventilator, read the screen, and pick the next change without guessing. Coverage spans physiology, mode mechanics, waveforms, disease-specific strategy, advanced concepts (driving pressure, transpulmonary pressure, mechanical power, prone, ECMO), and liberation, ending in bedside troubleshooting and cases.</p>
-  <div class="meta">Vol. I · Compiled May 2026 · Last reviewed May 2026 · Reflects ATS / ESICM / SCCM ARDS practice guideline 2024 and the Global Definition of ARDS 2023</div>
+  <div class="meta">Vol. I · Compiled May 2026 · Last reviewed June 2026 · Reflects ATS / ESICM / SCCM ARDS practice guideline 2024 and the Global Definition of ARDS 2023</div>
   <div class="hero-stats" id="hero-stats">
     <div class="stat"><span class="stat-num" id="hs-chapters">—</span><span class="stat-lbl">chapters</span></div>
     <div class="stat"><span class="stat-num" id="hs-parts">—</span><span class="stat-lbl">parts</span></div>
     <div class="stat"><span class="stat-num" id="hs-readtime">—</span><span class="stat-lbl">read time</span></div>
-    <div class="stat"><span class="stat-num">May 2026</span><span class="stat-lbl">last reviewed</span></div>
+    <div class="stat"><span class="stat-num">June 2026</span><span class="stat-lbl">last reviewed</span></div>
     <div class="stat"><span class="stat-num" id="hs-equations">—</span><span class="stat-lbl">equations</span></div>
     <div class="stat"><span class="stat-num" id="hs-figures">—</span><span class="stat-lbl">figures</span></div>
   </div>
@@ -14629,7 +14629,7 @@ document.addEventListener('click', function (e) {
      mirroring the layout's max-width and horizontal padding. -->
 <footer class="colophon" role="contentinfo">
   <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-  <div>Version 1.0 · Last reviewed May 2026</div>
+  <div>Version 1.0 · Last reviewed June 2026</div>
   <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
   <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
   <div class="foot-nav">
@@ -18817,7 +18817,7 @@ document.addEventListener('click', function (e) {
       <span class="more-offline-txt"><b id="more-offline-title">Save for offline use</b><span id="more-offline-sub">Cache the simulators so they work without signal</span></span>
     </button>
     <div class="more-foot">
-      <button type="button" id="more-about">Disclaimer · <b>v1.0 · May 2026</b></button>
+      <button type="button" id="more-about">Disclaimer · <b>v1.0 · June 2026</b></button>
     </div>
   </div>
 </div>
@@ -18837,6 +18837,29 @@ document.addEventListener('click', function (e) {
     if (readerMore) readerMore.addEventListener('click', open);
     bd.addEventListener('click', function (e) { if (e.target === bd) close(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && bd.classList.contains('show')) close(); });
+
+    // Swipe-down-to-dismiss — the grip handle implies it, so make it real.
+    var sheet = bd.querySelector('.more-sheet');
+    if (sheet) {
+      var startY = 0, dy = 0, dragging = false;
+      sheet.addEventListener('touchstart', function (e) {
+        if (!e.touches || e.touches.length !== 1) return;
+        startY = e.touches[0].clientY; dy = 0; dragging = true; sheet.style.transition = 'none';
+      }, { passive: true });
+      sheet.addEventListener('touchmove', function (e) {
+        if (!dragging) return;
+        dy = e.touches[0].clientY - startY;
+        if (dy < 0) dy = dy * 0.25;                 // resist upward pull
+        sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)';
+      }, { passive: true });
+      var endDrag = function () {
+        if (!dragging) return;
+        dragging = false; sheet.style.transition = ''; sheet.style.transform = '';
+        if (dy > 90) close();                        // past threshold -> dismiss
+      };
+      sheet.addEventListener('touchend', endDrag, { passive: true });
+      sheet.addEventListener('touchcancel', endDrag, { passive: true });
+    }
 
     // Theme segmented control -> existing setVentTheme()
     var segBtns = Array.prototype.slice.call(document.querySelectorAll('#more-theme button'));
@@ -19177,6 +19200,28 @@ document.addEventListener('click', function (e) {
     function open() { bd.style.display = 'block'; requestAnimationFrame(function () { bd.classList.add('show'); }); }
     got.addEventListener('click', dismiss);
     bd.addEventListener('click', function (e) { if (e.target === bd) dismiss(); });
+    // Swipe-down-to-dismiss (the grip handle implies it).
+    var sheet = bd.querySelector('.intro-sheet');
+    if (sheet) {
+      var startY = 0, dy = 0, dragging = false;
+      sheet.addEventListener('touchstart', function (e) {
+        if (!e.touches || e.touches.length !== 1) return;
+        startY = e.touches[0].clientY; dy = 0; dragging = true; sheet.style.transition = 'none';
+      }, { passive: true });
+      sheet.addEventListener('touchmove', function (e) {
+        if (!dragging) return;
+        dy = e.touches[0].clientY - startY;
+        if (dy < 0) dy = dy * 0.25;
+        sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)';
+      }, { passive: true });
+      var endDrag = function () {
+        if (!dragging) return;
+        dragging = false; sheet.style.transition = ''; sheet.style.transform = '';
+        if (dy > 90) dismiss();
+      };
+      sheet.addEventListener('touchend', endDrag, { passive: true });
+      sheet.addEventListener('touchcancel', endDrag, { passive: true });
+    }
     setTimeout(open, 650);
   } catch (e) {}
 })();
