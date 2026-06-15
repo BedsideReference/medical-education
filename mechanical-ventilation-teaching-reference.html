@@ -579,6 +579,29 @@
     /* Hide the keyboard-shortcuts button on mobile — no keyboard. */
     .toolbar .tb-btn#btn-help { display: none; }
   }
+  /* ---- Mobile/tablet toolbar: fit one screen width and never push the page.
+         Any overflow scrolls inside the toolbar itself, not the document. ---- */
+  @media (max-width: 920px) {
+    .toolbar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;            /* Firefox */
+      max-width: 100%;
+    }
+    .toolbar::-webkit-scrollbar { display: none; }   /* WebKit/Blink */
+    .toolbar .spacer { display: none; }              /* drop the flex:1 gap that pushed buttons off-screen */
+    .toolbar .tb-btn { flex: 0 0 auto; }             /* buttons keep size, don't get squished */
+    .toolbar input.tb-search { flex: 1 1 110px; min-width: 84px; max-width: none; }
+    /* Declutter: hide desktop/keyboard-oriented controls on small screens
+       (the quick-search palette duplicates the search box; hide-TOC is a
+       desktop reading-width toggle; expand-all and print are rarely used on
+       a phone). Reader mode, Notes, font-size, dark, Library and Bedside stay. */
+    .toolbar #btn-cmdk,
+    .toolbar #btn-toc-collapse,
+    .toolbar #btn-expand-all,
+    .toolbar #btn-print { display: none; }
+  }
   .search-hit {
     background: #ffe066; color: #000; border-radius: 2px; padding: 0 1px;
   }
@@ -2798,6 +2821,42 @@
   onload="(function(){var opts={delimiters:[{left:'$$',right:'$$',display:true},{left:'\\(',right:'\\)',display:false}],throwOnError:false,errorColor:'#cc0000',strict:'ignore'};var run=function(){try{renderMathInElement(document.body,opts);}catch(e){}};window.requestIdleCallback?requestIdleCallback(run,{timeout:1500}):setTimeout(run,1);})();"></script>
 </head>
 <body>
+<script>
+/* Robust in-page jump. content-visibility:auto makes off-screen chapter heights
+   estimates, so a native #anchor jump lands in the wrong spot. Strategy: jump
+   roughly (which renders the target), then nudge using the target's REAL
+   on-screen position until its top sits at the sticky-header offset. This is
+   independent of the height estimates of the chapters above it. */
+window.softJump = function (el) {
+  if (!el || !el.getBoundingClientRect) return;
+  var padVar = (getComputedStyle(document.documentElement).getPropertyValue('--scroll-pad-top') || '');
+  var pad = parseInt(padVar, 10); if (!pad || isNaN(pad)) pad = 110;
+  try { el.scrollIntoView(); } catch (e) {}
+  var tries = 0;
+  (function settle() {
+    var delta = el.getBoundingClientRect().top - pad;
+    if (Math.abs(delta) > 2 && tries < 60) {
+      window.scrollBy(0, delta);
+      tries++;
+      requestAnimationFrame(settle);
+    }
+  })();
+};
+/* Cross-reference (§x.y) links have the same content-visibility landing issue;
+   route them through the robust jump too. */
+document.addEventListener('click', function (e) {
+  if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  var a = e.target.closest ? e.target.closest('a.xref[href^="#"]') : null;
+  if (!a) return;
+  var href = a.getAttribute('href') || '';
+  if (href.length < 2) return;
+  var target = document.getElementById(href.slice(1));
+  if (!target || !window.softJump) return;
+  e.preventDefault();
+  if (history.pushState) { try { history.pushState(null, '', href); } catch (_) {} }
+  window.softJump(target);
+});
+</script>
 
 <div class="progress-bar"><div class="fill"></div></div>
 
@@ -15384,8 +15443,19 @@ saveInputs();
     // Close drawer when any link inside TOC is tapped (mobile only)
     toc.addEventListener('click', (e) => {
       const link = e.target.closest('a');
-      if (link && window.innerWidth <= 920) {
-        setTimeout(() => { tocCb.checked = false; }, 80);
+      if (link) {
+        const href = link.getAttribute('href') || '';
+        if (href.charAt(0) === '#' && href.length > 1 && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          const target = document.getElementById(href.slice(1));
+          if (target && window.softJump) {
+            e.preventDefault();
+            if (history.pushState) { try { history.pushState(null, '', href); } catch (_) {} }
+            window.softJump(target);
+          }
+        }
+        if (window.innerWidth <= 920) {
+          setTimeout(() => { tocCb.checked = false; }, 80);
+        }
       }
     });
     document.addEventListener('keydown', (e) => {
@@ -16576,7 +16646,7 @@ saveInputs();
       // Force scroll for matching id (since hash may already match focus)
       const id = href.replace(/^#/, '');
       const target = document.getElementById(id);
-      if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      if (target) setTimeout(() => { if (window.softJump) window.softJump(target); else target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     }
     function openPalette() {
       if (!index.length) buildIndex();
@@ -17983,7 +18053,7 @@ saveInputs();
       if (partId && opts.scroll !== false) {
         const target = document.getElementById(partId);
         if (target && target.scrollIntoView) {
-          setTimeout(() => target.scrollIntoView({behavior: 'smooth', block: 'start'}), 30);
+          setTimeout(() => { if (window.softJump) window.softJump(target); else target.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 30);
         }
       }
     }
