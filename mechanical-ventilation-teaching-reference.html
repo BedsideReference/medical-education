@@ -32,7 +32,7 @@
      scroll near the viewport. Cuts initial layout/paint cost and memory on a
      very long single-page document (prevents mobile freezes/crashes). Older
      browsers that don't support content-visibility simply render as before. */
-  @media screen {
+  @media screen and (max-width: 920px) {
     section.chap { content-visibility: auto; contain-intrinsic-size: auto 2000px; }
   }
   @media print {
@@ -2831,16 +2831,38 @@ window.softJump = function (el) {
   if (!el || !el.getBoundingClientRect) return;
   var padVar = (getComputedStyle(document.documentElement).getPropertyValue('--scroll-pad-top') || '');
   var pad = parseInt(padVar, 10); if (!pad || isNaN(pad)) pad = 110;
-  try { el.scrollIntoView(); } catch (e) {}
-  var tries = 0;
-  (function settle() {
-    var delta = el.getBoundingClientRect().top - pad;
-    if (Math.abs(delta) > 2 && tries < 60) {
-      window.scrollBy(0, delta);
-      tries++;
-      requestAnimationFrame(settle);
-    }
-  })();
+  // On mobile, content-visibility:auto gives off-screen chapters only an
+  // ESTIMATED height, so a normal jump lands in the wrong place. Briefly force
+  // the target chapter and everything ABOVE it to render real layout, do ONE
+  // exact jump, then let content-visibility resume (the now-measured chapters
+  // keep their real size, so nothing shifts afterwards). One reflow — fast and
+  // accurate. On desktop, content-visibility is off, so layout is already real
+  // and we skip the force step entirely (a plain, instant, accurate jump).
+  var cvActive = window.matchMedia && window.matchMedia('(max-width: 920px)').matches;
+  var forced = [];
+  if (cvActive) {
+    try {
+      var secs = document.querySelectorAll('section.chap');
+      var PRECEDING = 2; // Node.DOCUMENT_POSITION_PRECEDING
+      for (var i = 0; i < secs.length; i++) {
+        var sec = secs[i];
+        if (sec === el || sec.contains(el) || (el.compareDocumentPosition(sec) & PRECEDING)) {
+          sec.style.contentVisibility = 'visible';
+          forced.push(sec);
+        }
+      }
+      void document.documentElement.offsetHeight; // force synchronous layout
+    } catch (e) {}
+  }
+  var y = Math.max(0, el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0) - pad);
+  try { window.scrollTo({ top: y, behavior: cvActive ? 'auto' : 'smooth' }); }
+  catch (e) { window.scrollTo(0, y); }
+  if (forced.length) {
+    // Restore content-visibility once the jump settles (sizes are memoized → no jump-back).
+    setTimeout(function () {
+      for (var j = 0; j < forced.length; j++) forced[j].style.contentVisibility = '';
+    }, 300);
+  }
 };
 /* Cross-reference (§x.y) links have the same content-visibility landing issue;
    route them through the robust jump too. */
