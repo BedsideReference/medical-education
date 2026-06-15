@@ -3095,7 +3095,7 @@ document.addEventListener('click', function (e) {
   <div class="eyebrow">Bedside Reference · Critical Care</div>
   <h1>Guide to Ventilation</h1>
   <p class="lede">Mechanical ventilation as a teaching reference, written for the people learning to manage vented patients — from the <strong>medical student</strong> on their first ICU rotation to the <strong>IM resident</strong> covering nights, the <strong>hospitalist</strong> running a stepdown, the <strong>PCCM fellow</strong> building toward independent ICU practice, and other <strong>healthcare trainees and practitioners</strong> who need a working knowledge of the vent. Physiology-first and decision-driven: the framework to walk up to a ventilator, read the screen, and pick the next change without guessing. Coverage spans physiology, mode mechanics, waveforms, disease-specific strategy, advanced concepts (driving pressure, transpulmonary pressure, mechanical power, prone, ECMO), and liberation, ending in bedside troubleshooting and cases.</p>
-  <div class="meta">Vol. I · Compiled May 2026 · Last reviewed June 2026 · Reflects ATS / ESICM / SCCM ARDS practice guideline 2024 and the Global Definition of ARDS 2023</div>
+  <div class="meta">Vol. I · Compiled May 2026 · Last reviewed June 2026 · Reflects ATS / ESICM / SCCM ARDS practice guideline 2024 and the Global Definition of ARDS 2024</div>
   <div class="hero-stats" id="hero-stats">
     <div class="stat"><span class="stat-num" id="hs-chapters">—</span><span class="stat-lbl">chapters</span></div>
     <div class="stat"><span class="stat-num" id="hs-parts">—</span><span class="stat-lbl">parts</span></div>
@@ -3297,7 +3297,7 @@ document.addEventListener('click', function (e) {
     <li>Normal A–a gradient ≈ age/4 + 4 (room air)</li>
     <li>Normal Cstat 60–100 mL/cmH₂O; ARDS 20–40</li>
     <li>Normal ΔP ≤ 15 (target ≤ 13 in ARDS)</li>
-    <li>Mechanical power &gt; 17 J/min = harm</li>
+    <li>Mechanical power &gt; 17 J/min — associated with higher mortality (observational, not a proven causal threshold)</li>
     <li>Auto-PEEP if expiratory flow ≠ 0 at start of next breath</li>
     <li>SpO₂ 90% ≈ PaO₂ 60 (the cliff)</li>
     <li>P/F &lt; 100 = severe ARDS; &lt; 80 = ECMO consideration</li>
@@ -4120,7 +4120,7 @@ document.addEventListener('click', function (e) {
         <div class="calc-result" id="r-card-rsbi">
           <span class="lbl">RSBI — Yang-Tobin</span>
           <span class="val"><span id="r-rsbi">—</span></span>
-          <span class="formula-base">\(\text{RSBI} = RR / V_T(L)\) — target &lt; 105 for SBT readiness</span>
+          <span class="formula-base">\(\text{RSBI} = RR / V_T(L)\) — &lt; 105 supports SBT readiness (still useful, but not a required gate per AARC 2024)</span>
           <span class="formula" id="f-rsbi"></span>
           <span class="interpret" id="i-rsbi"></span>
         </div>
@@ -4275,7 +4275,7 @@ document.addEventListener('click', function (e) {
     <li><strong>Anticipated decline</strong> — flail chest, escalating sepsis, expanding intracranial process, agitated patient with worsening trajectory. Intubate proactively when the trajectory is bad, not after the patient codes.</li>
   </ol>
 
-  <div class="phys"><strong>Physiology note</strong>The PaO₂/FiO₂ ratio (P/F) is the most-used hypoxemia index because it normalizes for FiO₂. Caveat: P/F is sensitive to PEEP and barometric pressure; the SpO₂/FiO₂ ratio (S/F) is a non-invasive surrogate (S/F ≈ 0.5 × P/F + 100) used in the 2023 Global Definition of ARDS.<sup class="cite"><a href="#r1">1</a></sup></div>
+  <div class="phys"><strong>Physiology note</strong>The PaO₂/FiO₂ ratio (P/F) is the most-used hypoxemia index because it normalizes for FiO₂. Caveat: P/F is sensitive to PEEP and barometric pressure; the SpO₂/FiO₂ ratio (S/F) is a non-invasive surrogate (S/F ≈ 0.5 × P/F + 100) used in the 2024 Global Definition of ARDS.<sup class="cite"><a href="#r1">1</a></sup></div>
 
   <div class="pearl"><strong>Before you tube — NIV and HFNC are first-line for two specific phenotypes</strong>Not every patient on this list needs an endotracheal tube. <em>High-flow nasal cannula (HFNC)</em> is first-line for hypoxemic failure with preserved respiratory drive — the FLORALI trial showed a mortality benefit over standard O₂ in immunocompetent hypoxemic patients.<sup class="cite"><a href="#r41">41</a></sup> <em>Bilevel positive airway pressure (BiPAP)</em> is first-line for acute hypercapnic COPD exacerbation<sup class="cite"><a href="#r46">46</a></sup> and cardiogenic pulmonary edema.<sup class="cite"><a href="#r47">47</a></sup> The decision algorithm — when to trial NIV/HFNC and when to proceed straight to intubation — lives in <a class="xref" href="#c34" data-xref-chap="34">§34</a>. Detailed NIV/HFNC physiology and settings: <a class="xref" href="#c33" data-xref-chap="33">§33</a>.</div>
 
@@ -6262,7 +6262,7 @@ document.addEventListener('click', function (e) {
       <tr><td>GOLD 4</td><td>&lt; 30%</td><td>Very severe</td><td>Often non-rescuable from acute decompensation without prior advance-care planning; baseline HFNC/BiPAP dependence common</td></tr>
     </tbody>
   </table>
-  <p>The newer GOLD ABE assessment combines spirometry with symptoms (mMRC, CAT) and exacerbation history to guide outpatient therapy; for vent-management purposes, the FEV₁ stage is what matters because it predicts the time-constant problem (<a class="xref" href="#c6-4" data-xref-chap="6">§6.4</a>) and the wean-failure risk.</p>
+  <p>The GOLD ABE assessment combines spirometry with symptoms (mMRC, CAT) and exacerbation history to guide outpatient therapy. GOLD 2026 lowered the bar for escalation so that even a single moderate or severe exacerbation before maintenance therapy prompts treatment escalation, aiming for a "low disease-activity" state (no exacerbations). For vent-management purposes, the FEV₁ stage is what matters because it predicts the time-constant problem (<a class="xref" href="#c6-4" data-xref-chap="6">§6.4</a>) and the wean-failure risk.</p>
   </details>
 
   <details class="chap-acc" data-acc-id="c5-h4-4" open>
@@ -10126,10 +10126,10 @@ document.addEventListener('click', function (e) {
     <li><strong>V<sub>T</sub> 4–6 mL/kg PBW</strong>; lower if Pplat &gt; 30. The ARMA trial (ARDS Network low-tidal-volume study) showed 22% relative mortality reduction.<sup class="cite"><a href="#r8">8</a></sup></li>
     <li><strong>Pplat ≤ 30 cmH₂O</strong>; <strong>driving pressure ≤ 15 cmH₂O</strong>.<sup class="cite"><a href="#r5">5</a></sup></li>
     <li><strong>PEEP per FiO₂ ladder</strong> (low- vs high-PEEP table — see below). High-PEEP strategy benefits moderate-severe ARDS (P/F &lt; 200) per the LOVS (Lung Open Ventilation Study) subgroup analyses.<sup class="cite"><a href="#r9">9</a></sup></li>
-    <li><strong>Conservative oxygenation</strong>: SpO₂ 88–95%; PaO₂ 55–80.</li>
+    <li><strong>Conservative oxygenation</strong>: SpO₂ 88–95%; PaO₂ 55–80. The large 2025 oxygen-target trials (UK-ROX, <em>JAMA</em> 2025; the Mega-ROX program) found that titrating to a lower SpO₂ target is <em>safe but confers no mortality benefit</em> — so the 88% bound is a floor, not a goal; a pragmatic "safe zone" of ~ SpO₂ 92–96% (avoiding both hypoxia &lt; 88–90 and sustained hyperoxia) is reasonable.</li>
     <li><strong>Permissive hypercapnia</strong>: pH ≥ 7.20 acceptable; ↑ RR, then accept.</li>
     <li><strong>Prone position</strong> ≥ 16 h/day for P/F &lt; 150 (PROSEVA trial).<sup class="cite"><a href="#r10">10</a></sup></li>
-    <li><strong>Neuromuscular blockade (NMB)</strong> only if persistent ventilator dyssynchrony / high driving pressure despite sedation; routine NMB no longer recommended (the ROSE trial was negative).<sup class="cite"><a href="#r11">11</a></sup></li>
+    <li><strong>Neuromuscular blockade (NMB)</strong> only if persistent ventilator dyssynchrony / high driving pressure despite sedation; routine NMB for all ARDS is not recommended (the ROSE trial was negative).<sup class="cite"><a href="#r11">11</a></sup> Note the guideline bodies differ: ESICM (2023) advises against routine early NMB, while the ATS (2024) still conditionally <em>suggests</em> a short NMB course in early <em>severe</em> ARDS (weighing ACURASYS) — so reserve it for selective use rather than treating "not routine" as settled consensus.</li>
     <li><strong>Conservative fluid strategy</strong> (FACTT — Fluid and Catheter Treatment Trial) — even fluid balance once shock resolved.<sup class="cite"><a href="#r12">12</a></sup></li>
     <li><strong>Veno-venous extracorporeal membrane oxygenation (VV-ECMO)</strong> for refractory hypoxemia (P/F &lt; 80 with optimized vent + prone) at experienced centers (EOLIA trial / post-hoc Bayesian re-analysis).<sup class="cite"><a href="#r13">13</a></sup></li>
   </ol>
@@ -10301,7 +10301,7 @@ document.addEventListener('click', function (e) {
     </summary>
 
 <ul>
-    <li><strong>Corticosteroids</strong>: <em>DEXA-ARDS</em> (Villar 2020) used <strong>dexamethasone 20 mg IV daily × 5 days, then 10 mg daily × 5 days</strong> in early moderate-severe ARDS, with a mortality benefit. Older Meduri protocol: methylprednisolone 1 mg/kg/day × 14 d then taper. <em>RECOVERY</em> in COVID-ARDS: dexamethasone 6 mg PO/IV daily × up to 10 d. Reasonable in early ARDS without contraindication.</li>
+    <li><strong>Corticosteroids</strong>: <em>DEXA-ARDS</em> (Villar 2020) used <strong>dexamethasone 20 mg IV daily × 5 days, then 10 mg daily × 5 days</strong> in early moderate-severe ARDS, with a mortality benefit. Older Meduri protocol: methylprednisolone 1 mg/kg/day × 14 d then taper. <em>RECOVERY</em> in COVID-ARDS: dexamethasone 6 mg PO/IV daily × up to 10 d. The 2024 ATS ARDS guideline update issued a <em>conditional recommendation for</em> corticosteroids in ARDS (moderate certainty) — so they are guideline-endorsed, not merely optional, in early ARDS without contraindication.</li>
     <li><strong>Conservative fluids</strong>: FACTT showed more vent-free days with conservative balance after shock resolved; aim for even-to-negative balance once perfusion adequate.<sup class="cite"><a href="#r12">12</a></sup></li>
     <li><strong>Higher PEEP only when recruitable</strong>: not for everyone (ART trial cautioned against routine recruitment maneuvers).<sup class="cite"><a href="#r16">16</a></sup></li>
     <li><strong>HFOV</strong>: harm in OSCILLATE, no benefit in OSCAR; abandoned for adult ARDS.</li>
@@ -11559,7 +11559,7 @@ document.addEventListener('click', function (e) {
     </summary>
 
 <p>Proning of awake, non-intubated, hypoxemic patients moved from anecdote to mainstream during COVID-19. Effect on intubation is modest but real; effect on mortality is unclear.</p>
-  <p><strong>Best evidence.</strong> A multinational meta-trial of six concurrent RCTs (Ehrmann et al., <em>Lancet Respir Med</em> 2021; ~ 1100 patients on HFNC for COVID-related hypoxemia) showed reduced intubation with awake proning (40% vs 46%) without mortality difference; benefit concentrated in patients with P/F &lt; 200.</p>
+  <p><strong>Best evidence.</strong> A multinational meta-trial of six concurrent RCTs (Ehrmann et al., <em>Lancet Respir Med</em> 2021; ~ 1100 patients on HFNC for COVID-related hypoxemia) showed reduced intubation with awake proning (40% vs 46%) without mortality difference; benefit concentrated in patients with P/F &lt; 200. A 2025 meta-analysis (14 RCTs, &gt; 3000 patients) confirmed the reduction in intubation in COVID-19 hypoxemia; a mortality benefit remains unproven and the evidence is COVID-predominant.</p>
   <p><strong>Selection.</strong> Cooperative, hypoxemic, isolated respiratory failure, able to self-reposition. <em>Not</em> appropriate when work of breathing is high (sustained RR &gt; 30, accessory-muscle use, paradoxical breathing), when GCS is impaired, when the patient cannot communicate distress, or when intubation is otherwise indicated. Awake proning is not a delay tactic for a patient who needs the tube.</p>
   <p><strong>Dose.</strong> 1–2 h cycles, ≥ 8 h/day, broken into 4 positions (left lateral, right lateral, prone, semi-prone). Effective in roughly half of those who can tolerate it — verify with SpO<sub>2</sub> response in the first 30 min and ROX index at 2 h.</p>
   <p><strong>Monitoring.</strong> Continuous SpO<sub>2</sub>; ROX (= SpO<sub>2</sub>/FiO<sub>2</sub> / RR) at 2, 6, 12 h; reassess if SpO<sub>2</sub> falls or work of breathing rises. Discontinue and reassess for intubation at the first sign of failure — do not chase a falling SpO<sub>2</sub> with more proning.</p>
@@ -12109,7 +12109,7 @@ document.addEventListener('click', function (e) {
 <p>Post-extubation respiratory failure (within 48 h) carries 30–40% mortality and triples ICU length of stay. Two trials reshaped practice:</p>
   <ul>
     <li><strong>Hernández 2016 (HFNC vs Venturi mask)</strong>: in low-risk extubations, HFNC alone reduced reintubation 5% vs 12% — making HFNC the default low-risk post-extubation strategy.</li>
-    <li><strong>Thille 2019 (HFNC + NIV vs HFNC alone) in high-risk patients</strong>: combined HFNC during the day + intermittent BiPAP (≥ 4 h/day, especially overnight) reduced reintubation 12% vs 18% and 90-day mortality 12% vs 22%. The benefit was not seen with NIV-alone strategies.<sup class="cite"><a href="#r20">20</a></sup></li>
+    <li><strong>Thille 2019 (HFNC + NIV vs HFNC alone) in high-risk patients</strong>: combined HFNC during the day + intermittent BiPAP (≥ 4 h/day, especially overnight) reduced reintubation 12% vs 18% and 90-day mortality 12% vs 22%.<sup class="cite"><a href="#r20">20</a></sup> This combined strategy gives the clearest signal; prophylactic NIV is still favored over HFNC alone in high-risk patients in guideline framing, and Hernández 2022 found HFNC <em>non-inferior</em> to NIV in a very-high-risk mixed population — so the choice is reasonable either way rather than "NIV alone doesn't help."</li>
   </ul>
   <table>
     <caption>Post-extubation strategy by risk</caption>
@@ -12421,8 +12421,8 @@ document.addEventListener('click', function (e) {
     <li><strong>Analgesia first</strong>: most ICU agitation is pain. Treat pain (fentanyl bolus / drip) before reaching for sedation.</li>
     <li><strong>Target light sedation</strong> (RASS 0 to −2) unless specific indication for deeper. The ABC trial (Awakening + Breathing Coordination) and the SPICE-III trial confirmed: lighter is better for outcomes.<sup class="cite"><a href="#r21">21</a></sup></li>
     <li><strong>Daily sedation interruption (SAT)</strong>: pause sedation each morning. If the patient wakes up calmly → SBT. If agitated → restart at 50% prior dose.</li>
-    <li><strong>Avoid benzodiazepines</strong> as routine sedation — strong association with delirium and prolonged ventilation. Use propofol or dexmedetomidine first-line.</li>
-    <li><strong>Treat delirium nonpharmacologically first</strong>: orient, mobilize, reduce noise, restore sleep-wake cycle. Antipsychotics have weak evidence; quetiapine 25–100 mg at night is reasonable for hyperactive delirium.</li>
+    <li><strong>Avoid benzodiazepines</strong> as routine sedation — strong association with delirium and prolonged ventilation. Use propofol or dexmedetomidine first-line — though dexmedetomidine is <em>not</em> superior to propofol for mortality, delirium-free days, or time to extubation (SPICE-III 2019, MENDS2 2021, A2B 2025) and adds bradycardia/hypotension; treat it as an option, not an upgrade, with propofol a reasonable default.</li>
+    <li><strong>Treat delirium nonpharmacologically first</strong>: orient, mobilize, reduce noise, restore sleep-wake cycle. Antipsychotics do <em>not</em> improve delirium duration, survival, or cognitive outcomes (MIND-USA, <em>NEJM</em> 2018; long-term follow-up 2024) and are not recommended to treat ICU delirium per se; reserve a short course of low-dose haloperidol or quetiapine only for distressing or dangerous agitation, not as routine delirium treatment.</li>
   </ul>
   </details>
   <details class="chap-acc" data-acc-id="c35-h4-2" open>
@@ -12559,12 +12559,12 @@ document.addEventListener('click', function (e) {
   <ul>
     <li><strong>PSV trial — most common variant:</strong> PSV 5–8 cmH₂O over PEEP 5 × 30–120 min.</li>
     <li><strong>T-piece — most rigorous variant:</strong> PSV 0 + PEEP 0 (no support), usually 30 min.</li>
-    <li><strong>Both are acceptable</strong> — choose by institutional preference and patient context (PSV gentler; T-piece more closely mimics post-extubation conditions).</li>
+    <li><strong>Both are acceptable</strong> — but a large RCT (Subira et al., <em>JAMA</em> 2019) found a shorter, lighter 30-min PSV trial produced <em>higher</em> successful extubation and <em>lower</em> mortality than a 120-min T-piece trial, and the 2024 AARC SBT guideline endorses an SBT of 30–120 min performed <em>with or without</em> pressure support. PSV is a reasonable pragmatic default; T-piece is "more stringent" but not a better or more valid test.</li>
     <li><strong>Automatic tube compensation (ATC):</strong> machine offsets ETT resistance; alternative to low PSV.</li>
   </ul>
   <h5>Predictors of success</h5>
   <ul>
-    <li><strong>Rapid shallow breathing index (RSBI) &lt; 105</strong> (RR ÷ V<sub>T</sub> in liters) at 1 min into a T-piece — sensitivity 0.97, specificity 0.65 for success.<sup class="cite"><a href="#r19">19</a></sup></li>
+    <li><strong>Rapid shallow breathing index (RSBI) &lt; 105</strong> (RR ÷ V<sub>T</sub> in liters) at 1 min into a T-piece — sensitivity 0.97, specificity 0.65 for success.<sup class="cite"><a href="#r19">19</a></sup> Still widely used and a useful bedside tolerance check, but it predicts <em>SBT</em> (not extubation) failure, and the 2024 AARC guideline notes RSBI is not required to judge SBT readiness — treat it as supportive, not a mandatory gate.</li>
     <li>Negative inspiratory force (NIF, also called maximum inspiratory pressure) more negative than −20 to −25 cmH₂O.</li>
     <li>adequate V<sub>T</sub>; RR &lt; 35; pH stable; SpO₂ ≥ 90%.</li>
     <li>No agitation, diaphoresis, accessory muscle use, hemodynamic deterioration.</li>
@@ -13547,7 +13547,7 @@ document.addEventListener('click', function (e) {
       <tr><td><strong>Cuff pressure 20–30 cmH₂O</strong></td><td>Below 20 → microaspiration; above 30 → tracheal mucosal injury</td><td>Strong; check q-shift</td></tr>
       <tr><td><strong>Daily SAT + SBT</strong></td><td>Shortens ventilator duration → fewer days at risk</td><td>Strong (ABC trial); core ABCDEF</td></tr>
       <tr><td><strong>Early mobility</strong></td><td>Improves secretion clearance, prevents atelectasis</td><td>Moderate; reduces ICU days, may reduce VAP</td></tr>
-      <tr><td><strong>Oral care every 2–4 h</strong></td><td>Reduces oropharyngeal colonization</td><td>Strong for cleaning (toothbrushing, suctioning); chlorhexidine controversial after 2017 meta-analyses suggesting harm in non-cardiac-surgery populations — many centers now de-emphasize chlorhexidine and emphasize mechanical cleaning</td></tr>
+      <tr><td><strong>Oral care every 2–4 h</strong></td><td>Reduces oropharyngeal colonization</td><td>Strong for mechanical cleaning (toothbrushing, suctioning); the SHEA/IDSA 2022 Compendium recommends <em>against</em> routine oral chlorhexidine (no benefit in blinded trials; signal of harm in non-cardiac-surgery patients) — emphasize mechanical cleaning instead</td></tr>
       <tr><td><strong>Stress-ulcer + DVT prophylaxis</strong></td><td>Standard ICU bundle</td><td>Strong</td></tr>
       <tr><td><strong>Avoid unnecessary circuit changes</strong></td><td>Routine changes increase contamination, do not reduce VAP</td><td>Strong; change only when visibly soiled or malfunctioning</td></tr>
       <tr><td><strong>Closed (in-line) suction</strong></td><td>Reduces cross-contamination from open-system splash</td><td>Modest; benefit in derecruitment prevention more than VAP rate</td></tr>
@@ -14602,11 +14602,11 @@ document.addEventListener('click', function (e) {
     <li id="r41">Frat JP, Thille AW, Mercat A, et al. High-flow oxygen through nasal cannula in acute hypoxemic respiratory failure (FLORALI). <em>N Engl J Med</em>. 2015;372(23):2185-2196.</li>
     <li id="r42">Aubier M, Murciano D, Milic-Emili J, et al. Effects of the administration of O₂ on ventilation and blood gases in patients with chronic obstructive pulmonary disease during acute respiratory failure. <em>Am Rev Respir Dis</em>. 1980;122(5):747-754. (Demonstrates V/Q redistribution as the dominant mechanism of oxygen-induced hypercapnia in COPD, not “loss of hypoxic drive.”)</li>
     <li id="r43">Mellemgaard K. The alveolar-arterial oxygen difference: its size and components in normal man. <em>Acta Physiol Scand</em>. 1966;67(1):10-20. (Original derivation of the age-adjusted normal A-a gradient.)</li>
-    <li id="r44">Dankiewicz J, Cronberg T, Lilja G, et al. Hypothermia versus normothermia after out-of-hospital cardiac arrest (TTM2). <em>N Engl J Med</em>. 2021;384(24):2283-2294. (Established targeted normothermia 36–37.5 °C as the current standard, retiring routine 33 °C hypothermia.)</li>
+    <li id="r44">Dankiewicz J, Cronberg T, Lilja G, et al. Hypothermia versus normothermia after out-of-hospital cardiac arrest (TTM2). <em>N Engl J Med</em>. 2021;384(24):2283-2294. (Established targeted normothermia 36–37.5 °C as the current standard, retiring routine 33 °C hypothermia. Reaffirmed by the AHA 2023 ACLS focused update and ILCOR 2024: actively prevent fever, target ≤ 37.5 °C; guideline-endorsed range 32–37.5 °C.)</li>
     <li id="r45">Berggren SM. The oxygen deficit of arterial blood caused by non-ventilating parts of the lung. <em>Acta Physiol Scand</em>. 1942;4(Suppl 11):1-92. (Original derivation of the shunt equation; standard citation in physiology textbooks.)</li>
     <li id="r46">Plant PK, Owen JL, Elliott MW. Early use of non-invasive ventilation for acute exacerbations of chronic obstructive pulmonary disease on general respiratory wards: a multicentre randomised controlled trial. <em>Lancet</em>. 2000;355(9219):1931-1935. (Established NIV / BiPAP as first-line for acute hypercapnic COPD exacerbation.)</li>
     <li id="r47">Masip J, Roque M, Sánchez B, et al. Noninvasive ventilation in acute cardiogenic pulmonary edema: systematic review and meta-analysis. <em>JAMA</em>. 2005;294(24):3124-3130. (Established NIV / CPAP as first-line for acute cardiogenic pulmonary edema.)</li>
-    <li id="r48">Vogelmeier CF, Criner GJ, Martinez FJ, et al. Global Strategy for the Diagnosis, Management, and Prevention of Chronic Obstructive Lung Disease 2023 Report: GOLD Executive Summary. <em>Eur Respir J</em>. 2023;61(4):2300239. (Current GOLD severity staging for COPD.)</li>
+    <li id="r48">Global Initiative for Chronic Obstructive Lung Disease. Global Strategy for the Prevention, Diagnosis and Management of COPD: 2026 Report. goldcopd.org; 2025. (Current GOLD spirometric staging and ABE assessment; the 2026 revision lowered the exacerbation threshold for treatment escalation. Earlier basis: Vogelmeier et al., <em>Eur Respir J</em>. 2023;61(4):2300239.)</li>
     <li id="r49">Devlin JW, Skrobik Y, Gélinas C, et al. Clinical Practice Guidelines for the Prevention and Management of Pain, Agitation/Sedation, Delirium, Immobility, and Sleep Disruption in Adult Patients in the ICU (PADIS). <em>Crit Care Med</em>. 2018;46(9):e825-e873.</li>
     <li id="r50">Tassaux D, Gainnier M, Battisti A, Jolliet P. Impact of expiratory trigger setting on delayed cycling and inspiratory muscle workload. <em>Am J Respir Crit Care Med</em>. 2005;172(10):1283-1289.</li>
     <li id="r51">Esteban A, Alía I, Gordo F, et al. Prospective randomized trial comparing pressure-controlled ventilation and volume-controlled ventilation in ARDS. <em>Chest</em>. 2000;117(6):1690-1696.</li>
