@@ -6,7 +6,7 @@
   <title>Ventilator Waveform Engine</title>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { margin: 0; }
@@ -53,6 +53,7 @@
     });
   </script>
   <script type="text/babel" data-presets="react">
+/* @jsxRuntime classic */
     // React hooks pulled from global React
     const { useState, useRef, useEffect } = React;
     // ===== ENGINE =====
@@ -427,7 +428,7 @@ function applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff) {
         const stackedFlow = (drivingP / Reff) * Math.exp(-stackT / tau) * 0.85;
         flow = stackedFlow;
         // Add to volume already exhaled — clinically this is breath stacking
-        sim.volume += Ceff * drivingP * (1 - Math.exp(-stackT / tau)) * 0.85 * (sim.cycleT < dt * 2 ? 1 : 0);
+        sim.volume += Ceff * drivingP * (1 - Math.exp(-stackT / tau)) * 0.85 * (sim.cycleT < 0.02 ? 1 : 0);
         pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
       }
       break;
