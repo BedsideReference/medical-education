@@ -341,6 +341,26 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   }
   p { margin: 8px 0; }
   ul, ol { padding-left: 22px; }
+
+  /* ===== Text-wrapping quality (progressive enhancement) =====
+     The document set no text-wrap rule, so headings and short titles wrapped
+     naively — frequently dropping a single lone word onto the last line, which
+     reads as a broken title. `balance` evens the lines of headings/titles;
+     `pretty` improves last-line orphans in body prose. Unsupported browsers
+     ignore both and render exactly as before. `overflow-wrap: break-word` is a
+     safety net so an over-long token (URL, long formula) can never spill out
+     of its box on a narrow screen. */
+  h1, h2, h3, h4, h5, h6,
+  summary, .bn-entry-title, .bn-cat-head h3, .lib-card-title,
+  .cap b:first-child, figcaption, .focus-banner-title {
+    text-wrap: balance;
+  }
+  p, li, dd, blockquote, caption,
+  .corrected, .bn-entry-body, .cap, .phys, .pitfall, .pearl, .note, .misconception,
+  td, th {
+    text-wrap: pretty;
+    overflow-wrap: break-word;
+  }
   ul li, ol li { margin: 3px 0; }
   code, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; background: #f1f3f6; padding: 1px 5px; border-radius: 3px; }
   table { border-collapse: collapse; width: 100%; background: var(--surface); margin: 12px 0; font-size: 14px; }
@@ -367,7 +387,7 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
       min-width: 7em;
     }
   }
-  .pearl, .pitfall, .note, .phys {
+  .pearl, .pitfall, .note, .phys, .misconception {
     border-left: 3px solid var(--accent); background: var(--accent-soft);
     padding: 10px 14px; margin: 12px 0; border-radius: 0 6px 6px 0;
     font-size: 14.5px;
@@ -727,6 +747,16 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     align-items: center; justify-content: center;
   }
   .lightbox #lb-svg-host svg { max-width: 90vw; max-height: 88vh; height: auto; }
+  /* Table lightbox: the whole table is scaled (via JS transform) to fit the
+     viewport so it's fully visible without scrolling. */
+  .lb-table-scale {
+    background: #ffffff; color: #1a1f2b;
+    border-radius: 10px; padding: 22px 26px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.35);
+    transform-origin: center center;
+    cursor: zoom-out;
+  }
+  .lb-table-scale table { margin: 0; background: #ffffff; }
   .lightbox .lb-close {
     position: absolute; top: 12px; right: 16px;
     background: rgba(255,255,255,0.1); color: #fff; border: none;
@@ -1043,6 +1073,17 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .bn-sev-red { background: var(--danger); box-shadow: 0 0 0 3px var(--danger-soft); }
   .bn-sev-amber { background: var(--warn); box-shadow: 0 0 0 3px var(--warn-soft); }
   .bn-sev-blue { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  /* Legend explaining what the severity dots mean. */
+  .bn-legend {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    align-items: center; margin: 2px 0 14px;
+    padding: 9px 13px; border: 1px solid var(--rule); border-radius: 8px;
+    background: var(--surface); font-size: 12.5px; color: var(--ink-soft);
+  }
+  .bn-legend-item { display: inline-flex; align-items: center; gap: 7px; line-height: 1.35; }
+  .bn-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .bn-legend-dot.bn-sev-red, .bn-legend-dot.bn-sev-amber, .bn-legend-dot.bn-sev-blue { margin: 0; }
+  .bn-legend b { color: var(--ink); font-weight: 600; }
   .bn-entry-title {
     font-weight: 600; font-size: 14.5px; color: var(--ink); margin: 0 0 3px;
   }
@@ -1526,6 +1567,11 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   }
   .cmdk-item .cmdk-title { color: var(--ink); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .cmdk-item .cmdk-meta { color: var(--muted); font-size: 11px; flex-shrink: 0; }
+  /* Full-text ("In the text") results: stack the snippet under the title so the
+     matched prose wraps instead of being clipped to one ellipsised line. */
+  .cmdk-item.is-text { flex-wrap: wrap; align-items: baseline; }
+  .cmdk-item.is-text .cmdk-title { flex: 1 1 auto; white-space: normal; overflow: visible; }
+  .cmdk-item.is-text .cmdk-meta { flex: 1 1 100%; white-space: normal; line-height: 1.45; margin-left: 60px; }
   .cmdk-item:hover, .cmdk-item.selected {
     background: var(--accent-soft);
     border-left-color: var(--accent);
@@ -2689,19 +2735,25 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .cheat-tab-panel { margin: 8px 0 4px; }
   .cheat-tab-panel[hidden] { display: none; }
 
-  /* Two-column layout on wide viewports — F */
+  /* Two-column layout on wide viewports — F.
+     Uses CSS grid (not multi-column). CSS columns let a wide child (a table
+     that won't shrink) overflow its column box and visually overlap the next
+     column — the "columns combine/overlap" bug on narrower wide screens. Grid
+     tracks clip independently, so cards can never overlap; min-width:0 lets a
+     wide table shrink/scroll inside its own cell instead of spilling over. */
   @media (min-width: 1024px) {
     .cheat-tab-panel {
-      column-count: 2;
-      column-gap: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 18px;
+      align-items: start;
     }
     .cheat-tab-panel > .cheat-acc {
-      break-inside: avoid;
-      -webkit-column-break-inside: avoid;
-      page-break-inside: avoid;
-      display: inline-block;
       width: 100%;
+      min-width: 0;          /* allow content to shrink rather than overflow */
     }
+    .cheat-tab-panel > .cheat-acc .cheat-body { min-width: 0; }
+    .cheat-tab-panel > .cheat-acc table { display: block; overflow-x: auto; }
   }
 
   /* Calculator section gets a slim intro lead */
@@ -2992,7 +3044,7 @@ document.addEventListener('click', function (e) {
   <button class="lb-close" id="lb-close" aria-label="Close">×</button>
   <img id="lb-img" alt=""/>
   <div id="lb-svg-host" style="display:none; max-width:95vw; max-height:95vh;"></div>
-  <div id="lb-table-host" style="display:none; width:95vw; max-width:1400px; max-height:95vh; overflow:auto; background:#fff; border-radius:8px; padding:24px 28px; box-shadow:0 4px 32px rgba(0,0,0,0.4);"></div>
+  <div id="lb-table-host" style="display:none; align-items:center; justify-content:center; width:96vw; height:94vh; overflow:visible; cursor:zoom-out;"></div>
 </div>
 
 <div class="lib-overlay" id="lib-overlay" role="dialog" aria-modal="true" aria-label="Library — pick a Part">
@@ -3260,7 +3312,7 @@ document.addEventListener('click', function (e) {
 
 <main>
 
-<section class="chap" id="cheatsheet">
+<section class="chap collapsed" id="cheatsheet">
   <h3><span class="num">★</span>Bedside cheat sheet</h3>
   <p class="lead">The short version: everything you need to remember on rounds, condensed onto one page. Use this as your at-a-glance reference; depth lives in the chapters below.</p>
 
@@ -3271,8 +3323,8 @@ document.addEventListener('click', function (e) {
   </div>
 
   <div class="cheat-tab-panel" data-tab="setup" role="tabpanel" aria-label="Setup &amp; monitoring">
-      <details class="cheat-acc" open>
-        <summary>★ Initial settings by phenotype (default)</summary>
+      <details class="cheat-acc">
+        <summary>★ Initial settings by phenotype</summary>
         <div class="cheat-body">
 
   <table>
@@ -3345,7 +3397,7 @@ document.addEventListener('click', function (e) {
   </div>
 
   <div class="cheat-tab-panel" data-tab="emerg" role="tabpanel" aria-label="Emergencies &amp; drugs" hidden>
-      <details class="cheat-acc" open>
+      <details class="cheat-acc">
         <summary>★ Sudden deterioration on the vent — DOPES then DOTTS</summary>
         <div class="cheat-body">
 
@@ -3381,7 +3433,7 @@ document.addEventListener('click', function (e) {
   </div>
 
   <div class="cheat-tab-panel" data-tab="decide" role="tabpanel" aria-label="Decisions" hidden>
-      <details class="cheat-acc" open>
+      <details class="cheat-acc">
         <summary>★ Decision algorithm 1: NIV vs intubate?</summary>
         <div class="cheat-body">
 
@@ -3466,7 +3518,7 @@ document.addEventListener('click', function (e) {
   </div>
 </section>
 
-<section class="chap" id="bedside-now">
+<section class="chap collapsed" id="bedside-now">
   <h3><span class="num"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.1em" aria-hidden="true"><path d="M3 12h3.5l2.2-6.5 4 13 2.3-6.5H21"/></svg></span>Bedside-Now</h3>
   <p class="lead">A triage index over the teaching chapters &mdash; organized by what&rsquo;s happening to the patient, not by topic. Find the alarm, symptom, situation, or procedure; jump into the chapter that solves it. Designed for &lt; 60-second lookup at a vent that&rsquo;s alarming. Not a substitute for the chapters themselves &mdash; the chapters teach the physiology you need to reason from when this index isn&rsquo;t enough.</p>
 
@@ -3480,6 +3532,11 @@ document.addEventListener('click', function (e) {
     <div class="bn-filter-chip" data-cat="waveforms">Waveforms</div>
     <div class="bn-filter-chip" data-cat="procedures">Procedures</div>
     <div class="bn-filter-chip" data-cat="situations">Situations</div>
+  </div>
+  <div class="bn-legend" aria-label="What the dot colors mean">
+    <span class="bn-legend-item"><span class="bn-legend-dot bn-sev-red"></span><span><b>Red</b> — act now: life-threatening, or a major high-stakes step</span></span>
+    <span class="bn-legend-item"><span class="bn-legend-dot bn-sev-amber"></span><span><b>Amber</b> — urgent: assess and treat promptly</span></span>
+    <span class="bn-legend-item"><span class="bn-legend-dot bn-sev-blue"></span><span><b>Blue</b> — reference: waveform patterns &amp; special situations</span></span>
   </div>
   <div class="bn-body" id="bn-body">
 <section class="bn-cat" data-cat="alarms">
@@ -3578,6 +3635,26 @@ document.addEventListener('click', function (e) {
       </div>
 
       <div class="bn-entry">
+        <span class="bn-sev bn-sev-red"></span>
+        <div>
+          <div class="bn-entry-title">Hypotension after intubation or after raising PEEP</div>
+          <div class="bn-entry-body">Most common: induction drug + loss of sympathetic tone + positive-pressure preload drop. Pre-existing volume status sets the magnitude. Fluids + vasopressor; don&rsquo;t reflexively undo PEEP unless RV failure.
+            <div class="bn-jumps"><a href="#c34-5">§34.5 Post-intubation hypotension</a><a href="#c27-5">§27.5 Hemodynamic price of PEEP</a><a href="#c25-3">§25.3 RV-led shock</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bn-entry">
+        <span class="bn-sev bn-sev-red"></span>
+        <div>
+          <div class="bn-entry-title">New oliguria + rising airway pressures (abdominal compartment)</div>
+          <div class="bn-entry-body">Intra-abdominal hypertension transmits to the chest, drops compliance, drives up P<sub>plat</sub> without a primary lung problem. Bladder pressure check.
+            <div class="bn-jumps"><a href="#c16-1">§16.1 PIP / P_plat / driving pressure</a><a href="#c24-1">§24.1 Obesity</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bn-entry">
         <span class="bn-sev bn-sev-amber"></span>
         <div>
           <div class="bn-entry-title">Rising CO<sub>2</sub> despite &ldquo;adequate&rdquo; minute ventilation</div>
@@ -3586,16 +3663,6 @@ document.addEventListener('click', function (e) {
             <div class="bn-branch"><span class="bn-label">Auto-PEEP &rarr;</span> effective V<sub>T</sub> &lt; set V<sub>T</sub>; raising RR makes it worse.</div>
             <div class="bn-branch"><span class="bn-label">Hypermetabolic &rarr;</span> sepsis, fever, shivering &mdash; production up.</div>
             <div class="bn-jumps"><a href="#c4-1">§4.1 Dead-space, alveolar ventilation, PaCO_2</a><a href="#c17-1">§17.1 Detect auto-PEEP</a><a href="#c25-1">§25.1 PVR curve</a></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bn-entry">
-        <span class="bn-sev bn-sev-red"></span>
-        <div>
-          <div class="bn-entry-title">Hypotension after intubation or after raising PEEP</div>
-          <div class="bn-entry-body">Most common: induction drug + loss of sympathetic tone + positive-pressure preload drop. Pre-existing volume status sets the magnitude. Fluids + vasopressor; don&rsquo;t reflexively undo PEEP unless RV failure.
-            <div class="bn-jumps"><a href="#c34-5">§34.5 Post-intubation hypotension</a><a href="#c27-5">§27.5 Hemodynamic price of PEEP</a><a href="#c25-3">§25.3 RV-led shock</a></div>
           </div>
         </div>
       </div>
@@ -3626,16 +3693,6 @@ document.addEventListener('click', function (e) {
           <div class="bn-entry-title">New right-heart strain on echo / hypotension + clear lungs + hypoxia</div>
           <div class="bn-entry-body">PE until proven otherwise. PEEP minimization, inotrope/pressor strategy that supports RV (norepi, vasopressin), avoid hypoxic vasoconstriction.
             <div class="bn-jumps"><a href="#c25-3">§25.3 The hemodynamic catastrophe — RV-led shock</a><a href="#c25-2">§25.2 RV-protective vent setup</a></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bn-entry">
-        <span class="bn-sev bn-sev-red"></span>
-        <div>
-          <div class="bn-entry-title">New oliguria + rising airway pressures (abdominal compartment)</div>
-          <div class="bn-entry-body">Intra-abdominal hypertension transmits to the chest, drops compliance, drives up P<sub>plat</sub> without a primary lung problem. Bladder pressure check.
-            <div class="bn-jumps"><a href="#c16-1">§16.1 PIP / P_plat / driving pressure</a><a href="#c24-1">§24.1 Obesity</a></div>
           </div>
         </div>
       </div>
@@ -3925,7 +3982,7 @@ document.addEventListener('click', function (e) {
   </div>
 </section>
 
-<section class="chap" id="calc-tools">
+<section class="chap collapsed" id="calc-tools">
   <h3><span class="num">∑</span>Bedside calculator</h3>
   <p class="lead">Threshold-coded outputs, lung-protective bundle status, ARDSnet PEEP/FiO₂ ladder, dead-space and oxygen-delivery calculations, transpulmonary pressure, and saveable snapshots — at the bedside or on rounds. Also available as a sticky ∑ button (bottom-right of every page) and as a <a href="https://bedsidereference.github.io/medical-education/bedside-calculator.html">standalone page</a>.</p>
 
@@ -5908,6 +5965,12 @@ document.addEventListener('click', function (e) {
           t.setAttribute('font-size', spec.label.length > 2 ? '6.5' : '7.5'); t.setAttribute('font-weight', '600');
           t.setAttribute('font-family', 'inherit'); t.setAttribute('fill', spec.labelColor); t.setAttribute('y', '0.5');
           t.textContent = spec.label;
+          // Position at the start point with zero opacity BEFORE inserting it.
+          // Without this, the freshly-created <g> paints at the SVG origin
+          // (translate 0,0 — the top-left corner) at full opacity for one frame
+          // until the first tick moves it, producing a blink in the top-left.
+          g.setAttribute('transform', 'translate(' + fromX + ', ' + fromY + ')');
+          g.setAttribute('opacity', '0');
           g.appendChild(shape); g.appendChild(t); particleLayer.appendChild(g);
           particles.push({ el: g, fromX, fromY, toX, toY, controlY: controlY ?? (fromY + toY) / 2, duration, elapsed: 0 });
         }
@@ -14778,21 +14841,26 @@ document.addEventListener('click', function (e) {
 
   // ============== EXPAND / COLLAPSE CHAPTERS ==============
   try {
+  // The overview sections (cheatsheet, bedside-now, calc-tools) are authored
+  // with class="collapsed" in the HTML so they paint collapsed on the very
+  // first frame — adding the class here in JS instead caused a visible flash
+  // where the section opened then snapped shut on every refresh. Other chapters
+  // are authored expanded. Here we only apply an explicit stored preference
+  // (store '1' collapsed / '0' expanded); with no preference, the authored
+  // default stands.
   document.querySelectorAll('section.chap').forEach(sec => {
     const h3 = sec.querySelector(':scope > h3');
     if (!h3) return;
     const id = sec.id;
-    // Restore state
-    if (id && localStorage.getItem('mv-collapsed-' + id) === '1') {
-      sec.classList.add('collapsed');
-    }
+    const stored = id ? localStorage.getItem('mv-collapsed-' + id) : null;
+    if (stored === '1') sec.classList.add('collapsed');
+    else if (stored === '0') sec.classList.remove('collapsed');
     h3.addEventListener('click', (e) => {
       // Don't collapse when user clicks the anchor-link (#)
       if (e.target.classList.contains('anchor-link')) return;
       sec.classList.toggle('collapsed');
       if (id) {
-        if (sec.classList.contains('collapsed')) localStorage.setItem('mv-collapsed-' + id, '1');
-        else localStorage.removeItem('mv-collapsed-' + id);
+        localStorage.setItem('mv-collapsed-' + id, sec.classList.contains('collapsed') ? '1' : '0');
       }
     });
   });
@@ -15697,15 +15765,31 @@ saveInputs();
     const clone = srcTable.cloneNode(true);
     if (clone.removeAttribute) clone.removeAttribute('id');
     clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
-    // Bigger, more readable typography in the lightbox
+    // Natural width so we can measure the table's real size, then scale the
+    // whole thing to fit the viewport — the table opens fully visible with no
+    // scrolling. Readers who want detail can pinch / Ctrl-+ to zoom.
     clone.style.fontSize = '15px';
     clone.style.lineHeight = '1.5';
-    clone.style.width = '100%';
+    clone.style.width = 'auto';
+    clone.style.margin = '0';
+    const card = document.createElement('div');
+    card.className = 'lb-table-scale';
+    card.appendChild(clone);
     lbTableHost.innerHTML = '';
-    lbTableHost.appendChild(clone);
-    lbTableHost.style.display = 'block';
+    lbTableHost.appendChild(card);
+    lbTableHost.style.display = 'flex';
     lb.classList.add('show');
     document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => {
+      const availW = window.innerWidth * 0.95 - 8;
+      const availH = window.innerHeight * 0.92 - 8;
+      const r = card.getBoundingClientRect();
+      const natW = r.width || card.scrollWidth;
+      const natH = r.height || card.scrollHeight;
+      let scale = Math.min(1, availW / natW, availH / natH);
+      if (!isFinite(scale) || scale <= 0) scale = 1;
+      card.style.transform = 'scale(' + scale + ')';
+    });
   }
   // Helper: mark a .figure container as zoomable so the "click to expand"
   // badge only shows on figures where the lightbox is actually wired.
@@ -15713,26 +15797,32 @@ saveInputs();
     const fig = el.closest('.figure');
     if (fig) fig.classList.add('figure-zoomable');
   }
-  // Attach to <img> figures
-  document.querySelectorAll('.figure img').forEach(img => {
-    img.style.cursor = 'zoom-in';
-    img.addEventListener('click', () => showLbImage(img));
-    markFigureZoomable(img);
-  });
-  // Attach to ALL inline SVG figures (animated or static). The earlier
-  // version was limited to `.anim-fig`, which left ~7 static SVG figures
-  // un-zoomable. Skip SVGs inside interactive widgets / calculators / iframes
-  // where clicks already have a meaning — those figures keep no badge.
-  document.querySelectorAll('.figure svg, svg.anim-fig').forEach(svg => {
-    if (svg.closest('.calc, .if-controls, .if-stats, .interactive-fig, nav, button, .toolbar')) return;
-    svg.style.cursor = 'zoom-in';
-    svg.addEventListener('click', (e) => {
-      // Don't intercept clicks on interactive sub-elements inside the figure
-      // (e.g., <a> xrefs, <button>s embedded in flowchart nodes).
+  // Wire the WHOLE figure as one click target — not just the bare <img>/<svg>.
+  // Previously the handler sat only on the image, so the "click to expand"
+  // badge, the caption, and the padding around the artwork were dead zones:
+  // clicking the label did nothing, which is exactly what it promised to do.
+  // Attaching to the .figure container makes the entire card (badge included)
+  // open the lightbox. Figures inside interactive widgets/calculators are
+  // skipped (clicks there already mean something), so they get no badge.
+  document.querySelectorAll('.figure').forEach(fig => {
+    if (fig.closest('.calc, .if-controls, .if-stats, .interactive-fig, nav, .toolbar')) return;
+    const img = fig.querySelector('img');
+    const svg = fig.querySelector('svg');
+    let action = null;
+    if (img) {
+      action = () => showLbImage(img);
+    } else if (svg && !svg.closest('.calc, .if-controls, .if-stats, .interactive-fig, nav, button, .toolbar')) {
+      action = () => showLbSvg(svg);
+    }
+    if (!action) return;
+    fig.style.cursor = 'zoom-in';
+    fig.classList.add('figure-zoomable');
+    fig.addEventListener('click', (e) => {
+      // Don't intercept clicks on interactive sub-elements (xref links,
+      // embedded buttons in flowchart nodes, caption links).
       if (e.target.closest('a, button, input, label, select, textarea')) return;
-      showLbSvg(svg);
+      action();
     });
-    markFigureZoomable(svg);
   });
   // Attach to tables — click to enlarge in lightbox. Skip tiny tables
   // (< 3 rows) and tables inside interactive widgets / calculators where
@@ -16670,6 +16760,7 @@ saveInputs();
     const input = document.getElementById('cmdk-input');
     const results = document.getElementById('cmdk-results');
     let index = [];
+    let contentIndex = [];   // full-text body index (subsection / chapter level)
     let selectedIdx = 0;
 
     // Build a flat searchable index: chapters, subsections, drugs, abbreviations.
@@ -16719,6 +16810,27 @@ saveInputs();
           }
         });
       });
+      // Full-text body index — so the palette searches the actual prose, not
+      // just titles. Indexed at subsection granularity where the chapter uses
+      // accordions; otherwise the whole chapter is one entry. Each entry keeps
+      // its text so render() can match anywhere and show a snippet.
+      document.querySelectorAll('section.chap[id]').forEach(chap => {
+        const accs = chap.querySelectorAll(':scope > details.chap-acc');
+        if (accs.length) {
+          accs.forEach(acc => {
+            const h = acc.querySelector(':scope > summary h4, :scope > summary h5, :scope > summary h3, h4[id], h5[id]');
+            const id = h && h.id ? h.id : chap.id;
+            const title = h ? cleanHeadingText(h) : cleanHeadingText(chap.querySelector(':scope > h3'));
+            const text = (acc.textContent || '').replace(/\s+/g, ' ').trim();
+            if (text) contentIndex.push({ title, target: '#' + id, text });
+          });
+        } else {
+          const h3 = chap.querySelector(':scope > h3');
+          const title = h3 ? cleanHeadingText(h3) : (chap.id || '');
+          const text = (chap.textContent || '').replace(/\s+/g, ' ').trim();
+          if (text) contentIndex.push({ title, target: '#' + chap.id, text });
+        }
+      });
     }
     function fuzzyMatch(query, text) {
       if (!query) return 0;
@@ -16731,13 +16843,33 @@ saveInputs();
     }
     function render(query) {
       results.innerHTML = '';
-      const items = !query
+      let items = !query
         ? index.filter(it => it.kind === 'Chapter')        // All chapters, scroll to see them
         : index
             .map(it => ({ ...it, _score: fuzzyMatch(query, it.title) }))
             .filter(it => it._score >= 0)
             .sort((a, b) => a._score - b._score)
             .slice(0, 60);                                  // Up to 60 matches, scroll for more
+      // Full-text body matches — search the prose, not just titles. Skip
+      // entries already surfaced by a title match so we don't double-list.
+      if (query && query.length >= 2) {
+        const q = query.toLowerCase();
+        const seen = new Set(items.map(it => it.target));
+        const textHits = [];
+        for (const c of contentIndex) {
+          if (seen.has(c.target)) continue;
+          const lo = c.text.toLowerCase();
+          const ti = lo.indexOf(q);
+          if (ti < 0) continue;
+          const start = Math.max(0, ti - 32);
+          const end = Math.min(c.text.length, ti + q.length + 70);
+          const snip = (start > 0 ? '…' : '') + c.text.slice(start, end) + (end < c.text.length ? '…' : '');
+          textHits.push({ kind: 'Text', title: c.title, target: c.target, meta: snip, _score: ti });
+          seen.add(c.target);
+        }
+        textHits.sort((a, b) => a._score - b._score);
+        items = items.concat(textHits.slice(0, 50));
+      }
       if (!items.length) {
         results.innerHTML = '<div class="cmdk-empty">No matches for "' + query + '"</div>';
         return;
@@ -16745,18 +16877,21 @@ saveInputs();
       // Group by kind
       const groups = {};
       items.forEach(it => { (groups[it.kind] = groups[it.kind] || []).push(it); });
-      let order = ['Chapter','Section','Drug','Abbr'];
+      const order = ['Chapter','Section','Text','Drug','Abbr'];
+      const headLabel = { Chapter: 'Chapters', Section: 'Sections', Text: 'In the text', Drug: 'Drugs', Abbr: 'Abbreviations' };
+      const kindLabel = { Chapter: 'Chapter', Section: 'Section', Text: 'Text', Drug: 'Drug', Abbr: 'Abbr' };
       let html = '';
       let flatIdx = 0;
       order.forEach(kind => {
         if (!groups[kind] || !groups[kind].length) return;
-        html += '<div class="cmdk-section-head">' + kind + 's</div>';
+        html += '<div class="cmdk-section-head">' + headLabel[kind] + '</div>';
         groups[kind].forEach(it => {
           const meta = it.parent ? it.parent : (it.meta || '');
-          html += '<div class="cmdk-item' + (flatIdx === selectedIdx ? ' selected' : '') + '" data-target="' + it.target + '" data-idx="' + flatIdx + '">' +
-            '<span class="cmdk-kind">' + kind + '</span>' +
+          const metaMax = kind === 'Text' ? 120 : 50;
+          html += '<div class="cmdk-item' + (kind === 'Text' ? ' is-text' : '') + (flatIdx === selectedIdx ? ' selected' : '') + '" data-target="' + it.target + '" data-idx="' + flatIdx + '">' +
+            '<span class="cmdk-kind">' + kindLabel[kind] + '</span>' +
             '<span class="cmdk-title">' + it.title.replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' +
-            (meta ? '<span class="cmdk-meta">' + meta.slice(0, 50).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' : '') +
+            (meta ? '<span class="cmdk-meta">' + meta.slice(0, metaMax).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c])) + '</span>' : '') +
             '</div>';
           flatIdx += 1;
         });
@@ -17694,12 +17829,30 @@ saveInputs();
     if (searchNext) searchNext.hidden = false;
   }
 
+  // Scroll the active hit just below the sticky header. The in-page search /
+  // arrows only exist at desktop widths, where layout is stable (no
+  // content-visibility), so ONE computed scroll lands accurately. An earlier
+  // version added a timed "re-nudge" (an instant scroll 350 ms later); when the
+  // smooth scroll hadn't finished yet — distance-dependent, hence intermittent —
+  // that correction fired mid-flight and yanked the page. Removed: a single
+  // scroll, with any in-flight one effectively superseded by the next click.
+  function scrollToHit(el) {
+    if (!el) return;
+    // Open any collapsed wrapper the hit sits in so it's actually on-screen.
+    try { let d = el.closest('details'); while (d) { if (!d.open) d.open = true; d = d.parentElement && d.parentElement.closest('details'); } } catch (e) {}
+    const pad = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scroll-pad-top')) || 110;
+    const offset = Math.max(pad + 8, Math.round(window.innerHeight * 0.30));
+    const rect = el.getBoundingClientRect();
+    const y = (window.pageYOffset || document.documentElement.scrollTop || 0) + rect.top - offset;
+    try { window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' }); } catch (e) { window.scrollTo(0, Math.max(0, y)); }
+  }
+
   function gotoHit(idx) {
     if (!searchHits.length) return;
     if (activeHitIdx >= 0 && searchHits[activeHitIdx]) searchHits[activeHitIdx].classList.remove('active');
     activeHitIdx = ((idx % searchHits.length) + searchHits.length) % searchHits.length;
     searchHits[activeHitIdx].classList.add('active');
-    searchHits[activeHitIdx].scrollIntoView({behavior:'smooth', block:'center'});
+    scrollToHit(searchHits[activeHitIdx]);
     updateSearchUI();
   }
 
@@ -17769,7 +17922,7 @@ saveInputs();
     if (searchHits.length) {
       activeHitIdx = 0;
       searchHits[0].classList.add('active');
-      searchHits[0].scrollIntoView({behavior:'smooth', block:'center'});
+      scrollToHit(searchHits[0]);
       updateSearchUI();
     } else {
       searchResult.textContent = 'no matches';
@@ -17791,8 +17944,12 @@ saveInputs();
       searchInput.blur();
     }
   });
-  if (searchNext) searchNext.addEventListener('click', () => { gotoHit(activeHitIdx + 1); searchInput.focus(); });
-  if (searchPrev) searchPrev.addEventListener('click', () => { gotoHit(activeHitIdx - 1); searchInput.focus(); });
+  // preventScroll is essential: the search box lives in a position:sticky
+  // toolbar whose layout position is at the very top of the document, so a
+  // plain focus() scrolls the page back to the top — which is exactly why the
+  // arrows appeared to "just scroll up" while Enter (no re-focus) worked.
+  if (searchNext) searchNext.addEventListener('click', () => { gotoHit(activeHitIdx + 1); searchInput.focus({ preventScroll: true }); });
+  if (searchPrev) searchPrev.addEventListener('click', () => { gotoHit(activeHitIdx - 1); searchInput.focus({ preventScroll: true }); });
   } catch (err) { console.error('[IN-PAGE SEARCH] error:', err); }
 
 
@@ -19283,6 +19440,46 @@ document.addEventListener('click', function (e) {
     window.addEventListener('orientationchange', sync);
     if (window.ResizeObserver) { try { new ResizeObserver(sync).observe(bar); } catch (e) {} }
   } catch (e) {}
+})();
+</script>
+<script>
+/* Non-breaking glue for clinical typography. Plain spaces let the browser
+   split a value from its unit ("30" at the end of one line, "cmH₂O" at the
+   start of the next) or an operator from its number ("≤" then "30"), which
+   interrupts reading. This pass replaces just those spaces with non-breaking
+   spaces so the pair stays on one line. Scoped to article prose; skips
+   scripts, code, inputs, and rendered math. Runs once, after layout. */
+(function () {
+  try {
+    var root = document.querySelector('main') || document.body;
+    if (!root) return;
+    var NBSP = ' ';
+    // number → unit  (units are explicit, longest-first; trailing lookahead
+    // stops partial hits like "min" inside "minutes").
+    var UNIT = /(\d(?:[\d.,]*\d)?)[ \t]+(mL\/kg\/min|mL\/kg|mL\/min|L\/min|mEq\/L|mmol\/L|cmH₂O|mmHg|kPa|°C|bpm|mL|mg|mcg|µg|kg|cm|mm|mmol|mEq|min|sec|hr|ms|%|h|s|L|g)(?![A-Za-z0-9₂\/])/g;
+    // operator → number
+    var OPNUM = /([≤≥±≈~<>=])[ \t]+(?=[.\d])/g;
+    var skip = { SCRIPT:1, STYLE:1, TEXTAREA:1, INPUT:1, CODE:1, PRE:1, NOSCRIPT:1, SVG:1 };
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue || n.nodeValue.indexOf(' ') === -1) return NodeFilter.FILTER_REJECT;
+        var p = n.parentElement;
+        while (p && p !== root) {
+          if (skip[p.tagName]) return NodeFilter.FILTER_REJECT;
+          if (p.classList && (p.classList.contains('katex') || p.classList.contains('katex-display'))) return NodeFilter.FILTER_REJECT;
+          p = p.parentElement;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes = [], n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(function (node) {
+      var v = node.nodeValue;
+      var nv = v.replace(UNIT, '$1' + NBSP + '$2').replace(OPNUM, '$1' + NBSP);
+      if (nv !== v) node.nodeValue = nv;
+    });
+  } catch (e) { console.error('[nbsp-glue]', e); }
 })();
 </script>
 <script>
