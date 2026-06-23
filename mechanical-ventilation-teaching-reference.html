@@ -15770,22 +15770,49 @@ saveInputs();
     // scrolling. Readers who want detail can pinch / Ctrl-+ to zoom.
     clone.style.fontSize = '15px';
     clone.style.lineHeight = '1.5';
-    clone.style.width = 'auto';
     clone.style.margin = '0';
     const card = document.createElement('div');
     card.className = 'lb-table-scale';
+    // flex:0 0 auto so the flex host can't shrink the card below its content.
+    // (A default flex item has flex-shrink:1, which squeezed wide tables down to
+    // ~host width, so the fit-scale measured ~1 and the table overflowed →
+    // the side-scroll the reader was seeing.)
+    card.style.flex = '0 0 auto';
+    card.style.maxWidth = 'none';
     card.appendChild(clone);
     lbTableHost.innerHTML = '';
     lbTableHost.appendChild(card);
     lbTableHost.style.display = 'flex';
     lb.classList.add('show');
     document.body.style.overflow = 'hidden';
+
+    const availW = window.innerWidth * 0.95 - 8;
+    const availH = window.innerHeight * 0.92 - 8;
+
     requestAnimationFrame(() => {
-      const availW = window.innerWidth * 0.95 - 8;
-      const availH = window.innerHeight * 0.92 - 8;
-      const r = card.getBoundingClientRect();
+      // PASS 1 — lay the table out constrained to one screen width. Prose-heavy
+      // cells wrap normally here (so they stay readable rather than unspooling
+      // onto one giant line); only columns that genuinely can't compress
+      // (numeric / nowrap) push past this width. Reading scrollWidth forces a
+      // synchronous reflow, so both measurement passes happen in this one frame.
+      clone.style.width = '';
+      clone.style.maxWidth = availW + 'px';
+      card.style.width = availW + 'px';
+      card.style.transform = 'none';
+      const tableW = Math.max(clone.scrollWidth, clone.offsetWidth);
+
+      // PASS 2 — pin the table to that exact width so nothing clips and the
+      // pass-1 wrapping is preserved, then let the card shrink-wrap around it
+      // (flex:0 0 auto) so its padding is part of the measured box.
+      clone.style.maxWidth = 'none';
+      clone.style.width = tableW + 'px';
+      card.style.width = 'auto';
+      const r = card.getBoundingClientRect();   // forces reflow → true size
       const natW = r.width || card.scrollWidth;
       const natH = r.height || card.scrollHeight;
+
+      // Scale the whole box down to fit the viewport in both dimensions, so the
+      // table opens fully visible on one screen with no horizontal scrolling.
       let scale = Math.min(1, availW / natW, availH / natH);
       if (!isFinite(scale) || scale <= 0) scale = 1;
       card.style.transform = 'scale(' + scale + ')';
