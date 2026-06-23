@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#13202c">
+<link rel="manifest" href="pccm.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PCCM Log">
+<title>PCCM Learning Log</title>
+<script>
+/* set saved theme before paint to avoid a flash */
+(function(){try{var t=localStorage.getItem("pccm_theme")||"auto";
+document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+</script>
+<style>
+/* ---- DARK (default) ---- */
+:root{
+  color-scheme:dark light;
+  --bg:#0f1720; --panel:#16212e; --panel2:#1d2b3a; --line:#2a3a4d;
+  --ink:#e8eef4; --muted:#9fb1c3; --faint:#6f8295;
+  --teal:#3fb6a8; --teal-dk:#2c8579; --amber:#e0a458; --red:#d9684f;
+  --accent:#5aa9e6; --shadow:0 6px 24px rgba(0,0,0,.35);
+  --header-bg:linear-gradient(180deg,#16212e,#13202c);
+  --tabbar-bg:rgba(18,28,38,.97);
+  --btn-ink:#04201c; --pill-on-ink:#eafffb;
+  --tag-bg:rgba(90,169,230,.14); --tag-ink:#bcd9f3;
+  --new-bg:rgba(217,104,79,.18); --new-ink:#f0a593;
+  --learn-bg:rgba(224,164,88,.18); --learn-ink:#f0cd9a;
+  --solid-bg:rgba(63,182,168,.18); --solid-ink:#9fe7dc;
+}
+/* ---- LIGHT palette (reused by system-auto + manual light) ---- */
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f3f6f9; --panel:#ffffff; --panel2:#eef2f6; --line:#d7dfe8;
+  --ink:#16212e; --muted:#4f5e72; --faint:#7e8ea0;
+  --teal:#1f9e90; --teal-dk:#15786d; --amber:#b9762a; --red:#c2503a;
+  --accent:#2f7fc4; --shadow:0 4px 16px rgba(20,40,60,.10);
+  --header-bg:linear-gradient(180deg,#ffffff,#eef3f8);
+  --tabbar-bg:rgba(255,255,255,.95);
+  --btn-ink:#04201c; --pill-on-ink:#eafffb;
+  --tag-bg:rgba(47,127,196,.12); --tag-ink:#1d5c92;
+  --new-bg:rgba(194,80,58,.13); --new-ink:#b23a26;
+  --learn-bg:rgba(185,118,42,.16); --learn-ink:#875010;
+  --solid-bg:rgba(31,158,144,.15); --solid-ink:#13685e;
+}
+@media (prefers-color-scheme: light){
+  :root[data-theme="auto"]{
+    color-scheme:light;
+    --bg:#f3f6f9; --panel:#ffffff; --panel2:#eef2f6; --line:#d7dfe8;
+    --ink:#16212e; --muted:#4f5e72; --faint:#7e8ea0;
+    --teal:#1f9e90; --teal-dk:#15786d; --amber:#b9762a; --red:#c2503a;
+    --accent:#2f7fc4; --shadow:0 4px 16px rgba(20,40,60,.10);
+    --header-bg:linear-gradient(180deg,#ffffff,#eef3f8);
+    --tabbar-bg:rgba(255,255,255,.95);
+    --btn-ink:#04201c; --pill-on-ink:#eafffb;
+    --tag-bg:rgba(47,127,196,.12); --tag-ink:#1d5c92;
+    --new-bg:rgba(194,80,58,.13); --new-ink:#b23a26;
+    --learn-bg:rgba(185,118,42,.16); --learn-ink:#875010;
+    --solid-bg:rgba(31,158,144,.15); --solid-ink:#13685e;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:600;letter-spacing:.2px}
+a{color:var(--accent)}
+header{position:sticky;top:0;z-index:20;background:var(--header-bg);
+  border-bottom:1px solid var(--line);padding:max(10px,env(safe-area-inset-top)) 14px 0}
+.brand{display:flex;align-items:center;gap:10px;padding-bottom:10px}
+.brand .dot{width:11px;height:11px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(63,182,168,.18)}
+.brand h1{font-size:18px;margin:0}
+.brand .sub{color:var(--faint);font-size:12px;margin-left:auto;text-align:right;line-height:1.3}
+.themebtn{background:var(--panel2);border:1px solid var(--line);color:var(--muted);
+  border-radius:999px;padding:6px 11px;font-size:12px;font-weight:700;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;margin-left:10px}
+.themebtn:active{transform:translateY(1px)}
+/* bottom tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;
+  background:var(--tabbar-bg);backdrop-filter:saturate(140%) blur(14px);
+  border-top:1px solid var(--line);box-shadow:0 -6px 22px rgba(0,0,0,.35);
+  padding-bottom:env(safe-area-inset-bottom)}
+.tabbar button{flex:1;background:none;border:none;color:var(--faint);
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 2px 7px;font-size:10.5px;font-weight:600;letter-spacing:.2px;
+  cursor:pointer;min-height:56px;position:relative;-webkit-tap-highlight-color:transparent}
+.tabbar button svg{width:23px;height:23px;stroke:currentColor;fill:none;
+  stroke-width:1.85;stroke-linecap:round;stroke-linejoin:round;transition:transform .12s}
+.tabbar button.active{color:var(--teal)}
+.tabbar button.active::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:30px;height:3px;border-radius:0 0 3px 3px;background:var(--teal)}
+.tabbar button.active svg{transform:translateY(-1px)}
+.tabbar button:active svg{transform:scale(.9)}
+main{max-width:920px;margin:0 auto;padding:16px 14px calc(82px + env(safe-area-inset-bottom))}
+.view{display:none}.view.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--faint);margin:0 0 6px}
+textarea,input,select{width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);
+  border-radius:10px;padding:12px;font-size:16px;font-family:inherit;outline:none}
+textarea:focus,input:focus,select:focus{border-color:var(--teal)}
+textarea{resize:vertical;min-height:120px;line-height:1.55}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row > div{flex:1;min-width:140px}
+.btn{background:var(--teal);color:var(--btn-ink);border:none;border-radius:10px;padding:12px 18px;
+  font-size:15px;font-weight:700;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.btn.sec{background:var(--panel2);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost{background:none;color:var(--muted);border:1px solid var(--line);font-weight:600}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn.danger{background:none;border:1px solid var(--red);color:var(--red)}
+.hint{color:var(--faint);font-size:12.5px;margin:8px 2px 0}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar input[type=search]{flex:1;min-width:160px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--panel2);border:1px solid var(--line);
+  color:var(--muted);border-radius:999px;padding:3px 10px;font-size:12px;margin:2px 4px 2px 0;cursor:pointer}
+.pill.on{background:var(--teal-dk);color:var(--pill-on-ink);border-color:var(--teal)}
+.tag{display:inline-block;background:var(--tag-bg);color:var(--tag-ink);border-radius:6px;padding:1px 7px;font-size:11.5px;margin:2px 4px 0 0}
+.chk{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--muted);text-transform:none;letter-spacing:0;margin:0}
+.chk input{width:18px;height:18px;flex:0 0 auto;accent-color:var(--teal)}
+.fchip{display:inline-block;background:var(--panel2);border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:1px 7px;font-size:11px;margin:2px 4px 0 0}
+.fchip::before{content:"\1F4CE ";font-size:10px}
+.vbadge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;border-radius:5px;padding:2px 7px;background:var(--learn-bg);color:var(--learn-ink)}
+.vbadge.stale{background:var(--new-bg);color:var(--new-ink)}
+.banner{background:var(--learn-bg);color:var(--learn-ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.entry{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;margin-bottom:11px}
+.entry .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--faint);margin-bottom:6px}
+.entry .body{white-space:pre-wrap;font-size:15px;line-height:1.55}
+.entry .topic{color:var(--teal);font-weight:600}
+.entry .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.star{cursor:pointer;font-size:15px;color:var(--faint)}
+.star.on{color:var(--amber)}
+.status-chip{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;border-radius:5px;padding:2px 7px;font-weight:700}
+.st-new{background:var(--new-bg);color:var(--new-ink)}
+.st-learning{background:var(--learn-bg);color:var(--learn-ink)}
+.st-solid{background:var(--solid-bg);color:var(--solid-ink)}
+/* gap map */
+.domain{margin-bottom:10px}
+.domain h3{font-size:14.5px;margin:0 0 7px;display:flex;align-items:center;gap:8px}
+.sysic{width:19px;height:19px;flex:0 0 auto;stroke:var(--teal);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px}
+.pill .sysic{width:14px;height:14px;stroke:currentColor;vertical-align:-2px;margin-right:1px}
+.domain h3 .count{font-size:11px;color:var(--faint);font-weight:400;font-family:inherit}
+.subgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px}
+.sub{border:1px solid var(--line);border-radius:9px;padding:8px 10px;cursor:pointer;background:var(--panel);
+  font-size:12.5px;display:flex;justify-content:space-between;align-items:center;gap:6px;transition:border-color .15s}
+.sub:hover{border-color:var(--teal)}
+.sub .n{font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;min-width:20px;text-align:center}
+.lvl0{border-left:3px solid var(--red)} .lvl0 .n{background:var(--new-bg);color:var(--new-ink)}
+.lvl1{border-left:3px solid var(--amber)} .lvl1 .n{background:var(--learn-bg);color:var(--learn-ink)}
+.lvl2{border-left:3px solid var(--teal)} .lvl2 .n{background:var(--solid-bg);color:var(--solid-ink)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin:4px 2px 16px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:11px;height:11px;border-radius:3px;display:inline-block}
+.stat{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+.stat .num{font-family:Georgia,serif;font-size:26px;color:var(--ink)}
+.stat .lbl{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.5px}
+.empty{color:var(--faint);text-align:center;padding:30px 10px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--teal);color:#04201c;
+  padding:11px 20px;border-radius:10px;font-weight:700;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.modal{position:fixed;inset:0;background:rgba(4,10,16,.7);display:none;align-items:flex-end;justify-content:center;z-index:40}
+.modal.show{display:flex}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:16px 16px 0 0;width:100%;max-width:920px;
+  max-height:88vh;overflow:auto;padding:18px 16px calc(20px + env(safe-area-inset-bottom))}
+@media(min-width:620px){.modal{align-items:center}.sheet{border-radius:16px}}
+.checkrow{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.checkrow input{width:18px;height:18px;margin-top:3px;flex:0 0 auto}
+.checkrow .t{font-size:13.5px}
+kbd{background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px}
+@media print{
+  header,nav,.toolbar,.btn,.acts,.no-print{display:none!important}
+  body{background:#fff;color:#111}.entry{border:1px solid #ccc;break-inside:avoid}
+  .entry .topic{color:#0a6}.view{display:block!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="dot"></span>
+    <h1>PCCM Learning Log</h1>
+    <span class="sub" id="viewLabel">Capture</span>
+    <button class="themebtn" id="themeBtn" aria-label="Toggle light or dark mode">◑ Auto</button>
+  </div>
+</header>
+
+<main>
+  <!-- CAPTURE -->
+  <section class="view active" id="v-capture">
+    <div class="card">
+      <label>New concept</label>
+      <textarea id="capText" placeholder="Tap the mic on your keyboard and just talk, or type. One concept per entry.&#10;&#10;e.g. Driving pressure = plateau − PEEP. Keep < 15. Better mortality signal than tidal volume alone in ARDS (Amato 2015)."></textarea>
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label>Domain</label>
+          <select id="capDomain"></select>
+        </div>
+        <div>
+          <label>Subtopic</label>
+          <select id="capSub"></select>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <label>Tags (comma-separated, optional)</label>
+        <input id="capTags" placeholder="e.g. ARDS, board-fact, teach-this">
+      </div>
+      <div style="margin-top:12px">
+        <label>Source / reference (optional)</label>
+        <textarea id="capSource" style="min-height:60px" placeholder="Citation, trial name, guideline, link, or a pasted excerpt. This travels with the concept so a resource can be built from it later.&#10;e.g. ARMA NEJM 2000; or paste the key paragraph / numbers."></textarea>
+      </div>
+      <div style="margin-top:12px">
+        <label>Attach figure / file (optional)</label>
+        <input id="capFiles" placeholder="filename(s) or URL, comma-separated — e.g. fig_18_05_double_triggering.png">
+        <p class="hint" style="margin-top:5px">Names a file in your library so a generated resource can pull it in. Claude reads the actual file when you hand it the brief.</p>
+      </div>
+      <label class="chk" style="margin-top:14px"><input type="checkbox" id="capDecays"> Guideline-dependent — flag this fact to re-verify over time</label>
+      <div class="row" style="margin-top:14px">
+        <div>
+          <label>Status</label>
+          <select id="capStatus">
+            <option value="new">New — just learned</option>
+            <option value="learning">Learning — fuzzy</option>
+            <option value="solid">Solid — could teach it</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn" style="width:100%" id="saveBtn">Save concept</button>
+        </div>
+      </div>
+      <p class="hint">Leave Domain on <em>Inbox / Unsorted</em> when you're moving fast — triage later in Review. Saved on this device automatically.</p>
+    </div>
+
+    <div class="card">
+      <label>Paste a dump (phone → desktop)</label>
+      <textarea id="bulkText" placeholder="Paste many concepts at once. Separate them with a blank line or a line of ---&#10;&#10;Each becomes its own entry, filed to Inbox for you to sort."></textarea>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sec sm" id="bulkBtn">Import as entries</button>
+        <span class="hint" style="margin:0;align-self:center">Great for emptying Apple Notes at end of day.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="view" id="v-review">
+    <div class="stat card" id="reviewStats"></div>
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="Search concepts, tags, topics…">
+      <select id="fStatus" class="btn sec sm" style="width:auto;padding:8px 10px">
+        <option value="">All status</option>
+        <option value="new">New</option>
+        <option value="learning">Learning</option>
+        <option value="solid">Solid</option>
+      </select>
+      <select id="fSort" class="btn sec sm" style="width:auto;padding:8px 10px">
+        <option value="new">Newest</option>
+        <option value="old">Oldest</option>
+        <option value="topic">By topic</option>
+        <option value="review">Least recently reviewed</option>
+      </select>
+      <button class="btn ghost sm" id="fStarBtn">★ Starred</button>
+      <button class="btn ghost sm" id="fVerifyBtn">⚠ Verify due</button>
+    </div>
+    <div id="domainFilter" style="margin-bottom:10px"></div>
+    <div id="entryList"></div>
+  </section>
+
+  <!-- MAP -->
+  <section class="view" id="v-map">
+    <div class="card">
+      <div class="stat">
+        <div><div class="num" id="mTotal">0</div><div class="lbl">concepts</div></div>
+        <div><div class="num" id="mCovered">0</div><div class="lbl">subtopics touched</div></div>
+        <div><div class="num" id="mGaps">0</div><div class="lbl">untouched gaps</div></div>
+        <div><div class="num" id="mDomains">0</div><div class="lbl">domains active</div></div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--red)"></span> Gap — 0 concepts</span>
+      <span><span class="swatch" style="background:var(--amber)"></span> Started — 1–2</span>
+      <span><span class="swatch" style="background:var(--teal)"></span> Building — 3+</span>
+      <span style="color:var(--faint)">Tap any subtopic to see its concepts.</span>
+    </div>
+    <div id="mapBody"></div>
+  </section>
+
+  <!-- TEACH -->
+  <section class="view" id="v-teach">
+    <div class="card no-print">
+      <h3 style="margin:0 0 6px">Build a teaching handout</h3>
+      <p class="hint" style="margin:0 0 12px">Pick concepts → generate a clean, printable sheet or copy as Markdown for a one-pager / talk. Starts from what <em>you</em> wrote — no auto-generated claims to fact-check.</p>
+      <input id="handoutTitle" placeholder="Handout title — e.g. ARDS: 10 things to actually remember" style="margin-bottom:10px">
+      <div class="toolbar" style="margin-bottom:8px">
+        <select id="tDomain" class="btn sec sm" style="width:auto;padding:8px 10px"><option value="">All domains</option></select>
+        <button class="btn sec sm" id="tSelAll">Select all shown</button>
+        <button class="btn ghost sm" id="tClear">Clear</button>
+        <span class="hint" style="margin:0;align-self:center"><span id="tCount">0</span> selected</span>
+      </div>
+      <div id="teachPick" style="max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px 12px"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="genHandout">Preview handout</button>
+        <button class="btn sec" id="copyMd">Copy as Markdown</button>
+      </div>
+    </div>
+    <div class="card no-print">
+      <h3 style="margin:0 0 6px">↗ Generation brief — feed to Claude to build a resource</h3>
+      <p class="hint" style="margin:0 0 12px">Bundles the selected concepts (with your notes + sources) into a prompt-ready brief. Paste it into a Cowork chat and ask for a summary, one-pager, slide deck, or an interactive simulator. Everything you captured travels with it, so the output is grounded in your material instead of generic.</p>
+      <div class="row">
+        <div>
+          <label>What should Claude build?</label>
+          <select id="briefKind">
+            <option value="a focused teaching summary / one-pager">Teaching summary / one-pager</option>
+            <option value="an interactive HTML simulator or explorer (single self-contained file) that lets a learner manipulate the key variables">Interactive simulator / explorer</option>
+            <option value="a slide deck outline with one idea per slide and speaker notes">Slide deck outline</option>
+            <option value="a set of spaced-repetition flashcards (question / answer)">Flashcards / quiz</option>
+            <option value="a Bedside Reference style quick-reference card">Bedside Reference card</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="copyBrief">Copy generation brief</button>
+        <span class="hint" style="margin:0;align-self:center"><span id="bCount2">0</span> concepts will be included</span>
+      </div>
+    </div>
+    <div id="handoutOut"></div>
+  </section>
+
+  <!-- DATA -->
+  <section class="view" id="v-data">
+    <div id="backupBanner"></div>
+    <div class="card">
+      <h3 style="margin:0 0 6px">Back up &amp; sync</h3>
+      <p class="hint" style="margin:0 0 12px">Data lives in this browser only. Export regularly, and use Export/Import to move between your phone and desktop.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="exportBtn">⬇ Export JSON</button>
+        <label class="btn sec" style="cursor:pointer">⬆ Import JSON<input type="file" id="importFile" accept="application/json" hidden></label>
+        <button class="btn sec" id="csvBtn">⬇ Export CSV</button>
+        <button class="btn danger" id="wipeBtn">Erase all</button>
+      </div>
+      <p class="hint" id="dataStat"></p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 6px">How to use this without it dying</h3>
+      <p class="hint" style="margin:0;line-height:1.65">
+      <strong>1. Capture rough.</strong> In the unit, dictate one concept into the keyboard mic, hit Save, move on. Don't sort.<br>
+      <strong>2. Triage weekly.</strong> Open Review, filter to Inbox, assign domains in ~5 min.<br>
+      <strong>3. Hunt gaps monthly.</strong> Gap Map shows what you haven't touched — pick a red subtopic to read up on.<br>
+      <strong>4. Teach to keep it.</strong> When a topic has 3+ concepts, Build Handout and turn it into a Bedside Reference card.</p>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar" id="nav">
+  <button data-v="capture" class="active" aria-label="Capture">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Capture</button>
+  <button data-v="review" aria-label="Review">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Review</button>
+  <button data-v="map" aria-label="Gap Map">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Gap Map</button>
+  <button data-v="teach" aria-label="Build">
+    <svg viewBox="0 0 24 24"><path d="M12 3l2 4.5L18.5 9 15 12l1 5-4-2.5L8 17l1-5L5.5 9 10 7.5z"/></svg>Build</button>
+  <button data-v="data" aria-label="Data">
+    <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg>Data</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="editModal"><div class="sheet" id="editSheet"></div></div>
+
+<script>
+const CURRICULUM = {
+ "Inbox / Unsorted":["(to be sorted)"],
+ "Respiratory Failure & Mech Vent":["ARDS","Vent modes & settings","Liberation / weaning","NIV & HFNC","Patient–ventilator asynchrony","VILI & lung-protective vent","Capnography","ECMO / ECLS","Tracheostomy & chronic vent","Refractory hypoxemia (prone/paralysis)"],
+ "Shock & Hemodynamics":["Septic shock","Cardiogenic shock","Hypovolemic / hemorrhagic","Obstructive shock","Vasopressors & inotropes","Fluid responsiveness","Hemodynamic monitoring","Critical care POCUS / echo"],
+ "Sepsis & ICU Infections":["Sepsis recognition & bundles","Empiric abx & stewardship","VAP / HAP","Line & device infections","Invasive fungal infection","Immunocompromised host","Source control"],
+ "Sedation, Analgesia & Delirium":["Sedation targets (RASS)","Analgesia","Sedative agents","Delirium (CAM-ICU) / PADIS","Neuromuscular blockade","ABCDEF bundle & mobility"],
+ "Renal, Acid–Base & Metabolic":["AKI in the ICU","CRRT & dialysis","Electrolyte emergencies","Acid–base interpretation","Glycemic control","Endocrine emergencies"],
+ "Neurocritical Care":["Status epilepticus","Elevated ICP","Acute stroke / ICH","Post-arrest / anoxic brain injury","Death by neurologic criteria","Sedation in TBI"],
+ "Cardiac Critical Care":["ACS in the ICU","Arrhythmia management","Cardiac arrest & post-arrest care","Acute heart failure","Tamponade & pericardial disease","Mechanical circulatory support"],
+ "GI, Hepatic & Nutrition":["GI bleeding","Acute liver failure / cirrhosis","ICU nutrition support","Severe pancreatitis","Abdominal compartment syndrome","Stress ulcer prophylaxis"],
+ "Hematology & Transfusion":["Coagulopathy & DIC","Transfusion medicine","Anticoagulation & reversal","VTE prophylaxis","Oncologic emergencies","Thrombocytopenia / HIT"],
+ "Toxicology & Environmental":["Overdoses & antidotes","Alcohol & withdrawal","Toxidromes","Hyper/hypothermia","Environmental / envenomation"],
+ "Procedures":["Airway / intubation","Central venous access","Arterial lines","Chest tubes / thoracostomy","Thoracentesis","Paracentesis","Bronchoscopy","PA catheter","Pericardiocentesis","Percutaneous tracheostomy"],
+ "Ethics, EOL & Communication":["Goals-of-care talks","Withdrawal of life support","Prognostication","Family meetings","Brain-death disclosure","Capacity & surrogates"],
+ "Obstructive Lung Disease":["Asthma / status asthmaticus","COPD & exacerbations","Bronchiectasis","Vocal cord dysfunction"],
+ "Interstitial Lung Disease":["IPF","CTD-associated ILD","Hypersensitivity pneumonitis","Sarcoidosis","Acute exacerbation of ILD"],
+ "Pulmonary Vascular Disease":["Pulmonary embolism","Pulmonary hypertension","RV failure","CTEPH"],
+ "Pleural Disease":["Pleural effusion","Pneumothorax","Empyema / parapneumonic","Chest tube management","Malignant effusion / pleurodesis"],
+ "Lung Cancer & Nodules":["Pulmonary nodule workup","Lung cancer staging","Lung cancer screening","EBUS / mediastinal staging"],
+ "Pulmonary Infections":["Community-acquired pneumonia","Tuberculosis","Nontuberculous mycobacteria","Fungal lung disease","Aspiration syndromes"],
+ "Sleep Medicine":["Obstructive sleep apnea","Central sleep apnea","Obesity hypoventilation","Home NIV / CPAP titration"],
+ "Interventional Pulm & Airway":["Airway stents","Endobronchial obstruction","Foreign body / hemoptysis","Bronchoscopic interventions"],
+ "Lung Transplant":["Transplant evaluation","Acute rejection","Chronic rejection (CLAD)","Post-transplant infections"],
+ "Pulmonary Physiology & PFTs":["Spirometry interpretation","Lung volumes & DLCO","Gas exchange / A–a gradient","Respiratory mechanics","CPET"],
+ "Thoracic Imaging":["Chest radiograph patterns","Chest CT interpretation","Lung & pleural ultrasound"]
+};
+
+/* clean line icons per system (currentColor, theme-aware) */
+const ICONS={
+ "Inbox / Unsorted":'<path d="M4 13l2-8h12l2 8v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13h4l1 2h6l1-2h4"/>',
+ "Respiratory Failure & Mech Vent":'<path d="M12 3v8"/><path d="M9 11c0 3-1 4-1 7 0 1.1-.9 2-2 2s-2-.9-2-2c0-4 2-8 5-9z"/><path d="M15 11c0 3 1 4 1 7 0 1.1.9 2 2 2s2-.9 2-2c0-4-2-8-5-9z"/>',
+ "Shock & Hemodynamics":'<path d="M3 12h4l2-6 4 14 3-10 1.5 2H21"/>',
+ "Sepsis & ICU Infections":'<circle cx="12" cy="12" r="5"/><path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M6.2 6.2 4.7 4.7M19.3 19.3l-1.5-1.5M17.8 6.2l1.5-1.5M6.2 17.8l-1.5 1.5"/><circle cx="10.5" cy="11" r="1"/><circle cx="13.5" cy="13.5" r="1"/>',
+ "Sedation, Analgesia & Delirium":'<path d="M5 8h6l-6 8h6"/><path d="M14 4h5l-5 6h5"/>',
+ "Renal, Acid–Base & Metabolic":'<path d="M15 4c2.8 0 4.5 2.6 4.5 6S17.8 16 15 16c-1.7 0-2.6-1-2.6-2.5 0-1.4-.9-2-2.4-2.3C7.8 10.7 6.5 9 6.5 7 6.5 4.8 9.7 4 12 4z"/><path d="M14 9c-1 .8-1 2.4 0 3.5"/>',
+ "Neurocritical Care":'<path d="M9.5 4A3 3 0 0 0 7 8.5 3 3 0 0 0 6 13a3 3 0 0 0 2.5 4.5A2.5 2.5 0 0 0 12 19V5a2.5 2.5 0 0 0-2.5-1z"/><path d="M14.5 4A3 3 0 0 1 17 8.5 3 3 0 0 1 18 13a3 3 0 0 1-2.5 4.5"/>',
+ "Cardiac Critical Care":'<path d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.4-7 10-7 10z"/>',
+ "GI, Hepatic & Nutrition":'<path d="M7 3v8M5 3v4a2 2 0 0 0 4 0V3M7 11v10"/><path d="M16 3c-2 1-2 6 0 7v11"/>',
+ "Hematology & Transfusion":'<path d="M12 3s6 6.5 6 10a6 6 0 0 1-12 0c0-3.5 6-10 6-10z"/>',
+ "Toxicology & Environmental":'<path d="M9 3v6l-5 8a2 2 0 0 0 1.7 3h12.6a2 2 0 0 0 1.7-3l-5-8V3"/><path d="M8 3h8"/><path d="M7 15h10"/>',
+ "Procedures":'<path d="M17 5l2 2"/><path d="M16 4l4 4-9 9-4 1 1-4z"/><path d="M13 9l2 2"/>',
+ "Ethics, EOL & Communication":'<path d="M4 5h11a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H9l-4 3v-3H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/>',
+ "Obstructive Lung Disease":'<path d="M12 3v6"/><path d="M12 9c0 1.5-1.5 2.5-4 3M12 9c0 1.5 1.5 2.5 4 3"/><circle cx="7.5" cy="14" r="2.2"/><circle cx="16.5" cy="14" r="2.2"/>',
+ "Interstitial Lung Disease":'<path d="M12 3v7"/><path d="M9.5 10c0 3-1 4-1 6.5 0 1-.8 1.5-1.6 1.5C5.7 18 5 17 5 15.5 5 12 7 9 9.5 8z"/><path d="M14.5 10c0 3 1 4 1 6.5 0 1 .8 1.5 1.6 1.5C18.3 18 19 17 19 15.5 19 12 17 9 14.5 8z"/><circle cx="8" cy="13.5" r=".5"/><circle cx="16" cy="13.5" r=".5"/><circle cx="10" cy="16" r=".5"/><circle cx="14" cy="16" r=".5"/>',
+ "Pulmonary Vascular Disease":'<path d="M5 21c5 0 7-2.5 7-7V3"/><path d="M12 9c0-3 2-4.5 5-4.5"/><path d="M12 14c0 3 2 4.5 5 4.5"/>',
+ "Pleural Disease":'<path d="M6 4h12v9a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z"/><path d="M6 13h12"/>',
+ "Lung Cancer & Nodules":'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.6"/>',
+ "Pulmonary Infections":'<path d="M11 3v6"/><path d="M8.5 9c0 3-1 4-1 6.5C7.5 16.5 6.7 17 6 17c-1 0-1.7-1-1.7-2.5C4.3 11 6 8.5 8.5 8z"/><path d="M13.5 9c0 1.6.3 2.7.7 3.6"/><circle cx="16.5" cy="15.5" r="3"/><path d="M16.5 12.5v6M13.5 15.5h6"/>',
+ "Sleep Medicine":'<path d="M20 14.5A8 8 0 1 1 10.5 4 6.2 6.2 0 0 0 20 14.5z"/><path d="M15 4h4l-4 4h4"/>',
+ "Interventional Pulm & Airway":'<path d="M5 4v6a4 4 0 0 0 4 4h2"/><circle cx="14" cy="15" r="3"/><path d="M14 12v-1"/>',
+ "Lung Transplant":'<path d="M4 8h12l-3-3"/><path d="M20 16H8l3 3"/>',
+ "Pulmonary Physiology & PFTs":'<path d="M4 4v16h16"/><path d="M6 16c3 1 4.5-8 8-8 2.5 0 4 2 4 5"/>',
+ "Thoracic Imaging":'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 15l3-3 3 3 4-5"/><circle cx="8" cy="9" r="1.3"/>'
+};
+function sysIcon(d){ const i=ICONS[d]; return i?`<svg class="sysic" viewBox="0 0 24 24">${i}</svg>`:''; }
+
+const KEY="pccm_log_v1";
+let DB = load();
+let starFilter=false;
+let verifyFilter=false;
+
+function load(){ try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return []} }
+function save(){ localStorage.setItem(KEY, JSON.stringify(DB)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function esc(s){ return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+function fmt(ts){ const d=new Date(ts); return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"}); }
+function daysAgo(ts){ if(!ts) return null; return Math.floor((Date.now()-ts)/864e5); }
+const STALE_DAYS=180;
+function isStale(e){ return e.decays && (daysAgo(e.verifiedTs||e.ts)>=STALE_DAYS); }
+function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),1600); }
+
+// ---- nav ----
+document.getElementById("nav").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-v]"); if(!b) return;
+  document.querySelectorAll("#nav button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  const v=b.dataset.v;
+  const labels={capture:"Capture",review:"Review",map:"Gap Map",teach:"Build a resource",data:"Data & backup"};
+  document.getElementById("viewLabel").textContent=labels[v]||"";
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+  document.getElementById("v-"+v).classList.add("active");
+  if(v==="review") renderReview();
+  if(v==="map") renderMap();
+  if(v==="teach") renderTeach();
+  if(v==="data") renderData();
+  window.scrollTo(0,0);
+});
+
+// ---- capture dropdowns ----
+const capDomain=document.getElementById("capDomain"), capSub=document.getElementById("capSub");
+Object.keys(CURRICULUM).forEach(d=>{ const o=document.createElement("option"); o.value=d; o.textContent=d; capDomain.appendChild(o); });
+function fillSub(sel, domain, current){
+  sel.innerHTML="";
+  (CURRICULUM[domain]||[]).forEach(s=>{ const o=document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
+  if(current) sel.value=current;
+}
+capDomain.value="Inbox / Unsorted";
+fillSub(capSub,"Inbox / Unsorted");
+capDomain.addEventListener("change",()=>fillSub(capSub,capDomain.value));
+
+document.getElementById("saveBtn").addEventListener("click",()=>{
+  const text=document.getElementById("capText").value.trim();
+  if(!text){ toast("Write something first"); return; }
+  const tags=document.getElementById("capTags").value.split(",").map(s=>s.trim()).filter(Boolean);
+  const files=document.getElementById("capFiles").value.split(",").map(s=>s.trim()).filter(Boolean);
+  const decays=document.getElementById("capDecays").checked;
+  DB.push({id:uid(),ts:Date.now(),text,domain:capDomain.value,sub:capSub.value,
+           tags,source:document.getElementById("capSource").value.trim(),
+           files,decays,verifiedTs:Date.now(),
+           status:document.getElementById("capStatus").value,starred:false,reviewed:[]});
+  save();
+  document.getElementById("capText").value="";
+  document.getElementById("capTags").value="";
+  document.getElementById("capSource").value="";
+  document.getElementById("capFiles").value="";
+  document.getElementById("capDecays").checked=false;
+  toast("Saved ✓ ("+DB.length+" total)");
+});
+
+document.getElementById("bulkBtn").addEventListener("click",()=>{
+  const raw=document.getElementById("bulkText").value.trim();
+  if(!raw){ toast("Nothing to import"); return; }
+  const chunks=raw.split(/\n\s*(?:-{3,}|\n)\s*\n?/).map(s=>s.trim()).filter(Boolean);
+  const blocks=chunks.length?chunks:raw.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+  let n=0;
+  blocks.forEach(b=>{ DB.push({id:uid(),ts:Date.now()+ (n), text:b,domain:"Inbox / Unsorted",
+    sub:"(to be sorted)",tags:[],status:"new",starred:false,reviewed:[]}); n++; });
+  save();
+  document.getElementById("bulkText").value="";
+  toast(n+" entries imported to Inbox");
+});
+
+// ---- review ----
+function matchEntry(e,q){
+  if(!q) return true;
+  q=q.toLowerCase();
+  return (e.text+" "+e.domain+" "+e.sub+" "+(e.tags||[]).join(" ")).toLowerCase().includes(q);
+}
+function renderReview(){
+  const q=document.getElementById("q").value.trim();
+  const fs=document.getElementById("fStatus").value;
+  const sort=document.getElementById("fSort").value;
+  let list=DB.filter(e=>matchEntry(e,q)&&(!fs||e.status===fs)&&(!starFilter||e.starred)&&(!verifyFilter||isStale(e)));
+  list.sort((a,b)=>{
+    if(sort==="new") return b.ts-a.ts;
+    if(sort==="old") return a.ts-b.ts;
+    if(sort==="topic") return (a.domain+a.sub).localeCompare(b.domain+b.sub);
+    if(sort==="review"){ const ar=a.reviewed?.length?a.reviewed[a.reviewed.length-1]:0; const br=b.reviewed?.length?b.reviewed[b.reviewed.length-1]:0; return ar-br; }
+    return 0;
+  });
+  // stats
+  const total=DB.length, inbox=DB.filter(e=>e.domain==="Inbox / Unsorted").length;
+  const solid=DB.filter(e=>e.status==="solid").length;
+  const stale=DB.filter(isStale).length;
+  document.getElementById("reviewStats").innerHTML=
+    `<div><div class="num">${total}</div><div class="lbl">total</div></div>
+     <div><div class="num" style="color:var(--amber)">${inbox}</div><div class="lbl">to triage</div></div>
+     <div><div class="num" style="color:var(--teal)">${solid}</div><div class="lbl">teach-ready</div></div>
+     <div><div class="num" style="color:${stale?'var(--red)':'var(--ink)'}">${stale}</div><div class="lbl">to verify</div></div>
+     <div><div class="num">${list.length}</div><div class="lbl">shown</div></div>`;
+  // domain quick-filter pills
+  const df=document.getElementById("domainFilter");
+  const counts={}; DB.forEach(e=>counts[e.domain]=(counts[e.domain]||0)+1);
+  df.innerHTML=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).map(d=>
+    `<span class="pill" data-d="${esc(d)}">${sysIcon(d)}${esc(d)} ${counts[d]}</span>`).join("");
+  df.querySelectorAll(".pill").forEach(p=>p.addEventListener("click",()=>{document.getElementById("q").value=p.dataset.d;renderReview();}));
+  // list
+  const el=document.getElementById("entryList");
+  if(!list.length){ el.innerHTML=`<div class="empty">No concepts yet. Head to <strong>Capture</strong> and add your first one.</div>`; return; }
+  el.innerHTML=list.map(e=>entryHTML(e)).join("");
+  el.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",entryAction));
+}
+function entryHTML(e){
+  const rev=e.reviewed?.length?`reviewed ${daysAgo(e.reviewed[e.reviewed.length-1])}d ago`:"never reviewed";
+  return `<div class="entry" data-id="${e.id}">
+    <div class="meta">
+      <span class="star ${e.starred?'on':''}" data-act="star" data-id="${e.id}">${e.starred?'★':'☆'}</span>
+      <span class="status-chip st-${e.status}">${e.status}</span>
+      ${e.decays?`<span class="vbadge ${isStale(e)?'stale':''}">${isStale(e)?'⚠ verify':'guideline'}</span>`:""}
+      <span class="topic">${esc(e.domain)}${e.sub&&e.sub!=="(to be sorted)"?" · "+esc(e.sub):""}</span>
+      <span style="margin-left:auto">${fmt(e.ts)} · ${rev}</span>
+    </div>
+    <div class="body">${esc(e.text)}</div>
+    ${e.source?`<div class="hint" style="margin-top:6px;border-left:2px solid var(--line);padding-left:8px"><strong style="color:var(--faint)">src:</strong> ${esc(e.source)}</div>`:""}
+    ${(e.files&&e.files.length)?`<div style="margin-top:6px">${e.files.map(f=>`<span class="fchip">${esc(f)}</span>`).join("")}</div>`:""}
+    ${(e.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}
+    <div class="acts">
+      <button class="btn ghost sm" data-act="reviewed" data-id="${e.id}">Mark reviewed</button>
+      <button class="btn ghost sm" data-act="edit" data-id="${e.id}">Edit / file</button>
+      <button class="btn ghost sm" data-act="del" data-id="${e.id}">Delete</button>
+    </div></div>`;
+}
+function entryAction(ev){
+  const id=ev.currentTarget.dataset.id, act=ev.currentTarget.dataset.act;
+  const e=DB.find(x=>x.id===id); if(!e) return;
+  if(act==="star"){ e.starred=!e.starred; save(); renderReview(); }
+  if(act==="reviewed"){ e.reviewed=e.reviewed||[]; e.reviewed.push(Date.now()); if(e.status==="new")e.status="learning"; save(); toast("Marked reviewed"); renderReview(); }
+  if(act==="del"){ if(confirm("Delete this concept?")){ DB=DB.filter(x=>x.id!==id); save(); renderReview(); } }
+  if(act==="edit"){ openEdit(e); }
+}
+["q","fStatus","fSort"].forEach(id=>document.getElementById(id).addEventListener("input",renderReview));
+document.getElementById("fStarBtn").addEventListener("click",function(){starFilter=!starFilter;this.classList.toggle("active");this.style.color=starFilter?"var(--amber)":"";renderReview();});
+document.getElementById("fVerifyBtn").addEventListener("click",function(){verifyFilter=!verifyFilter;this.style.color=verifyFilter?"var(--red)":"";this.style.borderColor=verifyFilter?"var(--red)":"";renderReview();});
+
+// ---- edit modal ----
+function openEdit(e){
+  const sheet=document.getElementById("editSheet");
+  const domOpts=Object.keys(CURRICULUM).map(d=>`<option ${d===e.domain?'selected':''}>${esc(d)}</option>`).join("");
+  sheet.innerHTML=`<h3 style="margin:0 0 12px">Edit concept</h3>
+    <label>Text</label><textarea id="eText">${esc(e.text)}</textarea>
+    <div class="row" style="margin-top:12px">
+      <div><label>Domain</label><select id="eDomain">${domOpts}</select></div>
+      <div><label>Subtopic</label><select id="eSub"></select></div>
+    </div>
+    <div style="margin-top:12px"><label>Tags</label><input id="eTags" value="${esc((e.tags||[]).join(', '))}"></div>
+    <div style="margin-top:12px"><label>Source / reference</label><textarea id="eSource" style="min-height:60px">${esc(e.source||"")}</textarea></div>
+    <div style="margin-top:12px"><label>Attach figure / file</label><input id="eFiles" value="${esc((e.files||[]).join(', '))}"></div>
+    <label class="chk" style="margin-top:14px"><input type="checkbox" id="eDecays" ${e.decays?'checked':''}> Guideline-dependent (re-verify over time)</label>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="eVerifyNow"> Mark verified today${e.verifiedTs?` &nbsp;<span style="color:var(--faint)">(last: ${fmt(e.verifiedTs)})</span>`:''}</label>
+    <div style="margin-top:12px"><label>Status</label><select id="eStatus">
+      <option value="new" ${e.status==='new'?'selected':''}>New</option>
+      <option value="learning" ${e.status==='learning'?'selected':''}>Learning</option>
+      <option value="solid" ${e.status==='solid'?'selected':''}>Solid — teach-ready</option>
+    </select></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="eSave">Save changes</button>
+      <button class="btn ghost" id="eCancel">Cancel</button>
+    </div>`;
+  const eDom=sheet.querySelector("#eDomain"), eSub=sheet.querySelector("#eSub");
+  fillSub(eSub,e.domain,e.sub);
+  eDom.addEventListener("change",()=>fillSub(eSub,eDom.value));
+  sheet.querySelector("#eSave").addEventListener("click",()=>{
+    e.text=sheet.querySelector("#eText").value.trim();
+    e.domain=eDom.value; e.sub=eSub.value;
+    e.tags=sheet.querySelector("#eTags").value.split(",").map(s=>s.trim()).filter(Boolean);
+    e.source=sheet.querySelector("#eSource").value.trim();
+    e.files=sheet.querySelector("#eFiles").value.split(",").map(s=>s.trim()).filter(Boolean);
+    e.decays=sheet.querySelector("#eDecays").checked;
+    if(sheet.querySelector("#eVerifyNow").checked || (e.decays && !e.verifiedTs)) e.verifiedTs=Date.now();
+    e.status=sheet.querySelector("#eStatus").value;
+    save(); closeModal(); renderReview(); toast("Updated");
+  });
+  sheet.querySelector("#eCancel").addEventListener("click",closeModal);
+  document.getElementById("editModal").classList.add("show");
+}
+function closeModal(){ document.getElementById("editModal").classList.remove("show"); }
+document.getElementById("editModal").addEventListener("click",e=>{ if(e.target.id==="editModal") closeModal(); });
+
+// ---- map ----
+function renderMap(){
+  const counts={};
+  DB.forEach(e=>{ const k=e.domain+"||"+e.sub; counts[k]=(counts[k]||0)+1; });
+  let total=DB.length, covered=0, gaps=0, domainsActive=new Set();
+  let html="";
+  Object.keys(CURRICULUM).forEach(d=>{
+    if(d==="Inbox / Unsorted") return;
+    const subs=CURRICULUM[d];
+    let dCount=0;
+    const cells=subs.map(s=>{
+      const n=counts[d+"||"+s]||0; dCount+=n;
+      if(n>0){covered++;domainsActive.add(d);} else gaps++;
+      const lvl=n===0?0:(n<3?1:2);
+      return `<div class="sub lvl${lvl}" data-q="${esc(s)}"><span>${esc(s)}</span><span class="n">${n}</span></div>`;
+    }).join("");
+    html+=`<div class="domain card"><h3>${sysIcon(d)}${esc(d)} <span class="count">${dCount} concept${dCount===1?'':'s'}</span></h3><div class="subgrid">${cells}</div></div>`;
+  });
+  document.getElementById("mapBody").innerHTML=html;
+  document.getElementById("mTotal").textContent=total;
+  document.getElementById("mCovered").textContent=covered;
+  document.getElementById("mGaps").textContent=gaps;
+  document.getElementById("mDomains").textContent=domainsActive.size;
+  document.querySelectorAll("#mapBody .sub").forEach(c=>c.addEventListener("click",()=>{
+    document.getElementById("q").value=c.dataset.q;
+    document.querySelector('#nav button[data-v="review"]').click();
+  }));
+}
+
+// ---- teach / handout ----
+function renderTeach(){
+  const sel=document.getElementById("tDomain");
+  const active=[...new Set(DB.map(e=>e.domain))].filter(d=>d!=="Inbox / Unsorted").sort();
+  sel.innerHTML=`<option value="">All domains</option>`+active.map(d=>`<option>${esc(d)}</option>`).join("");
+  renderTeachList();
+  sel.onchange=renderTeachList;
+}
+function renderTeachList(){
+  const d=document.getElementById("tDomain").value;
+  let list=DB.filter(e=>e.domain!=="Inbox / Unsorted"&&(!d||e.domain===d));
+  list.sort((a,b)=>(a.domain+a.sub).localeCompare(b.domain+b.sub));
+  const box=document.getElementById("teachPick");
+  if(!list.length){ box.innerHTML=`<div class="empty">No filed concepts yet. Sort some out of Inbox first.</div>`; updTCount(); return; }
+  box.innerHTML=list.map(e=>`<label class="checkrow">
+    <input type="checkbox" class="tk" value="${e.id}">
+    <span class="t"><span class="topic" style="color:var(--teal)">${esc(e.sub)}</span> — ${esc(e.text.slice(0,140))}${e.text.length>140?'…':''}</span></label>`).join("");
+  box.querySelectorAll(".tk").forEach(c=>c.addEventListener("change",updTCount));
+  updTCount();
+}
+function updTCount(){ const n=document.querySelectorAll(".tk:checked").length; document.getElementById("tCount").textContent=n; const b=document.getElementById("bCount2"); if(b) b.textContent=n; }
+document.getElementById("tSelAll").addEventListener("click",()=>{document.querySelectorAll(".tk").forEach(c=>c.checked=true);updTCount();});
+document.getElementById("tClear").addEventListener("click",()=>{document.querySelectorAll(".tk").forEach(c=>c.checked=false);updTCount();});
+function selectedEntries(){ const ids=[...document.querySelectorAll(".tk:checked")].map(c=>c.value); return DB.filter(e=>ids.includes(e.id)); }
+function handoutMd(){
+  const title=document.getElementById("handoutTitle").value.trim()||"Teaching handout";
+  const ents=selectedEntries();
+  const byDom={};
+  ents.forEach(e=>{ (byDom[e.domain]=byDom[e.domain]||[]).push(e); });
+  let md=`# ${title}\n\n`;
+  Object.keys(byDom).forEach(d=>{
+    md+=`## ${d}\n\n`;
+    const bySub={}; byDom[d].forEach(e=>{(bySub[e.sub]=bySub[e.sub]||[]).push(e);});
+    Object.keys(bySub).forEach(s=>{
+      md+=`**${s}**\n\n`;
+      bySub[s].forEach(e=>{ md+=`- ${e.text.replace(/\n+/g," ")}${e.source?"  _["+e.source.replace(/\n+/g," ")+"]_":""}\n`; });
+      md+=`\n`;
+    });
+  });
+  return md;
+}
+document.getElementById("genHandout").addEventListener("click",()=>{
+  const ents=selectedEntries();
+  if(!ents.length){ toast("Select some concepts first"); return; }
+  const title=document.getElementById("handoutTitle").value.trim()||"Teaching handout";
+  const byDom={}; ents.forEach(e=>{(byDom[e.domain]=byDom[e.domain]||[]).push(e);});
+  let html=`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px" class="no-print">
+      <h3 style="margin:0">Preview</h3><button class="btn sec sm" onclick="window.print()">🖨 Print / save PDF</button></div>
+      <hr style="border:none;border-top:1px solid var(--line);margin:12px 0" class="no-print">
+      <h2 style="margin:0 0 14px">${esc(title)}</h2>`;
+  Object.keys(byDom).forEach(d=>{
+    html+=`<h3 style="color:var(--teal);margin:14px 0 8px">${esc(d)}</h3>`;
+    const bySub={}; byDom[d].forEach(e=>{(bySub[e.sub]=bySub[e.sub]||[]).push(e);});
+    Object.keys(bySub).forEach(s=>{
+      html+=`<div style="font-weight:700;margin:8px 0 4px">${esc(s)}</div><ul style="margin:0 0 8px;padding-left:20px">`;
+      bySub[s].forEach(e=>{ html+=`<li style="margin-bottom:5px;line-height:1.5">${esc(e.text)}</li>`; });
+      html+=`</ul>`;
+    });
+  });
+  html+=`<p class="hint" style="margin-top:18px">${ents.length} concepts · drafted from your own notes · verify references before publishing.</p></div>`;
+  document.getElementById("handoutOut").innerHTML=html;
+  document.getElementById("handoutOut").scrollIntoView({behavior:"smooth"});
+});
+function generationBrief(){
+  const ents=selectedEntries();
+  const kind=document.getElementById("briefKind").value;
+  const title=document.getElementById("handoutTitle").value.trim();
+  let b=`# Generation brief for Claude\n\n`;
+  b+=`**Task:** Build ${kind}${title?` titled "${title}"`:""}, based ONLY on the captured concepts below.\n\n`;
+  b+=`**Context:** I'm a pulmonary & critical care fellow. These are concepts I've logged in my own words while learning. Use them as the backbone. Keep my framing and any numbers I noted. Where I gave a source, preserve the citation. Where a concept lists attached files, READ those files and incorporate their figures/data. Concepts marked guideline-dependent may have decayed — verify them against current guidance and tell me explicitly what changed; do not silently "correct" anything. Match an attending-to-fellow level.\n\n`;
+  b+=`---\n\n## Captured concepts (${ents.length})\n\n`;
+  const byDom={}; ents.forEach(e=>{(byDom[e.domain]=byDom[e.domain]||[]).push(e);});
+  Object.keys(byDom).forEach(d=>{
+    b+=`### ${d}\n\n`;
+    byDom[d].forEach(e=>{
+      b+=`- **${e.sub}** — ${e.text.replace(/\n+/g," ")}\n`;
+      if(e.source) b+=`  - source: ${e.source.replace(/\n+/g," ")}\n`;
+      if(e.files?.length) b+=`  - attached files (read these): ${e.files.join(", ")}\n`;
+      if(e.decays) b+=`  - ⚠ guideline-dependent; last verified ${e.verifiedTs?fmt(e.verifiedTs):"unknown"} — verify against current guidance\n`;
+      if(e.tags?.length) b+=`  - tags: ${e.tags.join(", ")}\n`;
+    });
+    b+=`\n`;
+  });
+  b+=`---\n\nBefore building, ask me up to 3 clarifying questions if scope, audience, or format is unclear.\n`;
+  return b;
+}
+async function copyText(t,msg){ try{ await navigator.clipboard.writeText(t); toast(msg); }
+  catch(e){ const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast(msg); } }
+document.getElementById("copyBrief").addEventListener("click",()=>{
+  if(!selectedEntries().length){ toast("Select some concepts first"); return; }
+  copyText(generationBrief(),"Brief copied — paste into a Cowork chat");
+});
+document.getElementById("copyMd").addEventListener("click",async()=>{
+  const ents=selectedEntries(); if(!ents.length){ toast("Select some concepts first"); return; }
+  try{ await navigator.clipboard.writeText(handoutMd()); toast("Markdown copied"); }
+  catch(e){ const t=document.createElement("textarea");t.value=handoutMd();document.body.appendChild(t);t.select();document.execCommand("copy");t.remove();toast("Markdown copied"); }
+});
+
+// ---- data ----
+const EXPORT_KEY="pccm_lastexport";
+function backupStatus(){
+  let rec=null; try{rec=JSON.parse(localStorage.getItem(EXPORT_KEY));}catch(e){}
+  const days = rec? daysAgo(rec.ts) : null;
+  const unbacked = rec? Math.max(0, DB.length-(rec.count||0)) : DB.length;
+  const needs = DB.length>0 && (!rec || days>=7 || unbacked>=20);
+  return {rec,days,unbacked,needs};
+}
+function renderData(){
+  const inbox=DB.filter(e=>e.domain==="Inbox / Unsorted").length;
+  document.getElementById("dataStat").textContent=`${DB.length} concepts stored · ${inbox} awaiting triage · saved in this browser only.`;
+  const b=backupStatus(), el=document.getElementById("backupBanner");
+  if(b.needs){
+    el.innerHTML=`<div class="banner"><strong>⚠ Back up your data.</strong>
+      ${b.rec?`Last export ${b.days} day${b.days===1?'':'s'} ago · ${b.unbacked} new since.`:`You've never exported.`}
+      Browser storage can be cleared — export keeps your fellowship safe.
+      <button class="btn sm" id="bannerExport" style="margin-left:auto">Export now</button></div>`;
+    document.getElementById("bannerExport").addEventListener("click",doExport);
+  } else if(b.rec){
+    el.innerHTML=`<p class="hint" style="margin:0 0 12px">✓ Backed up ${b.days===0?'today':b.days+' day'+(b.days===1?'':'s')+' ago'}.</p>`;
+  } else { el.innerHTML=""; }
+}
+function doExport(){
+  const blob=new Blob([JSON.stringify(DB,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="pccm-learning-log-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+  localStorage.setItem(EXPORT_KEY, JSON.stringify({ts:Date.now(),count:DB.length}));
+  renderData();
+  toast("Exported "+DB.length+" concepts");
+}
+document.getElementById("exportBtn").addEventListener("click",doExport);
+document.getElementById("csvBtn").addEventListener("click",()=>{
+  const esc2=s=>'"'+String(s||"").replace(/"/g,'""')+'"';
+  const rows=[["date","domain","subtopic","status","tags","text","source","files","guideline_dependent","last_verified"].join(",")];
+  DB.forEach(e=>rows.push([fmt(e.ts),e.domain,e.sub,e.status,(e.tags||[]).join("; "),e.text,e.source||"",(e.files||[]).join("; "),e.decays?"yes":"",e.verifiedTs?fmt(e.verifiedTs):""].map(esc2).join(",")));
+  const blob=new Blob([rows.join("\n")],{type:"text/csv"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="pccm-learning-log-"+new Date().toISOString().slice(0,10)+".csv"; a.click();
+});
+document.getElementById("importFile").addEventListener("change",ev=>{
+  const f=ev.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{
+    const data=JSON.parse(r.result);
+    if(!Array.isArray(data)) throw 0;
+    const existing=new Set(DB.map(e=>e.id));
+    let added=0;
+    data.forEach(e=>{ if(e&&e.id&&!existing.has(e.id)){ DB.push(e); added++; } });
+    save(); renderData(); toast("Merged "+added+" new concepts");
+  }catch(e){ toast("Invalid file"); } };
+  r.readAsText(f); ev.target.value="";
+});
+document.getElementById("wipeBtn").addEventListener("click",()=>{
+  if(confirm("Erase ALL concepts on this device? Export first if unsure.")){ DB=[]; save(); renderData(); toast("Erased"); }
+});
+
+// ---- theme ----
+const THEME_KEY="pccm_theme";
+const themeMQ=window.matchMedia("(prefers-color-scheme: dark)");
+function applyTheme(){
+  const t=localStorage.getItem(THEME_KEY)||"auto";
+  document.documentElement.setAttribute("data-theme",t);
+  const effDark = t==="dark" || (t==="auto" && themeMQ.matches);
+  const m=document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute("content", effDark ? "#13202c" : "#eef3f8");
+  const lbl={auto:"◑ Auto",light:"☀ Light",dark:"☾ Dark"};
+  document.getElementById("themeBtn").textContent=lbl[t];
+}
+document.getElementById("themeBtn").addEventListener("click",()=>{
+  const order=["auto","light","dark"];
+  const cur=localStorage.getItem(THEME_KEY)||"auto";
+  const next=order[(order.indexOf(cur)+1)%order.length];
+  localStorage.setItem(THEME_KEY,next);
+  applyTheme();
+  toast(next==="auto"?"Theme: follows phone":"Theme: "+next);
+});
+// react to phone switching light/dark while in Auto
+themeMQ.addEventListener("change",()=>{ if((localStorage.getItem(THEME_KEY)||"auto")==="auto") applyTheme(); });
+applyTheme();
+
+// init
+renderData();
+setTimeout(()=>{ if(DB.length>0 && backupStatus().needs) toast("Reminder: back up your concepts → Data tab"); }, 1400);
+
+// PWA: register service worker (only over http/https; silently skips on file://)
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load",()=>{ navigator.serviceWorker.register("pccm-sw.js",{scope:"./"}).catch(()=>{}); });
+}
+</script>
+</body>
+</html>
