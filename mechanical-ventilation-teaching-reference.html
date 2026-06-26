@@ -4581,7 +4581,7 @@ document.addEventListener('click', function (e) {
         <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— drag the variables to see P<sub>A</sub>O₂ recompute</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/alveolar_gas_equation.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
-        Open full-screen ↗
+        Open full-screen ↗︎
       </a>
     </div>
     <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#0a0e1a;">
@@ -5104,8 +5104,8 @@ document.addEventListener('click', function (e) {
 
 <div class="figure">
     <div style="display:flex; justify-content:center; gap:8px; margin-bottom:6px;">
-      <button type="button" id="ohbc-anim-toggle" style="font-size:12px; padding:4px 12px; border:1px solid #cbd5e1; background:#fff; border-radius:14px; cursor:pointer; color:#1f3a5f;" aria-pressed="false">⏸ Pause animation</button>
-      <span id="ohbc-anim-state" style="font-size:11px; color:#64748b; align-self:center; font-style:italic;">cycling left ↔ right shift every 6 s</span>
+      <button type="button" id="ohbc-anim-toggle" style="font-size:12px; padding:4px 12px; border:1px solid #cbd5e1; background:#fff; border-radius:14px; cursor:pointer; color:#1f3a5f;" aria-pressed="false">⏸︎ Pause animation</button>
+      <span id="ohbc-anim-state" style="font-size:11px; color:#64748b; align-self:center; font-style:italic;">cycling left ↔︎ right shift every 6 s</span>
     </div>
     <svg id="ohbc-anim-svg" class="anim-fig anim-ohbc" viewBox="0 0 580 410" role="img" aria-label="Oxyhemoglobin dissociation curve, animating between right-shift (acidosis, hypercapnia, hyperthermia, increased 2,3-BPG) and left-shift (alkalemia, hypocapnia, hypothermia, decreased 2,3-BPG). The P50 marker moves accordingly. Animation can be paused with the button above." style="max-width:580px; width:100%; height:auto; display:block; margin:0 auto;">
       <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
@@ -5186,14 +5186,14 @@ document.addEventListener('click', function (e) {
           try {
             if (paused) {
               svg.pauseAnimations();
-              btn.textContent = '▶ Resume animation';
+              btn.textContent = '▶︎ Resume animation';
               btn.setAttribute('aria-pressed', 'true');
               if (stateLbl) stateLbl.textContent = 'paused — use the sliders in the shift explorer below for manual control';
             } else {
               svg.unpauseAnimations();
-              btn.textContent = '⏸ Pause animation';
+              btn.textContent = '⏸︎ Pause animation';
               btn.setAttribute('aria-pressed', 'false');
-              if (stateLbl) stateLbl.textContent = 'cycling left ↔ right shift every 6 s';
+              if (stateLbl) stateLbl.textContent = 'cycling left ↔︎ right shift every 6 s';
             }
           } catch (e) { console.error('[OHbDC anim toggle]', e); }
         });
@@ -5806,7 +5806,7 @@ document.addEventListener('click', function (e) {
             <input type="range" id="bh-ventSlider" min="40" max="160" value="100">
             <span class="bh-value" id="bh-ventValue">100%</span>
           </div>
-          <button class="bh-btn" id="bh-pauseBtn">⏸ Pause</button>
+          <button class="bh-btn" id="bh-pauseBtn">⏸︎ Pause</button>
           <button class="bh-btn" id="bh-speedBtn">1×</button>
         </div>
       </div>
@@ -6047,7 +6047,7 @@ document.addEventListener('click', function (e) {
           else if (shift === 'Left') { o2el.textContent = '↓ Impaired unloading'; o2el.style.color = '#A32D2D'; }
           else { o2el.textContent = '→ Normal'; o2el.style.color = '#1F1F1C'; }
         }
-        document.getElementById('bh-pauseBtn').addEventListener('click', function() { paused = !paused; this.textContent = paused ? '▶ Play' : '⏸ Pause'; });
+        document.getElementById('bh-pauseBtn').addEventListener('click', function() { paused = !paused; this.textContent = paused ? '▶︎ Play' : '⏸︎ Pause'; });
         document.getElementById('bh-speedBtn').addEventListener('click', function() {
           const speeds = [1, 2, 0.5]; const labels = ['1×', '2×', '0.5×'];
           const idx = speeds.indexOf(speed); const next = (idx + 1) % speeds.length;
@@ -7303,12 +7303,12 @@ document.addEventListener('click', function (e) {
           <td><strong>Static compliance (C<sub>stat</sub>)</strong></td>
           <td>↓↓ <em>(stiff lung)</em>†</td>
           <td>↑ <em>(loss of recoil)</em>†</td>
-          <td>↔ to ↓ <em>(hyperinflated, near TLC)</em></td>
+          <td>↔︎ to ↓ <em>(hyperinflated, near TLC)</em></td>
           <td>↓ <em>(wet, heavy lung)</em></td>
         </tr>
         <tr>
           <td><strong>Airway resistance (R<sub>aw</sub>)</strong></td>
-          <td>↔ to mildly ↑</td>
+          <td>↔︎ to mildly ↑</td>
           <td>↑↑ <em>(expiratory collapse)</em></td>
           <td>↑↑↑ <em>(bronchospasm + mucus)</em>†</td>
           <td>↑ <em>(edema in airway walls; “cardiac asthma”)</em></td>
@@ -8385,7 +8385,7 @@ document.addEventListener('click', function (e) {
         <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— manipulate the equation of motion in real time</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
-        Open full-screen ↗
+        Open full-screen ↗︎
       </a>
     </div>
     <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#0a0e1a;">
@@ -8630,7 +8630,7 @@ document.addEventListener('click', function (e) {
         <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— pick a pattern or adjust the physiology directly</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
-        Open full-screen ↗
+        Open full-screen ↗︎
       </a>
     </div>
     <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#0a0e1a;">
@@ -9398,7 +9398,7 @@ document.addEventListener('click', function (e) {
         <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— live waveforms for the eight common patterns</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
-        Open full-screen ↗
+        Open full-screen ↗︎
       </a>
     </div>
     <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#FAF9F5;">
@@ -13573,7 +13573,7 @@ document.addEventListener('click', function (e) {
         <div class="sim-actions">
           <button type="button" class="primary" id="sim-advance">Advance 4 hours →</button>
           <button type="button" id="sim-undo" disabled>↶ Undo</button>
-          <button type="button" id="sim-hint">💡 Hint</button>
+          <button type="button" id="sim-hint"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-0.12em;margin-right:.18em"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>Hint</button>
           <button type="button" id="sim-reset">Reset</button>
         </div>
         <svg id="sim-waveform-mini" viewBox="0 0 360 110" preserveAspectRatio="xMidYMid meet" style="width:100%; height:110px; display:block; margin-top:10px;" aria-label="Modeled pressure-flow waveform">
@@ -14142,12 +14142,12 @@ document.addEventListener('click', function (e) {
           <td><strong>Static compliance (C<sub>stat</sub>)</strong></td>
           <td>↓↓ <em>(stiff lung)</em>†</td>
           <td>↑ <em>(loss of recoil)</em>†</td>
-          <td>↔ to ↓ <em>(hyperinflated, near TLC)</em></td>
+          <td>↔︎ to ↓ <em>(hyperinflated, near TLC)</em></td>
           <td>↓ <em>(wet, heavy lung)</em></td>
         </tr>
         <tr>
           <td><strong>Airway resistance (R<sub>aw</sub>)</strong></td>
-          <td>↔ to mildly ↑</td>
+          <td>↔︎ to mildly ↑</td>
           <td>↑↑ <em>(expiratory collapse)</em></td>
           <td>↑↑↑ <em>(bronchospasm + mucus)</em>†</td>
           <td>↑ <em>(edema in airway walls; “cardiac asthma”)</em></td>
@@ -16334,7 +16334,7 @@ saveInputs();
   // ============== STICKY MINI-CALCULATOR (clinical-grade) ==============
   // Inputs: sex, height(in), VT, RR, PIP, Pplat, PEEP, flow, FiO₂, PaO₂.
   // Outputs: PBW, VT/PBW, VE, ΔP, Cstat, Raw, τ, MP, P/F (+severity), RSBI.
-  // Mode toggle (VC↔PC) selects MP formula. LPV bundle dots reflect targets.
+  // Mode toggle (VC↔︎PC) selects MP formula. LPV bundle dots reflect targets.
   // Inputs persist via localStorage.  Copy-snapshot writes a chart-ready line.
   try {
     const STORAGE_KEY = 'mv-mc-v2';
@@ -17155,14 +17155,14 @@ saveInputs();
           if (dice < 0.30) {
             activeComplication = 'pneumothorax';
             pf -= 35;
-            events.push('⚠ Pneumothorax — needs chest tube. P/F dropped 35.');
+            events.push('⚠︎ Pneumothorax — needs chest tube. P/F dropped 35.');
           } else if (dice < 0.65) {
             activeComplication = 'mucusplug';
             cstat -= 8; pf -= 15;
-            events.push('⚠ Mucus plug — Pplat ↑, P/F ↓ 15. Suction or bronchoscopy.');
+            events.push('⚠︎ Mucus plug — Pplat ↑, P/F ↓ 15. Suction or bronchoscopy.');
           } else {
             activeComplication = 'hypotension';
-            events.push('⚠ Sudden hypotension — MAP dropped. Check sedation, fluids, pressors.');
+            events.push('⚠︎ Sudden hypotension — MAP dropped. Check sedation, fluids, pressors.');
           }
         }
         if (activeComplication === 'mucusplug' && Math.random() < 0.4) {
@@ -17335,7 +17335,7 @@ saveInputs();
         const wEl = document.getElementById('sim-warnings');
         const s = readSettings();
         const ws = getWarnings(s);
-        wEl.innerHTML = ws.map(w => `<div class="sim-warning">⚠ ${w}</div>`).join('');
+        wEl.innerHTML = ws.map(w => `<div class="sim-warning">⚠︎ ${w}</div>`).join('');
       }
 
       function renderWaveform() {
@@ -17388,7 +17388,7 @@ saveInputs();
         const log = document.getElementById('sim-log');
         // Separate big events from minor
         events.forEach(e => {
-          const isWarn = e.startsWith('⚠');
+          const isWarn = e.startsWith('⚠︎');
           const div = document.createElement('div');
           div.className = isWarn ? 'sim-event' : '';
           div.textContent = `[h${state.hour}] ${e}`;
@@ -17541,7 +17541,7 @@ saveInputs();
       document.getElementById('sim-hint').addEventListener('click', () => {
         const hintBox = document.getElementById('sim-hint-box');
         const settings = readSettings();
-        hintBox.innerHTML = '<strong>💡 Suggestion:</strong> ' + getHint(settings);
+        hintBox.innerHTML = '<strong><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-0.12em;margin-right:.18em"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.3 1 2.5h6c0-1.2.3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>Suggestion:</strong> ' + getHint(settings);
         hintBox.style.display = 'block';
       });
       document.getElementById('sim-reset').addEventListener('click', () => loadScenario(scenarioId));
@@ -17735,7 +17735,7 @@ saveInputs();
   };
 
   // ============== READER MODE ==============
-  // Toolbar 📖 Read button toggles a distraction-free single-column layout.
+  // Toolbar Read button toggles a distraction-free single-column layout.
   // Floating ✕ Exit button restores the full chrome.
   try {
     const readBtn = document.getElementById('btn-reader');
