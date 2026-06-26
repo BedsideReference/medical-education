@@ -8,8 +8,43 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; }
+    :root {
+      --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+      --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+    /* Match the book: no horizontal swipe-back / overscroll on mobile */
+    html { overscroll-behavior-x: none; }
+    body { margin: 0; font-family: var(--font-body); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    /* Route every existing Tailwind/inline mono + serif usage through the new type system */
+    .font-mono { font-family: var(--font-mono) !important; }
+    .font-sans { font-family: var(--font-body) !important; }
+    .font-display { font-family: var(--font-display) !important; letter-spacing: -0.02em; }
+    /* Custom range slider styling — themed via currentColor of the accent */
+    input[type="range"] { -webkit-appearance: none; appearance: none; height: 5px; border-radius: 999px; background: rgba(120,130,150,0.25); outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 15px; height: 15px; border-radius: 50%; background: var(--accent, #0d9488); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(15,23,42,0.3); cursor: pointer; transition: transform .12s ease; }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.18); }
+    input[type="range"]::-moz-range-thumb { width: 15px; height: 15px; border-radius: 50%; background: var(--accent, #0d9488); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(15,23,42,0.3); cursor: pointer; }
+    /* ===== Mobile, matching the book's standard ===== */
+    /* Never let labels fall below readable size on phones (book keeps type generous) */
+    @media (max-width: 700px) {
+      .text-\[8px\]  { font-size: 10px  !important; }
+      .text-\[9px\]  { font-size: 10.5px !important; }
+      .text-\[10px\] { font-size: 11px  !important; }
+      .text-\[11px\] { font-size: 12px  !important; }
+    }
+    /* On touch devices: comfortable tap targets + easier slider thumbs */
+    @media (hover: none) and (pointer: coarse) {
+      input[type="range"] { height: 8px; }
+      input[type="range"]::-webkit-slider-thumb { width: 22px; height: 22px; }
+      input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; }
+      .sim-touch-target { min-height: 42px; }
+      select { min-height: 44px; }
+    }
     /* Loading state visible while Babel compiles */
     #root:empty::before {
       content: "Loading simulator…";
@@ -17,20 +52,23 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      font-family: ui-monospace, monospace;
-      color: #94a3b8;
-      background: #0a0e1a;
+      font-family: var(--font-mono);
+      letter-spacing: 0.08em;
+      color: #64748b;
+      background: #f3f5f9;
     }
     #error-display {
       display: none;
       padding: 2rem;
       background: #1a0a0a;
       color: #fca5a5;
-      font-family: ui-monospace, monospace;
+      font-family: var(--font-mono);
       font-size: 13px;
       white-space: pre-wrap;
       min-height: 100vh;
     }
+    @keyframes vent-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @keyframes vent-pulse-alarm { 0%,100% { box-shadow: 0 0 0 0 rgba(225,29,72,0.0); } 50% { box-shadow: 0 0 0 4px rgba(225,29,72,0.14); } }
   </style>
 </head>
 <body>
@@ -136,12 +174,11 @@ function patientTriggerEffort(t, tTrig, PEEP, sensitivity, triggerType = "pressu
 }
 // ---------- Pathology mechanics ----------
 function applyPathologyMechanics(C, R, pathology) {
-  let Ceff = C, Reff = R;
-  if (pathology === "ARDS") Ceff = CONSTANTS.ARDS_COMPLIANCE;
-  if (pathology === "COPD") Reff = CONSTANTS.COPD_RESISTANCE;
-  if (pathology === "obstructive") Reff = CONSTANTS.OBSTRUCTIVE_RESISTANCE;
-  if (pathology === "restrictive") Ceff = CONSTANTS.RESTRICTIVE_COMPLIANCE;
-  return { Ceff, Reff };
+  // Mechanics now flow ONLY from the Compliance/Resistance sliders so the
+  // displayed values always match what the sim uses. ARDS/COPD presets are
+  // applied by pushing values INTO the sliders (see the pathology useEffect in
+  // the component) rather than silently overriding them here.
+  return { Ceff: C, Reff: R };
 }
 // ---------- Per-mode step functions ----------
 // Each takes (s, sim, dt, Ceff, Reff) and returns { pressure, flow }.
@@ -370,7 +407,29 @@ function applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff) {
   const tExp = sim.cycleT - s.ITime;
   switch (s.pathology) {
     case "autoPEEP": {
-      if (!inInsp && tExp > eTime * 0.7) flow = Math.min(flow, -0.05);
+      // Incomplete exhalation: the lung empties toward a NON-ZERO trapped volume
+      // rather than back to FRC. This (a) makes end-expiratory flow visibly fail
+      // to return to zero AND (b) leaves real trapped gas in the lung, so an
+      // expiratory hold now reveals elevated total PEEP (auto-PEEP = Vtrap / C).
+      // Expiration in the mode steppers is recomputed (not integrated) each
+      // sample, so overriding sim.volume here is stable across frames.
+      if (!inInsp) {
+        const tau = Reff * Ceff;
+        const VtL = s.Vt / 1000;
+        // Trapping scales with how truncated expiration is: full exhalation needs
+        // ~3 time constants; the shorter the expiratory time relative to 3τ, the more
+        // gas is trapped. A small floor keeps the scenario demonstrative, but raising
+        // RR / shortening Te now visibly worsens auto-PEEP and lengthening Te relieves
+        // it — so the expiratory-hold reveal responds to the fixes the lesson teaches.
+        const trapFrac = 0.12 + 0.4 * Math.max(0, Math.min(1, 1 - eTime / (3 * tau)));
+        const Vtrap = trapFrac * VtL;               // trapped volume above FRC (L)
+        const peak = sim.expStartV || VtL;          // volume at start of expiration
+        sim.volume = Vtrap + (peak - Vtrap) * Math.exp(-tExp / tau);
+        flow = -(sim.volume - Vtrap) / tau;
+        // Guarantee a visibly non-zero terminal flow (truncated exhalation)
+        if (tExp > eTime * 0.5) flow = Math.min(flow, -0.05);
+        pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+      }
       break;
     }
     case "flowStarvation": {
@@ -394,9 +453,31 @@ function applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff) {
       break;
     }
     case "autoTrigger": {
-      if (!inInsp && tExp > 0.2 && tExp < eTime - 0.2) {
-        pressure += 1.2 * Math.sin(2 * Math.PI * 3 * tExp);
-        flow += 0.05 * Math.sin(2 * Math.PI * 3 * tExp);
+      if (!inInsp) {
+        const tau = Reff * Ceff;
+        // (1) Cardiac oscillation ripple during expiration — the CAUSE
+        if (tExp > 0.15 && tExp < eTime - 0.15) {
+          pressure += 0.8 * Math.sin(2 * Math.PI * 3 * tExp);
+          flow += 0.02 * Math.sin(2 * Math.PI * 3 * tExp);
+        }
+        // (2) A spurious, vent-delivered breath mid-expiration — the EFFECT.
+        // The oscillation crosses the trigger threshold and the ventilator
+        // delivers an unwanted breath the patient never asked for. Modeled as a
+        // small half-sine volume bump (~40% of a set breath) added on top of the
+        // ongoing expiratory baseline, with flow = dV/dt of that bump.
+        const dur = 0.7;
+        const tCenter = eTime * 0.5;
+        const lt = tExp - tCenter;
+        if (Math.abs(lt) < dur / 2 && eTime > 1.0) {
+          const drivingP = Math.max(3, ((s.PIP || 20) - s.PEEP) * 0.4);
+          const prog = (lt + dur / 2) / dur;         // 0..1 across the spurious breath
+          const env = Math.sin(Math.PI * prog);
+          const dEnv = (Math.PI / dur) * Math.cos(Math.PI * prog);
+          const Vbump = Ceff * drivingP * env;        // L
+          sim.volume = sim.volume + Vbump;
+          flow = flow + Ceff * drivingP * dEnv;       // L/s
+          pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+        }
       }
       break;
     }
@@ -420,16 +501,30 @@ function applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff) {
       break;
     }
     case "doubleTrigger": {
-      // After end-of-inspiration, immediately deliver a second stacked breath
-      if (!inInsp && tExp < 0.5) {
-        const stackT = tExp;
-        const drivingP = (s.PIP || 25) - s.PEEP;
+      // Two breaths stacked with little/no exhalation between them. The lung
+      // fills to ~2x Vt, pressure spikes (second breath delivered against an
+      // already-full lung), then a single large exhalation empties it.
+      // Because mode-step expiration is recomputed each sample, we fully
+      // override volume/flow/pressure during the stack window.
+      if (!inInsp) {
+        const VtL = s.Vt / 1000;
         const tau = Reff * Ceff;
-        const stackedFlow = (drivingP / Reff) * Math.exp(-stackT / tau) * 0.85;
-        flow = stackedFlow;
-        // Add to volume already exhaled — clinically this is breath stacking
-        sim.volume += Ceff * drivingP * (1 - Math.exp(-stackT / tau)) * 0.85 * (sim.cycleT < 0.02 ? 1 : 0);
-        pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+        const secondTi = 0.4;                 // duration of the stacked 2nd inspiration
+        if (tExp < secondTi) {
+          // Second inspiration: build a full additional Vt on top of the first
+          const f = VtL / secondTi;           // L/s (matches first-breath flow scale)
+          sim.volume = VtL + f * tExp;        // climbs from Vt toward ~2x Vt
+          flow = f;
+          pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+          sim.dtStackPeak = sim.volume;       // remember peak for the exhalation
+        } else {
+          // Single large exhalation of the combined (stacked) volume
+          const td = tExp - secondTi;
+          const peak = sim.dtStackPeak || (2 * VtL);
+          sim.volume = peak * Math.exp(-td / tau);
+          flow = -sim.volume / tau;
+          pressure = sim.volume / Ceff + flow * Reff + s.PEEP;
+        }
       }
       break;
     }
@@ -474,54 +569,86 @@ function applyPathologyOverlay(s, sim, pressure, flow, Ceff, Reff) {
  * Sample rate: 100 Hz simulation, rendered at native refresh via rAF.
  */
 // ---------- Theme ----------
+// The chrome (light / dark) is a modern product surface. The waveform canvas
+// always renders on a dark "scope" instrument palette shared by both themes —
+// traces read best on near-black, the way real monitors are designed.
+const SCOPE = {
+  surface: "#0b1220",
+  surfaceTop: "#0f1a31",   // subtle vertical gradient top
+  grid: "#1a2740",
+  gridStrong: "#26385a",
+  zeroLine: "#41557c",
+  tick: "#9aacce",
+  label: "#d4dff2",
+  pressure: "#f5b133",     // warm amber
+  flow: "#34d399",         // emerald
+  volume: "#38bdf8",       // sky
+};
 const THEMES = {
+  light: {
+    bg: "radial-gradient(1200px 640px at 88% -12%, rgba(13,148,136,0.12), transparent 60%), radial-gradient(900px 500px at -10% 110%, rgba(79,70,229,0.08), transparent 55%), linear-gradient(180deg, #fbfcfe 0%, #eef2f7 100%)",
+    surface: "#ffffff",
+    surfaceAlt: "#f4f7fb",
+    border: "#e6eaf1",
+    borderStrong: "#d7deea",
+    grid: "#eef1f6",
+    zeroLine: "#c2cad8",
+    text: "#0f1b2d",
+    textMuted: "#475569",       // darker — was washing out on white
+    textFaint: "#64748b",       // legible faint tone (slate-500), not pale
+    tickText: "#64748b",
+    accent: "#0d9488",          // teal-600
+    accent2: "#4f46e5",         // indigo (secondary)
+    accentInk: "#ffffff",
+    accentSoft: "rgba(13,148,136,0.85)",
+    alarm: "#e11d48",
+    alarmSoft: "rgba(225,29,72,0.10)",
+    pressure: "#c2410c",        // chrome accent variants (contrast on white)
+    flow: "#0d9488",
+    volume: "#2563eb",
+    selectBg: "#ffffff",
+    shadow: "0 1px 2px rgba(16,24,40,0.04), 0 12px 28px -14px rgba(16,24,40,0.22)",
+    shadowSoft: "0 1px 2px rgba(16,24,40,0.04), 0 6px 16px -10px rgba(16,24,40,0.16)",
+    scope: SCOPE,
+  },
   dark: {
-    bg: "linear-gradient(135deg, #050810 0%, #0a0f1f 100%)",
-    surface: "#0a0e1a",
-    surfaceAlt: "rgba(15, 23, 42, 0.4)",
-    border: "#1e293b",
-    grid: "#1a2238",
-    zeroLine: "#3a4868",
-    text: "#e2e8f0",
-    textMuted: "#94a3b8",
-    textFaint: "#64748b",
-    tickText: "#7a89aa",
-    accent: "#fbbf24",       // amber
-    accentInk: "#0f172a",    // ink for on-accent text
-    accentSoft: "rgba(251, 191, 36, 0.8)",
+    bg: "radial-gradient(1100px 560px at 90% -12%, rgba(45,212,191,0.16), transparent 60%), radial-gradient(800px 460px at -10% 110%, rgba(99,102,241,0.12), transparent 55%), linear-gradient(180deg, #0a0f1c 0%, #070b15 100%)",
+    surface: "#0e1525",
+    surfaceAlt: "#131d31",
+    border: "#21304b",
+    borderStrong: "#2c3e5e",
+    grid: "#1a2740",
+    zeroLine: "#3a4d72",
+    text: "#e7eef9",
+    textMuted: "#aebed6",       // brighter for legibility on dark
+    textFaint: "#8294b3",       // was too dim against the navy surface
+    tickText: "#94a6c4",
+    accent: "#2dd4bf",          // teal-400 (brighter on dark)
+    accent2: "#818cf8",
+    accentInk: "#04211d",
+    accentSoft: "rgba(45,212,191,0.85)",
+    alarm: "#fb7185",
+    alarmSoft: "rgba(251,113,133,0.12)",
     pressure: "#fbbf24",
     flow: "#34d399",
     volume: "#60a5fa",
-    selectBg: "#0f172a",
-  },
-  light: {
-    bg: "linear-gradient(135deg, #fafaf7 0%, #f1f0e9 100%)",
-    surface: "#ffffff",
-    surfaceAlt: "rgba(241, 240, 233, 0.5)",
-    border: "#d6d3c7",
-    grid: "#e8e5d8",
-    zeroLine: "#b8b3a3",
-    text: "#1c1917",
-    textMuted: "#57534e",
-    textFaint: "#78716c",
-    tickText: "#78716c",
-    accent: "#b45309",       // burnt amber for light
-    accentInk: "#fafaf7",
-    accentSoft: "rgba(180, 83, 9, 0.85)",
-    pressure: "#b45309",
-    flow: "#047857",
-    volume: "#1d4ed8",
-    selectBg: "#ffffff",
+    selectBg: "#0e1726",
+    shadow: "0 12px 30px -14px rgba(0,0,0,0.7)",
+    shadowSoft: "0 8px 20px -12px rgba(0,0,0,0.6)",
+    scope: SCOPE,
   },
 };
 // ---------- Real-time sweeping plot (Canvas) ----------
 function WaveformPlot({
   bufferRef, sweepRef, crosshairRef, channel, color, yLabel, yMin, yMax, theme, windowSec, height = 150,
   onHoverMove, onHoverLeave,
+  overlayKey, overlayColor, overlayLabel, showOverlay,
 }) {
   const canvasRef = useRef(null);
   const sizeRef = useRef({ W: 720, innerW: 720 - 60 - 12 });
-  const H = height, padL = 60, padR = 12, padT = 30, padB = 22;
+  // Tighter left gutter on phones so the trace isn't squeezed (book keeps charts full-bleed on mobile)
+  const isNarrow = typeof window !== "undefined" && window.innerWidth <= 700;
+  const H = height, padL = isNarrow ? 40 : 60, padR = isNarrow ? 8 : 12, padT = 30, padB = 22;
   const innerH = H - padT - padB;
   useEffect(() => {
     const cvs = canvasRef.current;
@@ -555,12 +682,16 @@ function WaveformPlot({
     const x = (t) => padL + (t / windowSec) * innerW;
     const y = (v) => padT + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
     let raf;
+    const sc = theme.scope;
     const draw = () => {
-      // Clear
-      ctx.fillStyle = theme.surface;
+      // Clear — subtle vertical gradient gives the scope depth
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+      bgGrad.addColorStop(0, sc.surfaceTop);
+      bgGrad.addColorStop(1, sc.surface);
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, W, H);
-      // Grid
-      ctx.strokeStyle = theme.grid;
+      // Grid (fine)
+      ctx.strokeStyle = sc.grid;
       ctx.lineWidth = 0.5;
       const yTicks = 4;
       for (let i = 0; i <= yTicks; i++) {
@@ -572,9 +703,13 @@ function WaveformPlot({
         const xx = padL + (innerW * i) / xTicks;
         ctx.beginPath(); ctx.moveTo(xx, padT); ctx.lineTo(xx, H - padB); ctx.stroke();
       }
+      // Frame around plot area
+      ctx.strokeStyle = sc.gridStrong;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(padL, padT, innerW, innerH);
       // Zero line
       if (yMin < 0 && yMax > 0) {
-        ctx.strokeStyle = theme.zeroLine;
+        ctx.strokeStyle = sc.zeroLine;
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
         const zy = y(0);
@@ -582,8 +717,8 @@ function WaveformPlot({
         ctx.setLineDash([]);
       }
       // Tick labels
-      ctx.fillStyle = theme.tickText;
-      ctx.font = "9px ui-monospace, monospace";
+      ctx.fillStyle = sc.tick;
+      ctx.font = "9px var(--font-mono), ui-monospace, monospace";
       ctx.textAlign = "end";
       for (let i = 0; i <= yTicks; i++) {
         const v = yMin + ((yMax - yMin) * (yTicks - i)) / yTicks;
@@ -595,63 +730,123 @@ function WaveformPlot({
         const xx = padL + (innerW * i) / xTicks;
         ctx.fillText(`${i}s`, xx, H - 6);
       }
-      // Channel label
+      // Channel label — pill in the corner
+      const labelText = yLabel;
+      ctx.font = "600 10px var(--font-mono), ui-monospace, monospace";
+      const lw = ctx.measureText(labelText).width;
+      ctx.fillStyle = "rgba(255,255,255,0.04)";
+      ctx.fillRect(padL, 7, lw + 14, 16);
       ctx.fillStyle = color;
-      ctx.font = "bold 10px ui-monospace, monospace";
       ctx.textAlign = "left";
-      ctx.fillText(yLabel, padL, 18);
-      // Trace - draw from circular buffer
+      ctx.fillText(labelText, padL + 7, 19);
+      // ---- Trace: collect contiguous segments (broken at sweep wraparound) ----
       const buf = bufferRef.current[channel];
       const tBuf = bufferRef.current.t;
-      const sweepT = sweepRef.current; // current head position in sec within window
       const N = buf.length;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.6;
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      let started = false;
+      const baselineY = (yMin < 0 && yMax > 0) ? y(0) : y(yMin); // fill target
+      const segments = [];
+      let seg = [];
       let prevX = -1;
       for (let i = 0; i < N; i++) {
         const tv = tBuf[i];
         if (tv === null || tv === undefined || isNaN(tv)) continue;
-        const xx = x(tv);
-        const yy = y(buf[i]);
-        // Break the path at sweep wraparound (where time jumps backward)
-        if (started && xx < prevX - 5) {
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.moveTo(xx, yy);
-        } else if (!started) {
-          ctx.moveTo(xx, yy);
-          started = true;
-        } else {
-          ctx.lineTo(xx, yy);
-        }
+        const xx = x(tv), yy = y(buf[i]);
+        if (seg.length && xx < prevX - 5) { segments.push(seg); seg = []; }
+        seg.push([xx, yy]);
         prevX = xx;
       }
-      ctx.stroke();
-      // Sweep cursor (vertical line at current head)
+      if (seg.length) segments.push(seg);
+      // Gradient fill under each segment
+      const fillGrad = ctx.createLinearGradient(0, padT, 0, H - padB);
+      fillGrad.addColorStop(0, color + "44");
+      fillGrad.addColorStop(1, color + "00");
+      ctx.fillStyle = fillGrad;
+      for (const s of segments) {
+        if (s.length < 2) continue;
+        ctx.beginPath();
+        ctx.moveTo(s[0][0], baselineY);
+        for (const [px, py] of s) ctx.lineTo(px, py);
+        ctx.lineTo(s[s.length - 1][0], baselineY);
+        ctx.closePath();
+        ctx.fill();
+      }
+      // Glowing stroke
+      ctx.save();
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 7;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.9;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      for (const s of segments) {
+        ctx.beginPath();
+        s.forEach(([px, py], idx) => idx ? ctx.lineTo(px, py) : ctx.moveTo(px, py));
+        ctx.stroke();
+      }
+      ctx.restore();
+      // ---- Optional overlay trace (e.g. alveolar pressure P_alv) ----
+      if (showOverlay && overlayKey && bufferRef.current[overlayKey]) {
+        const obuf = bufferRef.current[overlayKey];
+        const oc = overlayColor || theme.scope.tick;
+        ctx.save();
+        ctx.strokeStyle = oc;
+        ctx.lineWidth = 1.4;
+        ctx.setLineDash([5, 4]);
+        ctx.globalAlpha = 0.92;
+        ctx.lineJoin = "round";
+        ctx.lineCap = "round";
+        let started2 = false, oprev = -1;
+        ctx.beginPath();
+        for (let i = 0; i < N; i++) {
+          const tv = tBuf[i];
+          if (tv === null || tv === undefined || isNaN(tv)) continue;
+          const xx = x(tv), yy = y(obuf[i]);
+          if (started2 && xx < oprev - 5) { ctx.stroke(); ctx.beginPath(); ctx.moveTo(xx, yy); }
+          else if (!started2) { ctx.moveTo(xx, yy); started2 = true; }
+          else ctx.lineTo(xx, yy);
+          oprev = xx;
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+        // Legend (top-right of plot area)
+        ctx.font = "600 9px var(--font-mono), ui-monospace, monospace";
+        ctx.textAlign = "left";
+        const legX = Math.max(padL + 120, W - padR - 156);
+        ctx.strokeStyle = color; ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.moveTo(legX, 14); ctx.lineTo(legX + 16, 14); ctx.stroke();
+        ctx.fillStyle = theme.scope.label; ctx.fillText("Paw", legX + 21, 17);
+        const legX2 = legX + 62;
+        ctx.strokeStyle = oc; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(legX2, 14); ctx.lineTo(legX2 + 16, 14); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = theme.scope.label; ctx.fillText(overlayLabel || "P-alv", legX2 + 21, 17);
+      }
+      const sweepT = sweepRef.current;
+      // Sweep cursor (vertical line at current head) with a soft leading edge
       const sx = x(sweepT);
-      ctx.strokeStyle = theme.zeroLine;
+      const sweepGrad = ctx.createLinearGradient(sx - 18, 0, sx, 0);
+      sweepGrad.addColorStop(0, color + "00");
+      sweepGrad.addColorStop(1, color + "22");
+      ctx.fillStyle = sweepGrad;
+      ctx.fillRect(sx - 18, padT, 18, innerH);
+      ctx.strokeStyle = sc.zeroLine;
       ctx.lineWidth = 1;
-      ctx.globalAlpha = 0.6;
+      ctx.globalAlpha = 0.7;
       ctx.beginPath();
       ctx.moveTo(sx, padT); ctx.lineTo(sx, H - padB); ctx.stroke();
       ctx.globalAlpha = 1;
       // Hover crosshair (drawn when crosshairRef.current is set)
+      const xhairCol = "#5eead4"; // teal-300 — bright on the dark scope
       const xhair = crosshairRef && crosshairRef.current;
       if (xhair && xhair.tSec >= 0 && xhair.tSec <= windowSec) {
         const cx = x(xhair.tSec);
-        // Vertical crosshair line
-        ctx.strokeStyle = theme.accent;
+        ctx.strokeStyle = xhairCol;
         ctx.lineWidth = 1;
-        ctx.globalAlpha = 0.8;
+        ctx.globalAlpha = 0.85;
         ctx.setLineDash([4, 3]);
         ctx.beginPath();
         ctx.moveTo(cx, padT); ctx.lineTo(cx, H - padB); ctx.stroke();
         ctx.setLineDash([]);
-        // Find nearest sample in buffer to crosshair time
         const tBuf = bufferRef.current.t;
         const buf = bufferRef.current[channel];
         let nearestIdx = -1;
@@ -664,23 +859,21 @@ function WaveformPlot({
         if (nearestIdx >= 0 && nearestDt < 0.1) {
           const v = buf[nearestIdx];
           const yy = y(v);
-          // Marker dot
-          ctx.fillStyle = theme.accent;
+          ctx.fillStyle = xhairCol;
           ctx.beginPath();
           ctx.arc(cx, yy, 3, 0, 2 * Math.PI);
           ctx.fill();
-          // Value readout box
           const valStr = Math.abs(v) >= 100 ? v.toFixed(0) : v.toFixed(1);
           const boxW = 52, boxH = 16;
           const boxX = Math.min(cx + 6, W - padR - boxW);
           const boxY = Math.max(padT + 2, yy - boxH - 4);
-          ctx.fillStyle = theme.surface;
-          ctx.strokeStyle = theme.accent;
+          ctx.fillStyle = sc.surface;
+          ctx.strokeStyle = xhairCol;
           ctx.lineWidth = 1;
           ctx.fillRect(boxX, boxY, boxW, boxH);
           ctx.strokeRect(boxX, boxY, boxW, boxH);
-          ctx.fillStyle = theme.accent;
-          ctx.font = "bold 10px ui-monospace, monospace";
+          ctx.fillStyle = xhairCol;
+          ctx.font = "600 10px var(--font-mono), ui-monospace, monospace";
           ctx.textAlign = "center";
           ctx.fillText(valStr, boxX + boxW / 2, boxY + 11);
         }
@@ -690,7 +883,7 @@ function WaveformPlot({
     };
     raf = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(raf); if (ro) ro.disconnect(); };
-  }, [theme, color, yLabel, yMin, yMax, windowSec, channel, bufferRef, sweepRef, crosshairRef]);
+  }, [theme, color, yLabel, yMin, yMax, windowSec, channel, bufferRef, sweepRef, crosshairRef, overlayKey, overlayColor, overlayLabel, showOverlay]);
   // Map mouse position to plot coordinates and check if hovering an annotation dot
   const handleMouseMove = (e) => {
     const cvs = canvasRef.current;
@@ -719,6 +912,9 @@ function WaveformPlot({
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleLeave}
+      onClick={handleMouseMove}
+      onTouchStart={(e) => { if (e.touches && e.touches[0]) handleMouseMove(e.touches[0]); }}
+      onTouchMove={(e) => { if (e.touches && e.touches[0]) handleMouseMove(e.touches[0]); }}
     />
   );
 }
@@ -755,6 +951,93 @@ const PATHOLOGY_GROUPS = [
     ],
   },
 ];
+// ---------- Scenario teaching notes ----------
+// For each abnormal scenario: what to LOOK for on the traces, the MECHANISM,
+// and the bedside FIX. `requiresMode` lists the mode(s) in which the pattern is
+// actually rendered — if the user is in another mode the UI shows a one-click
+// switch so the scenario isn't silently invisible. `bestMode` is the preferred
+// teaching mode when no hard requirement exists.
+const SCENARIO_NOTES = {
+  ARDS: {
+    title: "ARDS — low compliance",
+    look: "Tall, narrow pressure waveform for a small tidal volume; steep volume rise. Compliance slider drops to ~25 mL/cmH₂O.",
+    mechanism: "Stiff, edematous, partially collapsed lung. Small volume changes generate large elastic pressure (high V/C term).",
+    fix: "Lung-protective Vt 6 mL/kg IBW, plateau ≤30, driving pressure ≤15, titrate PEEP. Watch P-plat with an inspiratory hold.",
+    bestMode: "VC",
+  },
+  COPD: {
+    title: "COPD — high resistance",
+    look: "Wide gap between PIP and plateau; slow, prolonged expiratory flow that may not reach zero. Resistance slider rises to ~25.",
+    mechanism: "High airway resistance (R) inflates the resistive (Flow·R) component of PIP and lengthens the expiratory time constant τ = R·C.",
+    fix: "Treat bronchospasm, lengthen expiratory time (lower RR / shorter Ti), watch for auto-PEEP with an expiratory hold.",
+    bestMode: "VC",
+  },
+  autoPEEP: {
+    title: "Auto-PEEP / gas trapping",
+    look: "Expiratory flow fails to return to zero before the next breath. Volume trace never fully returns to baseline.",
+    mechanism: "Insufficient expiratory time leaves trapped gas; intrinsic PEEP builds breath-to-breath, raising end-expiratory volume.",
+    fix: "Confirm with an EXPIRATORY HOLD (now reveals elevated total PEEP). Lengthen expiratory time, reduce RR/Vt, treat obstruction.",
+    bestMode: "VC",
+  },
+  flowStarvation: {
+    title: "Flow starvation / air hunger",
+    look: "Concave ('scooped-out') dip in the pressure waveform during inspiration — the patient pulls harder than the set flow delivers.",
+    mechanism: "In volume control the inspiratory flow is fixed; a vigorous patient demands more, pulling airway pressure down mid-breath.",
+    fix: "Increase set inspiratory flow, switch to a decelerating-flow or pressure-targeted mode, or address the cause of high drive.",
+    requiresMode: ["VC"],
+    bestMode: "VC",
+  },
+  ineffectiveEffort: {
+    title: "Ineffective triggering",
+    look: "Brief downward pressure notch + transient drop in expiratory flow that does NOT trigger a breath.",
+    mechanism: "Patient effort is too weak (or auto-PEEP too high) to reach the trigger threshold, so the breath is missed.",
+    fix: "Increase trigger sensitivity, reduce auto-PEEP, reduce support if over-assisted.",
+    bestMode: "PS",
+  },
+  autoTrigger: {
+    title: "Auto-triggering",
+    look: "Cardiac oscillation ripple during expiration AND an extra, unrequested breath delivered mid-expiration.",
+    mechanism: "Noise (cardiac oscillations, circuit leak, water) crosses an over-sensitive trigger threshold and the vent delivers a breath.",
+    fix: "Decrease trigger sensitivity, fix leaks/clear condensate, reassess once the spurious breaths stop.",
+    bestMode: "VC",
+  },
+  triggerDelay: {
+    title: "Trigger delay",
+    look: "Prolonged pressure dip at the very start of inspiration before the vent responds.",
+    mechanism: "Lag between patient effort and gas delivery — over-damped trigger, auto-PEEP, or insufficient sensitivity.",
+    fix: "Increase sensitivity, reduce auto-PEEP, shorten the trigger response.",
+    bestMode: "PS",
+  },
+  doubleTrigger: {
+    title: "Double-triggering / breath stacking",
+    look: "Two breaths with little/no exhalation between them; volume climbs to ~2× set Vt before a single large exhalation. Delivered (Meas) RR doubles.",
+    mechanism: "Patient inspiratory time exceeds the vent's; neural demand triggers a second breath stacked on the first — high transpulmonary stress.",
+    fix: "Lengthen Ti / match patient demand, increase Vt or sedation/analgesia as appropriate, consider mode change.",
+    bestMode: "VC",
+  },
+  reverseTrigger: {
+    title: "Reverse-triggering (entrainment)",
+    look: "A patient effort (pressure dip + flow bump) appearing at a fixed point after each mandatory breath.",
+    mechanism: "The ventilator breath entrains diaphragmatic contractions via a neuromechanical reflex — effort is driven BY the breath.",
+    fix: "Recognize it (can cause breath stacking); adjust sedation, reassess mode and settings.",
+    bestMode: "VC",
+  },
+  prematureCycling: {
+    title: "Premature cycling (short Ti)",
+    look: "Inspiration ends while the patient is still pulling — a pressure dip and flow blip just after cycle-off.",
+    mechanism: "The vent's inspiratory time is shorter than the patient's neural Ti, so it cuts off early.",
+    fix: "Lengthen Ti (time-cycled modes) or lower the flow-cycle % threshold (pressure support).",
+    bestMode: "PS",
+  },
+  delayedCycling: {
+    title: "Delayed cycling (long Ti)",
+    look: "Late rise in the pressure waveform — the vent keeps insufflating after the patient has begun to exhale.",
+    mechanism: "The vent's inspiratory time exceeds the patient's; the patient exhales against ongoing support, spiking pressure late.",
+    fix: "Raise the flow-cycle % threshold, shorten Ti; common with leaks in obstructive disease.",
+    requiresMode: ["PS"],
+    bestMode: "PS",
+  },
+};
 // ---------- Tooltip dictionary ----------
 // Concise teaching tooltips for each setting. Format: 1-2 short sentences,
 // typical clinical range, and where relevant a key formula or caveat.
@@ -773,32 +1056,35 @@ const TOOLTIPS = {
   aprvPhigh: "P-high — sustained inflation pressure during APRV. Typical 25–35 cmH₂O. Set to estimated end-inspiratory pressure of conventional ventilation.",
   aprvPlow: "P-low — release pressure. Typically set to 0 (zero PEEP) in true APRV; brief duration prevents derecruitment.",
   aprvThigh: "T-high — duration of P-high phase. Typical 4–6s in adults; longer phases improve recruitment but reduce CO₂ clearance.",
-  aprvTlow: "T-low — release duration. Typically 0.5–0.8s. Set so expiratory flow terminates at 50–75% of peak (≈1 RC time constant).",
+  aprvTlow: "T-low — release duration. Typically a short 0.5–0.8s, set so expiratory flow terminates at ~50–75% of peak (limits derecruitment by preventing full exhalation).",
 };
 // ---------- Tooltip component ----------
 function InfoIcon({ tooltip, theme }) {
   const [show, setShow] = useState(false);
   if (!tooltip) return null;
   return (
-    <span className="relative inline-flex" style={{ marginLeft: 4 }}>
+    <span className="relative inline-flex items-center" style={{ marginLeft: 5, marginRight: 1 }}>
       <button
         type="button"
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
+        onClick={() => setShow((v) => !v)}
         onFocus={() => setShow(true)}
         onBlur={() => setShow(false)}
         aria-label="Help"
-        className="text-[9px] font-mono leading-none"
+        className="shrink-0"
         style={{
-          width: 13, height: 13, borderRadius: "50%",
+          width: 15, height: 15, borderRadius: "50%",
           border: `1px solid ${theme.textFaint}`,
-          color: theme.textFaint,
+          color: theme.textMuted,
           background: "transparent",
           cursor: "help",
           padding: 0,
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
+          fontSize: 10,
+          fontWeight: 700,
+          lineHeight: "13px",        // box height minus borders → vertically centers the glyph
+          textAlign: "center",
+          fontFamily: "var(--font-body)",
         }}
       >
         ?
@@ -830,15 +1116,16 @@ function InfoIcon({ tooltip, theme }) {
 }
 function Slider({ label, unit, value, min, max, step, onChange, theme, tooltipKey }) {
   const tooltip = tooltipKey ? TOOLTIPS[tooltipKey] : null;
+  const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div className="flex flex-col gap-1">
-      <div className="flex justify-between items-baseline">
-        <span className="text-[10px] tracking-[0.15em] uppercase font-mono inline-flex items-center" style={{ color: theme.textMuted }}>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex justify-between items-center gap-3">
+        <span className="text-[10px] tracking-[0.12em] uppercase font-mono inline-flex items-center min-w-0" style={{ color: theme.textMuted }}>
           {label}
           <InfoIcon tooltip={tooltip} theme={theme} />
         </span>
-        <span className="text-sm font-mono tabular-nums" style={{ color: theme.accent }}>
-          {value}<span className="ml-1 text-[10px]" style={{ color: theme.textFaint }}>{unit}</span>
+        <span className="text-[13px] font-mono font-semibold tabular-nums shrink-0 whitespace-nowrap" style={{ color: theme.text }}>
+          {value}<span className="ml-1 text-[10px] font-normal" style={{ color: theme.textFaint }}>{unit}</span>
         </span>
       </div>
       <input
@@ -849,31 +1136,45 @@ function Slider({ label, unit, value, min, max, step, onChange, theme, tooltipKe
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full"
-        style={{ accentColor: theme.accent }}
+        style={{
+          ['--accent']: theme.accent,
+          background: `linear-gradient(90deg, ${theme.accent} 0%, ${theme.accent} ${pct}%, ${theme.surfaceAlt} ${pct}%, ${theme.surfaceAlt} 100%)`,
+        }}
       />
     </div>
   );
 }
-function Stat({ label, value, unit, theme, color, hint, alert }) {
+function Stat({ label, value, unit, theme, color, hint, alert, big }) {
   const displayVal = value === null || value === undefined || isNaN(value) || !isFinite(value)
     ? "—"
     : (typeof value === "number" ? (Math.abs(value) >= 100 ? value.toFixed(0) : value.toFixed(1)) : value);
+  const c = color || theme.accent;
   return (
-    <div className="flex flex-col py-2 px-3 border-l-2" style={{ borderColor: alert ? "#ef4444" : (color || theme.border) }}>
-      <div className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>
-        {label}
+    <div
+      className="relative flex flex-col rounded-lg px-3 py-2.5 overflow-hidden transition-colors"
+      style={{
+        background: alert ? theme.alarmSoft : theme.surface,
+        border: `1px solid ${alert ? theme.alarm : theme.border}`,
+        boxShadow: theme.shadowSoft,
+        animation: alert ? "vent-pulse-alarm 1.6s ease-in-out infinite" : "none",
+      }}
+    >
+      {/* accent rail */}
+      <span className="absolute left-0 top-0 bottom-0 w-1" style={{ background: alert ? theme.alarm : c, opacity: alert ? 1 : 0.55 }} />
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] tracking-[0.16em] uppercase font-mono" style={{ color: theme.textFaint }}>{label}</span>
+        {alert && <span className="text-[8px] font-mono font-bold uppercase tracking-wider px-1 py-0.5 rounded" style={{ background: theme.alarm, color: "#fff" }}>!</span>}
       </div>
-      <div className="flex items-baseline gap-1.5 mt-0.5">
-        <span className="text-2xl font-mono font-semibold tabular-nums leading-none" style={{ color: alert ? "#ef4444" : (color || theme.text) }}>
+      <div className="flex items-baseline gap-1.5 mt-1">
+        <span
+          className={`font-mono font-semibold tabular-nums leading-none ${big ? "text-[34px]" : "text-2xl"}`}
+          style={{ color: alert ? theme.alarm : (big ? c : theme.text) }}
+        >
           {displayVal}
         </span>
-        {unit && (
-          <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>{unit}</span>
-        )}
+        {unit && <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>{unit}</span>}
       </div>
-      {hint && (
-        <div className="text-[9px] font-mono mt-0.5" style={{ color: theme.textFaint }}>{hint}</div>
-      )}
+      {hint && <div className="text-[9px] font-mono mt-1" style={{ color: alert ? theme.alarm : theme.textFaint }}>{hint}</div>}
     </div>
   );
 }
@@ -1080,7 +1381,7 @@ function exportWaveformsToPng({ bufferRef, sweepRef, theme, mode, windowSec, Pma
   ctx.fillRect(0, 0, W, totalH);
   // Header text
   ctx.fillStyle = theme.text;
-  ctx.font = "bold 14px ui-serif, Georgia, serif";
+  ctx.font = "700 15px 'Hanken Grotesk', system-ui, sans-serif";
   ctx.textAlign = "left";
   ctx.fillText("Ventilator Waveforms", 16, 24);
   ctx.fillStyle = theme.textMuted;
@@ -1098,9 +1399,9 @@ function exportWaveformsToPng({ bufferRef, sweepRef, theme, mode, windowSec, Pma
   const features = detectWaveformFeatures(bufferRef, mode, settings || {});
   // Draw each plot
   const channels = [
-    { ch: "P", color: theme.pressure, label: "PRESSURE  cmH₂O", yMin: 0, yMax: Pmax, anns: features.pressure },
-    { ch: "F", color: theme.flow, label: "FLOW  L/min", yMin: -Fabs, yMax: Fabs, anns: features.flow },
-    { ch: "V", color: theme.volume, label: "VOLUME  mL", yMin: 0, yMax: Vmax, anns: features.volume },
+    { ch: "P", color: theme.scope.pressure, label: "PRESSURE  cmH₂O", yMin: 0, yMax: Pmax, anns: features.pressure },
+    { ch: "F", color: theme.scope.flow, label: "FLOW  L/min", yMin: -Fabs, yMax: Fabs, anns: features.flow },
+    { ch: "V", color: theme.scope.volume, label: "VOLUME  mL", yMin: 0, yMax: Vmax, anns: features.volume },
   ];
   channels.forEach((cfg, i) => {
     const yOffset = headerH + i * plotH;
@@ -1152,11 +1453,12 @@ function drawPlotFrame(ctx, { x, y, W, H, bufferRef, sweepRef, channel, color, y
   const innerH = H - padT - padB;
   const xCoord = (t) => x + padL + (t / windowSec) * innerW;
   const yCoord = (v) => y + padT + innerH - ((v - yMin) / (yMax - yMin)) * innerH;
+  const sc = theme.scope;
   // Background
-  ctx.fillStyle = theme.surface;
+  ctx.fillStyle = sc.surface;
   ctx.fillRect(x, y, W, H);
   // Grid
-  ctx.strokeStyle = theme.grid;
+  ctx.strokeStyle = sc.grid;
   ctx.lineWidth = 0.5;
   for (let i = 0; i <= 4; i++) {
     const yy = y + padT + (innerH * i) / 4;
@@ -1167,18 +1469,21 @@ function drawPlotFrame(ctx, { x, y, W, H, bufferRef, sweepRef, channel, color, y
     const xx = x + padL + (innerW * i) / xTicks;
     ctx.beginPath(); ctx.moveTo(xx, y + padT); ctx.lineTo(xx, y + H - padB); ctx.stroke();
   }
+  ctx.strokeStyle = sc.gridStrong;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x + padL, y + padT, innerW, innerH);
   // Zero line
   if (yMin < 0 && yMax > 0) {
     const zy = yCoord(0);
-    ctx.strokeStyle = theme.zeroLine;
+    ctx.strokeStyle = sc.zeroLine;
     ctx.setLineDash([3, 3]);
     ctx.beginPath();
     ctx.moveTo(x + padL, zy); ctx.lineTo(x + W - padR, zy); ctx.stroke();
     ctx.setLineDash([]);
   }
   // Y tick labels
-  ctx.fillStyle = theme.tickText;
-  ctx.font = "9px ui-monospace, monospace";
+  ctx.fillStyle = sc.tick;
+  ctx.font = "9px var(--font-mono), ui-monospace, monospace";
   ctx.textAlign = "end";
   for (let i = 0; i <= 4; i++) {
     const v = yMin + ((yMax - yMin) * (4 - i)) / 4;
@@ -1305,14 +1610,14 @@ function drawPlotFrame(ctx, { x, y, W, H, bufferRef, sweepRef, channel, color, y
       ctx.arc(a._x, a._y, 2.5, 0, 2 * Math.PI);
       ctx.fill();
       // Label box
-      ctx.fillStyle = theme.surface;
+      ctx.fillStyle = sc.surface;
       ctx.strokeStyle = labelColor;
       ctx.lineWidth = 0.8;
       ctx.fillRect(labelX, labelY, boxW, labelH);
       ctx.strokeRect(labelX, labelY, boxW, labelH);
       // Label text
       ctx.fillStyle = labelColor;
-      ctx.font = "bold 9px ui-monospace, monospace";
+      ctx.font = "600 9px var(--font-mono), ui-monospace, monospace";
       ctx.textAlign = "left";
       ctx.fillText(text, labelX + 5, labelY + 9);
     }
@@ -1360,6 +1665,10 @@ function decodeStateFromUrl() {
 function VentilatorWaveforms() {
   // ---- Read shared state from URL on mount ----
   const urlState = decodeStateFromUrl();
+  // Auto light/dark from the device's OS setting (unless a share-link forces one)
+  const prefersDark = typeof window !== "undefined" && window.matchMedia
+    && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const userPickedTheme = useRef(false); // set true once the user taps the toggle
   // ---- Vent settings ----
   const [mode, setMode] = useState(urlState.mode ?? "VC");
   const [Vt, setVt] = useState(urlState.Vt ?? 450);
@@ -1381,12 +1690,23 @@ function VentilatorWaveforms() {
   const [aprvTlow, setAprvTlow] = useState(urlState.aprvTlow ?? 0.6);
   const [aprvSpontEnabled, setAprvSpontEnabled] = useState(urlState.aprvSpontEnabled ?? true);
   const [pathology, setPathology] = useState(urlState.pathology ?? "none");
-  const [themeName, setThemeName] = useState(urlState.themeName ?? "dark");
+  const [themeName, setThemeName] = useState(urlState.themeName ?? (prefersDark ? "dark" : "light"));
   const theme = THEMES[themeName];
+  // Follow the OS light/dark setting live — until the user overrides it with the
+  // toggle (or arrives via a share-link that pins a theme).
+  useEffect(() => {
+    if (urlState.themeName || typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = (e) => { if (!userPickedTheme.current) setThemeName(e.matches ? "dark" : "light"); };
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+    else mq.addListener(onChange);
+    return () => { if (mq.removeEventListener) mq.removeEventListener("change", onChange); else mq.removeListener(onChange); };
+  }, []);
   // ---- Hold state ----
   const [holdMode, setHoldMode] = useState(null); // "insp" | "exp" | null
   const [holdResult, setHoldResult] = useState(null); // { type, value, label }
   const [paused, setPaused] = useState(false);
+  const [showPalv, setShowPalv] = useState(true); // alveolar pressure overlay on the pressure trace
   const pausedRef = useRef(false);
   pausedRef.current = paused;
   // Crosshair: when paused, hovering the plots shows a vertical guide with values.
@@ -1421,6 +1741,7 @@ function VentilatorWaveforms() {
   const bufferRef = useRef({
     t: new Array(N.current).fill(null),
     P: new Array(N.current).fill(0),
+    Palv: new Array(N.current).fill(0),  // alveolar pressure = Paw − Flow·R
     F: new Array(N.current).fill(0),
     V: new Array(N.current).fill(0),
   });
@@ -1570,16 +1891,39 @@ function VentilatorWaveforms() {
             const peakExp = sim.breathFmin;       // L/min (negative)
             const driveP = Math.max(0.1, PIP - s.PEEP);
             const Cdyn = VtExp / driveP;          // mL/cmH2O
-            // End-inspiratory pressure (snapshot at end of insp) ≈ Pplat estimate
-            // when flow is near zero. Most accurate for PC/PRVC where flow decelerates to ~0.
-            const flowNearZeroAtEndInsp = Math.abs(sim.breathFmin) > 0; // we have a cycle
-            const PplatEst = sim.breathEndInspP;
-            const RawEst = peakInsp > 0 ? (PIP - PplatEst) / (peakInsp / 60) : null; // cmH2O/L/s
+            // End-inspiratory pressure ≈ plateau ONLY in modes whose flow
+            // decelerates to ~0 at end-inspiration (PC/PRVC/PS). In constant-flow
+            // VC there is no zero-flow moment, so the snapshot still carries the
+            // resistive load (≈ PIP) and is NOT a valid plateau — leave it null
+            // until the user performs an inspiratory hold. This keeps the derived
+            // driving pressure (ΔP) honest rather than inflating it by Raw·Flow.
+            // Plateau = end-inspiratory alveolar pressure = (peak lung volume)/C + PEEP.
+            // Taken at peak volume (where inspiratory flow has reached zero), this is
+            // exactly what an inspiratory hold reads and is valid regardless of the
+            // inspiratory flow shape — fixing the old snapshot that fired at cycleT≈ITime
+            // (wrong for PS, which cycles on flow well before ITime). CPAP/APRV have no
+            // discrete mandatory plateau, so leave them null.
+            const platMode = ["VC", "PC", "PRVC", "PS", "SIMV-VC", "SIMV-PC"].includes(s.mode);
+            const PplatEst = platMode ? (sim.breathVmax / Ceff + s.PEEP) : null;
+            // Raw from (PIP − Pplat)/flow is only valid with CONSTANT inspiratory flow
+            // (volume control), where peak flow coincides with PIP. In decelerating-flow
+            // modes the two occur at different instants, so the estimate is meaningless —
+            // publish it for VC only.
+            const constFlow = ["VC", "SIMV-VC"].includes(s.mode);
+            const RawEst = (constFlow && PplatEst !== null && peakInsp > 0)
+              ? (PIP - PplatEst) / (peakInsp / 60) : null; // cmH2O/L/s
             // I:E ratio
             const eTime = cycle - s.ITime;
             const ieRatio = `1:${(eTime / s.ITime).toFixed(1)}`;
-            // measured RR (running EMA from cycle period)
-            const measRR = sim.lastCycleStart > 0 ? 60 / cycle : s.RR;
+            // Delivered (measured) RR. For mandatory ventilation this equals the
+            // set rate, but breath-stacking dyssynchronies deliver EXTRA breaths
+            // per mandatory cycle — double-triggering doubles the delivered rate,
+            // auto-triggering inserts one spurious breath each cycle. Reflect that
+            // so the "Meas RR" stat shows the patient/vent rate dissociation.
+            let extraBreaths = 0;
+            if (s.pathology === "doubleTrigger") extraBreaths = 1;
+            else if (s.pathology === "autoTrigger" && eTime > 1.0) extraBreaths = 1; // matches the overlay's gate
+            const measRR = (sim.lastCycleStart > 0 ? 60 / cycle : s.RR) * (1 + extraBreaths);
             sim.measuredRRavg = sim.measuredRRavg === 0 ? measRR : sim.measuredRRavg * 0.7 + measRR * 0.3;
             const next = {
               PIP, Pmean, Pplat: PplatEst, Cdyn, Cstat: null, Raw: RawEst,
@@ -1623,8 +1967,10 @@ function VentilatorWaveforms() {
       const flowLpm = flow * 60;
       if (flowLpm > sim.breathFmax) sim.breathFmax = flowLpm;
       if (flowLpm < sim.breathFmin) sim.breathFmin = flowLpm;
-      const volMl = sim.volume * 1000;
-      if (volMl > sim.breathVmax) sim.breathVmax = volMl / 1000; // store in L for consistency
+      // Peak lung volume of the breath (in L). NOTE: compare like-for-like — an
+      // earlier version compared mL against an L-stored value, so this tracked the
+      // latest volume instead of the maximum and collapsed VtExp/MV/Cdyn to ~0.
+      if (sim.volume > sim.breathVmax) sim.breathVmax = sim.volume;
       // Snapshot end-inspiratory pressure (sample just past ITime)
       const sNow = settingsRef.current;
       if (sNow.mode !== "APRV" && Math.abs(sim.cycleT - sNow.ITime) < 0.015) {
@@ -1637,6 +1983,10 @@ function VentilatorWaveforms() {
       const buf = bufferRef.current;
       buf.t[idx] = sweepRef.current;
       buf.P[idx] = pressure;
+      // Alveolar pressure = airway pressure minus the resistive drop (Flow·R).
+      // During passive/pressure-controlled phases Paw sits at baseline while
+      // P_alv decays with flow — the gradient that actually drives gas movement.
+      buf.Palv[idx] = pressure - (flow * Reff);
       buf.F[idx] = flow * 60;     // L/min
       buf.V[idx] = sim.volume * 1000; // mL
       writeIdxRef.current = (idx + 1) % N.current;
@@ -1652,6 +2002,7 @@ function VentilatorWaveforms() {
     for (let i = 0; i < N.current; i++) {
       buf.t[i] = null;
       buf.P[i] = 0;
+      buf.Palv[i] = 0;
       buf.F[i] = 0;
       buf.V[i] = 0;
     }
@@ -1684,6 +2035,25 @@ function VentilatorWaveforms() {
     trendsRef.current = blank;
     setTrends(blank);
   }, [mode]);
+  // ---- Mechanics presets: push ARDS/COPD values INTO the sliders ----
+  // Rather than silently overriding compliance/resistance inside the engine
+  // (which left the sliders showing one value while the sim used another), a
+  // scenario that implies a mechanics change now moves the sliders themselves.
+  // The displayed value therefore always equals the simulated value, and the
+  // user can freely fine-tune from the preset afterward.
+  const lastMechPreset = useRef(null);
+  useEffect(() => {
+    if (pathology === lastMechPreset.current) return;
+    lastMechPreset.current = pathology;
+    if (pathology === "ARDS") {
+      setC(0.025);            // stiff lung, ~25 mL/cmH₂O
+      setR(10);              // resistance typically near-normal
+    } else if (pathology === "COPD") {
+      setR(25);              // high airway resistance
+      setC(0.075);          // increased compliance from loss of elastic recoil (hyperinflation)
+    }
+    // Other scenarios leave the current slider values untouched.
+  }, [pathology]);
   // ---- Hold maneuver triggers ----
   // ---- Share handler ----
   // Encodes current settings into URL, copies to clipboard, shows confirmation.
@@ -1726,8 +2096,10 @@ function VentilatorWaveforms() {
         if (which === "insp") {
           // Cstat = Vt / (Pplat - PEEP)
           const Cstat = m.VtExp / Math.max(0.1, captured - PEEP);
-          // Refine Raw with true Pplat
-          const Raw = m.peakInspFlow > 0 ? (m.PIP - captured) / (m.peakInspFlow / 60) : null;
+          // Raw = (PIP − Pplat)/flow is only valid with constant inspiratory flow (VC).
+          const isConstFlow = mode === "VC" || mode === "SIMV-VC";
+          const Raw = (isConstFlow && m.peakInspFlow > 0)
+            ? (m.PIP - captured) / (m.peakInspFlow / 60) : m.Raw;
           const next = { ...m, Pplat: captured, Cstat, Raw };
           measurementsRef.current = next;
           setMeasurements(next);
@@ -1740,302 +2112,348 @@ function VentilatorWaveforms() {
       setHoldMode(null);
     }, totalHoldMs);
   };
+  const cardStyle = { background: theme.surface, border: `1px solid ${theme.border}`, boxShadow: theme.shadow };
+  const railCardStyle = { background: theme.surface, border: `1px solid ${theme.border}`, boxShadow: theme.shadowSoft };
+  const pill = "sim-touch-target inline-flex items-center justify-center px-3 py-1.5 text-[10px] font-mono tracking-[0.16em] uppercase rounded-full border transition-all";
+  const SectionLabel = ({ text, color, sub }) => (
+    <div className="flex items-center gap-2">
+      <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: color || theme.accent, boxShadow: `0 0 8px ${color || theme.accent}` }} />
+      <span className="text-[10px] tracking-[0.22em] uppercase font-mono font-semibold" style={{ color: theme.text }}>{text}</span>
+      {sub && <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>{sub}</span>}
+    </div>
+  );
   return (
-    <div className="min-h-screen w-full" style={{ background: theme.bg, fontFamily: "ui-serif, Georgia, serif", color: theme.text }}>
-      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
-        {/* Header */}
-        <header className="pb-4 mb-4 sm:pb-5 sm:mb-6 border-b" style={{ borderColor: theme.border }}>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-            <div>
-              <div className="text-[10px] tracking-[0.3em] font-mono uppercase mb-1" style={{ color: theme.accentSoft }}>
-                Equation of Motion · Live
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight" style={{ color: theme.text }}>
+    <div className="min-h-screen w-full" style={{ background: theme.bg, fontFamily: "var(--font-body)", color: theme.text }}>
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-6 py-4 sm:py-6">
+        {/* ===== Top bar (sticky on desktop only — keeps mobile viewport free) ===== */}
+        <header className="lg:sticky lg:top-0 z-30 -mx-3 sm:-mx-6 px-3 sm:px-6 py-3 mb-5 backdrop-blur"
+                style={{ background: themeName === "dark" ? "rgba(10,15,28,0.72)" : "rgba(251,252,254,0.72)", borderBottom: `1px solid ${theme.border}` }}>
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
+            <div className="flex items-baseline gap-2.5 min-w-0">
+              <h1 className="text-xl sm:text-2xl font-display font-bold tracking-tight leading-none truncate" style={{ color: theme.text }}>
                 Ventilator Waveform Engine
               </h1>
+              <span className="hidden sm:inline-block h-4 w-px shrink-0" style={{ background: theme.border }} />
+              <span className="hidden sm:inline text-[11px] font-mono whitespace-nowrap" style={{ color: theme.textFaint }}>
+                P<sub>aw</sub> = V/C + Flow·R + PEEP
+              </span>
             </div>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <div className="hidden lg:block text-right text-[10px] font-mono leading-tight" style={{ color: theme.textMuted }}>
-                <span style={{ color: theme.accent }}>● LIVE</span> &nbsp; P<sub>aw</sub> = V/C + Flow·R + PEEP<br/>
-                <span style={{ color: theme.textFaint }}>
-                  {windowSec}s window · streaming
-                </span>
-              </div>
-              <button
-                onClick={handleShare}
-                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
-                style={{
-                  background: shareCopied ? theme.accent : "transparent",
-                  color: shareCopied ? theme.accentInk : theme.textMuted,
-                  borderColor: shareCopied ? theme.accent : theme.border,
-                }}
-                aria-label="Share current preset"
-              >
-                {shareCopied ? "✓ Copied" : "↗ Share"}
-              </button>
-              <button
-                onClick={() => exportWaveformsToPng({
-                  bufferRef, sweepRef, theme, mode, windowSec,
-                  Pmax, Fabs, Vmax,
-                  settings: settingsRef.current,
-                  measurements,
-                })}
-                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
-                style={{
-                  background: "transparent",
-                  color: theme.textMuted,
-                  borderColor: theme.border,
-                }}
-                aria-label="Export PNG"
-              >
-                ⬇ PNG
-              </button>
-              <button
-                onClick={() => setPaused(!paused)}
-                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
-                style={{
-                  background: paused ? theme.accent : "transparent",
-                  color: paused ? theme.accentInk : theme.textMuted,
-                  borderColor: paused ? theme.accent : theme.border,
-                }}
-                aria-label={paused ? "Resume" : "Pause"}
-              >
-                {paused ? "▶ Resume" : "⏸ Pause"}
-              </button>
-              <button
-                onClick={() => setThemeName(themeName === "dark" ? "light" : "dark")}
-                className="px-3 py-1.5 text-[10px] font-mono tracking-widest uppercase border transition-all"
-                style={{
-                  background: "transparent",
-                  color: theme.textMuted,
-                  borderColor: theme.border,
-                }}
-                aria-label="Toggle theme"
-              >
-                {themeName === "dark" ? "☀ Light" : "☾ Dark"}
-              </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button onClick={handleShare} className={pill}
+                style={{ background: shareCopied ? theme.accent : theme.surface, color: shareCopied ? theme.accentInk : theme.textMuted, borderColor: shareCopied ? theme.accent : theme.border, boxShadow: theme.shadowSoft }}
+                aria-label="Share current preset">{shareCopied ? "✓ Copied" : "↗ Share"}</button>
+              <button onClick={() => exportWaveformsToPng({ bufferRef, sweepRef, theme, mode, windowSec, Pmax, Fabs, Vmax, settings: settingsRef.current, measurements })}
+                className={pill} style={{ background: theme.surface, color: theme.textMuted, borderColor: theme.border, boxShadow: theme.shadowSoft }}
+                aria-label="Export PNG">⬇ PNG</button>
+              <button onClick={() => setPaused(!paused)} className={pill}
+                style={{ background: paused ? theme.accent : theme.surface, color: paused ? theme.accentInk : theme.textMuted, borderColor: paused ? theme.accent : theme.border, boxShadow: theme.shadowSoft }}
+                aria-label={paused ? "Resume" : "Pause"}>{paused ? "▶ Resume" : "⏸ Pause"}</button>
+              <button onClick={() => { userPickedTheme.current = true; setThemeName(themeName === "dark" ? "light" : "dark"); }} className={pill}
+                style={{ background: theme.surface, color: theme.textMuted, borderColor: theme.border, boxShadow: theme.shadowSoft }}
+                aria-label="Toggle theme">{themeName === "dark" ? "☀ Light" : "☾ Dark"}</button>
+            </div>
+          </div>
+          {/* Mode + Scenario selectors */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="text-[9px] tracking-[0.2em] uppercase font-mono shrink-0" style={{ color: theme.textFaint }}>Mode</span>
+              <select value={mode} onChange={(e) => setMode(e.target.value)}
+                className="px-3 py-2 text-xs font-mono rounded-lg min-w-0 flex-1 cursor-pointer"
+                style={{ background: theme.surface, color: theme.text, border: `1.5px solid ${theme.accent}`, boxShadow: theme.shadowSoft, maxWidth: "100%" }}>
+                <optgroup label="Controlled">
+                  <option value="VC">Volume Control (VC)</option>
+                  <option value="PC">Pressure Control (PC)</option>
+                  <option value="PRVC">Pressure-Regulated Volume Control (PRVC)</option>
+                </optgroup>
+                <optgroup label="Spontaneous / Mixed">
+                  <option value="PS">Pressure Support (PS)</option>
+                  <option value="SIMV-VC">SIMV (Volume Control)</option>
+                  <option value="SIMV-PC">SIMV (Pressure Control)</option>
+                  <option value="CPAP">CPAP</option>
+                </optgroup>
+                <optgroup label="Advanced">
+                  <option value="APRV">APRV (Bi-level)</option>
+                </optgroup>
+              </select>
+            </div>
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="text-[9px] tracking-[0.2em] uppercase font-mono shrink-0" style={{ color: theme.textFaint }}>Scenario</span>
+              <select value={pathology} onChange={(e) => setPathology(e.target.value)}
+                className="px-3 py-2 text-xs font-mono rounded-lg min-w-0 flex-1 cursor-pointer"
+                style={{ background: theme.surface, color: theme.text, border: `1px solid ${pathology !== "none" ? theme.alarm : theme.border}`, boxShadow: theme.shadowSoft, maxWidth: "100%" }}>
+                {PATHOLOGY_GROUPS.map((g) => (
+                  <optgroup key={g.label} label={g.label}>
+                    {g.options.map((p) => (<option key={p.id} value={p.id}>{p.label}</option>))}
+                  </optgroup>
+                ))}
+              </select>
             </div>
           </div>
         </header>
-        {/* Mode + Pathology selector */}
-        <div className="flex flex-wrap gap-3 mb-5 items-center">
-          <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
-            <span className="text-[10px] tracking-[0.2em] uppercase font-mono shrink-0" style={{ color: theme.textFaint }}>Mode</span>
-            <select
-              value={mode}
-              onChange={(e) => setMode(e.target.value)}
-              className="px-3 py-1.5 text-xs font-mono border min-w-0 flex-1 sm:flex-initial"
-              style={{ background: theme.selectBg, color: theme.text, borderColor: theme.accent, maxWidth: "100%" }}
-            >
-              <optgroup label="Controlled">
-                <option value="VC">Volume Control (VC)</option>
-                <option value="PC">Pressure Control (PC)</option>
-                <option value="PRVC">Pressure-Regulated Volume Control (PRVC)</option>
-              </optgroup>
-              <optgroup label="Spontaneous / Mixed">
-                <option value="PS">Pressure Support (PS)</option>
-                <option value="SIMV-VC">SIMV (Volume Control)</option>
-                <option value="SIMV-PC">SIMV (Pressure Control)</option>
-                <option value="CPAP">CPAP</option>
-              </optgroup>
-              <optgroup label="Advanced">
-                <option value="APRV">APRV (Bi-level)</option>
-              </optgroup>
-            </select>
+        {/* ===== Two-column workspace ===== */}
+        <div className="lg:grid lg:gap-5 lg:items-start" style={{ gridTemplateColumns: "minmax(0,1fr) 384px" }}>
+          {/* LEFT: the scope + measured values */}
+          <div className="min-w-0" style={{ animation: "vent-fade-up .5s ease both" }}>
+            <div className="rounded-2xl overflow-hidden relative" style={{ ...cardStyle, background: theme.scope.surface }}>
+              <div className="flex items-center justify-between px-4 py-2.5" style={{ borderBottom: `1px solid ${theme.scope.gridStrong}` }}>
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-2 h-2 rounded-full" style={{ background: theme.scope.flow, boxShadow: `0 0 10px ${theme.scope.flow}` }} />
+                  <span className="text-[10px] tracking-[0.24em] uppercase font-mono font-semibold" style={{ color: theme.scope.label }}>Live Scope</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setShowPalv(!showPalv)}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-mono tracking-wider uppercase border transition-all"
+                    style={{ background: showPalv ? "rgba(167,139,250,0.16)" : "transparent", color: showPalv ? "#c4b5fd" : theme.scope.tick, borderColor: showPalv ? "#a78bfa" : theme.scope.gridStrong }}
+                    title="Overlay alveolar pressure (Paw − Flow·R) on the pressure trace">
+                    <span style={{ width: 14, borderTop: `1.5px dashed #a78bfa`, display: "inline-block" }} />
+                    P-alv
+                  </button>
+                  <span className="text-[9px] font-mono" style={{ color: theme.scope.tick }}>{windowSec}s sweep · {mode}</span>
+                </div>
+              </div>
+              {holdMode && (
+                <div className="absolute top-12 right-3 z-10 px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest rounded-full"
+                     style={{ background: theme.accent, color: theme.accentInk }}>
+                  {holdMode === "insp" ? "▌ Inspiratory Hold" : "▌ Expiratory Hold"}
+                </div>
+              )}
+              {paused && !holdMode && (
+                <div className="absolute top-12 right-3 z-10 flex items-center gap-2 px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest rounded-full"
+                     style={{ background: theme.accent, color: theme.accentInk }}>
+                  <span>⏸ Paused</span>
+                  <span className="text-[8px] tracking-normal normal-case opacity-80">tap or hover to inspect</span>
+                </div>
+              )}
+              <div style={{ borderBottom: `1px solid ${theme.scope.gridStrong}` }}>
+                <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
+                              channel="P" color={theme.scope.pressure}
+                              overlayKey="Palv" overlayColor="#a78bfa" overlayLabel="P-alv (lung)" showOverlay={showPalv}
+                              yLabel="PRESSURE  cmH₂O" yMin={0} yMax={Pmax} theme={theme} windowSec={windowSec}
+                              onHoverMove={paused ? handleCrosshairMove : null}
+                              onHoverLeave={paused ? handleCrosshairLeave : null} />
+              </div>
+              <div style={{ borderBottom: `1px solid ${theme.scope.gridStrong}` }}>
+                <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
+                              channel="F" color={theme.scope.flow}
+                              yLabel="FLOW  L/min" yMin={-Fabs} yMax={Fabs} theme={theme} windowSec={windowSec}
+                              onHoverMove={paused ? handleCrosshairMove : null}
+                              onHoverLeave={paused ? handleCrosshairLeave : null} />
+              </div>
+              <div>
+                <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
+                              channel="V" color={theme.scope.volume}
+                              yLabel="VOLUME  mL" yMin={0} yMax={Vmax} theme={theme} windowSec={windowSec}
+                              onHoverMove={paused ? handleCrosshairMove : null}
+                              onHoverLeave={paused ? handleCrosshairLeave : null} />
+              </div>
+            </div>
+            {/* Measured values sit directly beneath the traces (monitor-style) */}
+            <div className="mt-4 rounded-2xl overflow-hidden" style={cardStyle}>
+              <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${theme.border}`, background: theme.surfaceAlt }}>
+                <SectionLabel text="Measured Values" sub="updates per breath" />
+                <span className="hidden sm:inline text-[9px] font-mono" style={{ color: theme.textFaint }}>Set RR {RR}/min · Set Vt {Vt} mL · {mode}</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3" style={{ borderBottom: `1px solid ${theme.border}` }}>
+                <Stat big label="PIP" value={measurements.PIP} unit="cmH₂O" theme={theme} color={theme.pressure} alert={measurements.PIP > 35} hint={measurements.PIP > 35 ? "above limit" : null} />
+                <Stat big label="P-plat" value={measurements.Pplat} unit="cmH₂O" theme={theme} color={theme.pressure} alert={measurements.Pplat > 30} hint={measurements.Pplat ? (measurements.Pplat > 30 ? "high" : "estimated") : "hold to measure"} />
+                <Stat big label="ΔP driving" value={measurements.Pplat ? measurements.Pplat - PEEP : measurements.PIP - PEEP} unit="cmH₂O" theme={theme} color={theme.pressure} alert={(measurements.Pplat ? measurements.Pplat - PEEP : measurements.PIP - PEEP) > 15} hint={!measurements.Pplat ? "from PIP" : null} />
+                <Stat label="Mean Paw" value={measurements.Pmean} unit="cmH₂O" theme={theme} color={theme.pressure} />
+                <Stat label="PEEP" value={PEEP} unit="cmH₂O" theme={theme} color={theme.pressure} hint="set" />
+                <Stat label="I:E" value={measurements.IE} theme={theme} color={theme.pressure} />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3" style={{ borderBottom: `1px solid ${theme.border}` }}>
+                <Stat label="Vt exp" value={measurements.VtExp} unit="mL" theme={theme} color={theme.volume} />
+                <Stat label="Min Vent" value={measurements.MV} unit="L/min" theme={theme} color={theme.volume} />
+                <Stat label="Peak Insp Flow" value={measurements.peakInspFlow} unit="L/min" theme={theme} color={theme.flow} />
+                <Stat label="Peak Exp Flow" value={Math.abs(measurements.peakExpFlow || 0)} unit="L/min" theme={theme} color={theme.flow} />
+                <Stat label="Meas RR" value={measurements.measuredRR} unit="/min" theme={theme} color={theme.flow} />
+                <Stat label="FiO₂" value={FiO2} unit="%" theme={theme} color={theme.flow} hint="set" />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3">
+                <Stat label="Cdyn" value={measurements.Cdyn} unit="mL/cmH₂O" theme={theme} color={theme.accent} hint="dynamic" />
+                <Stat label="Cstat" value={measurements.Cstat} unit="mL/cmH₂O" theme={theme} color={theme.accent} hint={measurements.Cstat ? "from hold" : "insp hold to measure"} />
+                <Stat label="Raw" value={measurements.Raw} unit="cmH₂O/L/s" theme={theme} color={theme.accent} hint={measurements.Cstat ? "from hold" : "estimate"} alert={measurements.Raw > 20} />
+              </div>
+            </div>
           </div>
-          <div className="flex-1" />
-          <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
-            <span className="text-[10px] tracking-[0.2em] uppercase font-mono shrink-0" style={{ color: theme.textFaint }}>Scenario</span>
-            <select
-              value={pathology}
-              onChange={(e) => setPathology(e.target.value)}
-              className="px-3 py-1.5 text-xs font-mono border min-w-0 flex-1 sm:flex-initial"
-              style={{ background: theme.selectBg, color: theme.text, borderColor: theme.border, maxWidth: "100%" }}
-            >
-              {PATHOLOGY_GROUPS.map((g) => (
-                <optgroup key={g.label} label={g.label}>
-                  {g.options.map((p) => (
-                    <option key={p.id} value={p.id}>{p.label}</option>
+          {/* RIGHT: controls rail */}
+          <div className="flex flex-col gap-4 mt-4 lg:mt-0">
+            {/* Scenario teaching card */}
+            {pathology !== "none" && SCENARIO_NOTES[pathology] && (() => {
+              const note = SCENARIO_NOTES[pathology];
+              const modeOK = !note.requiresMode || note.requiresMode.includes(mode);
+              const target = note.requiresMode ? note.requiresMode[0] : note.bestMode;
+              return (
+                <div className="rounded-2xl overflow-hidden" style={railCardStyle}>
+                  <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: `1px solid ${theme.border}`, background: theme.surfaceAlt }}>
+                    <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: theme.alarm }} />
+                    <span className="text-[10px] tracking-[0.2em] uppercase font-mono font-semibold" style={{ color: theme.text }}>Reading the waveform</span>
+                  </div>
+                  <div className="px-4 pt-3">
+                    <span className="text-[13px] font-display font-semibold" style={{ color: theme.text }}>{note.title}</span>
+                  </div>
+                  {!modeOK && (
+                    <div className="flex flex-wrap items-center gap-2 mx-4 my-3 px-3 py-2 rounded-lg" style={{ background: theme.alarmSoft, border: `1px solid ${theme.alarm}` }}>
+                      <span className="text-[11px] font-sans" style={{ color: theme.alarm }}>
+                        ⚠ Only renders in <b>{note.requiresMode.join(" / ")}</b>. Current mode ({mode}) won't show it.
+                      </span>
+                      <button onClick={() => setMode(target)} className="px-3 py-1 text-[10px] font-mono tracking-widest uppercase rounded-full"
+                        style={{ background: theme.alarm, color: "#fff" }}>Switch to {target}</button>
+                    </div>
+                  )}
+                  <div className="px-4 py-3 flex flex-col gap-2.5">
+                    {[
+                      { k: "Look for", v: note.look, c: theme.accent },
+                      { k: "Mechanism", v: note.mechanism, c: theme.textMuted },
+                      { k: "Management", v: note.fix, c: theme.flow },
+                    ].map((col) => (
+                      <div key={col.k}>
+                        <div className="text-[9px] tracking-[0.16em] uppercase font-mono mb-0.5" style={{ color: col.c }}>{col.k}</div>
+                        <div className="text-[12px] leading-snug font-sans" style={{ color: theme.text }}>{col.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                  {modeOK && note.bestMode && !note.requiresMode && mode !== note.bestMode && (
+                    <div className="flex flex-wrap items-center gap-2 px-4 py-2.5" style={{ borderTop: `1px solid ${theme.border}` }}>
+                      <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>Best shown in {note.bestMode}.</span>
+                      <button onClick={() => setMode(note.bestMode)} className="px-3 py-1 text-[10px] font-mono tracking-widest uppercase rounded-full border"
+                        style={{ background: "transparent", color: theme.textMuted, borderColor: theme.border }}>Switch to {note.bestMode}</button>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+            {/* APRV settings */}
+            {mode === "APRV" && (
+              <div className="rounded-2xl p-4" style={{ ...railCardStyle, border: `1.5px solid ${theme.accent}` }}>
+                <div className="flex items-center justify-between mb-4">
+                  <SectionLabel text="APRV Settings" sub="Bi-level / Bi-vent" />
+                  <button onClick={() => setAprvSpontEnabled(!aprvSpontEnabled)}
+                    className="px-3 py-1 text-[10px] font-mono tracking-widest uppercase rounded-full border"
+                    style={{ background: aprvSpontEnabled ? theme.accent : "transparent", color: aprvSpontEnabled ? theme.accentInk : theme.textMuted, borderColor: aprvSpontEnabled ? theme.accent : theme.border }}>
+                    Spont {aprvSpontEnabled ? "ON" : "OFF"}
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-x-5 gap-y-4">
+                  <Slider label="P-high" unit="cmH₂O" value={aprvPhigh} min={15} max={40} step={1} onChange={setAprvPhigh} theme={theme} tooltipKey="aprvPhigh" />
+                  <Slider label="P-low" unit="cmH₂O" value={aprvPlow} min={0} max={10} step={1} onChange={setAprvPlow} theme={theme} tooltipKey="aprvPlow" />
+                  <Slider label="T-high" unit="s" value={aprvThigh} min={2.0} max={8.0} step={0.1} onChange={setAprvThigh} theme={theme} tooltipKey="aprvThigh" />
+                  <Slider label="T-low" unit="s" value={aprvTlow} min={0.2} max={1.5} step={0.05} onChange={setAprvTlow} theme={theme} tooltipKey="aprvTlow" />
+                </div>
+                <div className="mt-4 pt-3 grid grid-cols-2 gap-3" style={{ borderTop: `1px solid ${theme.border}` }}>
+                  {[
+                    { l: "Cycle", v: `${(aprvThigh + aprvTlow).toFixed(2)}`, u: "s" },
+                    { l: "Mand Freq", v: `${(60 / (aprvThigh + aprvTlow)).toFixed(1)}`, u: "/min" },
+                    { l: "P-high : P-low", v: `${aprvPhigh} : ${aprvPlow}`, u: "" },
+                    { l: "ΔP release", v: `${aprvPhigh - aprvPlow}`, u: "cmH₂O" },
+                  ].map((m) => (
+                    <div key={m.l} className="flex flex-col">
+                      <span className="text-[9px] tracking-[0.16em] uppercase font-mono" style={{ color: theme.textFaint }}>{m.l}</span>
+                      <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
+                        {m.v} <span className="text-[9px]" style={{ color: theme.textFaint }}>{m.u}</span>
+                      </span>
+                    </div>
                   ))}
-                </optgroup>
-              ))}
-            </select>
+                </div>
+                <div className="mt-4 p-3 rounded-lg text-[10px] font-sans leading-relaxed" style={{ background: theme.surfaceAlt, color: theme.textMuted, borderLeft: `2px solid ${theme.accent}` }}>
+                  <span style={{ color: theme.accent, fontWeight: 700 }}>TIP</span> · Set T-low so expiratory flow terminates at ~50–75% of peak (prevents derecruitment) — typically a short release, ~0.5–0.8 s. Here T-low {aprvTlow.toFixed(2)}s = {(aprvTlow / (Math.max(0.001, R * C))).toFixed(2)}× the time constant (τ = R·C = {(R * C).toFixed(2)}s).
+                </div>
+              </div>
+            )}
+            {/* Vent settings */}
+            <div className="rounded-2xl p-4" style={railCardStyle}>
+              <div className="mb-4"><SectionLabel text={mode === "APRV" ? "Other Settings" : "Vent Settings"} color={theme.volume} /></div>
+              {mode !== "APRV" && (
+                <div className="grid grid-cols-2 gap-x-5 gap-y-4">
+                  <Slider label="Tidal Vol" unit="mL" value={Vt} min={200} max={800} step={10} onChange={setVt} theme={theme} tooltipKey="Vt" />
+                  <Slider label="Resp Rate" unit="/min" value={RR} min={8} max={35} step={1} onChange={setRR} theme={theme} tooltipKey="RR" />
+                  <Slider label="I-Time" unit="s" value={ITime} min={0.5} max={2.0} step={0.1} onChange={setITime} theme={theme} tooltipKey="ITime" />
+                  <Slider label="PEEP" unit="cmH₂O" value={PEEP} min={0} max={20} step={1} onChange={setPEEP} theme={theme} tooltipKey="PEEP" />
+                  <Slider label="PIP (PC/PS)" unit="cmH₂O" value={PIP} min={10} max={45} step={1} onChange={setPIP} theme={theme} tooltipKey="PIP" />
+                  <Slider label="Rise Time" unit="s" value={riseTime} min={0.05} max={0.5} step={0.05} onChange={setRiseTime} theme={theme} tooltipKey="riseTime" />
+                  <Slider label="Flow Cycle" unit="% peak" value={flowCyclePct} min={5} max={50} step={5} onChange={setFlowCyclePct} theme={theme} tooltipKey="flowCyclePct" />
+                  <Slider label="Trig Sens" unit={triggerType === "pressure" ? "cmH₂O" : "L/min"} value={trigSens} min={0.5} max={10} step={0.5} onChange={setTrigSens} theme={theme} tooltipKey="trigSens" />
+                </div>
+              )}
+              {mode !== "APRV" && (
+                <div className="mt-4 pt-4" style={{ borderTop: `1px solid ${theme.border}` }}>
+                  <span className="text-[9px] tracking-[0.2em] uppercase font-mono" style={{ color: theme.textFaint }}>Trigger Type</span>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {[
+                      { id: "pressure", label: "Pressure", hint: "−1 to −2 cmH₂O" },
+                      { id: "flow", label: "Flow", hint: "1–10 L/min" },
+                      { id: "autotrack", label: "Auto-Trak", hint: "Shape-recog" },
+                    ].map((t) => {
+                      const active = triggerType === t.id;
+                      return (
+                        <button key={t.id} onClick={() => setTriggerType(t.id)}
+                          className="sim-touch-target px-3 py-1.5 text-[11px] font-mono tracking-wide rounded-lg border transition-all flex flex-col items-start"
+                          style={{ background: active ? theme.accent : "transparent", color: active ? theme.accentInk : theme.text, borderColor: active ? theme.accent : theme.border }}>
+                          <span>{t.label}</span>
+                          <span className="text-[8px] tracking-normal mt-0.5" style={{ color: active ? theme.accentInk : theme.textFaint, opacity: 0.85 }}>{t.hint}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              <div className="mt-4 pt-4 grid grid-cols-2 gap-x-5 gap-y-4" style={{ borderTop: `1px solid ${theme.border}` }}>
+                <Slider label="FiO₂" unit="%" value={FiO2} min={21} max={100} step={1} onChange={setFiO2} theme={theme} tooltipKey="FiO2" />
+              </div>
+            </div>
+            {/* Patient mechanics */}
+            <div className="rounded-2xl p-4" style={{ ...railCardStyle, borderLeft: `4px solid ${theme.flow}` }}>
+              <div className="flex items-center justify-between mb-4">
+                <SectionLabel text="Patient Mechanics" color={theme.flow} sub="simulated lung" />
+                <span className="text-[9px] font-mono tabular-nums" style={{ color: theme.textFaint }}>τ = R·C = {(C * R).toFixed(2)}s</span>
+              </div>
+              <div className="grid grid-cols-1 gap-y-4">
+                <Slider label="Compliance" unit="L/cmH₂O" value={C} min={0.015} max={0.10} step={0.005} onChange={setC} theme={theme} tooltipKey="C" />
+                <Slider label="Resistance" unit="cmH₂O/L/s" value={R} min={5} max={30} step={1} onChange={setR} theme={theme} tooltipKey="R" />
+              </div>
+            </div>
+            {/* Maneuvers */}
+            <div className="rounded-2xl p-4" style={railCardStyle}>
+              <div className="mb-3"><SectionLabel text="Maneuvers" sub="hold 2s · auto-release" /></div>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => triggerHold("insp")}
+                  className="sim-touch-target px-4 py-2 text-[11px] font-mono tracking-widest uppercase rounded-lg border transition-all"
+                  style={{ background: holdMode === "insp" ? theme.accent : "transparent", color: holdMode === "insp" ? theme.accentInk : theme.text, borderColor: holdMode === "insp" ? theme.accent : theme.border }}>
+                  Inspiratory Hold
+                </button>
+                <button onClick={() => triggerHold("exp")}
+                  className="sim-touch-target px-4 py-2 text-[11px] font-mono tracking-widest uppercase rounded-lg border transition-all"
+                  style={{ background: holdMode === "exp" ? theme.accent : "transparent", color: holdMode === "exp" ? theme.accentInk : theme.text, borderColor: holdMode === "exp" ? theme.accent : theme.border }}>
+                  Expiratory Hold
+                </button>
+              </div>
+              {holdResult && (
+                <div className="text-[11px] font-mono mt-3 px-3 py-2 rounded-lg" style={{ color: theme.text, background: theme.surfaceAlt, border: `1px solid ${theme.border}` }}>
+                  <span style={{ color: theme.textFaint }}>{holdResult.label}:</span>{" "}
+                  <span style={{ color: theme.accent, fontWeight: 700 }}>{holdResult.value !== null && holdResult.value !== undefined ? holdResult.value.toFixed(1) : "—"}</span>{" "}
+                  <span style={{ color: theme.textFaint }}>cmH₂O</span>
+                  {holdResult.type === "insp" && holdResult.value !== null && (
+                    <span style={{ color: theme.textFaint }}> · ΔP = {(holdResult.value - PEEP).toFixed(1)} · Cstat = {((Vt) / Math.max(0.1, holdResult.value - PEEP)).toFixed(1)}</span>
+                  )}
+                  {holdResult.type === "exp" && holdResult.value !== null && (
+                    <span style={{ color: theme.textFaint }}> · auto-PEEP = {(holdResult.value - PEEP).toFixed(1)}</span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        {/* APRV-specific settings */}
-        {mode === "APRV" && (
-          <div className="mt-4 p-5 rounded-sm border-2" style={{ background: theme.surfaceAlt, borderColor: theme.accent }}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.accent }}>
-                  APRV Settings
-                </span>
-                <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>
-                  Bi-level / Bi-vent
-                </span>
-              </div>
-              <button
-                onClick={() => setAprvSpontEnabled(!aprvSpontEnabled)}
-                className="px-3 py-1 text-[10px] font-mono tracking-widest uppercase border"
-                style={{
-                  background: aprvSpontEnabled ? theme.accent : "transparent",
-                  color: aprvSpontEnabled ? theme.accentInk : theme.textMuted,
-                  borderColor: aprvSpontEnabled ? theme.accent : theme.border,
-                }}
-              >
-                Spontaneous {aprvSpontEnabled ? "ON" : "OFF"}
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
-              <Slider label="P-high" unit="cmH₂O" value={aprvPhigh} min={15} max={40} step={1} onChange={setAprvPhigh} theme={theme} tooltipKey="aprvPhigh" />
-              <Slider label="P-low" unit="cmH₂O" value={aprvPlow} min={0} max={10} step={1} onChange={setAprvPlow} theme={theme} tooltipKey="aprvPlow" />
-              <Slider label="T-high" unit="s" value={aprvThigh} min={2.0} max={8.0} step={0.1} onChange={setAprvThigh} theme={theme} tooltipKey="aprvThigh" />
-              <Slider label="T-low" unit="s" value={aprvTlow} min={0.2} max={1.5} step={0.05} onChange={setAprvTlow} theme={theme} tooltipKey="aprvTlow" />
-            </div>
-            {/* Derived APRV metrics */}
-            <div className="mt-5 pt-4 border-t grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ borderColor: theme.border }}>
-              <div className="flex flex-col">
-                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Cycle</span>
-                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
-                  {(aprvThigh + aprvTlow).toFixed(2)} <span className="text-[9px]" style={{ color: theme.textFaint }}>s</span>
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>Mand Freq</span>
-                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
-                  {(60 / (aprvThigh + aprvTlow)).toFixed(1)} <span className="text-[9px]" style={{ color: theme.textFaint }}>/min</span>
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>P-high : P-low</span>
-                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
-                  {aprvPhigh} : {aprvPlow}
-                </span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[9px] tracking-[0.18em] uppercase font-mono" style={{ color: theme.textFaint }}>ΔP (release)</span>
-                <span className="text-base font-mono font-semibold tabular-nums mt-0.5" style={{ color: theme.text }}>
-                  {aprvPhigh - aprvPlow} <span className="text-[9px]" style={{ color: theme.textFaint }}>cmH₂O</span>
-                </span>
-              </div>
-            </div>
-            {/* Teaching hint */}
-            <div className="mt-4 p-3 text-[10px] font-mono leading-relaxed" style={{ background: theme.surface, color: theme.textMuted, borderLeft: `2px solid ${theme.accent}` }}>
-              <span style={{ color: theme.accent, fontWeight: 700 }}>TIP</span> · T-low should terminate when expiratory flow reaches 50–75% of peak (prevents derecruitment). Watch the flow trace during release: T-low {aprvTlow.toFixed(2)}s = {(aprvTlow / (Math.max(0.001, R * C))).toFixed(1)}× time constant. Typical APRV uses 1 RC time constant (~0.5–0.75s).
-            </div>
-          </div>
-        )}
-        {/* Plots */}
-        <div className="rounded-sm overflow-hidden border relative" style={{ background: theme.surface, borderColor: theme.border }}>
-          {holdMode && (
-            <div className="absolute top-2 right-3 z-10 px-2 py-1 text-[10px] font-mono uppercase tracking-widest"
-                 style={{ background: theme.accent, color: theme.accentInk }}>
-              {holdMode === "insp" ? "▌ Inspiratory Hold" : "▌ Expiratory Hold"}
-            </div>
-          )}
-          {paused && !holdMode && (
-            <div className="absolute top-2 right-3 z-10 flex items-center gap-2 px-2 py-1 text-[10px] font-mono uppercase tracking-widest"
-                 style={{ background: theme.accent, color: theme.accentInk }}>
-              <span>⏸ Paused</span>
-              <span className="text-[8px] tracking-normal normal-case opacity-80">hover to inspect</span>
-            </div>
-          )}
-          <div className="border-b" style={{ borderColor: theme.border }}>
-            <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
-                          channel="P" color={theme.pressure}
-                          yLabel="PRESSURE  cmH₂O" yMin={0} yMax={Pmax} theme={theme} windowSec={windowSec}
-                          onHoverMove={paused ? handleCrosshairMove : null}
-                          onHoverLeave={paused ? handleCrosshairLeave : null} />
-          </div>
-          <div className="border-b" style={{ borderColor: theme.border }}>
-            <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
-                          channel="F" color={theme.flow}
-                          yLabel="FLOW  L/min" yMin={-Fabs} yMax={Fabs} theme={theme} windowSec={windowSec}
-                          onHoverMove={paused ? handleCrosshairMove : null}
-                          onHoverLeave={paused ? handleCrosshairLeave : null} />
-          </div>
-          <div>
-            <WaveformPlot bufferRef={bufferRef} sweepRef={sweepRef} crosshairRef={crosshairRef}
-                          channel="V" color={theme.volume}
-                          yLabel="VOLUME  mL" yMin={0} yMax={Vmax} theme={theme} windowSec={windowSec}
-                          onHoverMove={paused ? handleCrosshairMove : null}
-                          onHoverLeave={paused ? handleCrosshairLeave : null} />
-          </div>
-        </div>
-        {/* Live measurements panel */}
-        <div className="mt-4 rounded-sm border overflow-hidden" style={{ background: theme.surface, borderColor: theme.border }}>
-          <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: theme.border, background: theme.surfaceAlt }}>
-            <div className="flex items-center gap-2">
-              <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: theme.accent, boxShadow: `0 0 8px ${theme.accent}` }} />
-              <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.text }}>
-                Measured Values
-              </span>
-              <span className="text-[9px] font-mono ml-2" style={{ color: theme.textFaint }}>
-                updates per breath
-              </span>
-            </div>
-            <span className="hidden sm:inline text-[9px] font-mono" style={{ color: theme.textFaint }}>
-              Set RR {RR}/min · Set Vt {Vt} mL · {mode}
-            </span>
-          </div>
-          {/* Pressure metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-2 p-3 border-b" style={{ borderColor: theme.border }}>
-            <Stat label="PIP" value={measurements.PIP} unit="cmH₂O" theme={theme} color={theme.pressure}
-                  alert={measurements.PIP > 35}
-                  hint={measurements.PIP > 35 ? "high" : null} />
-            <Stat label="P-plat" value={measurements.Pplat} unit="cmH₂O" theme={theme} color={theme.pressure}
-                  alert={measurements.Pplat > 30}
-                  hint={measurements.Pplat ? (measurements.Pplat > 30 ? "high" : "estimated") : "hold to measure"} />
-            <Stat label="Mean Paw" value={measurements.Pmean} unit="cmH₂O" theme={theme} color={theme.pressure} />
-            <Stat label="PEEP" value={PEEP} unit="cmH₂O" theme={theme} color={theme.pressure} hint="set" />
-            <Stat label="ΔP (driving)" value={measurements.Pplat ? measurements.Pplat - PEEP : measurements.PIP - PEEP} unit="cmH₂O" theme={theme} color={theme.pressure}
-                  alert={(measurements.Pplat ? measurements.Pplat - PEEP : measurements.PIP - PEEP) > 15}
-                  hint={!measurements.Pplat ? "from PIP" : null} />
-            <Stat label="I:E" value={measurements.IE} theme={theme} />
-          </div>
-          {/* Volume / flow metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-2 p-3 border-b" style={{ borderColor: theme.border }}>
-            <Stat label="Vt exp" value={measurements.VtExp} unit="mL" theme={theme} color={theme.volume} />
-            <Stat label="Min Vent" value={measurements.MV} unit="L/min" theme={theme} color={theme.volume} />
-            <Stat label="Peak Insp Flow" value={measurements.peakInspFlow} unit="L/min" theme={theme} color={theme.flow} />
-            <Stat label="Peak Exp Flow" value={Math.abs(measurements.peakExpFlow || 0)} unit="L/min" theme={theme} color={theme.flow} />
-            <Stat label="Meas RR" value={measurements.measuredRR} unit="/min" theme={theme} />
-            <Stat label="FiO₂" value={FiO2} unit="%" theme={theme} hint="set" />
-          </div>
-          {/* Compliance / resistance */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-x-2 gap-y-2 p-3">
-            <Stat label="Cdyn" value={measurements.Cdyn} unit="mL/cmH₂O" theme={theme} color={theme.accent}
-                  hint="dynamic" />
-            <Stat label="Cstat" value={measurements.Cstat} unit="mL/cmH₂O" theme={theme} color={theme.accent}
-                  hint={measurements.Cstat ? "from hold" : "insp hold to measure"} />
-            <Stat label="Raw" value={measurements.Raw} unit="cmH₂O/L/s" theme={theme} color={theme.accent}
-                  hint={measurements.Cstat ? "from hold" : "estimate"}
-                  alert={measurements.Raw > 20} />
-          </div>
-        </div>
-        {/* Trends panel — last N breaths */}
+        {/* Trends */}
         {(() => {
-          // Estimate time window from measured RR (fallback to set RR)
           const effectiveRR = measurements.measuredRR > 0 ? measurements.measuredRR : RR;
           const validBreaths = trends.PIP.filter(v => v !== null).length;
           const trendWindowSec = validBreaths > 0 ? (validBreaths * 60) / effectiveRR : 0;
-          const windowLabel = trendWindowSec >= 60
-            ? `~${(trendWindowSec / 60).toFixed(1)} min`
-            : `~${trendWindowSec.toFixed(0)}s`;
+          const windowLabel = trendWindowSec >= 60 ? `~${(trendWindowSec / 60).toFixed(1)} min` : `~${trendWindowSec.toFixed(0)}s`;
           return (
-            <div className="mt-4 rounded-sm border overflow-hidden" style={{ background: theme.surface, borderColor: theme.border }}>
-              <div className="flex items-center justify-between px-4 py-2 border-b" style={{ borderColor: theme.border, background: theme.surfaceAlt }}>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.text }}>
-                    Trends
-                  </span>
-                  <span className="text-[9px] font-mono ml-2" style={{ color: theme.textFaint }}>
-                    last {validBreaths} of {TRENDS_LEN} breaths · {windowLabel}
-                  </span>
-                </div>
-                <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>
-                  auto-scaled
-                </span>
+            <div className="mt-5 rounded-2xl overflow-hidden" style={cardStyle}>
+              <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: `1px solid ${theme.border}`, background: theme.surfaceAlt }}>
+                <SectionLabel text="Trends" sub={`last ${validBreaths} of ${TRENDS_LEN} breaths · ${windowLabel}`} />
+                <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>auto-scaled</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3">
                 <Sparkline values={trends.PIP} label="PIP" unit="cmH₂O" color={theme.pressure} theme={theme} alertHigh={35} windowSec={trendWindowSec} />
@@ -2046,138 +2464,24 @@ function VentilatorWaveforms() {
             </div>
           );
         })()}
-        {/* Hold maneuver bar */}
-        <div className="flex flex-wrap items-center gap-3 mt-4 p-3 rounded-sm border"
-             style={{ background: theme.surfaceAlt, borderColor: theme.border }}>
-          <span className="text-[10px] tracking-[0.2em] uppercase font-mono" style={{ color: theme.textFaint }}>
-            Maneuvers
-          </span>
-          <button
-            onClick={() => triggerHold("insp")}
-            className="px-4 py-1.5 text-xs font-mono tracking-widest uppercase border transition-all"
-            style={{
-              background: holdMode === "insp" ? theme.accent : "transparent",
-              color: holdMode === "insp" ? theme.accentInk : theme.text,
-              borderColor: holdMode === "insp" ? theme.accent : theme.border,
-            }}
-          >
-            Inspiratory Hold
-          </button>
-          <button
-            onClick={() => triggerHold("exp")}
-            className="px-4 py-1.5 text-xs font-mono tracking-widest uppercase border transition-all"
-            style={{
-              background: holdMode === "exp" ? theme.accent : "transparent",
-              color: holdMode === "exp" ? theme.accentInk : theme.text,
-              borderColor: holdMode === "exp" ? theme.accent : theme.border,
-            }}
-          >
-            Expiratory Hold
-          </button>
-          {holdResult && (
-            <div className="text-xs font-mono ml-2 px-3 py-1.5" style={{ color: theme.text, background: theme.surface, border: `1px solid ${theme.border}` }}>
-              <span style={{ color: theme.textFaint }}>{holdResult.label}:</span>{" "}
-              <span style={{ color: theme.accent, fontWeight: 700 }}>
-                {holdResult.value !== null && holdResult.value !== undefined ? holdResult.value.toFixed(1) : "—"}
-              </span>{" "}
-              <span style={{ color: theme.textFaint }}>cmH₂O</span>
-              {holdResult.type === "insp" && holdResult.value !== null && (
-                <span style={{ color: theme.textFaint }}> · ΔP = {(holdResult.value - PEEP).toFixed(1)} · Cstat = {((Vt) / Math.max(0.1, holdResult.value - PEEP)).toFixed(1)} mL/cmH₂O</span>
-              )}
-              {holdResult.type === "exp" && holdResult.value !== null && (
-                <span style={{ color: theme.textFaint }}> · auto-PEEP = {(holdResult.value - PEEP).toFixed(1)}</span>
-              )}
+        {/* Disclaimer — robust, consistent with the teaching reference */}
+        <aside className="mt-6 rounded-2xl overflow-hidden" aria-label="Educational disclaimer"
+               style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderLeft: `4px solid ${theme.pressure}`, boxShadow: theme.shadowSoft }}>
+          <div className="px-4 sm:px-5 py-4">
+            <div className="text-[10px] tracking-[0.18em] uppercase font-mono font-bold mb-2" style={{ color: theme.pressure }}>
+              Disclaimer · Educational use only
             </div>
-          )}
-          <div className="flex-1" />
-          <span className="text-[10px] font-mono" style={{ color: theme.textFaint }}>
-            Holds last 2s · auto-release
-          </span>
-        </div>
-        {/* Settings */}
-        <div className="mt-4 p-5 rounded-sm border" style={{ background: theme.surfaceAlt, borderColor: theme.border }}>
-          <div className="text-[10px] tracking-[0.2em] uppercase font-mono mb-3" style={{ color: theme.textFaint }}>
-            {mode === "APRV" ? "Other Settings" : "Vent Settings"}
+            <p className="text-[12.5px] font-sans leading-relaxed" style={{ color: theme.textMuted }}>
+              This is a teaching simulator. It renders an <strong style={{ color: theme.text }}>idealized single-compartment lung model</strong>, and every waveform and number it reports — PIP, plateau, mean and driving pressure, compliance, resistance, auto-PEEP, minute ventilation, and the rest — is a simplified illustration generated by that model. <strong style={{ color: theme.text }}>It is not patient data and not the output of any real ventilator.</strong> It does not constitute medical advice and is not a substitute for clinical judgment, hands-on training on the actual device, institutional protocols, or the care of a qualified clinician at the bedside.
+            </p>
+            <p className="text-[12.5px] font-sans leading-relaxed mt-2" style={{ color: theme.textMuted }}>
+              Real patients and ventilators are far more complex than this model — manufacturer- and mode-specific behavior, multi-compartment and nonlinear mechanics, leaks, secretions, circuit factors, and patient effort all differ from what is shown here. The dyssynchrony and pathology scenarios are stylized to make a pattern recognizable, not to reproduce a specific clinical case. <strong style={{ color: theme.text }}>Use it to build intuition and recognize patterns — never to make, guide, or justify a patient-care decision.</strong> Verify anything clinically actionable against primary sources, current guidelines, and your institution's standards.
+            </p>
+            <p className="text-[11px] font-mono leading-relaxed mt-3 pt-3" style={{ color: theme.textFaint, borderTop: `1px solid ${theme.border}` }}>
+              Model detail · single-compartment equation of motion, P<sub>aw</sub> = V/C + Flow·R + PEEP. Inspiratory hold estimates plateau pressure / static compliance; expiratory hold estimates total PEEP (intrinsic PEEP). No liability is accepted for use of this material.
+            </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
-            {mode !== "APRV" && (
-              <>
-                <Slider label="Tidal Vol" unit="mL" value={Vt} min={200} max={800} step={10} onChange={setVt} theme={theme} tooltipKey="Vt" />
-                <Slider label="Resp Rate" unit="/min" value={RR} min={8} max={35} step={1} onChange={setRR} theme={theme} tooltipKey="RR" />
-                <Slider label="I-Time" unit="s" value={ITime} min={0.5} max={2.0} step={0.1} onChange={setITime} theme={theme} tooltipKey="ITime" />
-                <Slider label="PEEP" unit="cmH₂O" value={PEEP} min={0} max={20} step={1} onChange={setPEEP} theme={theme} tooltipKey="PEEP" />
-                <Slider label="PIP (PC/PS)" unit="cmH₂O" value={PIP} min={10} max={45} step={1} onChange={setPIP} theme={theme} tooltipKey="PIP" />
-                <Slider label="Rise Time" unit="s" value={riseTime} min={0.05} max={0.5} step={0.05} onChange={setRiseTime} theme={theme} tooltipKey="riseTime" />
-                <Slider label="Flow Cycle" unit="% peak" value={flowCyclePct} min={5} max={50} step={5} onChange={setFlowCyclePct} theme={theme} tooltipKey="flowCyclePct" />
-                <Slider label="Trig Sens" unit={triggerType === "pressure" ? "cmH₂O" : "L/min"} value={trigSens} min={0.5} max={10} step={0.5} onChange={setTrigSens} theme={theme} tooltipKey="trigSens" />
-              </>
-            )}
-          </div>
-          {/* Trigger type selector */}
-          {mode !== "APRV" && (
-            <div className="flex flex-wrap items-center gap-3 mt-5 pt-4 border-t" style={{ borderColor: theme.border }}>
-              <span className="text-[10px] tracking-[0.2em] uppercase font-mono" style={{ color: theme.textFaint }}>
-                Trigger Type
-              </span>
-              {[
-                { id: "pressure", label: "Pressure", hint: "−1 to −2 cmH₂O" },
-                { id: "flow", label: "Flow", hint: "1–10 L/min" },
-                { id: "autotrack", label: "Auto-Trak", hint: "Shape-recognition" },
-              ].map((t) => {
-                const active = triggerType === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => setTriggerType(t.id)}
-                    className="px-3 py-1.5 text-xs font-mono tracking-widest uppercase border transition-all flex flex-col items-start"
-                    style={{
-                      background: active ? theme.accent : "transparent",
-                      color: active ? theme.accentInk : theme.text,
-                      borderColor: active ? theme.accent : theme.border,
-                    }}
-                  >
-                    <span>{t.label}</span>
-                    <span className="text-[8px] tracking-normal normal-case mt-0.5"
-                          style={{ color: active ? theme.accentInk : theme.textFaint, opacity: 0.85 }}>
-                      {t.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-          <div className="text-[10px] tracking-[0.2em] uppercase font-mono mt-6 mb-3" style={{ color: theme.textFaint }}>
-            Other
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
-            <Slider label="FiO₂" unit="%" value={FiO2} min={21} max={100} step={1} onChange={setFiO2} theme={theme} tooltipKey="FiO2" />
-          </div>
-        </div>
-        {/* Patient Mechanics — separate card, different visual treatment */}
-        <div className="mt-4 p-5 rounded-sm border-l-4" style={{ background: theme.surface, borderColor: theme.border, borderLeftColor: theme.flow }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] tracking-[0.25em] uppercase font-mono" style={{ color: theme.flow }}>
-                Patient Mechanics
-              </span>
-              <span className="text-[9px] font-mono" style={{ color: theme.textFaint }}>
-                simulated lung — not vent controls
-              </span>
-            </div>
-            <span className="text-[9px] font-mono tabular-nums" style={{ color: theme.textFaint }}>
-              τ = R·C = {(C * R).toFixed(2)}s
-            </span>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-5">
-            <Slider label="Compliance" unit="L/cmH₂O" value={C} min={0.015} max={0.10} step={0.005} onChange={setC} theme={theme} tooltipKey="C" />
-            <Slider label="Resistance" unit="cmH₂O/L/s" value={R} min={5} max={30} step={1} onChange={setR} theme={theme} tooltipKey="R" />
-          </div>
-        </div>
-        {/* Footer */}
-        <div className="mt-6 text-[11px] font-mono leading-relaxed pt-4 border-t"
-             style={{ color: theme.textFaint, borderColor: theme.border }}>
-          <span style={{ color: theme.accentSoft }}>NOTE</span> · Educational use. Single-compartment lung model rendered in real time. Inspiratory hold measures plateau pressure for static compliance; expiratory hold measures total PEEP to detect intrinsic PEEP (auto-PEEP).
-        </div>
+        </aside>
       </div>
     </div>
   );
