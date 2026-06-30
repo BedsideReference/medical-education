@@ -1,64 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Patient–ventilator dyssynchrony explorer</title>
-  <style>
-    html, body { margin: 0; padding: 0; background: #0a0f1f; }
-    body {
-      font-family: ui-serif, Georgia, 'Times New Roman', serif;
-      padding: 0;
-      box-sizing: border-box;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    @media (prefers-color-scheme: dark) {
-      html, body { background: #0a0f1f; }
-    }
-  </style>
 <style>
-  /* Ventilator dyssynchrony identifier — v10
-     Professional clinical UI with inline SVG icons (no font deps) */
-  .dys-app { font-family: ui-serif, Georgia, 'Times New Roman', serif; color: var(--dys-text); background: linear-gradient(135deg, #fafaf7 0%, #f1f0e9 100%); padding: 22px; min-height: 100vh; box-sizing: border-box; --dys-page: #f1f0e9; --dys-card: #ffffff; --dys-elev: 0 1px 2px rgba(15,23,42,0.04); --dys-elev-hi: 0 2px 6px rgba(15,23,42,0.08); --dys-text: #1c1917; --dys-text-muted: #57534e; --dys-text-subtle: #78716c; --dys-border: #d6d3c7; --dys-border-strong: #c4c0b4; --dys-divider: #e8e5d8; --dys-accent: #0891b2; --dys-accent-soft: rgba(8,145,178,0.10); }
-  .dys-app[data-dys-theme="dark"] { background: linear-gradient(135deg, #050810 0%, #0a0f1f 100%); --dys-page: #0f172a; --dys-card: #0a0e1a; --dys-elev: 0 1px 2px rgba(0,0,0,0.4); --dys-elev-hi: 0 2px 8px rgba(0,0,0,0.5); --dys-text: #e2e8f0; --dys-text-muted: #94a3b8; --dys-text-subtle: #64748b; --dys-border: #1e293b; --dys-border-strong: #334155; --dys-divider: rgba(148,163,184,0.10); --dys-accent: #22d3ee; --dys-accent-soft: rgba(34,211,238,0.14); }
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  /* ─────────────────────────────────────────────────────
+   * Ventilator dyssynchrony identifier — v10
+   * Styled to match the Ventilator Waveform Engine.
+   * ─────────────────────────────────────────────────── */
+  html { overscroll-behavior-x: none; }
+  /* Light chrome — modern product surface (matches the waveform sim) */
+  .dys-app {
+    --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-family: var(--font-body); color: var(--dys-text);
+    background: radial-gradient(1200px 640px at 88% -12%, rgba(13,148,136,0.12), transparent 60%), radial-gradient(900px 500px at -10% 110%, rgba(79,70,229,0.08), transparent 55%), linear-gradient(180deg, #fbfcfe 0%, #eef2f7 100%);
+    -webkit-font-smoothing: antialiased; padding: 22px; min-height: 100vh; box-sizing: border-box;
+    --dys-page: #f4f7fb; --dys-card: #ffffff;
+    --dys-elev: 0 1px 2px rgba(16,24,40,0.04), 0 6px 16px -10px rgba(16,24,40,0.16);
+    --dys-elev-hi: 0 1px 2px rgba(16,24,40,0.04), 0 12px 28px -14px rgba(16,24,40,0.22);
+    --dys-text: #0f1b2d; --dys-text-muted: #475569; --dys-text-subtle: #64748b;
+    --dys-border: #e6eaf1; --dys-border-strong: #d7deea; --dys-divider: #eef1f6;
+    --dys-accent: #0d9488; --dys-accent2: #4f46e5; --dys-accent-soft: rgba(13,148,136,0.10);
+  }
+  /* Dark chrome */
+  .dys-app[data-dys-theme="dark"] {
+    background: radial-gradient(1100px 560px at 90% -12%, rgba(45,212,191,0.16), transparent 60%), radial-gradient(800px 460px at -10% 110%, rgba(99,102,241,0.12), transparent 55%), linear-gradient(180deg, #0a0f1c 0%, #070b15 100%);
+    --dys-page: #131d31; --dys-card: #0e1525;
+    --dys-elev: 0 8px 20px -12px rgba(0,0,0,0.6); --dys-elev-hi: 0 12px 30px -14px rgba(0,0,0,0.7);
+    --dys-text: #e7eef9; --dys-text-muted: #aebed6; --dys-text-subtle: #8294b3;
+    --dys-border: #21304b; --dys-border-strong: #2c3e5e; --dys-divider: rgba(148,163,184,0.12);
+    --dys-accent: #2dd4bf; --dys-accent2: #818cf8; --dys-accent-soft: rgba(45,212,191,0.14);
+  }
+
+  /* ── Title block ────────────────────────────────────── */
   .dys-app-header { display:flex; align-items:center; gap:14px; margin:0 0 24px; padding:0 0 20px; border-bottom:1px solid var(--dys-divider); }
-  .dys-app-icon { display:inline-flex; align-items:center; justify-content:center; width:46px; height:46px; flex-shrink:0; border-radius:8px; background:linear-gradient(135deg, #0891b2 0%, #22d3ee 100%); box-shadow: var(--dys-elev), inset 0 1px 0 rgba(255,255,255,0.15); color:#0f172a; }
+  .dys-app-icon { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; flex-shrink:0; border-radius:12px; background:linear-gradient(135deg, var(--dys-accent) 0%, var(--dys-accent2) 100%); box-shadow: var(--dys-elev); color:#ffffff; }
   .dys-app-icon svg { width:24px; height:24px; }
   .dys-app-title-wrap { flex:1; min-width:0; }
-  .dys-app-title { font-size:24px; font-weight:700; color:var(--dys-text); margin:0 0 2px; letter-spacing:-0.02em; line-height:1.15; }
+  .dys-app-title { font-family:var(--font-display); font-size:25px; font-weight:700; color:var(--dys-text); margin:0 0 2px; letter-spacing:-0.02em; line-height:1.1; }
   .dys-app-subtitle { font-size:13px; color:var(--dys-text-muted); margin:0; line-height:1.5; }
   .dys-app-actions { display:flex; gap:8px; align-items:center; flex-shrink:0; }
-  .dys-action-btn { display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; padding:0; border-radius:6px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; color:var(--dys-text); transition: all 0.15s ease; box-shadow: var(--dys-elev); }
-  .dys-action-btn:hover { background:var(--dys-page); border-color:var(--dys-border-strong); transform:translateY(-1px); box-shadow: var(--dys-elev-hi); }
+
+  /* ── Action buttons (theme + play/pause) ────────────── */
+  .dys-action-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:7px 13px; border-radius:999px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; color:var(--dys-text-muted); font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; transition: all 0.15s ease; box-shadow: var(--dys-elev); }
+  .dys-action-btn:hover { border-color:var(--dys-border-strong); transform:translateY(-1px); box-shadow: var(--dys-elev-hi); }
   .dys-action-btn:active { transform:translateY(0); }
-  .dys-action-btn svg { width:18px; height:18px; }
+  .dys-action-btn svg { width:14px; height:14px; flex-shrink:0; }
+  .dys-btn-label { line-height:1; }
+
+  /* ── Section label — glowing dot + tracked mono caps (matches the sim) ── */
+  .dys-section-label { display:inline-flex; align-items:center; gap:9px; font-family:var(--font-mono); font-size:10px; font-weight:600; letter-spacing:0.22em; text-transform:uppercase; color:var(--dys-text); }
+  .dys-section-label::before { content:""; width:6px; height:6px; border-radius:50%; flex-shrink:0; background:var(--dys-accent); box-shadow:0 0 8px var(--dys-accent); }
+  .dys-section-label.signs::before   { background:#f59e0b; box-shadow:0 0 8px rgba(245,158,11,0.6); }
+  .dys-section-label.actions::before { background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,0.6); }
+
+  /* ── Case selector — grid of mini-waveform cards ────── */
   .dys-cases-eyebrow { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--dys-text-muted); font-weight:600; margin-bottom:10px; display:block; }
   .dys-cases { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin:0 0 24px; }
   @media (max-width: 1000px) { .dys-cases { grid-template-columns:repeat(2, 1fr); } }
   @media (max-width: 520px) { .dys-cases { grid-template-columns:1fr; } }
-  .dys-case-btn { position:relative; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:11px 13px 9px; border-radius:6px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; text-align:left; font-family:inherit; transition: all 0.15s ease; box-shadow: var(--dys-elev); overflow:hidden; }
+  .dys-case-btn { position:relative; display:flex; flex-direction:column; align-items:stretch; gap:6px; padding:11px 13px 9px; border-radius:12px; border:1px solid var(--dys-border); background:var(--dys-card); cursor:pointer; text-align:left; font-family:inherit; transition: all 0.15s ease; box-shadow: var(--dys-elev); overflow:hidden; }
   .dys-case-btn:hover { transform:translateY(-1px); box-shadow: var(--dys-elev-hi); border-color:var(--dys-border-strong); }
   .dys-case-btn.active { border-color:var(--dys-accent); box-shadow: var(--dys-elev-hi), 0 0 0 1px var(--dys-accent); }
   .dys-case-btn.active::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--dys-accent); }
   .dys-case-row1 { display:flex; align-items:center; gap:7px; }
-  .dys-case-num { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:10px; font-weight:600; color:var(--dys-text-subtle); flex-shrink:0; letter-spacing:0.02em; }
+  .dys-case-num { font-family: var(--font-mono); font-size:10px; font-weight:600; color:var(--dys-text-subtle); flex-shrink:0; letter-spacing:0.02em; }
   .dys-case-btn.active .dys-case-num { color:var(--dys-accent); }
   .dys-case-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
   .dys-case-name { flex:1; min-width:0; font-size:13px; font-weight:600; color:var(--dys-text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.2; }
-  .dys-case-spark { width:100%; height:22px; opacity:0.55; transition: opacity 0.15s; }
+  .dys-case-spark { width:100%; height:34px; opacity:0.85; transition: opacity 0.15s; }
   .dys-case-btn.active .dys-case-spark { opacity:1; }
-  .dys-case-btn:hover .dys-case-spark { opacity:0.85; }
+  .dys-case-btn:hover .dys-case-spark { opacity:1; }
+
+  /* Severity dots */
   .sev-dot-danger  { background:#EF4444; box-shadow:0 0 0 2px rgba(239,68,68,0.15); }
   .sev-dot-warning { background:#F59E0B; box-shadow:0 0 0 2px rgba(245,158,11,0.15); }
   .sev-dot-success { background:#22C55E; box-shadow:0 0 0 2px rgba(34,197,94,0.15); }
-  .dys-current { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:16px 18px; border-radius:6px; background:var(--dys-card); border:1px solid var(--dys-border); box-shadow: var(--dys-elev); }
+
+  /* ── Current case header ─────────────────────────────── */
+  .dys-current { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:16px 20px; border-radius:16px; background:var(--dys-card); border:1px solid var(--dys-border); box-shadow: var(--dys-elev); }
   .dys-current-info { flex:1; min-width:200px; }
-  .dys-current-title { display:flex; align-items:center; gap:9px; font-size:18px; font-weight:700; color:var(--dys-text); margin:0 0 4px; letter-spacing:-0.015em; }
+  .dys-current-title { display:flex; align-items:center; gap:9px; font-family:var(--font-display); font-size:19px; font-weight:700; color:var(--dys-text); margin:0 0 4px; letter-spacing:-0.015em; }
   .dys-livedot { width:8px; height:8px; border-radius:50%; background:#22C55E; box-shadow: 0 0 0 4px rgba(34,197,94,0.18); animation: dys-pulse 2.2s ease-in-out infinite; flex-shrink:0; }
   .dys-livedot.paused { background:#94A3B8; box-shadow: 0 0 0 4px rgba(148,163,184,0.18); animation:none; }
   @keyframes dys-pulse { 0%,100% { box-shadow: 0 0 0 4px rgba(34,197,94,0.18); } 50% { box-shadow: 0 0 0 7px rgba(34,197,94,0.04); } }
-  .dys-current-tagline { font-size:13.5px; color:var(--dys-text-muted); margin:0; line-height:1.45; }
+  .dys-current-tagline { font-size:13.5px; color:var(--dys-text-muted); margin:0; line-height:1.55; }
+  .dys-current-why { font-size:13px; color:var(--dys-text); margin:11px 0 0; line-height:1.5; border-left:3px solid #c2410c; padding-left:11px; }
+  .dys-app[data-dys-theme="dark"] .dys-current-why { border-left-color:#fbbf24; }
+  .dys-why-label { font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:#c2410c; margin-right:7px; }
+  .dys-app[data-dys-theme="dark"] .dys-why-label { color:#fbbf24; }
+  .dys-current-setting { font-size:12.5px; color:var(--dys-text-muted); margin:9px 0 0; line-height:1.5; }
+  .dys-setting-label { font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--dys-text-subtle); margin-right:7px; }
+  .dys-phase-pill { font-family:var(--font-mono); font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; background:var(--dys-accent-soft); color:var(--dys-accent); }
   .dys-current-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; flex-shrink:0; }
   .dys-sev-pill { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:99px; letter-spacing:-0.01em; }
   .dys-sev-pill .dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
@@ -69,31 +100,35 @@
   .dys-app[data-dys-theme="dark"] .sev-pill-warning { background:rgba(245,158,11,0.18); color:#FCD34D; }
   .dys-app[data-dys-theme="dark"] .sev-pill-success { background:rgba(34,197,94,0.18);  color:#86EFAC; }
   .sev-pill-danger .dot { background:#EF4444; } .sev-pill-warning .dot { background:#F59E0B; } .sev-pill-success .dot { background:#22C55E; }
-  .dys-mode-pill { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:11px; font-weight:600; padding:4px 9px; border-radius:6px; background:var(--dys-page); color:var(--dys-text-muted); border:1px solid var(--dys-border); }
-  .dys-monitor { position:relative; background:linear-gradient(168deg, #061026 0%, #0E1B36 50%, #0A1426 100%); border-radius:8px; padding:14px 16px 12px; margin-bottom:18px; box-shadow: 0 1px 3px rgba(0,0,0,0.20), 0 8px 24px rgba(15, 23, 42, 0.12), inset 0 0 0 1px rgba(148,163,184,0.06); overflow:hidden; }
-  .dys-monitor::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at top right, rgba(34,211,238,0.10), transparent 70%); pointer-events:none; }
+  .dys-mode-pill { font-family: var(--font-mono); font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; background:var(--dys-page); color:var(--dys-text-muted); border:1px solid var(--dys-border); }
+
+  /* ── Monitor panel (always dark — ICU display) ──────── */
+  .dys-monitor { position:relative; background:linear-gradient(180deg, #0f1a31 0%, #0b1220 100%); border-radius:16px; padding:14px 16px 12px; margin-bottom:18px; box-shadow: 0 1px 3px rgba(0,0,0,0.20), 0 12px 28px -14px rgba(15, 23, 42, 0.22), inset 0 0 0 1px rgba(148,163,184,0.06); overflow:hidden; }
+  .dys-monitor::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at top right, rgba(45,212,191,0.12), transparent 70%); pointer-events:none; }
   .dys-mon-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:0 2px; position:relative; }
-  .dys-mon-status { display:flex; align-items:center; gap:8px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:10px; color:rgba(226,232,240,0.55); letter-spacing:0.08em; text-transform:uppercase; font-weight:600; }
+  .dys-mon-status { display:flex; align-items:center; gap:8px; font-family: var(--font-mono); font-size:10px; color:rgba(226,232,240,0.55); letter-spacing:0.08em; text-transform:uppercase; font-weight:600; }
   .dys-rec-dot { width:7px; height:7px; border-radius:50%; background:#EF4444; box-shadow: 0 0 8px rgba(239,68,68,0.7); animation: dys-rec 1.6s ease-in-out infinite; }
   @keyframes dys-rec { 0%,100% { opacity:0.5; transform:scale(1); } 50% { opacity:1; transform:scale(1.15); } }
   .dys-rec-dot.paused { animation:none; opacity:0.35; box-shadow:none; background:#64748B; }
-  .dys-readouts { display:flex; gap:18px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:11px; color:rgba(226,232,240,0.55); letter-spacing:0.05em; text-transform:uppercase; }
+  .dys-readouts { display:flex; gap:18px; font-family: var(--font-mono); font-size:11px; color:rgba(226,232,240,0.55); letter-spacing:0.05em; text-transform:uppercase; }
   .dys-readout { display:inline-flex; align-items:baseline; gap:6px; }
   .dys-readout-label { font-weight:600; }
   .dys-readout-val { font-weight:700; font-variant-numeric: tabular-nums; min-width:38px; text-align:right; text-transform:none; letter-spacing:0; font-size:13px; }
-  .dys-readout-val.p { color:#FFD23F; text-shadow: 0 0 8px rgba(255,210,63,0.35); }
-  .dys-readout-val.f { color:#5EE5FF; text-shadow: 0 0 8px rgba(94,229,255,0.35); }
+  .dys-readout-val.p { color:#f5b133; text-shadow: 0 0 8px rgba(245,177,51,0.35); }
+  .dys-readout-val.f { color:#34d399; text-shadow: 0 0 8px rgba(52,211,153,0.35); }
   .dys-readout-unit { font-size:10px; color:rgba(226,232,240,0.4); margin-left:1px; text-transform:none; letter-spacing:0; }
   .dys-trace-block { position:relative; }
   .dys-trace-block + .dys-trace-block { margin-top:6px; padding-top:6px; border-top:1px solid rgba(148,163,184,0.06); }
   .dys-trace-head { display:flex; justify-content:space-between; align-items:flex-end; padding:0 2px 3px; }
-  .dys-lead { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; }
-  .dys-lead.p { color:#FFD23F; }
-  .dys-lead.f { color:#5EE5FF; }
-  .dys-units { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size:9.5px; color:rgba(226,232,240,0.4); }
+  .dys-lead { font-family: var(--font-mono); font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; }
+  .dys-lead.p { color:#f5b133; }
+  .dys-lead.f { color:#34d399; }
+  .dys-units { font-family: var(--font-mono); font-size:9.5px; color:rgba(226,232,240,0.4); }
+
+  /* ── Info cards: signs + mechanism + actions ────────── */
   .dys-info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media (max-width: 760px) { .dys-info-grid { grid-template-columns:1fr; } }
-  .dys-info-card { position:relative; background:var(--dys-card); border:1px solid var(--dys-border); border-radius:6px; padding:18px 20px 18px 22px; box-shadow: var(--dys-elev); transition: box-shadow 0.15s; overflow:hidden; }
+  .dys-info-card { position:relative; background:var(--dys-card); border:1px solid var(--dys-border); border-radius:16px; padding:18px 20px 18px 22px; box-shadow: var(--dys-elev); transition: box-shadow 0.15s; overflow:hidden; }
   .dys-info-card:hover { box-shadow: var(--dys-elev-hi); }
   .dys-info-card::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; }
   .dys-info-card.signs::before    { background:linear-gradient(180deg, #F59E0B 0%, #D97706 100%); }
@@ -106,57 +141,109 @@
   .dys-app[data-dys-theme="dark"] .dys-info-icon.signs   { background:rgba(245,158,11,0.18); color:#FCD34D; }
   .dys-app[data-dys-theme="dark"] .dys-info-icon.actions { background:rgba(34,197,94,0.18);  color:#86EFAC; }
   .dys-info-label { font-size:14.5px; font-weight:700; color:var(--dys-text); letter-spacing:-0.015em; }
-  .dys-signs-list { list-style:none; padding:0; margin:0 0 14px; }
-  .dys-signs-list li { display:flex; gap:9px; align-items:flex-start; padding:5px 0; font-size:13.5px; color:var(--dys-text); line-height:1.5; }
-  .dys-signs-list li::before { content:""; flex-shrink:0; width:6px; height:6px; border-radius:50%; background:#F59E0B; margin-top:8px; box-shadow:0 0 0 2px rgba(245,158,11,0.15); }
+
+  /* Signs list — bulleted */
+  .dys-signs-list { list-style:none; padding:0; margin:0; }
+  .dys-signs-list li { display:flex; gap:10px; align-items:flex-start; padding:6px 0; font-size:13px; color:var(--dys-text); line-height:1.5; }
+  .dys-signs-list li::before { content:""; flex-shrink:0; width:6px; height:6px; border-radius:50%; background:#F59E0B; margin-top:7px; box-shadow:0 0 0 2px rgba(245,158,11,0.15); }
   .dys-mechanism { font-size:12.5px; color:var(--dys-text-muted); line-height:1.55; padding-top:12px; border-top:1px solid var(--dys-divider); }
   .dys-mechanism-eyebrow { font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--dys-text-subtle); font-weight:700; margin-bottom:5px; }
+
+  /* Actions list — numbered */
   .dys-actions-list { list-style:none; padding:0; margin:0; counter-reset: dys-action; }
-  .dys-actions-list li { counter-increment: dys-action; display:flex; gap:11px; align-items:flex-start; padding:7px 0; font-size:13.5px; color:var(--dys-text); line-height:1.5; }
-  .dys-actions-list li::before { content:counter(dys-action); flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:rgba(34,197,94,0.12); color:#16A34A; font-size:11.5px; font-weight:700; margin-top:1px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+  .dys-actions-list li { counter-increment: dys-action; display:flex; gap:11px; align-items:flex-start; padding:6px 0; font-size:13px; color:var(--dys-text); line-height:1.5; }
+  .dys-actions-list li::before { content:counter(dys-action); flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:rgba(34,197,94,0.12); color:#16A34A; font-size:11.5px; font-weight:700; margin-top:1px; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   .dys-app[data-dys-theme="dark"] .dys-actions-list li::before { background:rgba(34,197,94,0.20); color:#86EFAC; }
+
+  /* ── Disclaimer ─────────────────────────────────────── */
+  .dys-disclaimer { margin-top:22px; border:1px solid var(--dys-border); border-left:4px solid #c2410c; border-radius:16px; background:var(--dys-card); box-shadow: var(--dys-elev); padding:16px 20px; }
+  .dys-app[data-dys-theme="dark"] .dys-disclaimer { border-left-color:#fbbf24; }
+  .dys-disclaimer-title { font-family:var(--font-mono); font-size:10px; letter-spacing:0.16em; text-transform:uppercase; font-weight:700; color:#c2410c; margin-bottom:8px; }
+  .dys-app[data-dys-theme="dark"] .dys-disclaimer-title { color:#fbbf24; }
+  .dys-disclaimer p { font-size:12.5px; line-height:1.55; color:var(--dys-text-muted); margin:0 0 8px; }
+  .dys-disclaimer p:last-child { margin-bottom:0; }
+  .dys-disclaimer strong { color:var(--dys-text); font-weight:600; }
+
+  /* ── Per-pattern stat tiles (matches the sim's Measured Values) ── */
+  .dys-stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; margin-bottom:18px; }
+  @media (max-width: 760px) { .dys-stats { grid-template-columns:repeat(2, 1fr); } }
+  .dys-stat { position:relative; background:var(--dys-card); border:1px solid var(--dys-border); border-radius:14px; box-shadow:var(--dys-elev); padding:12px 14px 12px 16px; overflow:hidden; }
+  .dys-stat::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--dys-accent); opacity:0.55; }
+  .dys-stat.alarm { border-color:#e11d48; background:rgba(225,29,72,0.05); animation:dys-alarm 1.7s ease-in-out infinite; }
+  .dys-stat.alarm::before { background:#e11d48; opacity:1; }
+  .dys-stat-label { font-family:var(--font-mono); font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--dys-text-subtle); margin-bottom:5px; }
+  .dys-stat-val { font-family:var(--font-mono); font-size:23px; font-weight:600; color:var(--dys-text); line-height:1; letter-spacing:-0.01em; }
+  .dys-stat.alarm .dys-stat-val { color:#e11d48; }
+  .dys-app[data-dys-theme="dark"] .dys-stat.alarm .dys-stat-val { color:#fb7185; }
+  .dys-stat-unit { font-family:var(--font-mono); font-size:10px; font-weight:400; color:var(--dys-text-subtle); margin-left:4px; letter-spacing:0; }
+  @keyframes dys-alarm { 0%,100% { box-shadow:var(--dys-elev); } 50% { box-shadow:var(--dys-elev), 0 0 0 3px rgba(225,29,72,0.12); } }
+
+  /* ── Three-column teaching card (Look for / Mechanism / Management) ── */
+  .dys-teaching { background:var(--dys-card); border:1px solid var(--dys-border); border-radius:16px; box-shadow:var(--dys-elev); overflow:hidden; }
+  .dys-teaching-head { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:12px 18px; border-bottom:1px solid var(--dys-divider); background:var(--dys-page); }
+  .dys-teach-title { font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--dys-text); letter-spacing:-0.01em; }
+  .dys-teach-eyebrow { margin-bottom:12px; }
+  .dys-teaching-grid { display:grid; grid-template-columns:1fr 1fr 1fr; }
+  @media (max-width: 820px) { .dys-teaching-grid { grid-template-columns:1fr; } }
+  .dys-teach-col { padding:16px 20px; }
+  .dys-teach-col + .dys-teach-col { border-left:1px solid var(--dys-divider); }
+  @media (max-width: 820px) { .dys-teach-col + .dys-teach-col { border-left:none; border-top:1px solid var(--dys-divider); } }
+  .dys-teach-eyebrow { font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--dys-text-subtle); margin-bottom:11px; display:flex; align-items:center; gap:7px; }
+  .dys-teach-eyebrow::before { content:""; width:6px; height:6px; border-radius:50%; background:var(--dys-accent); }
+  .dys-teach-eyebrow.signs::before { background:#f59e0b; }
+  .dys-teach-eyebrow.actions::before { background:#22c55e; }
+  .dys-mechanism-text { font-size:13px; color:var(--dys-text-muted); line-height:1.6; }
+  .dys-teach-pearl { border-top:1px solid var(--dys-divider); padding:14px 20px; background:var(--dys-accent-soft); display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .dys-teach-pearl-label { font-family:var(--font-mono); font-size:9.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--dys-accent); flex-shrink:0; }
+  .dys-teach-pearl-text { font-size:13px; line-height:1.55; color:var(--dys-text); flex:1; min-width:240px; }
+
+
+  /* ── Current-case alarm state (injurious patterns) ── */
+  .dys-current.alarm { border-color:#e11d48; box-shadow:var(--dys-elev), inset 4px 0 0 #e11d48; }
+  .dys-app[data-dys-theme="dark"] .dys-current.alarm { box-shadow:var(--dys-elev), inset 4px 0 0 #fb7185; }
+
+  /* ── Monitor: annotation toggle + paused hint ── */
+  .dys-mon-left { display:flex; align-items:center; gap:12px; }
+  .dys-annot-btn { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px; font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; background:transparent; color:rgba(226,232,240,0.55); border:1px solid rgba(148,163,184,0.25); transition:all .15s ease; }
+  .dys-annot-btn.on { color:#5eead4; border-color:rgba(94,234,212,0.5); background:rgba(94,234,212,0.10); }
+  .dys-paused-hint { position:absolute; top:11px; right:16px; z-index:5; display:none; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; font-family:var(--font-mono); font-size:9px; letter-spacing:0.08em; text-transform:uppercase; background:rgba(94,234,212,0.12); color:#5eead4; border:1px solid rgba(94,234,212,0.4); }
+  .dys-app.paused .dys-paused-hint { display:inline-flex; }
+  .dys-xhair-label { font-family:var(--font-mono); font-weight:600; }
+
+  /* ── Touch devices: comfortable targets ─────────────── */
+  @media (hover: none) and (pointer: coarse) {
+    .dys-action-btn { padding:11px 14px; }
+    .dys-case-btn { padding:13px 14px 11px; }
+  }
 </style>
-</head>
-<body>
+
 <div class="dys-app" data-dys-theme="dark">
+
   <div class="dys-app-header">
-    <div class="dys-app-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M6.5 20a3.5 3.5 0 0 0 3.5 -3.5V8a2 2 0 1 0 -4 0v.5"/>
-        <path d="M17.5 20a3.5 3.5 0 0 1 -3.5 -3.5V8a2 2 0 1 1 4 0v.5"/>
-        <path d="M10 9c0 -1 0 -3 1.2 -3h1.6c1.2 0 1.2 2 1.2 3"/>
-        <path d="M12 6.5V3.5"/>
-        <path d="M9.5 3.5h5"/>
-      </svg>
-    </div>
     <div class="dys-app-title-wrap">
-      <h2 class="dys-app-title">Ventilator dyssynchrony</h2>
-      <p class="dys-app-subtitle">Live waveforms for the eight common patient–ventilator dyssynchrony patterns.</p>
+      <h2 class="dys-app-title">Ventilator Dyssynchrony</h2>
+      <p class="dys-app-subtitle">The eight common patient–ventilator dyssynchrony patterns, as live pressure &amp; flow tracings</p>
     </div>
     <div class="dys-app-actions">
-      <button id="dys-expand" class="dys-action-btn" aria-label="Open full interactive view in new tab" title="Click to expand — open full view">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 4h4v4"/>
-          <path d="M14 10l6-6"/>
-          <path d="M8 20H4v-4"/>
-          <path d="M10 14l-6 6"/>
-        </svg>
-      </button>
-      <button id="dys-theme" class="dys-action-btn" aria-label="Switch to dark theme" title="Switch to dark theme">
-        <svg id="dys-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </button>
       <button id="dys-playpause" class="dys-action-btn" aria-label="Pause" title="Pause">
         <svg id="dys-playpause-icon" viewBox="0 0 24 24" fill="currentColor">
           <rect x="6" y="5" width="4" height="14" rx="1"/>
           <rect x="14" y="5" width="4" height="14" rx="1"/>
         </svg>
+        <span class="dys-btn-label" id="dys-playpause-label">Pause</span>
+      </button>
+      <button id="dys-theme" class="dys-action-btn" aria-label="Switch theme" title="Switch theme">
+        <svg id="dys-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <span class="dys-btn-label" id="dys-theme-label">Dark</span>
       </button>
     </div>
   </div>
-  <span class="dys-cases-eyebrow">Select pattern</span>
+
+  <span class="dys-section-label" style="margin-bottom:11px;">Select pattern</span>
   <div id="dys-cases" class="dys-cases" role="tablist"></div>
+
   <div class="dys-current">
     <div class="dys-current-info">
       <div class="dys-current-title">
@@ -164,17 +251,27 @@
         <span id="dys-titletext">Ineffective triggering</span>
       </div>
       <p class="dys-current-tagline" id="dys-tagline"></p>
+      <p class="dys-current-why"><span class="dys-why-label">Why it matters</span><span id="dys-why"></span></p>
+      <p class="dys-current-setting"><span class="dys-setting-label">Common in</span><span id="dys-setting"></span></p>
     </div>
     <div class="dys-current-meta">
       <span class="dys-sev-pill" id="dys-sev"><span class="dot"></span><span id="dys-sev-text">High prevalence</span></span>
+      <span class="dys-phase-pill" id="dys-phase">Trigger asynchrony</span>
       <span class="dys-mode-pill" id="dys-mode">PSV / AC</span>
     </div>
   </div>
+
   <div class="dys-monitor">
+    <span class="dys-paused-hint">⏸ Paused · hover a trace to inspect</span>
     <div class="dys-mon-header">
-      <div class="dys-mon-status">
-        <span class="dys-rec-dot" id="dys-recdot" aria-hidden="true"></span>
-        <span id="dys-recstatus">Live</span>
+      <div class="dys-mon-left">
+        <div class="dys-mon-status">
+          <span class="dys-rec-dot" id="dys-recdot" aria-hidden="true"></span>
+          <span id="dys-recstatus">Live</span>
+        </div>
+        <button id="dys-annot-toggle" class="dys-annot-btn on" type="button" aria-pressed="true" title="Show/hide annotation callouts">
+          <span style="width:13px;border-top:1.4px dashed currentColor;display:inline-block;"></span> Annotations
+        </button>
       </div>
       <div class="dys-readouts">
         <div class="dys-readout"><span class="dys-readout-label">Paw</span><span class="dys-readout-val p" id="dys-readout-p">5.0</span><span class="dys-readout-unit">cmH₂O</span></div>
@@ -183,49 +280,50 @@
     </div>
     <div class="dys-trace-block">
       <div class="dys-trace-head"><span class="dys-lead p">Pressure</span><span class="dys-units">cmH₂O</span></div>
-      <svg id="dys-p" viewBox="0 0 800 130" style="width:100%; height:130px; display:block;"></svg>
+      <svg id="dys-p" viewBox="0 0 800 142" style="width:100%; height:142px; display:block;"></svg>
     </div>
     <div class="dys-trace-block">
       <div class="dys-trace-head"><span class="dys-lead f">Flow</span><span class="dys-units">L/min</span></div>
-      <svg id="dys-f" viewBox="0 0 800 130" style="width:100%; height:130px; display:block;"></svg>
+      <svg id="dys-f" viewBox="0 0 800 142" style="width:100%; height:142px; display:block;"></svg>
     </div>
   </div>
-  <div class="dys-info-grid">
-    <div class="dys-info-card signs">
-      <div class="dys-info-head">
-        <span class="dys-info-icon signs" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="7"/>
-            <path d="M21 21l-4.5-4.5"/>
-            <path d="M11 8v6"/>
-            <path d="M8 11h6"/>
-          </svg>
-        </span>
-        <span class="dys-info-label">Key diagnostic signs</span>
+
+  <div id="dys-stats" class="dys-stats"></div>
+
+  <div class="dys-teaching">
+    <div class="dys-teaching-head"><span class="dys-section-label">Reading the waveform</span><span class="dys-teach-title" id="dys-teach-title"></span></div>
+    <div class="dys-teaching-grid">
+      <div class="dys-teach-col">
+        <div class="dys-teach-eyebrow signs">Look for</div>
+        <ul class="dys-signs-list" id="dys-signs"></ul>
       </div>
-      <ul class="dys-signs-list" id="dys-signs"></ul>
-      <div class="dys-mechanism">
-        <div class="dys-mechanism-eyebrow">Mechanism</div>
-        <div id="dys-mechanism"></div>
+      <div class="dys-teach-col">
+        <div class="dys-teach-eyebrow">Mechanism</div>
+        <div class="dys-mechanism-text" id="dys-mechanism"></div>
+      </div>
+      <div class="dys-teach-col">
+        <div class="dys-teach-eyebrow actions">Management</div>
+        <ol class="dys-actions-list" id="dys-actions"></ol>
       </div>
     </div>
-    <div class="dys-info-card actions">
-      <div class="dys-info-head">
-        <span class="dys-info-icon actions" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.7 6.3a4 4 0 0 0 5 5l-9.4 9.4a2 2 0 1 1-2.8-2.8l9.4-9.4 -2.2-2.2z"/>
-            <path d="M5 19l3-3"/>
-          </svg>
-        </span>
-        <span class="dys-info-label">Corrective actions</span>
-      </div>
-      <ol class="dys-actions-list" id="dys-actions"></ol>
+    <div class="dys-teach-pearl">
+      <span class="dys-teach-pearl-label">Clinical pearl</span>
+      <span class="dys-teach-pearl-text" id="dys-pearl"></span>
     </div>
-  </div>
+  </div><!-- /dys-teaching -->
+
+  <aside class="dys-disclaimer" aria-label="Educational disclaimer">
+    <div class="dys-disclaimer-title">Disclaimer · Educational use only</div>
+    <p>This is a teaching tool. The pressure and flow tracings, the severity labels, and the management lists are <strong>idealized, schematic representations</strong> of each dyssynchrony pattern generated from simple equations — they are not patient data and not the output of any real ventilator. It does not constitute medical advice and is not a substitute for clinical judgment, hands-on training on the actual device, institutional protocols, or the care of a qualified clinician at the bedside.</p>
+    <p>Real waveforms vary with patient effort, lung mechanics, mode, ventilator manufacturer, and circuit factors; dyssynchronies frequently coexist, appear atypically, or mimic one another, and a single tracing rarely identifies a pattern with certainty. The corrective actions shown are general teaching points, not a protocol — the right intervention depends on the individual patient and context. Use this to build pattern-recognition intuition, <strong>never to make, guide, or justify a patient-care decision.</strong></p>
+    <p>Verify anything clinically actionable against primary sources, current society guidelines, and your institution's standards before applying it to a patient. Content reflects general physiology and consensus as of 2026 and may not reflect later evidence or device-specific behavior. No warranty is made as to accuracy or completeness, and no liability is accepted for any use of this material. By using this tool you accept these terms.</p>
+  </aside>
 </div>
+
 <script>
 (function(){
   const PEEP = 5;
+
   function pcvBreath(t, tStart, tEnd, peakP) {
     if (t < tStart || t > tEnd) return null;
     const dt = t - tStart, rise = 0.025;
@@ -247,23 +345,27 @@
     if (dt < flowRise) return PEEP + resistivePressure * (dt / flowRise);
     return PEEP + resistivePressure + compliance * (dt - flowRise);
   }
+
   const cases = {
     ineffective: {
       title: "Ineffective triggering",
-      tagline: "Patient effort during expiration fails to trigger a machine breath.",
+      tagline: "A patient inspiratory effort during expiration is too weak — or the trigger threshold too high — to open the valve, so no machine breath follows. The single most common patient–ventilator asynchrony.",
       mode: "PSV / AC",
       sev: "High prevalence", sevType: "danger",
       signs: [
-        "Negative dip in airway pressure during expiration",
-        "Simultaneous upward deflection in expiratory flow",
-        "No machine breath delivered after the patient effort"
+        "Brief negative notch in the airway-pressure trace during expiration",
+        "Simultaneous abrupt bump in expiratory flow back toward zero",
+        "No ventilator breath delivered despite the visible effort",
+        "Patient's intrinsic rate exceeds the delivered machine rate",
+        "Missed efforts cluster when auto-PEEP is high (COPD, fast rates)"
       ],
-      mechanism: "Most commonly caused by intrinsic PEEP (auto-PEEP) in COPD: alveolar pressure exceeds the trigger threshold so the patient's inspiratory effort can't reach the trigger. Less often, set trigger sensitivity is simply too low.",
+      mechanism: "Usually driven by dynamic hyperinflation / intrinsic PEEP (auto-PEEP), classically in COPD or asthma: the diaphragm must first overcome the trapped alveolar pressure before airway pressure falls enough to reach the trigger, so weaker efforts never get there. Over-sedation, respiratory-muscle weakness, and an insensitive trigger setting also contribute. Frequent missed efforts raise the work of breathing and signal over-assist or excessive load.",
       actions: [
-        "Reduce trigger threshold (more sensitive)",
-        "Decrease respiratory rate or tidal volume to allow longer expiratory time",
-        "Treat bronchospasm aggressively",
-        "Add extrinsic PEEP to roughly 80% of measured auto-PEEP"
+        "Increase trigger sensitivity (lower the pressure/flow threshold)",
+        "Reduce hyperinflation — lower RR and/or VT and lengthen expiratory time",
+        "Treat airflow obstruction (bronchodilators, suction, steroids)",
+        "Add extrinsic PEEP to ~70–80% of measured intrinsic PEEP to offset the trigger load",
+        "If drive is suppressed, reduce over-assist or lighten sedation"
       ],
       pressure: t => {
         const breaths = [{s:0.05, e:0.22, peak:20}, {s:0.65, e:0.82, peak:20}];
@@ -287,22 +389,26 @@
         {tNorm: 0.45, type:"f", label:"Expiratory flow interrupted", offsetY:-35, offsetX:10}
       ]
     },
+
     auto: {
       title: "Auto-triggering",
-      tagline: "Ventilator delivers breaths without any patient effort.",
+      tagline: "The ventilator delivers breaths the patient never asked for, mistaking noise in the circuit or chest for a real effort. Inflates minute ventilation and can mask a dangerously low underlying drive.",
       mode: "PSV / AC",
       sev: "Common", sevType: "warning",
       signs: [
-        "No negative pressure deflection precedes each breath",
-        "Suspiciously regular breath intervals",
-        "Cardiac-rate oscillations on baseline pressure and flow"
+        "Breaths with no preceding negative pressure/flow deflection (no effort)",
+        "Delivered rate higher than the patient's apparent effort",
+        "Suspiciously regular triggering, often at the heart rate",
+        "Small cardiac oscillations rippling the baseline pressure/flow",
+        "Triggering persists despite apnea or deep sedation"
       ],
-      mechanism: "False triggering caused by cardiac oscillations, circuit leaks, condensate in tubing, or hyperdynamic circulation crossing the trigger threshold. Common after fluid resuscitation and in patients with large stroke volumes.",
+      mechanism: "A signal smaller than a true breath crosses the trigger threshold — cardiogenic oscillations (large stroke volume, hyperdynamic state), a circuit or ET-cuff leak, condensate sloshing in the tubing, or an over-sensitive trigger. It can drive respiratory alkalosis and breath stacking, and may falsely reassure the team that the patient is breathing.",
       actions: [
-        "Decrease trigger sensitivity (less sensitive)",
-        "Check for and repair circuit leaks",
-        "Drain condensate from tubing",
-        "Evaluate cuff for leaks; consider switching trigger type (flow ↔ pressure)"
+        "Decrease trigger sensitivity (raise the threshold)",
+        "Drain condensate and dry/replace a wet circuit",
+        "Find and fix circuit or ET-cuff leaks",
+        "Switch trigger type (flow ↔︎ pressure) if oscillation-related",
+        "Reassess true drive and sedation once spurious breaths stop"
       ],
       pressure: t => {
         const breaths = [0.10, 0.30, 0.50, 0.70, 0.90];
@@ -326,22 +432,26 @@
         {tNorm: 0.45, type:"f", label:"Cardiac oscillations", offsetY:35, offsetX:5}
       ]
     },
+
     double: {
       title: "Double triggering",
-      tagline: "Two ventilator breaths separated by a very short expiratory time — breath stacking.",
+      tagline: "Two stacked machine breaths with little or no exhalation between them, so the lung receives up to double the set tidal volume. A leading driver of patient self-inflicted lung injury (P-SILI).",
       mode: "VC-AC",
       sev: "Injurious", sevType: "danger",
       signs: [
-        "Two close breaths with expiratory time < ½ inspiratory time",
-        "Higher peak pressure on the second (stacked) breath",
-        "Volume delivered into a partially-full lung"
+        "Two breaths back-to-back; expiratory time between them < ½ the inspiratory time",
+        "Flow does not return to zero between the two breaths",
+        "Higher peak (and plateau) pressure on the second, stacked breath",
+        "Stacked volume can approach 2× set VT; high-pressure alarm may sound",
+        "Classic on low-VT (6 mL/kg) ARDS, pain, fever, or light sedation"
       ],
-      mechanism: "Patient's neural inspiratory time exceeds the set Ti. The continuing effort triggers a second breath that stacks on the first. Common in ARDS and high-drive states. Stacking inflates beyond the set tidal volume — a major mechanism of patient self-inflicted lung injury.",
+      mechanism: "The patient's neural inspiratory time exceeds the ventilator's set Ti (or VT is below demand), so one sustained effort triggers a second breath that stacks on the first before exhalation. The large transpulmonary swings and regional overdistension are a major, injurious mechanism — especially dangerous in ARDS.",
       actions: [
-        "Lengthen inspiratory time",
-        "Increase tidal volume if lung-protective limits allow",
-        "Switch to a pressure-targeted mode",
-        "Deepen sedation; consider neuromuscular blockade in severe ARDS"
+        "Lengthen inspiratory time / Ti to match neural timing",
+        "Increase tidal volume if it stays within lung-protective limits",
+        "Switch to a pressure-targeted mode (flow adapts to demand)",
+        "Treat pain/agitation and deepen sedation",
+        "Consider neuromuscular blockade in severe ARDS with refractory stacking"
       ],
       pressure: t => {
         const pairs = [{s1:0.05, e1:0.20, s2:0.22, e2:0.37, c1:80, c2:130},{s1:0.60, e1:0.75, s2:0.77, e2:0.92, c1:80, c2:130}];
@@ -371,22 +481,25 @@
         {tNorm: 0.21, type:"f", label:"Expiration too short", offsetY:25, offsetX:8}
       ]
     },
+
     reverse: {
       title: "Reverse triggering",
-      tagline: "Mechanical insufflation entrains the diaphragm via reflex coupling.",
+      tagline: "A passive machine breath reflexively pulls the diaphragm into contracting, entraining the patient's efforts to the ventilator despite no spontaneous drive. Frequently mistaken for passive ventilation or for double triggering.",
       mode: "VC-AC, deep sedation",
       sev: "Often missed", sevType: "warning",
       signs: [
-        "Passive-appearing first breath followed by an entrained 2nd breath",
-        "Mimics double triggering — but occurs in a deeply sedated patient",
-        "Subtle pressure and flow distortion in expiration"
+        "A small, fixed-latency effort distorts pressure/flow during or just after each passive breath",
+        "Effort is phase-locked to the machine breath at a consistent ratio (1:1, 1:2…)",
+        "Can stack a second breath → pendelluft and regional overdistension",
+        "Occurs in deeply sedated (not paralyzed) patients who look passive",
+        "Mimics double triggering — the giveaway is the sedation context"
       ],
-      mechanism: "Mechanical insufflation reflexively activates the patient's respiratory center even though no spontaneous drive exists. The delayed neural effort produces a second breath that can stack on the first. Easy to miss because patients appear passive on sedation.",
+      mechanism: "Mechanical insufflation activates the respiratory center through a neuromechanical (vagally-mediated) reflex even without spontaneous drive; the entrained diaphragmatic contraction follows the machine breath at a fixed delay. It can generate injurious transpulmonary pressures and pendelluft in a patient who appears quiet.",
       actions: [
-        "Recognize: this is not pure passive ventilation despite sedation",
-        "First-line: lighten sedation to allow normal triggering",
-        "Avoid deepening sedation — that worsens entrainment",
-        "Consider neuromuscular blockade if stacking causes injury (severe ARDS)"
+        "Recognize it — this is not truly passive ventilation despite sedation",
+        "Adjust sedation: lightening restores normal triggering in some, deepening helps others — reassess after each change",
+        "Don't assume deeper sedation alone fixes it; it can worsen entrainment",
+        "Consider neuromuscular blockade if stacking causes injury in severe ARDS"
       ],
       pressure: t => {
         const pairs = [{s1:0.05, e1:0.22, s2:0.28, e2:0.45},{s1:0.60, e1:0.77, s2:0.83, e2:1.00}];
@@ -416,22 +529,24 @@
         {tNorm: 0.25, type:"f", label:"Effort distorts expiration", offsetY:-35, offsetX:8}
       ]
     },
+
     trigDelay: {
       title: "Trigger delay",
-      tagline: "Excessive lag (>200 ms) between patient effort and machine breath delivery.",
+      tagline: "An excessive lag (roughly >150–200 ms) between the onset of patient effort and the ventilator's response. Adds inspiratory work and, if it worsens, slides into frankly missed (ineffective) efforts.",
       mode: "PSV (low trigger sensitivity)",
       sev: "Common (minor)", sevType: "warning",
       signs: [
-        "Negative pressure deflection before the machine breath fires",
-        "Small flow bump preceding the inspiratory rise",
-        "Patient effort precedes the delivered breath by 100–300 ms"
+        "A clear negative pressure deflection precedes the machine breath",
+        "A small flow bump precedes the inspiratory rise",
+        "Visible effort leads delivery by ~100–300 ms; patient looks 'out of phase'",
+        "Often coexists with auto-PEEP or an insensitive trigger"
       ],
-      mechanism: "Some delay is inherent in any pneumatic trigger system. Excessive delay imposes additional inspiratory work on the patient and can progress to ineffective triggering. Causes: low trigger sensitivity, auto-PEEP, weak respiratory effort.",
+      mechanism: "Every pneumatic trigger has some latency, but excessive delay reflects an insensitive trigger setting, intrinsic PEEP that must be overcome first, a weak/effortful patient, or a slow demand valve. The imposed work is uncomfortable and is the precursor state to ineffective triggering.",
       actions: [
-        "Increase trigger sensitivity (lower threshold)",
-        "Switch from pressure to flow triggering — generally faster",
-        "Treat causes of high inspiratory drive (pain, fever, agitation)",
-        "Address auto-PEEP if present"
+        "Increase trigger sensitivity (lower the threshold)",
+        "Use flow triggering — generally faster than pressure triggering",
+        "Offset auto-PEEP with extrinsic PEEP and reduce hyperinflation",
+        "Treat drivers of high drive (pain, fever, agitation, acidosis)"
       ],
       pressure: t => {
         const breaths = [{eff:0.05, s:0.13, e:0.30, peak:20}, {eff:0.60, s:0.68, e:0.85, peak:20}];
@@ -457,22 +572,25 @@
         {tNorm: 0.09, type:"f", label:"Pre-trigger flow deflection", offsetY:-30, offsetX:10}
       ]
     },
+
     flow: {
       title: "Flow asynchrony",
-      tagline: "Mismatch between set inspiratory flow and patient demand — most often air hunger.",
+      tagline: "A mismatch between the flow the ventilator delivers and what the patient demands. Most often the set flow is too low for a high-drive patient — 'flow starvation' / air hunger — though excessive flow causes the opposite problem.",
       mode: "VC + dual-targeting",
       sev: "Common", sevType: "warning",
       signs: [
-        "'Sucked-down' concave depression in inspiratory pressure",
-        "M-shaped flow profile (with dual-targeting ventilators)",
-        "Visible accessory muscle use, agitation"
+        "Concave, 'scooped-out' dip in the inspiratory pressure waveform (flow starvation)",
+        "On dual-targeting modes, an M-shaped contour as the vent augments flow",
+        "Accessory-muscle use, agitation, a distressed appearance",
+        "Excess flow instead shows an early pressure overshoot ('spike') at breath onset"
       ],
-      mechanism: "Patient demand exceeds the set inspiratory flow rate (insufficient flow / air hunger). With dual-targeting ventilators the vent boosts flow above the set rate to meet demand, producing the M-shape. Pure square-flow VC keeps flow flat — only the pressure scoops down. The opposite (excessive flow) produces a sharp pressure overshoot at breath start.",
+      mechanism: "In volume control the inspiratory flow is fixed; when patient demand exceeds it, the patient pulls airway pressure down mid-breath and scoops the pressure curve (dual-targeting ventilators raise flow to chase demand, giving the M-shape). Flow set too high overshoots pressure early instead. Persistent flow starvation is a marker of high respiratory drive and load.",
       actions: [
-        "Increase peak inspiratory flow rate",
-        "Switch from square to decelerating flow pattern",
-        "Increase tidal volume",
-        "Transition to a pressure-targeted mode (flow varies with demand)"
+        "Increase the set peak inspiratory flow",
+        "Use a decelerating (vs square) flow waveform",
+        "Increase tidal volume if lung-protective limits allow",
+        "Switch to a pressure-targeted mode, where flow varies freely with demand",
+        "Address the cause of high drive (pain, acidosis, anxiety)"
       ],
       pressure: t => {
         const breaths = [{s:0.10, e:0.40}, {s:0.65, e:0.95}];
@@ -513,22 +631,25 @@
         {tNorm: 0.25, type:"f", label:"M-shape from dual targeting", offsetY:35, offsetX:8}
       ]
     },
+
     cycle: {
       title: "Premature cycling",
-      tagline: "Ventilator ends inspiration before the patient's neural inspiration completes.",
+      tagline: "The ventilator ends inspiration before the patient's neural inspiration is finished, cutting the breath short while the patient is still pulling. Can chain into double triggering.",
       mode: "PSV (cycle threshold high)",
       sev: "Mild–moderate", sevType: "success",
       signs: [
-        "Upward spike in early expiratory flow from continued effort",
-        "Small dip in pressure below baseline immediately after cycling",
-        "Frequent in restrictive disease and obesity"
+        "Abrupt cycle-off, then an upward spike in early expiratory flow (continued effort)",
+        "Small dip in airway pressure just after cycling",
+        "Delivered inspiratory time short relative to the patient's effort",
+        "A vigorous residual effort can trigger a second, stacked breath",
+        "Common in restrictive disease and obesity (short time constant)"
       ],
-      mechanism: "The ventilator cycles when inspiratory flow drops to its set threshold (typically 25% of peak). If this happens before the patient's neural Ti ends, continued effort opposes the falling flow and produces the diagnostic upward spike. Strong effort can trigger a second breath (double triggering).",
+      mechanism: "In pressure support the breath cycles when inspiratory flow falls to the set % of peak (often 25%); if the patient's neural Ti is longer — short time constant from stiff lungs, obesity, or restriction — the vent cuts off early and the ongoing effort produces the diagnostic expiratory-flow spike. Time-cycled modes do the same when Ti is set too short.",
       actions: [
         "Lower the expiratory cycle threshold (e.g., 25% → 10–15% of peak flow)",
-        "Increase pressure support level",
-        "Extend inspiratory time in VC",
-        "Particularly important in restrictive disease and obesity"
+        "Increase the pressure-support level (prolongs flow above threshold)",
+        "Lengthen the set inspiratory time in volume/time-cycled modes",
+        "Especially relevant in restrictive physiology and obesity"
       ],
       pressure: t => {
         const breaths = [{s:0.10, e:0.25, peak:20}, {s:0.60, e:0.75, peak:20}];
@@ -557,17 +678,19 @@
         {tNorm: 0.30, type:"p", label:"Pressure dip post-cycle", offsetY:-25, offsetX:8}
       ]
     },
+
     delayedCycle: {
       title: "Delayed cycling",
-      tagline: "Mechanical insufflation continues past the end of the patient's neural inspiration.",
+      tagline: "Mechanical insufflation continues past the end of the patient's neural inspiration, so the patient begins to exhale against a still-pressurized circuit. Steals expiratory time and worsens air trapping.",
       mode: "PSV (cycle threshold low) / COPD",
       sev: "Common", sevType: "warning",
       signs: [
-        "Sharp pressure spike at end-inspiration above target pressure",
-        "Prolonged inspiratory flow with slow decay (long τ)",
-        "Shortened expiratory time, worsening auto-PEEP"
+        "Sharp pressure spike at end-inspiration, rising above the set/target pressure",
+        "Prolonged inspiratory flow with a slow decay (long time constant τ)",
+        "Shortened expiratory time → rising auto-PEEP and dynamic hyperinflation",
+        "Patient strains/grunts against the breath at end-inspiration"
       ],
-      mechanism: "Most common in obstructive disease where flow takes longer to decay to the cycle threshold. The patient begins active exhalation against a still-pressurized circuit, producing the pathognomonic end-inspiratory pressure spike. Worsens dynamic hyperinflation.",
+      mechanism: "Classic in obstructive disease (COPD/asthma): the long time constant means inspiratory flow decays slowly to the cycle threshold, so the machine keeps insufflating after the patient's effort has ended. Active exhalation against the pressurized circuit produces the end-inspiratory pressure spike, and the truncated expiratory time aggravates hyperinflation. Circuit leaks can mimic it by falsely prolonging the flow tail.",
       actions: [
         "Raise expiratory cycle threshold (e.g., 25% → 35–45% of peak flow)",
         "Shorten inspiratory time in VC",
@@ -605,14 +728,59 @@
       ]
     }
   };
+
   const ORDER = ['ineffective','auto','double','reverse','trigDelay','flow','cycle','delayedCycle'];
+  // Illustrative, teaching-only metric tiles per pattern: [label, value, unit, alarm]
+  const STATS = {
+    ineffective: [["Set rate","14","/min",0],["Delivered","9","/min",1],["Missed efforts","5","/min",1],["Async index","36","%",1]],
+    auto:        [["Delivered","26","/min",1],["Patient effort","0","/min",0],["Heart rate","92","bpm",0],["Async index","24","%",1]],
+    double:      [["Set Vt","420","mL",0],["Stacked Vt","790","mL",1],["Set rate","24","/min",0],["Delivered","33","/min",1]],
+    reverse:     [["Sedation","−4","RASS",0],["Entrainment","1:2","",0],["Async index","18","%",1],["Drive","reflex","",0]],
+    trigDelay:   [["Trigger delay","260","ms",1],["Target","<100","ms",0],["Sensitivity","−2","cmH₂O",0],["Async index","9","%",0]],
+    flow:        [["Set flow","45","L/min",0],["Peak demand","78","L/min",1],["Pressure dip","−9","cmH₂O",1],["Waveform","square","",0]],
+    cycle:       [["Vent Ti","0.6","s",0],["Neural Ti","1.0","s",1],["Cycle-off","25","%pk",0],["Async index","12","%",0]],
+    delayedCycle:[["Vent Ti","1.5","s",1],["Neural Ti","0.9","s",0],["Cycle-off","25","%pk",0],["Async index","20","%",1]]
+  };
+  // High-yield "clinical pearl": how to tell each pattern from its look-alikes + the bottom line
+  const PEARLS = {
+    ineffective: "Distinguish from a benign expiratory flow ripple by the matching pressure dip with no delivered breath. A high asynchrony index (>10% of breaths) predicts longer ventilation and worse outcomes — treat the auto-PEEP and load, don't just keep making the trigger more sensitive.",
+    auto: "The tell is a breath with no preceding effort, often at the heart rate. Rule out water in the circuit and leaks before blaming patient drive — and never mistake auto-triggered breaths for adequate spontaneous effort during a weaning trial or apnea/brain-death assessment.",
+    double: "Two peaks with no return to PEEP between them. Separate it from auto-triggering (no effort at all) and reverse-triggering (deeply sedated, reflex). The stacked volume is the danger — it can double VT and drive P-SILI, so act urgently in ARDS.",
+    reverse: "Looks like double-triggering, but the patient is deeply sedated and the effort is phase-locked to the machine breath at a fixed ratio. Suspect it whenever a 'passive' patient shows a repeating, fixed-latency distortion — and reassess after every sedation change, since it can improve or worsen either way.",
+    trigDelay: "The effort clearly precedes delivery — unlike reverse-triggering (effort follows the breath) or ineffective triggering (effort never delivers one). It is the precursor to missed efforts, so fix the trigger and any auto-PEEP before it progresses.",
+    flow: "A scooped (concave) inspiratory pressure in VC, or an M-shaped contour with dual targeting, plus a distressed patient, points to flow starvation rather than high resistance — confirm by raising flow and watching the scoop resolve. An early pressure spike instead means flow is set too high.",
+    cycle: "The early-expiratory flow spike from continued effort is the signature, and a strong residual effort can trigger a second breath — so premature cycling and double-triggering often travel together. Most common where the time constant is short: stiff lungs, obesity, restriction.",
+    delayedCycle: "The end-inspiratory pressure spike (patient exhaling against a still-pressurized circuit) is the giveaway, classically in obstruction. Beware: a circuit leak mimics it by prolonging the flow tail — exclude a leak before shortening Ti or raising the cycle threshold."
+  };
+  // Banner context: phase of the breath, where it's seen, and a plain-language "why it matters" for beginners
+  const META = {
+    ineffective: { phase:"Trigger asynchrony", setting:"COPD, asthma, dynamic hyperinflation",
+      why:"The patient keeps trying to breathe but gets nothing — tiring and uncomfortable, and a clue the settings or trapped air (auto-PEEP) need fixing." },
+    auto:        { phase:"Trigger asynchrony", setting:"Circuit leaks, condensate, large stroke volume",
+      why:"Unrequested breaths can over-ventilate the patient and, dangerously, make a barely-breathing patient look like they're breathing on their own." },
+    double:      { phase:"Trigger asynchrony", setting:"Low-Vt ARDS, pain, fever, light sedation",
+      why:"Two breaths stacked together can deliver nearly double the intended volume, overstretching the lungs — a real cause of ventilator-induced injury." },
+    reverse:     { phase:"Trigger asynchrony", setting:"Deeply sedated patients, early ARDS",
+      why:"Even though the patient looks deeply asleep, the breath is pulling their diaphragm into action — which can stack breaths and injure the lung unnoticed." },
+    trigDelay:   { phase:"Trigger asynchrony", setting:"Insensitive trigger, auto-PEEP, weak drive",
+      why:"The patient has to work harder and wait for each breath; left unchecked it progresses to completely missed breaths." },
+    flow:        { phase:"Flow asynchrony",    setting:"High respiratory drive, fixed-flow volume control",
+      why:"The ventilator isn't delivering air fast enough for what the patient wants, so they feel air-hungry and fight the machine." },
+    cycle:       { phase:"Cycle asynchrony",   setting:"Restrictive disease, obesity (short time constant)",
+      why:"The breath is cut off too soon, so the patient doesn't get a full breath and may immediately trigger another — stacking breaths." },
+    delayedCycle:{ phase:"Cycle asynchrony",   setting:"COPD / obstruction, circuit leaks",
+      why:"The ventilator keeps pushing air after the patient wants to exhale, so they fight it and lose time to breathe out — worsening air trapping." }
+  };
+  let showAnnotations = true;
   let current = "ineffective";
   const SVG_NS = "http://www.w3.org/2000/svg";
+
   let W = 800;
-  const H = 130;
+  const H = 142;
   const padL = 40, padR = 14, padT = 8, padB = 14;
   let plotW = W - padL - padR;
   const plotH = H - padT - padB;
+
   function updateDimensions() {
     const psvg = document.getElementById('dys-p');
     if (!psvg) return false;
@@ -620,25 +788,29 @@
     if (newW > 0 && newW !== W) { W = newW; plotW = W - padL - padR; return true; }
     return false;
   }
+
   const COL_GRID  = 'rgba(148,163,184,0.10)';
   const COL_REF   = 'rgba(148,163,184,0.32)';
   const COL_AXIS  = 'rgba(148,163,184,0.50)';
-  const COL_PRESS = '#FFD23F';
-  const COL_FLOW  = '#5EE5FF';
+  const COL_PRESS = '#f5b133';
+  const COL_FLOW  = '#34d399';
   const COL_ANN   = '#FF8A5C';
   const COL_ANN_BG = '#0F1D38';
+
   let animProgress = 0;
   let animRunning = true;
   let lastFrameTime = 0;
   const SWEEP_DURATION_MS = 6000;
   let curPressureFn = null, curFlowFn = null;
+
   function yFromValue(v, isFlow) {
     const yMin = isFlow ? -60 : 0, yMax = isFlow ? 60 : 40;
     return padT + plotH * (yMax - v) / (yMax - yMin);
   }
+
   function buildSparkline(fn, w, h) {
-    const N = 80;
-    const yMin = 0, yMax = 40;
+    const N = 120;
+    const yMin = 0, yMax = 28;
     let path = '';
     for(let i=0; i<=N; i++){
       const t = i/N;
@@ -649,19 +821,23 @@
     }
     return path;
   }
+
   function renderCaseButtons() {
     const container = document.getElementById('dys-cases');
     container.innerHTML = '';
     ORDER.forEach((key, idx) => {
       const c = cases[key];
       const num = String(idx + 1).padStart(2, '0');
-      const sparkPath = buildSparkline(c.pressure, 100, 22);
-      const sparkColor = c.sevType === 'danger' ? '#EF4444' : c.sevType === 'warning' ? '#F59E0B' : '#22C55E';
+      const sparkPath = buildSparkline(c.pressure, 240, 36);
+      const sevSpark = { danger:'#EF4444', warning:'#F59E0B', success:'#22C55E' };
+      const sevSparkFill = { danger:'rgba(239,68,68,0.16)', warning:'rgba(245,158,11,0.16)', success:'rgba(34,197,94,0.16)' };
+      const sparkColor = sevSpark[c.sevType] || COL_PRESS;          // color encodes severity/prevalence
+      const sparkFill  = sevSparkFill[c.sevType] || 'rgba(245,177,51,0.16)';
       const btn = document.createElement('button');
       btn.className = 'dys-case-btn' + (key === current ? ' active' : '');
       btn.dataset.case = key;
       btn.setAttribute('role', 'tab');
-      btn.innerHTML = '<div class="dys-case-row1"><span class="dys-case-num">' + num + '</span><span class="dys-case-dot sev-dot-' + c.sevType + '"></span><span class="dys-case-name">' + c.title + '</span></div><svg class="dys-case-spark" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path d="' + sparkPath + '" stroke="' + sparkColor + '" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg>';
+      btn.innerHTML = '<div class="dys-case-row1"><span class="dys-case-num">' + num + '</span><span class="dys-case-dot sev-dot-' + c.sevType + '"></span><span class="dys-case-name">' + c.title + '</span></div><svg class="dys-case-spark" viewBox="0 0 240 36" preserveAspectRatio="none" aria-hidden="true"><path d="' + sparkPath + 'L240,36 L0,36 Z" fill="' + sparkFill + '" stroke="none"/><path d="' + sparkPath + '" stroke="' + sparkColor + '" stroke-width="1.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>';
       btn.addEventListener('click', () => {
         current = key;
         document.querySelectorAll('.dys-case-btn').forEach(b => b.classList.toggle('active', b.dataset.case === key));
@@ -670,12 +846,15 @@
       container.appendChild(btn);
     });
   }
+
   function draw(svgId, fn, isFlow, annotations) {
     const svg = document.getElementById(svgId);
     while(svg.firstChild) svg.removeChild(svg.firstChild);
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+
     const yMin = isFlow ? -60 : 0, yMax = isFlow ? 60 : 40;
     const traceColor = isFlow ? COL_FLOW : COL_PRESS;
+
     const defs = document.createElementNS(SVG_NS, "defs");
     const clipPath = document.createElementNS(SVG_NS, "clipPath");
     const clipId = 'sweep-clip-' + svgId;
@@ -691,7 +870,20 @@
     rightRect.setAttribute("width", 0); rightRect.setAttribute("height", H);
     clipPath.appendChild(rightRect);
     defs.appendChild(clipPath);
+    // Vertical gradient for the area fill under the trace (matches the waveform sim scope)
+    const grad = document.createElementNS(SVG_NS, "linearGradient");
+    grad.setAttribute("id", "dys-grad-" + svgId);
+    grad.setAttribute("gradientUnits", "userSpaceOnUse");
+    grad.setAttribute("x1", "0"); grad.setAttribute("y1", String(padT));
+    grad.setAttribute("x2", "0"); grad.setAttribute("y2", String(H - padB));
+    [["0", "0.30"], ["1", "0"]].forEach(([off, op]) => {
+      const st = document.createElementNS(SVG_NS, "stop");
+      st.setAttribute("offset", off); st.setAttribute("stop-color", traceColor); st.setAttribute("stop-opacity", op);
+      grad.appendChild(st);
+    });
+    defs.appendChild(grad);
     svg.appendChild(defs);
+
     for(let i=0; i<=4; i++){
       if(isFlow && i === 2) continue;
       const y = padT + (plotH * i / 4);
@@ -701,6 +893,7 @@
       line.setAttribute("stroke", COL_GRID); line.setAttribute("stroke-width", "0.5");
       svg.appendChild(line);
     }
+
     if(isFlow){
       const zeroY = padT + plotH * (yMax - 0) / (yMax - yMin);
       const zline = document.createElementNS(SVG_NS, "line");
@@ -720,23 +913,26 @@
       const peepLabel = document.createElementNS(SVG_NS, "text");
       peepLabel.setAttribute("x", W - padR - 4); peepLabel.setAttribute("y", peepY - 3);
       peepLabel.setAttribute("text-anchor", "end"); peepLabel.setAttribute("fill", COL_AXIS);
-      peepLabel.setAttribute("font-size", "9"); peepLabel.setAttribute("font-family", "ui-monospace, monospace");
+      peepLabel.setAttribute("font-size", "9"); peepLabel.setAttribute("font-family", "'IBM Plex Mono', ui-monospace, monospace");
       peepLabel.setAttribute("font-weight", "600"); peepLabel.setAttribute("letter-spacing", "0.5");
       peepLabel.textContent = "PEEP";
       svg.appendChild(peepLabel);
     }
+
     const labels = isFlow ? [60, 30, 0, -30, -60] : [40, 30, 20, 10, 0];
     labels.forEach((val, i) => {
       const y = padT + (plotH * i / 4);
       const text = document.createElementNS(SVG_NS, "text");
       text.setAttribute("x", padL - 6); text.setAttribute("y", y + 3.5);
       text.setAttribute("text-anchor", "end"); text.setAttribute("fill", COL_AXIS);
-      text.setAttribute("font-size", "10"); text.setAttribute("font-family", "ui-monospace, monospace");
+      text.setAttribute("font-size", "10"); text.setAttribute("font-family", "'IBM Plex Mono', ui-monospace, monospace");
       text.setAttribute("font-variant-numeric", "tabular-nums"); text.textContent = val;
       svg.appendChild(text);
     });
+
     const clippedGroup = document.createElementNS(SVG_NS, "g");
     clippedGroup.setAttribute("clip-path", "url(#" + clipId + ")");
+
     let path = "";
     const samples = 600;
     for(let i=0; i<=samples; i++){
@@ -746,17 +942,26 @@
       const y = padT + plotH * (yMax - v) / (yMax - yMin);
       path += (i===0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1) + " ";
     }
+    // Area fill: close the trace down to its baseline (PEEP for pressure, zero for flow)
+    const fillBaseY = padT + plotH * (yMax - 0) / (yMax - yMin);
+    const area = document.createElementNS(SVG_NS, "path");
+    area.setAttribute("d", path + "L" + (W - padR).toFixed(1) + "," + fillBaseY.toFixed(1) + " L" + padL.toFixed(1) + "," + fillBaseY.toFixed(1) + " Z");
+    area.setAttribute("fill", "url(#dys-grad-" + svgId + ")");
+    area.setAttribute("stroke", "none");
+    clippedGroup.appendChild(area);
     const glow = document.createElementNS(SVG_NS, "path");
     glow.setAttribute("d", path); glow.setAttribute("stroke", traceColor);
     glow.setAttribute("stroke-width", "4"); glow.setAttribute("fill", "none");
     glow.setAttribute("stroke-linejoin", "round"); glow.setAttribute("opacity", "0.18");
     glow.setAttribute("filter", "blur(0.5px)");
     clippedGroup.appendChild(glow);
+
     const pathEl = document.createElementNS(SVG_NS, "path");
     pathEl.setAttribute("d", path); pathEl.setAttribute("stroke", traceColor);
-    pathEl.setAttribute("stroke-width", "1.5"); pathEl.setAttribute("fill", "none");
-    pathEl.setAttribute("stroke-linejoin", "round");
+    pathEl.setAttribute("stroke-width", "1.9"); pathEl.setAttribute("fill", "none");
+    pathEl.setAttribute("stroke-linejoin", "round"); pathEl.setAttribute("stroke-linecap", "round");
     clippedGroup.appendChild(pathEl);
+
     if(annotations){
       annotations.filter(a => (isFlow && a.type === "f") || (!isFlow && a.type === "p")).forEach(a => {
         const t = a.tNorm, v = fn(t);
@@ -767,6 +972,7 @@
         circle.setAttribute("r", "5"); circle.setAttribute("fill", "none");
         circle.setAttribute("stroke", COL_ANN); circle.setAttribute("stroke-width", "1.5");
         clippedGroup.appendChild(circle);
+
         const labelX = x + a.offsetX + 8, labelY = y + a.offsetY;
         const leader = document.createElementNS(SVG_NS, "line");
         leader.setAttribute("x1", x + (a.offsetX > 0 ? 5 : -5));
@@ -775,27 +981,31 @@
         leader.setAttribute("stroke", COL_ANN); leader.setAttribute("stroke-width", "0.7");
         leader.setAttribute("stroke-dasharray", "2,2");
         clippedGroup.appendChild(leader);
+
         const tempText = document.createElementNS(SVG_NS, "text");
         tempText.setAttribute("font-size", "10.5");
-        tempText.setAttribute("font-family", "var(--font-sans, sans-serif)");
+        tempText.setAttribute("font-family", "'Hanken Grotesk', system-ui, sans-serif");
         tempText.setAttribute("font-weight", "600");
         tempText.style.visibility = "hidden"; tempText.textContent = a.label;
         svg.appendChild(tempText);
         const bbox = tempText.getBBox(); svg.removeChild(tempText);
+
         const bg = document.createElementNS(SVG_NS, "rect");
         bg.setAttribute("x", labelX - 4); bg.setAttribute("y", labelY - bbox.height + 1);
         bg.setAttribute("width", bbox.width + 8); bg.setAttribute("height", bbox.height + 3);
         bg.setAttribute("rx", "3"); bg.setAttribute("fill", COL_ANN_BG); bg.setAttribute("opacity", "0.85");
         clippedGroup.appendChild(bg);
+
         const label = document.createElementNS(SVG_NS, "text");
         label.setAttribute("x", labelX); label.setAttribute("y", labelY);
         label.setAttribute("fill", COL_ANN); label.setAttribute("font-size", "10.5");
-        label.setAttribute("font-family", "var(--font-sans, sans-serif)");
+        label.setAttribute("font-family", "'Hanken Grotesk', system-ui, sans-serif");
         label.setAttribute("font-weight", "600"); label.textContent = a.label;
         clippedGroup.appendChild(label);
       });
     }
     svg.appendChild(clippedGroup);
+
     const cursorGlow = document.createElementNS(SVG_NS, "line");
     cursorGlow.setAttribute("class", "sweep-cursor-glow");
     cursorGlow.setAttribute("x1", padL); cursorGlow.setAttribute("x2", padL);
@@ -810,6 +1020,7 @@
     cursor.setAttribute("stroke", traceColor); cursor.setAttribute("stroke-width", "1");
     cursor.setAttribute("opacity", "0.55");
     svg.appendChild(cursor);
+
     const dotHalo = document.createElementNS(SVG_NS, "circle");
     dotHalo.setAttribute("class", "sweep-dot-halo");
     dotHalo.setAttribute("cx", padL); dotHalo.setAttribute("cy", yFromValue(fn(0), isFlow));
@@ -821,18 +1032,22 @@
     dot.setAttribute("cx", padL); dot.setAttribute("cy", yFromValue(fn(0), isFlow));
     dot.setAttribute("r", "3"); dot.setAttribute("fill", traceColor);
     svg.appendChild(dot);
+
     applySweep(svg, fn, isFlow);
   }
+
   function applySweep(svg, fn, isFlow) {
     const cursorX = padL + animProgress * plotW;
     const eraseW = plotW * 0.04;
     const eraseRight = Math.min(cursorX + eraseW, W - padR);
+
     const leftRect = svg.querySelector('.sweep-clip-left');
     const rightRect = svg.querySelector('.sweep-clip-right');
     const cursor = svg.querySelector('.sweep-cursor');
     const cursorGlow = svg.querySelector('.sweep-cursor-glow');
     const dot = svg.querySelector('.sweep-dot');
     const dotHalo = svg.querySelector('.sweep-dot-halo');
+
     if (leftRect)  leftRect.setAttribute('width', Math.max(0, cursorX - padL));
     if (rightRect) { rightRect.setAttribute('x', eraseRight); rightRect.setAttribute('width', Math.max(0, W - padR - eraseRight)); }
     if (cursor)      { cursor.setAttribute('x1', cursorX); cursor.setAttribute('x2', cursorX); }
@@ -843,6 +1058,7 @@
       if (dotHalo) { dotHalo.setAttribute('cx', cursorX); dotHalo.setAttribute('cy', cy); }
     }
   }
+
   function updateReadouts() {
     if (!curPressureFn || !curFlowFn) return;
     const pVal = curPressureFn(animProgress), fVal = curFlowFn(animProgress);
@@ -851,6 +1067,7 @@
     if (pEl) pEl.textContent = pVal.toFixed(1);
     if (fEl) fEl.textContent = (fVal >= 0 ? '+' : '') + fVal.toFixed(0);
   }
+
   function tick(now) {
     if (lastFrameTime === 0) lastFrameTime = now;
     const dt = now - lastFrameTime; lastFrameTime = now;
@@ -864,6 +1081,7 @@
     }
     requestAnimationFrame(tick);
   }
+
   function render() {
     const c = cases[current];
     document.getElementById("dys-titletext").textContent = c.title;
@@ -873,22 +1091,52 @@
     sevText.textContent = c.sev;
     sevPill.className = 'dys-sev-pill sev-pill-' + c.sevType;
     document.getElementById("dys-mode").textContent = c.mode;
+    const meta = META[current] || {};
+    const phaseEl = document.getElementById('dys-phase'); if (phaseEl) phaseEl.textContent = meta.phase || '';
+    const settingEl = document.getElementById('dys-setting'); if (settingEl) settingEl.textContent = meta.setting || '';
+    const whyEl = document.getElementById('dys-why'); if (whyEl) whyEl.textContent = meta.why || '';
+
+    // Injurious patterns get the alarm treatment on the case card
+    document.querySelector('.dys-current').classList.toggle('alarm', c.sevType === 'danger');
+
+    // Per-pattern stat tiles
+    const statsEl = document.getElementById('dys-stats');
+    if (statsEl) {
+      statsEl.innerHTML = (STATS[current] || []).map(s => {
+        const [label, val, unit, alarm] = s;
+        return '<div class="dys-stat' + (alarm ? ' alarm' : '') + '">'
+          + '<div class="dys-stat-label">' + label + '</div>'
+          + '<div class="dys-stat-val">' + val + (unit ? '<span class="dys-stat-unit">' + unit + '</span>' : '') + '</div></div>';
+      }).join('');
+    }
+
     const signsList = document.getElementById('dys-signs');
     signsList.innerHTML = '';
     c.signs.forEach(s => { const li = document.createElement('li'); li.textContent = s; signsList.appendChild(li); });
+
     document.getElementById('dys-mechanism').textContent = c.mechanism;
+    const teachTitle = document.getElementById('dys-teach-title');
+    if (teachTitle) teachTitle.textContent = c.title;
+    const pearlEl = document.getElementById('dys-pearl');
+    if (pearlEl) pearlEl.textContent = PEARLS[current] || '';
+
     const actionsList = document.getElementById('dys-actions');
     actionsList.innerHTML = '';
     c.actions.forEach(a => { const li = document.createElement('li'); li.textContent = a; actionsList.appendChild(li); });
+
     curPressureFn = c.pressure; curFlowFn = c.flow;
-    draw("dys-p", c.pressure, false, c.ann);
-    draw("dys-f", c.flow, true, c.ann);
+    const ann = showAnnotations ? c.ann : null;
+    draw("dys-p", c.pressure, false, ann);
+    draw("dys-f", c.flow, true, ann);
     updateReadouts();
   }
+
+  // Theme — follow the device's OS light/dark setting, live, until the user
+  // taps the toggle (then we respect their manual choice).
   const appEl = document.querySelector('.dys-app');
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    appEl.setAttribute('data-dys-theme', 'dark');
-  }
+  let userPickedTheme = false;
+  const dysMq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function systemTheme() { return (dysMq && dysMq.matches) ? 'dark' : 'light'; }
   function setTheme(theme) {
     appEl.setAttribute('data-dys-theme', theme);
     const isDark = theme === 'dark';
@@ -901,12 +1149,21 @@
     const btn = document.getElementById('dys-theme');
     btn.setAttribute('aria-label', 'Switch to ' + (isDark ? 'light' : 'dark') + ' theme');
     btn.setAttribute('title', 'Switch to ' + (isDark ? 'light' : 'dark') + ' theme');
+    const themeLabel = document.getElementById('dys-theme-label');
+    if (themeLabel) themeLabel.textContent = isDark ? 'Light' : 'Dark';
   }
-  setTheme(appEl.getAttribute('data-dys-theme'));
+  setTheme(systemTheme());
+  if (dysMq) {
+    const onSchemeChange = (e) => { if (!userPickedTheme) setTheme(e.matches ? 'dark' : 'light'); };
+    if (dysMq.addEventListener) dysMq.addEventListener('change', onSchemeChange);
+    else if (dysMq.addListener) dysMq.addListener(onSchemeChange);
+  }
   document.getElementById('dys-theme').addEventListener('click', () => {
+    userPickedTheme = true;
     const cur = appEl.getAttribute('data-dys-theme');
     setTheme(cur === 'dark' ? 'light' : 'dark');
   });
+
   function setPlayState(running) {
     animRunning = running;
     const iconEl = document.getElementById('dys-playpause-icon');
@@ -918,20 +1175,74 @@
     const btn = document.getElementById("dys-playpause");
     btn.setAttribute('aria-label', running ? 'Pause' : 'Play');
     btn.setAttribute('title', running ? 'Pause' : 'Play');
+    const ppLabel = document.getElementById('dys-playpause-label');
+    if (ppLabel) ppLabel.textContent = running ? 'Pause' : 'Resume';
     const recDot = document.getElementById('dys-recdot');
     const recStatus = document.getElementById('dys-recstatus');
     const liveDot = document.getElementById('dys-livedot');
     if (recDot) recDot.classList.toggle('paused', !running);
     if (recStatus) recStatus.textContent = running ? 'Live' : 'Paused';
     if (liveDot) liveDot.classList.toggle('paused', !running);
+    appEl.classList.toggle('paused', !running);
   }
   document.getElementById("dys-playpause").addEventListener("click", () => setPlayState(!animRunning));
-  document.getElementById("dys-expand").addEventListener("click", () => {
-    window.open('https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html', '_blank', 'noopener');
+
+  // Annotation callout toggle (analog of the sim's P-alv toggle)
+  const annotBtn = document.getElementById('dys-annot-toggle');
+  if (annotBtn) annotBtn.addEventListener('click', () => {
+    showAnnotations = !showAnnotations;
+    annotBtn.classList.toggle('on', showAnnotations);
+    annotBtn.setAttribute('aria-pressed', showAnnotations ? 'true' : 'false');
+    render();
   });
+
+  // Crosshair inspect: hover/tap a trace (live or paused) to read its value at that point
+  function clearXhair(svg) { const g = svg.querySelector('.dys-xhair'); if (g) g.remove(); }
+  function drawXhair(svg, fn, isFlow, clientX) {
+    clearXhair(svg);
+    if (!fn) return;
+    const rect = svg.getBoundingClientRect();
+    if (!rect.width) return;
+    let vbX = Math.max(padL, Math.min(W - padR, (clientX - rect.left) / rect.width * W));
+    const t = Math.max(0, Math.min(1, (vbX - padL) / plotW));
+    const v = fn(t), y = yFromValue(v, isFlow);
+    const g = document.createElementNS(SVG_NS, 'g'); g.setAttribute('class', 'dys-xhair');
+    const mk = (tag, attrs) => { const e = document.createElementNS(SVG_NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+    g.appendChild(mk('line', { x1:vbX, x2:vbX, y1:padT, y2:H-padB, stroke:'#5eead4', 'stroke-width':1, 'stroke-dasharray':'4,3', opacity:0.9 }));
+    g.appendChild(mk('circle', { cx:vbX, cy:y, r:3.5, fill:'#5eead4' }));
+    const txt = isFlow ? (v >= 0 ? '+' : '') + v.toFixed(0) + ' L/min' : v.toFixed(1) + ' cmH₂O';
+    const boxW = 66, boxH = 16;
+    let bx = vbX + 7; if (bx + boxW > W - padR) bx = vbX - 7 - boxW;
+    const by = Math.max(padT + 2, y - boxH - 5);
+    g.appendChild(mk('rect', { x:bx, y:by, width:boxW, height:boxH, rx:3, fill:'#0b1220', stroke:'#5eead4', 'stroke-width':1 }));
+    const label = mk('text', { x:bx + boxW/2, y:by + 11, 'text-anchor':'middle', fill:'#5eead4', 'font-size':10, 'font-family':"'IBM Plex Mono', ui-monospace, monospace", 'font-weight':600 });
+    label.setAttribute('class', 'dys-xhair-label'); label.textContent = txt;
+    g.appendChild(label);
+    svg.appendChild(g);
+    // When paused, mirror the hovered values into the top readouts. When live, let
+    // the sweep keep ownership of the readouts (avoids per-frame flicker) — the
+    // crosshair's own value box already shows the inspected number.
+    if (!animRunning) {
+      const pEl = document.getElementById('dys-readout-p'), fEl = document.getElementById('dys-readout-f');
+      if (pEl && curPressureFn) pEl.textContent = curPressureFn(t).toFixed(1);
+      if (fEl && curFlowFn) { const ff = curFlowFn(t); fEl.textContent = (ff >= 0 ? '+' : '') + ff.toFixed(0); }
+    }
+  }
+  ['dys-p', 'dys-f'].forEach(id => {
+    const svg = document.getElementById(id), isFlow = id === 'dys-f';
+    const fnFor = () => isFlow ? curFlowFn : curPressureFn;
+    const move = (cx) => drawXhair(svg, fnFor(), isFlow, cx);
+    svg.style.cursor = 'crosshair';
+    svg.addEventListener('mousemove', e => move(e.clientX));
+    svg.addEventListener('mouseleave', () => clearXhair(svg));
+    svg.addEventListener('touchstart', e => { if (e.touches[0]) move(e.touches[0].clientX); }, { passive:true });
+    svg.addEventListener('touchmove', e => { if (e.touches[0]) move(e.touches[0].clientX); }, { passive:true });
+  });
+
   renderCaseButtons();
   render();
   requestAnimationFrame(tick);
+
   const psvgForObserver = document.getElementById('dys-p');
   if (psvgForObserver && typeof ResizeObserver !== 'undefined') {
     const ro = new ResizeObserver(() => { if (updateDimensions()) render(); });
@@ -943,30 +1254,51 @@
 </script>
 <script>
 // Height-sync for iframe embedding — posts document height to parent so the
-// vent book can size the iframe to fit content exactly. No-op if loaded standalone.
+// embedding page can size the iframe to fit content exactly. No-op when this
+// page is loaded standalone (window.parent === window).
+//
+// Why leaf-only measurement: when this page is iframed, document.documentElement
+// .scrollHeight returns max(iframe-viewport, content-height). If the iframe is
+// taller than the content (initial 1500px inline, while widget renders at ~1100px),
+// the script would post 1500 and the parent would never shrink to fit, leaving
+// a slab of empty space below the widget. Walking only leaf elements (no element
+// children) and finding the maximum bottom edge gives the natural content end
+// regardless of the iframe's outer dimensions.
 (function(){
+  function measureContentHeight() {
+    let maxBottom = 0;
+    const all = document.body ? document.body.getElementsByTagName('*') : [];
+    for (let i = 0; i < all.length; i++) {
+      const el = all[i];
+      if (el.children && el.children.length > 0) continue; // not a leaf
+      const tag = el.tagName;
+      if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'LINK' || tag === 'META') continue;
+      const cs = window.getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.width <= 0 && rect.height <= 0) continue;
+      const bottom = rect.bottom + (window.scrollY || window.pageYOffset || 0);
+      if (bottom > maxBottom) maxBottom = bottom;
+    }
+    return Math.ceil(maxBottom);
+  }
   function postHeight() {
     try {
-      const h = Math.max(
-        document.documentElement.scrollHeight,
-        document.body.scrollHeight,
-        document.body.offsetHeight
-      );
-      if (window.parent && window.parent !== window) {
+      const h = measureContentHeight();
+      if (h > 0 && window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'dys-explorer-height', height: h }, '*');
       }
-    } catch(e) {}
+    } catch (e) {}
   }
   window.addEventListener('load', postHeight);
   window.addEventListener('resize', postHeight);
-  if (typeof ResizeObserver !== 'undefined') {
+  if (typeof ResizeObserver !== 'undefined' && document.body) {
     const ro = new ResizeObserver(postHeight);
     ro.observe(document.body);
   }
+  // Catch later layout shifts (font loading, case-button rendering, theme change)
   setTimeout(postHeight, 100);
   setTimeout(postHeight, 500);
   setTimeout(postHeight, 1500);
 })();
 </script>
-</body>
-</html>
