@@ -3702,7 +3702,7 @@ document.addEventListener('click', function (e) {
         <div>
           <div class="bn-entry-title">Rising EtCO<sub>2</sub>&ndash;PaCO<sub>2</sub> gap</div>
           <div class="bn-entry-body">Dead-space is climbing (PE, low CO, dynamic hyperinflation) or capnograph plateau is sloping (obstruction). Don&rsquo;t trust EtCO<sub>2</sub> as a PaCO<sub>2</sub> proxy when the gap moves.
-            <div class="bn-jumps"><a href="#c4-1">§4.1 Dead-space &amp; PaCO_2</a><a href="#c14-5">§14.5 Capnography</a><a href="#c14-6">§14.6 Six capnograph patterns</a></div>
+            <div class="bn-jumps"><a href="#c4-1">§4.1 Dead-space &amp; PaCO_2</a><a href="#c14-5">§14.5 Capnography</a><a href="#c14-6">§14.6 Capnograph pattern atlas</a></div>
           </div>
         </div>
       </div>
@@ -3786,7 +3786,7 @@ document.addEventListener('click', function (e) {
         <div>
           <div class="bn-entry-title">Capnograph plateau sloping upward</div>
           <div class="bn-entry-body">Obstructive disease &mdash; alveolar emptying unevenly. Bronchodilator response can be assessed by watching the slope flatten.
-            <div class="bn-jumps"><a href="#c14-6">§14.6 Six capnograph patterns</a><a href="#c21-1">§21.1 Obstructive pathophysiology</a></div>
+            <div class="bn-jumps"><a href="#c14-6">§14.6 Capnograph pattern atlas</a><a href="#c21-1">§21.1 Obstructive pathophysiology</a></div>
           </div>
         </div>
       </div>
@@ -8455,7 +8455,7 @@ document.addEventListener('click', function (e) {
       <tr><td><strong>Pressure-time</strong></td><td>How much force is moving the lung — and where it goes (resistive vs elastic)?</td><td>PIP · shape during inspiration · Pplat (with hold) · PEEP baseline</td></tr>
       <tr><td><strong>Flow-time</strong></td><td>How is gas being delivered, and is exhalation complete?</td><td>Peak flow · decel pattern · expiratory tail · return to zero before next breath</td></tr>
       <tr><td><strong>Volume-time</strong></td><td>What was actually delivered and exhaled?</td><td>V<sub>T</sub> peak · plateau (with hold) · return to baseline · drift across breaths</td></tr>
-      <tr><td><strong>Capnography</strong></td><td>Is metabolism, circulation, and ventilation all coupled?</td><td>Phase II upslope · Phase III plateau · ETCO₂ value · baseline return to zero</td></tr>
+      <tr><td><strong>Capnography</strong></td><td>Is metabolism, circulation, and ventilation all coupled?</td><td>Phase 2 upslope · Phase 3 plateau · ETCO₂ value · baseline return to zero</td></tr>
     </tbody>
   </table>
 
@@ -8586,36 +8586,42 @@ document.addEventListener('click', function (e) {
 
 <p>Continuous waveform end-tidal CO₂ is the single most under-used screen at the bedside. It couples ventilation, perfusion, and metabolism into one trace, and the four-phase anatomy diagnoses problems no other monitor can.</p>
   <table>
-    <caption>The four phases of a normal capnogram</caption>
+    <caption>The four phases of a normal capnogram (UpToDate / Krauss)</caption>
     <thead><tr><th>Phase</th><th>What it is</th><th>What it should look like</th></tr></thead>
     <tbody>
-      <tr><td><strong>Phase I</strong></td><td>Anatomic dead-space exhalation (no CO₂ from alveoli yet)</td><td>Flat, near-zero baseline</td></tr>
-      <tr><td><strong>Phase II</strong></td><td>Mixed dead-space + alveolar gas (the upstroke)</td><td>Steep, near-vertical rise</td></tr>
-      <tr><td><strong>Phase III</strong></td><td>Alveolar plateau — CO₂ from gas-exchanging alveoli</td><td>Slight upslope (0–3°), reflecting V/Q heterogeneity</td></tr>
-      <tr><td><strong>Phase IV</strong></td><td>Inspiratory drop to baseline</td><td>Vertical drop back to 0</td></tr>
+      <tr><td><strong>Phase 1</strong></td><td>Dead-space ventilation — start of exhalation; CO₂-free gas from the conducting airways</td><td>Flat, near-zero baseline</td></tr>
+      <tr><td><strong>Phase 2</strong></td><td>Ascending phase — alveolar gas reaches the airway (the upstroke)</td><td>Steep, near-vertical rise</td></tr>
+      <tr><td><strong>Phase 3</strong></td><td>Alveolar plateau — uniform alveolar gas; its end (point D) is the EtCO₂</td><td>Nearly flat with a slight upslope (0–3°), reflecting V/Q heterogeneity</td></tr>
+      <tr><td><strong>Phase 4</strong></td><td>Descending inspiratory phase — inspiration drops CO₂ back to zero</td><td>Vertical drop back to 0</td></tr>
     </tbody>
   </table>
+  <p>The waveform’s landmark points are lettered <strong>A–E</strong>: <strong>A</strong> start of exhalation, <strong>B</strong> end of dead space, <strong>C</strong> start of the plateau (the Phase 2→3 corner, where the α-angle sits), <strong>D</strong> the end-tidal CO₂ (the peak at the end of the plateau — the number displayed on the monitor), and <strong>E</strong> the return to baseline at the end of the inspiratory descent.</p>
   <p>Two angles to know:</p>
   <ul>
-    <li><strong>α-angle (Phase II → III)</strong>: normally ~100–110°. A wider α-angle goes with a sloped Phase II and an upsloping Phase III plateau — obstructive disease / V/Q heterogeneity (the “shark-fin” shape).</li>
-    <li><strong>β-angle (Phase III → inspiratory downstroke)</strong>: normally ~90°. An increased β-angle suggests rebreathing — a faulty expiratory valve, increased apparatus dead space, inadequate expiratory time, or (in a circle/anesthesia system) an exhausted CO₂ absorber.</li>
+    <li><strong>α-angle (Phase 2 → 3, at point C)</strong>: normally ~100–110°. A wider α-angle goes with a sloped Phase 2 and an upsloping Phase 3 plateau — obstructive disease / V/Q heterogeneity (the “shark-fin” shape).</li>
+    <li><strong>β-angle (Phase 3 → inspiratory downstroke, at point D)</strong>: normally ~90°. An increased β-angle suggests rebreathing — a faulty expiratory valve, increased apparatus dead space, inadequate expiratory time, or (in a circle/anesthesia system) an exhausted CO₂ absorber.</li>
   </ul>
   </details>
   <details class="chap-acc" data-acc-id="c14-h4-6" open>
     <summary>
-      <h4 id="c14-6">14.6 Six classic capnograph patterns — and what to do</h4>
+      <h4 id="c14-6">14.6 The capnograph pattern atlas — and what to do</h4>
     </summary>
 
 <table>
-    <caption>Capnograph pattern atlas</caption>
+    <caption>Capnograph pattern atlas — the patterns in the interactive library (Figure 14.2), plus one bonus</caption>
     <thead><tr><th>Pattern</th><th>Cause</th><th>Action</th></tr></thead>
     <tbody>
-      <tr><td><strong>“Shark fin”</strong> — sloped Phase II merging into upsloped plateau</td><td>Obstructive disease (asthma, COPD); kinked ETT</td><td>Treat bronchospasm; check ETT patency; suction</td></tr>
-      <tr><td><strong>Curare cleft</strong> — small notch in mid-Phase III</td><td>Returning patient effort during paralysis recovery</td><td>If unwanted, redose NMB; if recovery is the goal, prepare for spontaneous trial</td></tr>
-      <tr><td><strong>Sudden drop to zero</strong></td><td>Disconnection, dislodged ETT, esophageal intubation, cardiac arrest</td><td>Immediate physical exam, breath sounds, capnogram check; pulse / rhythm assessment</td></tr>
-      <tr><td><strong>Rising baseline (Phase 0 &gt; 0)</strong></td><td>Rebreathing — exhausted CO₂ absorber, inadequate fresh-gas flow</td><td>Replace absorber; increase fresh-gas flow; check valves</td></tr>
-      <tr><td><strong>Cardiac oscillations on plateau</strong></td><td>Small V<sub>T</sub> at slow RR exposes heart-beat synchronous oscillations of mediastinum</td><td>Benign artifact; consider if it interferes with cycle-off in PSV</td></tr>
-      <tr><td><strong>“Camel-hump” — two peaks</strong></td><td>Lateral position with unilateral disease (one lung empties before the other)</td><td>Reposition; investigate unilateral pathology</td></tr>
+      <tr><td><strong>“Shark fin”</strong> — sloped Phase 2 merging into an upsloped plateau, no distinct plateau</td><td>Obstructive disease (asthma, COPD); kinked ETT</td><td>Treat bronchospasm; check ETT patency; suction</td></tr>
+      <tr><td><strong>Curare cleft</strong> — small notch in mid-Phase 3</td><td>Returning patient effort during paralysis recovery</td><td>If unwanted, redose NMB; if recovery is the goal, prepare for a spontaneous trial</td></tr>
+      <tr><td><strong>Rebreathing</strong> — baseline fails to return to zero and climbs breath-by-breath (β-angle opens)</td><td>Exhausted CO₂ absorber, faulty expiratory valve, inadequate fresh-gas flow / expiratory time</td><td>Replace absorber; increase fresh-gas flow; check valves</td></tr>
+      <tr><td><strong>Cardiogenic oscillations</strong> — small ripples on the plateau at the heart rate</td><td>Small V<sub>T</sub> at slow RR exposes heart-beat-synchronous oscillation of the mediastinum</td><td>Benign artifact; consider if it interferes with cycle-off in PSV</td></tr>
+      <tr><td><strong>Sudden drop to zero</strong></td><td>Disconnection, dislodged ETT, complete airway obstruction, cardiac arrest</td><td>Immediate physical exam, breath sounds, capnogram check; pulse / rhythm assessment</td></tr>
+      <tr><td><strong>Esophageal intubation</strong> — a few small waveforms decaying to a flat zero</td><td>Tube in the esophagus (stomach/esophageal CO₂ washout), no alveolar gas</td><td>Remove the tube and re-intubate; sustained normal-shaped waveforms confirm tracheal placement</td></tr>
+      <tr><td><strong>Hypoventilation</strong> — EtCO₂ rising (&gt;45), taller / wider waveforms</td><td>Bradypnea or low V<sub>T</sub>: opioid or sedative effect, fatigue, post-ictal state</td><td>Support ventilation early; EtCO₂ &gt;70 in a patient without COPD signals respiratory failure</td></tr>
+      <tr><td><strong>Hyperventilation</strong> — EtCO₂ falling (&lt;35), shorter / narrower waveforms</td><td>Fast or deep breathing: anxiety, pain, or compensation for a metabolic acidosis (DKA, sepsis)</td><td>Treat the underlying cause; avoid over-ventilation in brain injury (target eucapnia)</td></tr>
+      <tr><td><strong>Cardiac arrest</strong> — low-amplitude waveforms, low EtCO₂</td><td>Minimal pulmonary blood flow during arrest</td><td>EtCO₂ gauges compression quality; &lt;10 mmHg after 20 min of CPR predicts no ROSC</td></tr>
+      <tr><td><strong>ROSC</strong> — abrupt rise in EtCO₂ during compressions</td><td>Restored cardiac output suddenly delivers accumulated CO₂ to the lungs</td><td>Earliest sign of return of spontaneous circulation — note the rise, then check rhythm / pulse</td></tr>
+      <tr><td><strong>“Camel-hump” — two peaks</strong> <em>(bonus; not in the interactive figure)</em></td><td>Lateral position with unilateral disease (one lung empties before the other)</td><td>Reposition; investigate unilateral pathology</td></tr>
     </tbody>
   </table>
 
@@ -8637,7 +8643,7 @@ document.addEventListener('click', function (e) {
       <iframe
         id="capno-sim-iframe"
         data-src="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html"
-        title="Capnography waveform library — six classic patterns with parametric physiology controls"
+        title="Capnography waveform library — eleven patterns, four phases, A–E points and α/β angles, with parametric physiology controls and a study-breath mode"
         loading="lazy"
         style="width:100%; height:1200px; border:0; display:block;"
       ></iframe>
@@ -8676,7 +8682,7 @@ document.addEventListener('click', function (e) {
         });
       })();
     </script>
-    <div class="cap"><b>Figure 14.2 — Capnography waveform library (interactive).</b> Live sweep of the six classical capnogram shapes — normal, obstructive (“shark-fin”), curare cleft, cardiogenic oscillations, rebreathing, and sudden drop to zero. Pick a pattern to load characteristic physiology, then drag the sliders (respiratory rate, peak ETCO₂, Phase III slope, baseline / β-angle, I:E, heart rate) to recreate the bedside trace. Scanning order: Phase III plateau height (ETCO₂ value) → Phase II steepness → baseline return to zero → trend across breaths.</div>
+    <div class="cap"><b>Figure 14.2 — Capnography waveform library (interactive).</b> Live sweep of eleven capnogram patterns — normal, obstructive (“shark-fin”), curare cleft, cardiogenic oscillations, rebreathing, sudden drop to zero, esophageal intubation, hypoventilation (rising ETCO₂), hyperventilation (falling ETCO₂), cardiac arrest, and return of spontaneous circulation (ROSC). Pick a pattern to load characteristic physiology, then drag the sliders (respiratory rate, peak ETCO₂, Phase 3 slope, baseline / β-angle, I:E, heart rate) to recreate the bedside trace. The numbered phases (1–4) label the live sweep; the <b>Study breath</b> toggle freezes and enlarges a single cycle with the A–E points and the α/β angles, and the on-screen labels track the waveform as its height changes. Phase and pattern conventions follow UpToDate (Krauss). Scanning order: Phase 3 plateau height (ETCO₂) → Phase 2 steepness → baseline return to zero → trend across breaths.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c14-h4-7" open>
@@ -8866,7 +8872,7 @@ document.addEventListener('click', function (e) {
       <li>Concave-down inspiratory pressure ramp (β &lt; 1) suggests further recruitment is possible; concave-up (β &gt; 1) suggests overdistension. <a class="xref" href="#c15-5" data-xref-chap="15">§15.5</a>.</li>
       <li>Flow-time identifies mode (square = VC, decel = PC/PSV) and exhalation pathology (saw-tooth = secretions; no return to zero = auto-PEEP).</li>
       <li>Volume-time catches what nothing else does: leak (no return to baseline) and progressive air-trapping (drift up over breaths).</li>
-      <li>Capnography couples metabolism + circulation + ventilation. Six pattern shapes, four phases, two angles. Sudden drop to 0 = disconnection / arrest; sudden rise during compressions = ROSC.</li>
+      <li>Capnography couples metabolism + circulation + ventilation. Eleven pattern shapes, four phases (1–4) with A–E landmark points, two angles (α at C, β at D). Sudden drop to 0 = disconnection / arrest; sudden rise during compressions = ROSC.</li>
       <li>ETCO₂ underestimates PaCO₂ in proportion to dead space — verify with ABG in ARDS, PE, low-CO states.</li>
       <li>Inspiratory hold (2 s) gives true Pplat — and in obstruction it often estimates regional PEEPi better than the expiratory hold, because the high inspiratory pressure splints small airways open.<sup class="cite"><a href="#r36">36</a></sup></li>
       <li>Expiratory hold reads total PEEP only in alveoli served by patent airways — in heterogeneous obstruction the true regional PEEPi can be substantially higher than the screen number. Both holds are valid only in a passive patient.</li>
