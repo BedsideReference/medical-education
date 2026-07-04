@@ -19768,7 +19768,10 @@ main table > thead > tr > th{font-size:11.5px;font-weight:700;letter-spacing:.07
     var src=f.getAttribute('data-src')||f.getAttribute('src')||'';
     var seg=title.split(/\s+[\u2014\u2013-]\s+/);
     var name=seg.shift().trim(), desc=seg.join(' \u2014 ').trim();
-    var anchorEl=f.id?f:f.closest('[id]');
+    // Prefer the enclosing figure block (its heading is a stable, always-laid-out
+    // target) over the raw <iframe>. A lazy iframe can be unrendered / mid-resize on
+    // mobile (content-visibility:auto), which makes it an unreliable scroll anchor.
+    var anchorEl=f.closest('.figure[id]')||(f.id?f:f.closest('[id]'));
     var href=anchorEl?('#'+anchorEl.id):'#';
     var a=document.createElement('a'); a.className='bi-tool'; a.href=href;
     var mk=document.createElement('span'); mk.className='tmark'; mk.textContent=glyph(src);
