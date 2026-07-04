@@ -3004,7 +3004,10 @@ window.softJump = function (el) {
    route them through the robust jump too. */
 document.addEventListener('click', function (e) {
   if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  var a = e.target.closest ? e.target.closest('a.xref[href^="#"]') : null;
+  // Route cross-refs AND the auto-generated Index-of-tools-&-tables links through the
+  // robust jump. Index links are plain <a href="#…"> (no .xref), so on mobile they would
+  // otherwise use native scroll and mis-land against content-visibility:auto estimates.
+  var a = e.target.closest ? e.target.closest('a.xref[href^="#"], #book-index a[href^="#"]') : null;
   if (!a) return;
   var href = a.getAttribute('href') || '';
   if (href.length < 2) return;
@@ -3026,11 +3029,22 @@ function expandCollapsedFromHash() {
   try { id = decodeURIComponent(id); } catch (_) {}
   var target = document.getElementById(id);
   if (!target || !target.closest) return;
+  var changed = false;
+  // 1) un-collapse any ancestor chapter section
   var sec = target.closest('section.chap.collapsed');
-  if (!sec) return;                       // nothing collapsed on this path
-  sec.classList.remove('collapsed');
-  if (sec.id) { try { localStorage.setItem('mv-collapsed-' + sec.id, '0'); } catch (_) {} }
-  if (window.softJump) window.softJump(target);   // re-land now that layout changed
+  if (sec) {
+    sec.classList.remove('collapsed');
+    if (sec.id) { try { localStorage.setItem('mv-collapsed-' + sec.id, '0'); } catch (_) {} }
+    changed = true;
+  }
+  // 2) open any closed ancestor <details> accordions so the target is actually visible
+  //    (index/nav links often point inside an accordion that the reader has collapsed)
+  try {
+    var d = target.closest('details');
+    while (d) { if (!d.open) { d.open = true; changed = true; } d = d.parentElement && d.parentElement.closest('details'); }
+  } catch (_) {}
+  // 3) re-land now that layout changed
+  if (changed && window.softJump) window.softJump(target);
 }
 window.addEventListener('hashchange', expandCollapsedFromHash);
 </script>
