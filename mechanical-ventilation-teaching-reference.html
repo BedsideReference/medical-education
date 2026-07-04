@@ -782,9 +782,9 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   abbr[data-tip] { border-bottom: 1px dotted var(--muted); text-decoration: none; cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'><line x1='11' y1='3' x2='11' y2='20' stroke='%232c5282' stroke-width='1.6' stroke-linecap='round'/><path d='M 8 18 Q 14 17 11 15 Q 8 14 12 12 Q 16 11 11 9 Q 7 8 12 6 Q 15 5 11 4' stroke='%232c5282' stroke-width='1.4' fill='none' stroke-linecap='round'/><circle cx='11' cy='4' r='1.5' fill='%232c5282'/></svg>") 11 11, help; }
 
   /* ========== EQUATION COPY BUTTON ========== */
-  .eq { position: relative; padding-right: 40px; }
+  .eq { position: relative; padding-right: 120px; }
   .eq-copy {
-    position: absolute; top: 6px; right: 6px;
+    position: absolute; top: 6px; right: 6px; z-index: 3;
     background: transparent; border: 1px solid var(--rule);
     color: var(--muted); padding: 1px 6px; border-radius: 3px;
     font-size: 11px; cursor: pointer; line-height: 1.4;
@@ -2122,10 +2122,10 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   /* "Variables" affordance on every equation — a small "ⓘ" link to the Abbreviations appendix.
      Appears on hover so it doesn't clutter the equation; always reachable by tab. */
   .eq::after {
-    content: "ⓘ vars";
+    content: "ⓘ symbols";
     position: absolute;
     top: 6px;
-    right: 8px;
+    right: 54px;
     font-size: 11px;
     color: var(--muted, #888);
     opacity: 0;
@@ -2136,8 +2136,8 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .eq .eq-vars-link {
     position: absolute;
     top: 4px;
-    right: 4px;
-    width: 60px;
+    right: 54px;
+    width: 64px;
     height: 22px;
     display: block;
     text-decoration: none;
@@ -2956,6 +2956,17 @@ window.softJump = function (el) {
       if (tog) { tog.textContent = 'Collapse to one'; tog.setAttribute('aria-pressed', 'true'); }
     }
   } catch (e) {}
+  // Auto-expand a collapsed section (cheatsheet, index, bedside-now, calc-tools,
+  // abbreviations, or any chapter the reader collapsed) so the destination is
+  // visible on arrival. Done BEFORE measuring the scroll target so the jump
+  // lands correctly. Persist '0' to mirror the manual h3 toggle.
+  try {
+    var collSec = el.closest ? el.closest('section.chap.collapsed') : null;
+    if (collSec) {
+      collSec.classList.remove('collapsed');
+      if (collSec.id) { try { localStorage.setItem('mv-collapsed-' + collSec.id, '0'); } catch (_) {} }
+    }
+  } catch (e) {}
   // On mobile, content-visibility:auto gives off-screen chapters only an
   // ESTIMATED height, so a normal jump lands in the wrong place. Briefly force
   // the target chapter and everything ABOVE it to render real layout, do ONE
@@ -3003,6 +3014,25 @@ document.addEventListener('click', function (e) {
   if (history.pushState) { try { history.pushState(null, '', href); } catch (_) {} }
   window.softJump(target);
 });
+
+/* Native in-page anchor jumps (plain <a href="#..."> like the equation
+   "ⓘ symbols" link, footer links, deep links, and browser back/forward) don't
+   route through softJump, so a collapsed destination stays hidden. When the
+   hash points into a collapsed section, expand it and re-land accurately. */
+function expandCollapsedFromHash() {
+  var h = location.hash;
+  if (!h || h.length < 2) return;
+  var id = h.slice(1);
+  try { id = decodeURIComponent(id); } catch (_) {}
+  var target = document.getElementById(id);
+  if (!target || !target.closest) return;
+  var sec = target.closest('section.chap.collapsed');
+  if (!sec) return;                       // nothing collapsed on this path
+  sec.classList.remove('collapsed');
+  if (sec.id) { try { localStorage.setItem('mv-collapsed-' + sec.id, '0'); } catch (_) {} }
+  if (window.softJump) window.softJump(target);   // re-land now that layout changed
+}
+window.addEventListener('hashchange', expandCollapsedFromHash);
 </script>
 
 <div class="progress-bar"><div class="fill"></div></div>
@@ -14695,50 +14725,50 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <h3>Abbreviations</h3>
   <table>
     <tr><th>Abbr.</th><th>Meaning</th><th>Abbr.</th><th>Meaning</th></tr>
-    <tr><td>A/C</td><td>Assist-control</td><td>APRV</td><td>Airway pressure release ventilation</td></tr>
-    <tr><td>ARDS</td><td>Acute respiratory distress syndrome</td><td>ATC</td><td>Automatic tube compensation</td></tr>
-    <tr><td>BiPAP</td><td>Bilevel positive airway pressure (NIV)</td><td>CPAP</td><td>Continuous positive airway pressure</td></tr>
-    <tr><td>Cstat</td><td>Static compliance</td><td>CXR</td><td>Chest X-ray</td></tr>
-    <tr><td>DOPES / DOTTS</td><td>Mnemonics for vent troubleshooting</td><td>ΔP</td><td>Driving pressure</td></tr>
-    <tr><td>EIT</td><td>Electrical impedance tomography</td><td>ETT</td><td>Endotracheal tube</td></tr>
+    <tr><td>2,3-BPG</td><td>2,3-bisphosphoglycerate</td><td>ABG</td><td>Arterial blood gas</td></tr>
+    <tr><td>A/C</td><td>Assist-control</td><td>ALS</td><td>Amyotrophic lateral sclerosis</td></tr>
+    <tr><td>APRV</td><td>Airway pressure release ventilation</td><td>ARDS</td><td>Acute respiratory distress syndrome</td></tr>
+    <tr><td>ATC</td><td>Automatic tube compensation</td><td>AVM</td><td>Arteriovenous malformation</td></tr>
+    <tr><td>BiPAP</td><td>Bilevel positive airway pressure (NIV)</td><td>BNP</td><td>B-type natriuretic peptide</td></tr>
+    <tr><td>CABG</td><td>Coronary artery bypass graft</td><td>CAM-ICU</td><td>Confusion Assessment Method for the ICU</td></tr>
+    <tr><td>CPAP</td><td>Continuous positive airway pressure</td><td>Cstat</td><td>Static compliance</td></tr>
+    <tr><td>CXR</td><td>Chest X-ray</td><td>DAD</td><td>Diffuse alveolar damage</td></tr>
+    <tr><td>DLCO</td><td>Diffusing capacity for carbon monoxide</td><td>DO₂</td><td>Oxygen delivery (CaO₂ × CO × 10)</td></tr>
+    <tr><td>DOPES / DOTTS</td><td>Mnemonics for vent troubleshooting</td><td>EIT</td><td>Electrical impedance tomography</td></tr>
+    <tr><td>ETT</td><td>Endotracheal tube</td><td>FEV₁</td><td>Forced expiratory volume in 1 s</td></tr>
     <tr><td>FiO₂</td><td>Fraction of inspired oxygen</td><td>FRC</td><td>Functional residual capacity</td></tr>
+    <tr><td>FVC</td><td>Forced vital capacity</td><td>GBS</td><td>Guillain-Barré syndrome</td></tr>
+    <tr><td>GOLD</td><td>Global Initiative for Chronic Obstructive Lung Disease</td><td>HACOR</td><td>NIV-failure score (Heart rate, Acidosis, Consciousness, Oxygenation, RR)</td></tr>
     <tr><td>HFNC</td><td>High-flow nasal cannula</td><td>HFOV</td><td>High-frequency oscillatory ventilation</td></tr>
-    <tr><td>I:E</td><td>Inspiratory-to-expiratory time ratio</td><td>LIP / UIP</td><td>Lower / upper inflection point</td></tr>
-    <tr><td>MP</td><td>Mechanical power</td><td>NAVA</td><td>Neurally adjusted ventilatory assist</td></tr>
+    <tr><td>HPV</td><td>Hypoxic pulmonary vasoconstriction</td><td>I:E</td><td>Inspiratory-to-expiratory time ratio</td></tr>
+    <tr><td>ILD</td><td>Interstitial lung disease</td><td>iNO</td><td>Inhaled nitric oxide</td></tr>
+    <tr><td>IPAP / EPAP</td><td>Inspiratory / expiratory positive airway pressure</td><td>IVIG</td><td>Intravenous immunoglobulin</td></tr>
+    <tr><td>LCA</td><td>Latent class analysis (ARDS subphenotype)</td><td>LIP / UIP</td><td>Lower / upper inflection point</td></tr>
+    <tr><td>LV</td><td>Left ventricle</td><td>MEP</td><td>Maximum expiratory pressure</td></tr>
+    <tr><td>MG</td><td>Myasthenia gravis</td><td>MP</td><td>Mechanical power</td></tr>
+    <tr><td>NAVA</td><td>Neurally adjusted ventilatory assist</td><td>NIF / MIP</td><td>Negative inspiratory force / Maximum inspiratory pressure</td></tr>
     <tr><td>NIV</td><td>Non-invasive ventilation</td><td>NMB</td><td>Neuromuscular blockade</td></tr>
-    <tr><td>P<sub>aw</sub> / P<sub>alv</sub></td><td>Airway / alveolar pressure</td><td>PBW</td><td>Predicted body weight</td></tr>
-    <tr><td>PC</td><td>Pressure control</td><td>PEEP</td><td>Positive end-expiratory pressure</td></tr>
+    <tr><td>NMD</td><td>Neuromuscular disease</td><td>NRB</td><td>Non-rebreather (mask)</td></tr>
+    <tr><td>ΔP</td><td>Driving pressure</td><td>P₅₀</td><td>PaO₂ at 50% Hb saturation (normal 26.5)</td></tr>
+    <tr><td>P(a−et)CO₂</td><td>Arterial-to-end-tidal CO₂ gap</td><td>P<sub>aw</sub> / P<sub>alv</sub></td><td>Airway / alveolar pressure</td></tr>
+    <tr><td>PBW</td><td>Predicted body weight</td><td>PC</td><td>Pressure control</td></tr>
+    <tr><td>PE</td><td>Pulmonary embolism</td><td>PEEP</td><td>Positive end-expiratory pressure</td></tr>
     <tr><td>PEEPi</td><td>Intrinsic PEEP (auto-PEEP)</td><td>Pes</td><td>Esophageal pressure</td></tr>
     <tr><td>P/F</td><td>PaO₂ / FiO₂</td><td>PIP</td><td>Peak inspiratory pressure</td></tr>
-    <tr><td>P<sub>L</sub></td><td>Transpulmonary pressure</td><td>P<sub>plat</sub></td><td>Plateau pressure</td></tr>
-    <tr><td>PRVC</td><td>Pressure-regulated volume control</td><td>PSV</td><td>Pressure support ventilation</td></tr>
-    <tr><td>P-SILI</td><td>Patient self-inflicted lung injury</td><td>RASS</td><td>Richmond Agitation–Sedation Scale</td></tr>
-    <tr><td>Raw</td><td>Airway resistance</td><td>RSBI</td><td>Rapid shallow breathing index (f/Vt)</td></tr>
-    <tr><td>S/F</td><td>SpO₂ / FiO₂</td><td>SBT</td><td>Spontaneous breathing trial</td></tr>
-    <tr><td>SIMV</td><td>Synchronized intermittent mandatory ventilation</td><td>Te / Ti</td><td>Expiratory / inspiratory time</td></tr>
+    <tr><td>P<sub>L</sub></td><td>Transpulmonary pressure</td><td>POCUS</td><td>Point-of-care ultrasound</td></tr>
+    <tr><td>P<sub>plat</sub></td><td>Plateau pressure</td><td>PRVC</td><td>Pressure-regulated volume control</td></tr>
+    <tr><td>P-SILI</td><td>Patient self-inflicted lung injury</td><td>PSV</td><td>Pressure support ventilation</td></tr>
+    <tr><td>PVR</td><td>Pulmonary vascular resistance</td><td>RASS</td><td>Richmond Agitation–Sedation Scale</td></tr>
+    <tr><td>Raw</td><td>Airway resistance</td><td>ROX</td><td>HFNC outcome index = (SpO₂/FiO₂)/RR</td></tr>
+    <tr><td>RSBI</td><td>Rapid shallow breathing index (f/Vt)</td><td>RSI</td><td>Rapid sequence intubation</td></tr>
+    <tr><td>RV (heart)</td><td>Right ventricle</td><td>SBT</td><td>Spontaneous breathing trial</td></tr>
+    <tr><td>S/F</td><td>SpO₂ / FiO₂</td><td>SIMV</td><td>Synchronized intermittent mandatory ventilation</td></tr>
+    <tr><td>SvO₂</td><td>Mixed venous oxygen saturation</td><td>SVR</td><td>Systemic vascular resistance</td></tr>
+    <tr><td>Te / Ti</td><td>Expiratory / inspiratory time</td><td>TLC</td><td>Total lung capacity</td></tr>
+    <tr><td>TOF</td><td>Train-of-four (NMB monitoring)</td><td>VA-ECMO</td><td>Veno-arterial ECMO</td></tr>
     <tr><td>VC</td><td>Volume control</td><td>Vd / Vt</td><td>Dead-space fraction</td></tr>
     <tr><td>VE / VA</td><td>Minute / alveolar ventilation</td><td>VILI</td><td>Ventilator-induced lung injury</td></tr>
-    <tr><td>VV-ECMO</td><td>Veno-venous extracorporeal membrane oxygenation</td><td>VT</td><td>Tidal volume</td></tr>
-    <tr><td>VA-ECMO</td><td>Veno-arterial ECMO</td><td>HACOR</td><td>NIV-failure score (Heart rate, Acidosis, Consciousness, Oxygenation, RR)</td></tr>
-    <tr><td>ROX</td><td>HFNC outcome index = (SpO₂/FiO₂)/RR</td><td>NMD</td><td>Neuromuscular disease</td></tr>
-    <tr><td>NIF / MIP</td><td>Negative inspiratory force / Maximum inspiratory pressure</td><td>MEP</td><td>Maximum expiratory pressure</td></tr>
-    <tr><td>FVC</td><td>Forced vital capacity</td><td>FEV₁</td><td>Forced expiratory volume in 1 s</td></tr>
-    <tr><td>DLCO</td><td>Diffusing capacity for carbon monoxide</td><td>TLC</td><td>Total lung capacity</td></tr>
-    <tr><td>HPV</td><td>Hypoxic pulmonary vasoconstriction</td><td>PVR</td><td>Pulmonary vascular resistance</td></tr>
-    <tr><td>RV (heart)</td><td>Right ventricle</td><td>LV</td><td>Left ventricle</td></tr>
-    <tr><td>iNO</td><td>Inhaled nitric oxide</td><td>SvO₂</td><td>Mixed venous oxygen saturation</td></tr>
-    <tr><td>DAD</td><td>Diffuse alveolar damage</td><td>PE</td><td>Pulmonary embolism</td></tr>
-    <tr><td>GBS</td><td>Guillain-Barré syndrome</td><td>MG</td><td>Myasthenia gravis</td></tr>
-    <tr><td>ALS</td><td>Amyotrophic lateral sclerosis</td><td>2,3-BPG</td><td>2,3-bisphosphoglycerate</td></tr>
-    <tr><td>P₅₀</td><td>PaO₂ at 50% Hb saturation (normal 26.5)</td><td>P(a−et)CO₂</td><td>Arterial-to-end-tidal CO₂ gap</td></tr>
-    <tr><td>ABG</td><td>Arterial blood gas</td><td>IPAP / EPAP</td><td>Inspiratory / expiratory positive airway pressure</td></tr>
-    <tr><td>SVR</td><td>Systemic vascular resistance</td><td>POCUS</td><td>Point-of-care ultrasound</td></tr>
-    <tr><td>TOF</td><td>Train-of-four (NMB monitoring)</td><td>RSI</td><td>Rapid sequence intubation</td></tr>
-    <tr><td>AVM</td><td>Arteriovenous malformation</td><td>ILD</td><td>Interstitial lung disease</td></tr>
-    <tr><td>IVIG</td><td>Intravenous immunoglobulin</td><td>CABG</td><td>Coronary artery bypass graft</td></tr>
-    <tr><td>NRB</td><td>Non-rebreather (mask)</td><td>CAM-ICU</td><td>Confusion Assessment Method for the ICU</td></tr>
-    <tr><td>LCA</td><td>Latent class analysis (ARDS subphenotype)</td><td>GOLD</td><td>Global Initiative for Chronic Obstructive Lung Disease</td></tr>
-    <tr><td>DO₂</td><td>Oxygen delivery (CaO₂ × CO × 10)</td><td>BNP</td><td>B-type natriuretic peptide</td></tr>
+    <tr><td>VT</td><td>Tidal volume</td><td>VV-ECMO</td><td>Veno-venous extracorporeal membrane oxygenation</td></tr>
   </table>
 </section>
 
@@ -17927,8 +17957,8 @@ saveInputs();
         const a = document.createElement('a');
         a.className = 'eq-vars-link';
         a.href = '#abbr';
-        a.title = 'Variable definitions — Abbreviations appendix';
-        a.setAttribute('aria-label', 'Jump to variable definitions');
+        a.title = 'Symbol definitions — Abbreviations appendix';
+        a.setAttribute('aria-label', 'Jump to symbol definitions');
         eq.appendChild(a);
       }
     });
