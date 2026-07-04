@@ -6468,37 +6468,44 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         data-src="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html"
         title="ABG acid-base simulator — interactive interpretation with compensation and anion-gap analysis"
         loading="lazy"
-        style="width:100%; height:1200px; border:0; display:block;"
+        style="width:100%; height:1060px; border:0; display:block;"
       ></iframe>
     </div>
     <script>
       (function(){
-        const iframe = document.getElementById('abg-sim-iframe');
+        var iframe = document.getElementById('abg-sim-iframe');
         if (!iframe) return;
-        let reportedExact = false;
-        function estimateHeight(w) {
-          if (w >= 1120) return 1150;
-          if (w >= 760) return 1500;
-          return 2200;
+        var lastH = 0;
+        function setH(h){
+          h = Math.max(420, Math.min(2600, Math.round(h)));
+          if (Math.abs(h - lastH) > 2){ lastH = h; iframe.style.height = h + 'px'; }
         }
-        function applyEstimated() {
-          if (reportedExact) return;
-          const w = iframe.clientWidth || iframe.getBoundingClientRect().width || 900;
-          iframe.style.height = estimateHeight(w) + 'px';
+        // Direct measurement works when the book and simulator are served from the
+        // same origin (the live site). This is exact and needs no cooperation from the child.
+        function measure(){
+          try {
+            var doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
+            if (!doc) return false;
+            var el = doc.querySelector('.app-shell') || doc.body;
+            if (!el) return false;
+            var h = el.getBoundingClientRect().height + 4;
+            if (h > 60){ setH(h); return true; }
+          } catch (e) { /* cross-origin (e.g. local preview) — fall back to postMessage */ }
+          return false;
         }
-        applyEstimated();
-        if (typeof ResizeObserver !== 'undefined') {
-          const ro = new ResizeObserver(applyEstimated);
-          ro.observe(iframe);
-        } else {
-          window.addEventListener('resize', applyEstimated);
+        function estimate(){
+          if (lastH) return;                       // never override a real measurement
+          var w = iframe.clientWidth || 900;
+          setH(w >= 1120 ? 1060 : w >= 760 ? 1340 : 1880);
         }
+        estimate();
+        iframe.addEventListener('load', function(){ if (!measure()) estimate(); });
+        // Poll briefly for the same-origin case (content settles after fonts/canvas paint).
+        var polls = 0, timer = setInterval(function(){ polls++; measure(); if (polls > 40) clearInterval(timer); }, 500);
+        if (typeof ResizeObserver !== 'undefined'){ new ResizeObserver(function(){ if (!measure()) estimate(); }).observe(iframe); }
+        // Cross-origin fallback: the simulator posts its own content height.
         window.addEventListener('message', function(e){
-          if (e && e.data && e.data.type === 'abg-sim-height' && typeof e.data.height === 'number') {
-            reportedExact = true;
-            const h = Math.max(500, Math.min(2600, e.data.height + 20));
-            iframe.style.height = h + 'px';
-          }
+          if (e && e.data && e.data.type === 'abg-sim-height' && typeof e.data.height === 'number'){ setH(e.data.height + 8); }
         });
       })();
     </script>
