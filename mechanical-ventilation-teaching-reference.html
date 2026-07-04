@@ -3216,30 +3216,46 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
   <div class="mh-cred">
     <div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I<small>Compiled May 2026</small></div></div>
-    <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Jun 2026<small>ARDS Global Def. 2024</small></div></div>
+    <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Jul 2026<small>ARDS Global Def. 2024</small></div></div>
     <div><div class="mh-cred-k">Guidelines</div><div class="mh-cred-v">ATS / ESICM / SCCM<small>2024 ARDS practice guideline</small></div></div>
     <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">44</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology &rarr; liberation</small></div></div>
   </div>
-  <div class="mh-cite"><b>How to cite &mdash;</b> Bedside Reference. <em>Guide to Ventilation</em>, Vol. I. May 2026 (reviewed Jun 2026).</div>
+  <div class="mh-cite"><b>How to cite &mdash;</b> Bedside Reference. <em>Guide to Ventilation</em>, Vol. I. May 2026 (reviewed Jul 2026).</div>
 </header>
 
+<style id="frontmatter-css">
+.front-matter{grid-template-columns:1.55fr 1fr;align-items:start;}
+.how-to-read{padding:18px 20px;}
+.how-to-read h3{font-size:19px;margin:0 0 14px;}
+.how-to-read .modes{gap:16px;}
+.how-to-read .mode{border-left:0;padding:0;}
+.how-to-read .mode-head{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.how-to-read .mode-chip{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--font-sans);font-weight:700;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;flex:none;}
+.how-to-read .mode-cat{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.how-to-read .mode-name{font-size:15px;margin:0 0 4px;}
+.disclaimer-block{background:transparent;border:0;border-left:2px solid var(--rule);border-radius:0;padding:2px 0 2px 16px;}
+.disclaimer-block .ftm-title{color:var(--muted);}
+.disclaimer-block p{margin:0;font-size:11.5px;line-height:1.5;color:var(--muted);font-family:var(--font-sans);}
+.disclaimer-block p+p{margin-top:7px;}
+.disclaimer-block strong,.disclaimer-block em{color:var(--ink-soft);}
+</style>
 <section class="front-matter" aria-label="Reading guidance and disclaimer">
   <div class="how-to-read" id="how-to-read">
     <div class="ftm-title">How to read</div>
     <h3>Three ways in</h3>
     <div class="modes">
       <div class="mode">
-        <div class="mode-num">① Linear</div>
+        <div class="mode-head"><span class="mode-chip">1</span><span class="mode-cat">Linear</span></div>
         <div class="mode-name">Cover to cover</div>
         <p>Parts I–IX build sequentially. ~14 h end-to-end.</p>
       </div>
       <div class="mode">
-        <div class="mode-num">② Reference</div>
+        <div class="mode-head"><span class="mode-chip">2</span><span class="mode-cat">Reference</span></div>
         <div class="mode-name">Look up &amp; out</div>
         <p>Start from <a href="#reference-cards">high-yield cards</a> or the <a href="#cheatsheet">bedside cheat sheet</a>. Chapters stand alone.</p>
       </div>
       <div class="mode">
-        <div class="mode-num">③ Bedside</div>
+        <div class="mode-head"><span class="mode-chip">3</span><span class="mode-cat">Bedside</span></div>
         <div class="mode-name">Patient in front of you</div>
         <p>Jump to <a href="#c40">cases (Ch 40)</a>, <a href="#c39">troubleshooting (Ch 39)</a>, or the disease chapter in <a href="#part4">Part IV</a>.</p>
       </div>
@@ -3249,12 +3265,13 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <aside class="disclaimer-block" id="disclaimer" aria-label="Medical disclaimer">
     <div class="ftm-title">Disclaimer</div>
     <p>This reference is for <strong>educational use only</strong>. It does not constitute medical advice and is not a substitute for clinical judgment, institutional protocols, or the care of a qualified clinician at the bedside.</p>
-    <p>Drug doses, equipment specifications, contraindications, and practice patterns change. Verify every clinically actionable detail against primary sources, current guidelines, and your institution’s standards before applying it to a patient. Content reflects evidence and consensus as of May 2026. <em>Bedside Reference</em> accepts no liability for outcomes arising from use of this material. By reading further, you acknowledge these terms.</p>
+    <p>Drug doses, equipment specifications, contraindications, and practice patterns change. Verify every clinically actionable detail against primary sources, current guidelines, and your institution’s standards before applying it to a patient. Content reflects evidence and consensus as of July 2026. <em>Bedside Reference</em> accepts no liability for outcomes arising from use of this material. By reading further, you acknowledge these terms.</p>
   </aside>
 </section>
 
 <nav class="toc" aria-label="Contents">
   <a class="part-link" href="#cheatsheet"><h4>★ Bedside cheat sheet</h4></a>
+  <a class="part-link" href="#book-index"><h4>◆ Index of tools &amp; tables</h4></a>
   <a class="part-link" href="#bedside-now"><h4><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><path d="M3 12h3.5l2.2-6.5 4 13 2.3-6.5H21"/></svg>Bedside-Now</h4></a>
   <a class="part-link" href="#calc-tools"><h4>∑ Bedside calculator</h4></a>
   <a class="part-link" href="#part1"><h4>Part I · Foundations</h4></a>
@@ -3546,6 +3563,38 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       </details>
 
   </div>
+</section>
+
+<style id="book-index-css">
+#book-index.collapsed > *:not(h3){display:none!important;}
+#book-index .bi-summary,#book-index .bi-block-title,#book-index .bi-tools,#book-index .bi-tables{max-width:none;}
+#book-index .bi-summary{font-family:var(--font-sans);font-size:12.5px;color:var(--muted);margin:0 0 20px;}
+#book-index .bi-block-title{font-family:var(--font-sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:24px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--rule);}
+#book-index .bi-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+#book-index .bi-tool{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--rule);border-radius:9px;padding:13px 15px;text-decoration:none;color:inherit;background:var(--surface);transition:border-color .15s,box-shadow .15s;}
+#book-index .bi-tool:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(11,31,58,.06);}
+#book-index .bi-tool .tmark{width:34px;height:34px;border-radius:8px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none;font-weight:700;font-size:16px;font-family:var(--font-serif);}
+#book-index .bi-tool .tbody{display:flex;flex-direction:column;gap:3px;min-width:0;}
+#book-index .bi-tool .tname{font-weight:700;font-size:14.5px;color:var(--ink);letter-spacing:-.005em;}
+#book-index .bi-tool .tdesc{font-size:12.5px;color:var(--ink-soft);line-height:1.45;}
+#book-index .bi-tool .tgo{margin-left:auto;color:var(--muted);font-size:18px;align-self:center;}
+#book-index .bi-tables{columns:3;column-gap:26px;}
+#book-index .bi-grp{break-inside:avoid;margin:0 0 16px;}
+#book-index .bi-grp h4{font-family:var(--font-sans);font-size:12.5px;font-weight:700;color:var(--accent);margin:0 0 5px;}
+#book-index .bi-grp ul{list-style:none;margin:0;padding:0;}
+#book-index .bi-grp li{margin:0 0 3px;line-height:1.35;}
+#book-index .bi-grp a{font-size:12.5px;color:var(--ink-soft);text-decoration:none;border-bottom:1px solid transparent;}
+#book-index .bi-grp a:hover{color:var(--accent);border-bottom-color:var(--accent);}
+@media(max-width:800px){#book-index .bi-tools{grid-template-columns:1fr;}#book-index .bi-tables{columns:2;}}
+@media(max-width:560px){#book-index .bi-tables{columns:1;}}
+</style>
+<section class="chap collapsed" id="book-index" aria-label="Index of tools and tables">
+  <h3><span class="num">◆</span>Index of tools &amp; tables</h3>
+  <div class="bi-summary" id="bi-summary"></div>
+  <div class="bi-block-title">Interactive tools</div>
+  <div class="bi-tools" id="bi-tools"></div>
+  <div class="bi-block-title">Tables &amp; algorithms — by chapter</div>
+  <div class="bi-tables" id="bi-tables"></div>
 </section>
 
 <section class="chap collapsed" id="bedside-now">
@@ -14768,7 +14817,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
      mirroring the layout's max-width and horizontal padding. -->
 <footer class="colophon" role="contentinfo">
   <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-  <div>Version 1.0 · Last reviewed June 2026</div>
+  <div>Version 1.0 · Last reviewed July 2026</div>
   <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
   <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
   <div class="foot-nav">
@@ -16819,6 +16868,74 @@ saveInputs();
     popover.addEventListener('mouseleave', hideXrefPreview);
   } catch (err) { console.error('[XREF PREVIEWS] error:', err); }
 
+  // ============== SEARCH SYNONYMS (medical abbreviations) ==============
+  var __VENT_SYN = [
+    ["P/F","PF ratio","PaO₂/FiO₂"],["S/F","SpO₂/FiO₂"],
+    ["RSBI","rapid shallow breathing index","f/Vt"],["ROX","ROX index"],
+    ["NIF","MIP","negative inspiratory force","maximal inspiratory pressure"],
+    ["MEP","maximal expiratory pressure"],
+    ["PIP","Ppeak","peak inspiratory pressure","peak pressure"],
+    ["Pplat","plateau pressure"],["ΔP","driving pressure"],
+    ["auto-PEEP","intrinsic PEEP","PEEPi","breath stacking","air trapping"],
+    ["transpulmonary pressure","PL","esophageal pressure"],
+    ["MAP","mean airway pressure"],
+    ["AC","A/C","assist-control"],["VC","volume control","VC-AC"],
+    ["PC","pressure control","PC-AC"],["PSV","PS","pressure support"],
+    ["SIMV","synchronized intermittent mandatory"],
+    ["PRVC","adaptive pressure control","AutoFlow"],
+    ["APRV","airway pressure release","BiVent"],
+    ["NAVA","neurally adjusted ventilatory assist"],
+    ["NIV","noninvasive ventilation","NPPV"],["BiPAP","BPAP","bilevel"],
+    ["CPAP","continuous positive airway pressure"],
+    ["HFNC","high-flow nasal cannula","high flow","Optiflow"],
+    ["ETT","endotracheal tube"],["trach","tracheostomy"],
+    ["ARDS","acute respiratory distress syndrome"],
+    ["COPD","chronic obstructive pulmonary disease"],
+    ["VAP","ventilator-associated pneumonia"],
+    ["VAE","ventilator-associated event","VAC"],["PE","pulmonary embolism"],
+    ["RV","right ventricle","right ventricular"],["TBI","traumatic brain injury"],
+    ["ICP","intracranial pressure"],["PTX","pneumothorax"],
+    ["ABG","arterial blood gas"],
+    ["EtCO₂","end-tidal CO₂","capnography","capnometry"],
+    ["SpO₂","pulse ox","oxygen saturation","SaO₂"],
+    ["PaCO₂","arterial CO₂"],["Vd/Vt","dead space","dead-space fraction"],
+    ["A-a","alveolar-arterial gradient","A-a gradient"],
+    ["Vt","tidal volume"],["RR","respiratory rate"],
+    ["MV","minute ventilation","VE","V̇E"],
+    ["PBW","predicted body weight","IBW","ideal body weight"],
+    ["FRC","functional residual capacity"],
+    ["sux","succinylcholine"],["roc","rocuronium"],["cis","cisatracurium","cisat"],
+    ["NMB","neuromuscular blockade","paralytic","NMBA"],
+    ["dex","dexmedetomidine","Precedex"],["midaz","midazolam","Versed"],
+    ["fent","fentanyl"],
+    ["SBT","spontaneous breathing trial"],["RM","recruitment maneuver"],
+    ["WOB","work of breathing"],["MP","mechanical power"],
+    ["ECMO","extracorporeal membrane oxygenation","VV ECMO"],
+    ["iNO","inhaled nitric oxide"],["prone","proning","prone positioning"],
+    ["V/Q","ventilation-perfusion","ventilation perfusion"],
+    ["HPV","hypoxic pulmonary vasoconstriction"],["DO₂","oxygen delivery"]
+  ];
+  function __ventNorm(str){
+    str=(str||'').toLowerCase();
+    try{ str=str.normalize('NFKD').replace(/[̀-ͯ]/g,''); }catch(e){}
+    str=str.replace(/[₀-₉]/g,function(d){return String.fromCharCode(d.charCodeAt(0)-0x2080+48);});
+    return str.replace(/[^a-z0-9]/g,'');
+  }
+  window.__ventExpand = function(query){
+    var raw=(query||'').toLowerCase(), nq=__ventNorm(query);
+    if(!window.__ventSynIndex){
+      window.__ventSynIndex={};
+      __VENT_SYN.forEach(function(g,i){ g.forEach(function(t){ var k=__ventNorm(t); (window.__ventSynIndex[k]=window.__ventSynIndex[k]||[]).push(i); }); });
+    }
+    if(!nq) return [raw];
+    var gis=window.__ventSynIndex[nq];
+    if(!gis) return [raw];
+    var out=[];
+    gis.forEach(function(i){ __VENT_SYN[i].forEach(function(t){ var lt=t.toLowerCase(); if(out.indexOf(lt)<0) out.push(lt); }); });
+    if(out.indexOf(raw)<0) out.push(raw);
+    return out;
+  };
+
   // ============== Cmd+K COMMAND PALETTE (item 1) ==============
   try {
     const overlay = document.getElementById('cmdk-overlay');
@@ -16899,12 +17016,11 @@ saveInputs();
     }
     function fuzzyMatch(query, text) {
       if (!query) return 0;
-      const q = query.toLowerCase();
       const t = (text || '').toLowerCase();
-      const idx = t.indexOf(q);
-      if (idx < 0) return -1;
-      // Score: lower index = better match
-      return idx;
+      const terms = (window.__ventExpand ? window.__ventExpand(query) : [query.toLowerCase()]);
+      let best = -1;
+      for (const term of terms) { const k = t.indexOf(term); if (k >= 0 && (best < 0 || k < best)) best = k; }
+      return best;
     }
     function render(query) {
       results.innerHTML = '';
@@ -16918,16 +17034,17 @@ saveInputs();
       // Full-text body matches — search the prose, not just titles. Skip
       // entries already surfaced by a title match so we don't double-list.
       if (query && query.length >= 2) {
-        const q = query.toLowerCase();
+        const terms = (window.__ventExpand ? window.__ventExpand(query) : [query.toLowerCase()]);
         const seen = new Set(items.map(it => it.target));
         const textHits = [];
         for (const c of contentIndex) {
           if (seen.has(c.target)) continue;
           const lo = c.text.toLowerCase();
-          const ti = lo.indexOf(q);
+          let ti = -1, mlen = 0;
+          for (const term of terms) { const k = lo.indexOf(term); if (k >= 0 && (ti < 0 || k < ti)) { ti = k; mlen = term.length; } }
           if (ti < 0) continue;
           const start = Math.max(0, ti - 32);
-          const end = Math.min(c.text.length, ti + q.length + 70);
+          const end = Math.min(c.text.length, ti + mlen + 70);
           const snip = (start > 0 ? '…' : '') + c.text.slice(start, end) + (end < c.text.length ? '…' : '');
           textHits.push({ kind: 'Text', title: c.title, target: c.target, meta: snip, _score: ti });
           seen.add(c.target);
@@ -17604,7 +17721,7 @@ saveInputs();
       totalWords += words;
       // Inject reading time into the matching sidebar TOC link
       const id = chap.id;
-      if (id && id !== 'cheatsheet' && id !== 'calc-tools' && !['drugs','equations','abbr','refs','c_alarms'].includes(id)) {
+      if (id && id !== 'cheatsheet' && id !== 'calc-tools' && id !== 'book-index' && !['drugs','equations','abbr','refs','c_alarms'].includes(id)) {
         realChapters += 1;
         const minutes = Math.max(1, Math.round(words / 220));
         const tocLink = document.querySelector('nav.toc a[href="#' + id + '"]');
@@ -17981,8 +18098,8 @@ saveInputs();
       searchResult.textContent = '';
       return;
     }
-    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(escaped, 'gi');
+    const __terms = (window.__ventExpand ? window.__ventExpand(query) : [query]).map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const regex = new RegExp('(' + __terms.join('|') + ')', 'gi');
     searchHits = highlightInNode(document.querySelector('main'), regex);
     if (searchHits.length) {
       activeHitIdx = 0;
@@ -18275,6 +18392,11 @@ saveInputs();
           chapCount: 0
         });
       }
+      [
+        {id:'book-index', label:'◆ Index', title:'Index of tools & tables', sum:'Every interactive tool and all captioned tables, linked in one place — generated automatically from the book.'},
+        {id:'bedside-now', label:'⚡ Bedside', title:'Bedside-Now', sum:'A triage index over the chapters, organized by what is happening to the patient — find the alarm, symptom, or situation and jump to the chapter that solves it.'},
+        {id:'calc-tools', label:'∑ Tools', title:'Bedside calculator', sum:'Threshold-coded calculators — ARDSnet PEEP/FiO₂ ladder, dead space, oxygen delivery, and transpulmonary pressure, with saveable snapshots.'}
+      ].forEach(function(o){ if (document.getElementById(o.id)) cards.push({ partId:o.id, label:o.label, title:o.title, sum:o.sum, chapCount:0, jump:true }); });
       parts.forEach(p => {
         cards.push({
           partId: p.id,
@@ -18288,6 +18410,7 @@ saveInputs();
         let meta;
         if (c.isAll) meta = `<span class="lib-card-chip">${c.chapCount} chapters · ${numberedParts.length} Parts</span>`;
         else if (c.partId === 'cheatsheet') meta = '<span class="lib-card-chip">always available</span>';
+        else if (c.jump) meta = '<span class="lib-card-chip">jump to section</span>';
         else meta = `<span class="lib-card-chip">${c.chapCount} chapter${c.chapCount === 1 ? '' : 's'}</span>`;
         if (c.isAll) {
           return `<a class="lib-card lib-card-all" href="#" data-part-id="__all__">
@@ -18299,7 +18422,7 @@ saveInputs();
             <span class="lib-card-meta">${meta}</span>
           </a>`;
         }
-        return `<a class="lib-card" href="#${c.partId}" data-part-id="${c.partId}">
+        return `<a class="lib-card" href="#${c.partId}" data-part-id="${c.partId}"${c.jump ? ' data-jump="1"' : ''}>
           <span class="lib-card-pno">${c.label}</span>
           <span class="lib-card-title">${c.title}</span>
           <span class="lib-card-sum">${c.sum}</span>
@@ -18448,6 +18571,12 @@ saveInputs();
         e.preventDefault();
         const partId = card.dataset.partId;
         closeLibrary();
+        if (card.dataset.jump === '1') {
+          const jt = document.getElementById(partId);
+          setFocus(null);
+          if (jt) jt.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
         if (partId === '__all__') {
           setFocus(null);
           // Clear hash so subsequent reloads show the Library again
@@ -19077,7 +19206,7 @@ document.addEventListener('click', function (e) {
       <span class="more-offline-txt"><b id="more-offline-title">Save for offline use</b><span id="more-offline-sub">Cache the simulators so they work without signal</span></span>
     </button>
     <div class="more-foot">
-      <button type="button" id="more-about">Disclaimer · <b>v1.0 · June 2026</b></button>
+      <button type="button" id="more-about">Disclaimer · <b>v1.0 · July 2026</b></button>
     </div>
   </div>
 </div>
@@ -19553,6 +19682,251 @@ document.addEventListener('click', function (e) {
       navigator.serviceWorker.register('sw.js').catch(function () {});
     });
   }
+</script>
+
+<style id="tables-polish-css">
+main table{font-variant-numeric:tabular-nums lining;}
+main table > thead > tr > th{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
+.nbr{white-space:nowrap;}
+</style>
+<script id="tables-nowrap-js">
+(function(){try{
+  var cells=document.querySelectorAll('main table td, main table th');
+  var re=/\d+\s?[\u2012\u2013\u2014-]\s?\d+%?/g;   // numeric ranges only
+  cells.forEach(function(cell){
+    var walker=document.createTreeWalker(cell,NodeFilter.SHOW_TEXT,null);
+    var nodes=[],n; while(n=walker.nextNode()) nodes.push(n);
+    nodes.forEach(function(t){
+      var str=t.nodeValue; re.lastIndex=0;
+      if(!re.test(str)) return; re.lastIndex=0;
+      var frag=document.createDocumentFragment(),last=0,m;
+      while((m=re.exec(str))){
+        if(m.index>last) frag.appendChild(document.createTextNode(str.slice(last,m.index)));
+        var sp=document.createElement('span'); sp.className='nbr'; sp.textContent=m[0];
+        frag.appendChild(sp); last=m.index+m[0].length;
+      }
+      if(last<str.length) frag.appendChild(document.createTextNode(str.slice(last)));
+      t.parentNode.replaceChild(frag,t);
+    });
+  });
+}catch(e){console.error('[table nowrap]',e);}})();
+</script>
+<script id="book-index-js">
+(function(){try{
+  var tools=document.getElementById('bi-tools'),
+      tablesWrap=document.getElementById('bi-tables'),
+      summary=document.getElementById('bi-summary');
+  if(!tools||!tablesWrap) return;
+
+  function glyph(src){src=(src||'').toLowerCase();
+    if(src.indexOf('capno')>-1)return'\u2293';
+    if(src.indexOf('waveform')>-1)return'\u223F';
+    if(src.indexOf('dyssynchrony')>-1||src.indexOf('identifier')>-1)return'\u21CC';
+    if(src.indexOf('alveolar')>-1||src.indexOf('gas')>-1)return'\u2211';
+    return'\u25C6';}
+
+  // ---------- interactive tools ----------
+  var toolCount=0;
+  Array.prototype.forEach.call(document.querySelectorAll('main iframe[data-src], main iframe[src]'),function(f){
+    var title=(f.getAttribute('title')||'').trim(); if(!title) return;
+    var src=f.getAttribute('data-src')||f.getAttribute('src')||'';
+    var seg=title.split(/\s+[\u2014\u2013-]\s+/);
+    var name=seg.shift().trim(), desc=seg.join(' \u2014 ').trim();
+    var anchorEl=f.id?f:f.closest('[id]');
+    var href=anchorEl?('#'+anchorEl.id):'#';
+    var a=document.createElement('a'); a.className='bi-tool'; a.href=href;
+    var mk=document.createElement('span'); mk.className='tmark'; mk.textContent=glyph(src);
+    var bd=document.createElement('span'); bd.className='tbody';
+    var nm=document.createElement('span'); nm.className='tname'; nm.textContent=name;
+    var ds=document.createElement('span'); ds.className='tdesc'; ds.textContent=desc||'Interactive tool';
+    bd.appendChild(nm); bd.appendChild(ds);
+    var go=document.createElement('span'); go.className='tgo'; go.textContent='\u2192';
+    a.appendChild(mk); a.appendChild(bd); a.appendChild(go);
+    tools.appendChild(a); toolCount++;
+  });
+
+  // ---------- tables grouped by chapter (document order) ----------
+  function chapInfo(sec){
+    if(!sec) return {key:'front',label:'Quick reference'};
+    var h=sec.querySelector(':scope > h3');
+    if(!h) return {key:sec.id||'front',label:'Quick reference'};
+    var clone=h.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('.num, svg'),function(e){e.remove();});
+    var num=(h.querySelector('.num')?h.querySelector('.num').textContent:'').trim();
+    var title=(clone.textContent||'').trim().replace(/\s+/g,' ').split(/\s+[\u2014\u2013]\s+/)[0].trim();
+    var label=/^\d+$/.test(num)?('Ch '+num+' \u00B7 '+title):title;
+    return {key:sec.id||label,label:label};
+  }
+  var order=[],groups={},tblCount=0,idc=0;
+  Array.prototype.forEach.call(document.querySelectorAll('main table > caption'),function(cap){
+    var table=cap.closest('table'); if(!table) return;
+    var txt=(cap.textContent||'').trim(); if(!txt) return;
+    if(!table.id) table.id='bi-tbl-'+(++idc);
+    var sec=table.closest('section.chap')||table.closest('section[id]');
+    var info=chapInfo(sec);
+    if(!groups[info.key]){groups[info.key]={label:info.label,items:[]}; order.push(info.key);}
+    groups[info.key].items.push({txt:txt,id:table.id}); tblCount++;
+  });
+  order.forEach(function(k){
+    var g=groups[k];
+    var grp=document.createElement('div'); grp.className='bi-grp';
+    var h4=document.createElement('h4'); h4.textContent=g.label; grp.appendChild(h4);
+    var ul=document.createElement('ul');
+    g.items.forEach(function(it){
+      var li=document.createElement('li');
+      var a=document.createElement('a'); a.href='#'+it.id; a.textContent=it.txt;
+      li.appendChild(a); ul.appendChild(li);
+    });
+    grp.appendChild(ul); tablesWrap.appendChild(grp);
+  });
+
+  if(summary) summary.textContent=toolCount+' interactive tools \u00B7 '+tblCount+' tables across '+order.length+' sections \u00B7 generated automatically';
+}catch(e){console.error('[book-index]',e);}})();
+</script>
+<style id="print-polish">
+@media print {
+  /* --- Title page from the masthead --- */
+  header.hero { page-break-after: always; border-bottom: none !important; padding: 1.6in 0 0 !important; }
+  header.hero .mh-title { font-size: 32pt !important; color: #0b1f3a !important; }
+  header.hero .mh-subtitle { font-size: 14pt !important; }
+  header.hero .mh-positioning { font-size: 11pt !important; margin-top: 18pt !important; max-width: none !important; }
+  header.hero .mh-cred { margin-top: 1.3in !important; }
+  header.hero .mh-cred-v { font-size: 10pt !important; }
+  header.hero .mh-cite { margin-top: 14pt !important; }
+
+  /* --- Each numbered chapter starts on a fresh page --- */
+  section.chap[data-part] { page-break-before: always; }
+
+  /* --- Repeating table headers + tidy break behaviour --- */
+  thead { display: table-header-group; }
+  tr, img, .eq { page-break-inside: avoid; }
+
+  /* --- Widow / orphan control on running prose --- */
+  p, li, blockquote { orphans: 3; widows: 3; }
+
+  /* --- Interactive simulators: collapse the blank iframe box, leave a note --- */
+  iframe { display: none !important; }
+  div:has(> iframe) {
+    height: auto !important; min-height: 0 !important;
+    background: transparent !important;
+    border: 1px dashed #bbb !important; border-radius: 4px !important;
+    padding: 16pt !important;
+  }
+  div:has(> iframe)::after {
+    content: "Interactive tool \2014 available in the digital edition.";
+    display: block; text-align: center; font-style: italic; color: #555; font-size: 9.5pt;
+  }
+
+  /* --- The digital navigation index has no place on paper --- */
+  #book-index { display: none !important; }
+}
+</style>
+<style id="resume-css">
+.mv-resume{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:26px;z-index:940;
+  background:var(--surface);border:1px solid var(--rule);border-radius:999px;box-shadow:0 6px 24px rgba(11,31,58,.18);
+  display:none;align-items:center;gap:2px;padding:6px 6px 6px 8px;font-family:var(--font-sans);opacity:0;transition:opacity .25s,transform .25s;}
+.mv-resume.show{display:flex;opacity:1;transform:translateX(-50%) translateY(0);}
+.mv-resume .go{display:flex;align-items:center;gap:9px;background:transparent;border:0;cursor:pointer;padding:6px 8px;border-radius:999px;color:var(--ink);font-family:inherit;}
+.mv-resume .go:hover{background:var(--accent-soft);}
+.mv-resume .ic{width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;}
+.mv-resume .txt{text-align:left;line-height:1.2;}
+.mv-resume .k{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.mv-resume .v{display:block;font-size:13.5px;font-weight:600;color:var(--ink);max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.mv-resume .arrow{color:var(--muted);font-size:15px;padding-right:4px;}
+.mv-resume .x{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;width:28px;height:28px;border-radius:50%;flex:none;}
+.mv-resume .x:hover{background:var(--rule);color:var(--ink);}
+@media print{.mv-resume{display:none!important;}}
+</style>
+<script id="resume-js">
+/* ===== Resume reading position ===== */
+(function(){
+  try {
+    var KEY = 'mv-reading-pos-v1';
+    var secs = Array.prototype.slice.call(document.querySelectorAll('main section.chap[id]'));
+    if (!secs.length) return;
+
+    function chapTitle(sec){
+      var h = sec.querySelector(':scope > h3'); if(!h) return sec.id;
+      var c = h.cloneNode(true);
+      Array.prototype.forEach.call(c.querySelectorAll('.num, svg, button, .anchor-link'), function(e){ e.remove(); });
+      var num = (h.querySelector('.num') ? h.querySelector('.num').textContent : '').trim();
+      var title = (c.textContent || '').replace(/Print this chapter/g,'').trim().replace(/\s+/g,' ');
+      return (/^\d+$/.test(num) ? num + ' · ' : '') + title;
+    }
+
+    function currentSec(){
+      var best = null, thr = 90;
+      for (var i=0;i<secs.length;i++){
+        var r = secs[i].getBoundingClientRect();
+        if (r.top <= thr) best = secs[i]; else break;
+      }
+      return best;
+    }
+
+    // --- save position while reading (debounced) ---
+    var t;
+    window.addEventListener('scroll', function(){
+      clearTimeout(t);
+      t = setTimeout(function(){
+        if (window.scrollY < 300) return;            // too near the top to be worth saving
+        var sec = currentSec(); if (!sec || !sec.id) return;
+        if (sec.id === 'book-index') return;          // transient nav index
+        try { localStorage.setItem(KEY, JSON.stringify({ id: sec.id, ts: Date.now() })); } catch(e){}
+      }, 400);
+    }, { passive: true });
+
+    // --- build the pill ---
+    var pill = document.createElement('div');
+    pill.className = 'mv-resume';
+    pill.setAttribute('role','status');
+    pill.innerHTML =
+      '<button class="go" type="button"><span class="ic">↧</span>'+
+      '<span class="txt"><span class="k">Resume where you left off</span><span class="v"></span></span>'+
+      '<span class="arrow">→</span></button>'+
+      '<button class="x" type="button" aria-label="Dismiss">×</button>';
+    document.body.appendChild(pill);
+    var pillV = pill.querySelector('.v');
+    var goBtn = pill.querySelector('.go');
+    var xBtn  = pill.querySelector('.x');
+
+    function hide(){ pill.classList.remove('show'); }
+    xBtn.addEventListener('click', hide);
+
+    // --- offer resume on load (after the Library, respecting deep links) ---
+    window.addEventListener('load', function(){ setTimeout(init, 350); });
+
+    function init(){
+      try {
+        var raw = localStorage.getItem(KEY); if (!raw) return;
+        var pos; try { pos = JSON.parse(raw); } catch(e){ return; }
+        if (!pos || !pos.id) return;
+        // a shared deep-link always wins
+        var h = (location.hash || '').replace(/^#/, '');
+        if (h && document.getElementById(h)) return;
+        var target = document.getElementById(pos.id); if (!target) return;
+        // don't offer to resume the very first chapter
+        if (secs.length && target === secs[0]) return;
+
+        goBtn.addEventListener('click', function(){
+          hide();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        pillV.textContent = chapTitle(target);
+
+        var lib = document.getElementById('lib-overlay');
+        function reveal(){ pill.classList.add('show'); }
+        if (lib && lib.classList.contains('show')) {
+          var mo = new MutationObserver(function(){
+            if (!lib.classList.contains('show')) { mo.disconnect(); setTimeout(reveal, 300); }
+          });
+          mo.observe(lib, { attributes: true, attributeFilter: ['class'] });
+        } else {
+          reveal();
+        }
+      } catch(e){ console.error('[resume:init]', e); }
+    }
+  } catch(e){ console.error('[resume]', e); }
+})();
 </script>
 
 </body>
