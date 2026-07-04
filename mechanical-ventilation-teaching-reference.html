@@ -2967,6 +2967,12 @@ window.softJump = function (el) {
       if (collSec.id) { try { localStorage.setItem('mv-collapsed-' + collSec.id, '0'); } catch (_) {} }
     }
   } catch (e) {}
+  // Open every closed <details> ancestor of the target (chap-acc, cheat-acc, or nested),
+  // so a link landing inside any accordion reveals its target before we measure the jump.
+  try {
+    var dAnc = el.closest ? el.closest('details') : null;
+    while (dAnc) { if (!dAnc.open) dAnc.open = true; dAnc = dAnc.parentElement && dAnc.parentElement.closest('details'); }
+  } catch (e) {}
   // On mobile, content-visibility:auto gives off-screen chapters only an
   // ESTIMATED height, so a normal jump lands in the wrong place. Briefly force
   // the target chapter and everything ABOVE it to render real layout, do ONE
@@ -3589,19 +3595,8 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         <summary>★ Decision algorithm 4: Refractory hypoxemia in ARDS — the rescue ladder</summary>
         <div class="cheat-body">
 
-  <table>
-    <caption>Stepwise rescue when ARDSnet basics aren’t enough</caption>
-    <thead><tr><th>Step</th><th>Threshold to escalate</th><th>Action</th></tr></thead>
-    <tbody>
-      <tr><td>1</td><td>Any worsening</td><td>Re-confirm basics: VT 6, Pplat &lt; 30, ΔP ≤ 15, RR matched, sedation adequate, no PTX/mucus plug</td></tr>
-      <tr><td>2</td><td>Visible asynchrony / P-SILI risk</td><td>Deepen sedation; trial NMB bolus to assess</td></tr>
-      <tr><td>3</td><td>P/F 100–200, recruitable</td><td>PEEP titration (high-PEEP table, decremental, or esophageal-guided)</td></tr>
-      <tr><td>4</td><td>P/F &lt; 150 on FiO₂ ≥ 0.6, PEEP ≥ 5</td><td>Prone ≥ 16 h/day (PROSEVA criteria)</td></tr>
-      <tr><td>5</td><td>Persistent dys-synchrony or ΔP &gt; 15 despite sedation</td><td>NMB infusion (cisatracurium) × 48 h</td></tr>
-      <tr><td>6</td><td>P/F &lt; 100 refractory or RV dysfunction</td><td>Inhaled NO 5–20 ppm or epoprostenol; bridge only</td></tr>
-      <tr><td>7</td><td>P/F &lt; 80 sustained, or pH &lt; 7.20 with PaCO₂ &gt; 60 despite max vent</td><td>VV-ECMO consult (transfer early)</td></tr>
-    </tbody>
-  </table>
+  <p>Escalate <b>one rung at a time</b>, re-evaluating for 2–4 h before adding the next: <b>1</b> re-confirm basics (VT 6, Pplat &lt; 30, ΔP ≤ 15; rule out PTX / mucus plug) → <b>2</b> deepen sedation ± NMB bolus → <b>3</b> PEEP titration if recruitable (P/F 100–200) → <b>4</b> prone ≥ 16 h/day (P/F &lt; 150 on FiO₂ ≥ 0.6, PEEP ≥ 5) → <b>5</b> NMB infusion × 48 h → <b>6</b> inhaled pulmonary vasodilator as a bridge (P/F &lt; 100 or RV dysfunction) → <b>7</b> VV-ECMO consult (P/F &lt; 80, or pH &lt; 7.20 / PaCO₂ &gt; 60 despite max vent — transfer early).</p>
+  <p>Full ladder — exact thresholds, drug doses, and evidence — in <a class="xref" href="#c20-4" data-xref-chap="20">§20.4, the Owens-style ARDS rescue ladder</a>.</p>
   <div class="pearl"><strong>The discipline of one-step-at-a-time</strong>Each rung is a discrete decision. After moving up, wait 2–4 h. If the step doesn’t help, undo it before adding the next — otherwise you can’t tell what’s working.</div>
         </div>
       </details>
