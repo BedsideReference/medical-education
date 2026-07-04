@@ -820,17 +820,24 @@
       var embedded = false;
       try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
       if (embedded) {
-        /* Don't stretch to the iframe's viewport — let true content height drive the frame. */
+        /* Don't stretch to the iframe's viewport, and never show our own scrollbar —
+           a scrollbar reflows the content and starts a grow/shrink bounce in the frame. */
         document.documentElement.style.minHeight = '0';
         document.body.style.minHeight = '0';
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
       }
+      var last = 0;
       function contentHeight(){
         var shell = document.querySelector('.app-shell');
         var h = shell ? shell.getBoundingClientRect().bottom + window.scrollY : document.body.scrollHeight;
         return Math.ceil(h);
       }
       function postHeight(){
-        try { parent.postMessage({ type: 'abg-sim-height', height: contentHeight() }, '*'); } catch (e) {}
+        var h = contentHeight();
+        if (Math.abs(h - last) < 2) return;   /* ignore sub-pixel churn */
+        last = h;
+        try { parent.postMessage({ type: 'abg-sim-height', height: h }, '*'); } catch (e) {}
       }
       window.addEventListener('load', function(){ postHeight(); setTimeout(postHeight, 150); });
       window.addEventListener('resize', postHeight);
