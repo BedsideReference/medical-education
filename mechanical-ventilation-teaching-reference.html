@@ -5056,19 +5056,19 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure interactive-fig" id="if-abg">
     <div class="if-controls">
       <div class="if-control">
-        <label>FiO₂: <span class="if-val" id="ifabg-fio2v">0.21</span></label>
+        <label>FiO₂ <span class="if-val" id="ifabg-fio2v">0.21</span></label>
         <input type="range" min="0.21" max="1.0" step="0.01" value="0.21" id="ifabg-fio2"/>
       </div>
       <div class="if-control">
-        <label>PaCO₂: <span class="if-val" id="ifabg-paco2v">40 mmHg</span></label>
+        <label>PaCO₂ <span class="if-val" id="ifabg-paco2v">40 mmHg</span></label>
         <input type="range" min="15" max="90" step="1" value="40" id="ifabg-paco2"/>
       </div>
       <div class="if-control">
-        <label>PaO₂: <span class="if-val" id="ifabg-pao2v">95 mmHg</span></label>
+        <label>PaO₂ <span class="if-val" id="ifabg-pao2v">95 mmHg</span></label>
         <input type="range" min="30" max="500" step="1" value="95" id="ifabg-pao2"/>
       </div>
       <div class="if-control">
-        <label>Hemoglobin: <span class="if-val" id="ifabg-hbv">14.0 g/dL</span></label>
+        <label>Hemoglobin <span class="if-val" id="ifabg-hbv">14.0 g/dL</span></label>
         <input type="range" min="4" max="18" step="0.1" value="14" id="ifabg-hb"/>
       </div>
     </div>
@@ -5100,10 +5100,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         <text x="56" y="264" text-anchor="end" font-size="10">0%</text>
         <line id="ifabg-cliff" x1="372" y1="20" x2="372" y2="260" stroke="#cbd5e1" stroke-width="0.5" stroke-dasharray="2,3"/>
         <text x="372" y="14" text-anchor="middle" font-size="10" fill="#94a3b8" font-style="italic">edge of cliff (PaO₂ 60)</text>
-        <path id="ifabg-curve" d="" stroke="#1f5f99" stroke-width="2.4" fill="rgba(24,95,165,0.10)"/>
-        <line id="ifabg-hline" x1="60" y1="0" x2="0" y2="0" stroke="#c4452f" stroke-width="0.8" stroke-dasharray="2,3"/>
-        <line id="ifabg-vline" x1="0" y1="260" x2="0" y2="0" stroke="#c4452f" stroke-width="0.8" stroke-dasharray="2,3"/>
-        <circle id="ifabg-marker" cx="0" cy="0" r="6" fill="#c4452f"/>
+        <path id="ifabg-curve" d=""/>
+        <line id="ifabg-hline" x1="60" y1="0" x2="0" y2="0" stroke-width="0.9" stroke-dasharray="2,3"/>
+        <line id="ifabg-vline" x1="0" y1="260" x2="0" y2="0" stroke-width="0.9" stroke-dasharray="2,3"/>
+        <circle id="ifabg-marker" cx="0" cy="0" r="6"/>
         <g id="ifabg-xticks"></g>
       </g>
     </svg>
@@ -5171,16 +5171,16 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         els.paalv.textContent = Math.round(pAlv);
         var aa = pAlv - po;
         els.aa.textContent = Math.round(aa);
-        if (aa < 15) { els.aastatus.textContent = 'normal'; els.aastatus.style.color = '#166534'; }
-        else if (aa < 30) { els.aastatus.textContent = 'mild'; els.aastatus.style.color = '#854F0B'; }
-        else { els.aastatus.textContent = 'wide'; els.aastatus.style.color = '#991b1b'; }
+        if (aa < 15) { els.aastatus.textContent = 'normal'; els.aastatus.style.color = 'var(--good)'; }
+        else if (aa < 30) { els.aastatus.textContent = 'mild'; els.aastatus.style.color = 'var(--warn)'; }
+        else { els.aastatus.textContent = 'wide'; els.aastatus.style.color = 'var(--danger)'; }
 
         var pf = po / f;
         els.pf.textContent = Math.round(pf);
-        if (pf > 300) { els.pfstatus.textContent = 'normal'; els.pfstatus.style.color = '#166534'; }
-        else if (pf > 200) { els.pfstatus.textContent = 'mild ARDS'; els.pfstatus.style.color = '#854F0B'; }
-        else if (pf > 100) { els.pfstatus.textContent = 'moderate ARDS'; els.pfstatus.style.color = '#991b1b'; }
-        else { els.pfstatus.textContent = 'severe ARDS'; els.pfstatus.style.color = '#991b1b'; }
+        if (pf > 300) { els.pfstatus.textContent = 'normal'; els.pfstatus.style.color = 'var(--good)'; }
+        else if (pf > 200) { els.pfstatus.textContent = 'mild ARDS'; els.pfstatus.style.color = 'var(--warn)'; }
+        else if (pf > 100) { els.pfstatus.textContent = 'moderate ARDS'; els.pfstatus.style.color = 'var(--danger)'; }
+        else { els.pfstatus.textContent = 'severe ARDS'; els.pfstatus.style.color = 'var(--danger)'; }
 
         var sao2 = pao2ToSao2(po);
         els.sao2.textContent = sao2.toFixed(1) + '%';
@@ -6317,6 +6317,14 @@ header.hero .mh-cite b{color:var(--ink-soft);}
           try {
             var doc = iframe.contentDocument || (iframe.contentWindow && iframe.contentWindow.document);
             if (!doc) return false;
+            // Same-origin: kill the simulator's own scrollbar (the source of the grow/shrink
+            // bounce) and stop it stretching to the frame — works even if the deployed sim is stale.
+            try {
+              doc.documentElement.style.overflow = 'hidden';
+              doc.body.style.overflow = 'hidden';
+              doc.documentElement.style.minHeight = '0';
+              doc.body.style.minHeight = '0';
+            } catch (e2) {}
             var el = doc.querySelector('.app-shell') || doc.body;
             if (!el) return false;
             var h = el.getBoundingClientRect().height + 4;
@@ -6866,6 +6874,26 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       .if-presets button { font-size: 11.5px; padding: 4px 10px; border: 1px solid #cbd5e1; background: #fff; border-radius: 12px; cursor: pointer; color: #475569; }
       .if-presets button:hover { background: #f1f5f9; border-color: #94a3b8; }
       .if-chart { width: 100%; height: auto; max-height: 280px; }
+      /* ---- Figure 3.4 (#if-abg): book-native polish, scoped so sibling interactive figures are untouched ---- */
+      #if-abg { padding: 18px 18px 16px; }
+      #if-abg .if-controls { gap: 14px 22px; margin-bottom: 14px; }
+      #if-abg .if-control label { display:flex; justify-content:space-between; align-items:baseline; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:7px; }
+      #if-abg .if-control .if-val { font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--accent); letter-spacing:0; text-transform:none; font-variant-numeric:tabular-nums; margin-left:0; }
+      #if-abg .if-control input[type="range"] { -webkit-appearance:none; appearance:none; height:5px; background:var(--rule); border-radius:3px; outline:none; cursor:pointer; }
+      #if-abg .if-control input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:16px; height:16px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); box-shadow:0 1px 3px rgba(15,23,42,.25); cursor:pointer; }
+      #if-abg .if-control input[type="range"]::-moz-range-thumb { width:16px; height:16px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); cursor:pointer; }
+      #if-abg .if-presets button { font-family:var(--font-sans); font-size:11.5px; font-weight:600; padding:5px 12px; border:1px solid var(--rule); background:var(--surface); border-radius:999px; color:var(--ink-soft); transition:.15s ease; }
+      #if-abg .if-presets button:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+      #if-abg .if-stats { gap:9px; }
+      #if-abg .if-stat { background:var(--bg); border:1px solid var(--rule); border-radius:8px; padding:9px 11px; }
+      #if-abg .if-stat .if-stat-label { font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+      #if-abg .if-stat .if-stat-val { font-family:var(--font-mono); font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; margin-top:2px; line-height:1.1; }
+      #if-abg .if-stat .if-stat-sub { font-size:10.5px; color:var(--muted); margin-top:1px; }
+      #if-abg .if-chart #ifabg-curve { stroke:var(--accent); stroke-width:2.6; fill:var(--accent-soft); }
+      #if-abg .if-chart #ifabg-marker { fill:var(--danger); }
+      #if-abg .if-chart #ifabg-hline, #if-abg .if-chart #ifabg-vline { stroke:var(--danger); }
+      /* keep 3.4's chart on the dark surface (not white-carded) so token colors read in dark mode */
+      html[data-theme="dark"] #if-abg svg.if-chart { background: transparent; padding: 0; border: 0; }
     </style>
     <div class="if-controls">
       <div class="if-control">
