@@ -3178,19 +3178,49 @@ document.addEventListener('click', function (e) {
 
 <div class="layout">
 
+<style id="masthead-css">
+:root{ --title-ink:#0b1f3a; --imprint:#0b1f3a; }
+html[data-theme="dark"]{ --title-ink:var(--ink); --imprint:#1b2a44; }
+header.hero .mh-imprint{display:flex;align-items:center;gap:10px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--rule);}
+header.hero .mh-mark{width:26px;height:26px;border-radius:6px;background:var(--imprint);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-weight:700;font-size:15px;flex:none;}
+header.hero .mh-imprint-name{font-family:var(--font-sans);font-weight:700;font-size:13px;letter-spacing:.02em;color:var(--ink);line-height:1.2;}
+header.hero .mh-imprint-sub{font-family:var(--font-sans);font-size:12px;color:var(--muted);letter-spacing:.04em;}
+header.hero .mh-imprint-right{margin-left:auto;font-family:var(--font-sans);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;}
+header.hero .mh-kicker{font-family:var(--font-sans);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px;}
+header.hero h1.mh-title{font-family:var(--font-serif);font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.05;letter-spacing:-.02em;color:var(--title-ink);margin:0;padding:0;background-image:none;}
+header.hero .mh-subtitle{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:clamp(17px,2.6vw,21px);line-height:1.3;color:var(--ink-soft);margin:12px 0 0;max-width:36ch;text-wrap:balance;}
+header.hero .mh-rule{height:3px;width:64px;background:var(--accent);border-radius:2px;margin:20px 0 18px;}
+header.hero .mh-positioning{font-family:var(--font-serif);font-size:16px;line-height:1.55;color:var(--ink);margin:0 0 22px;}
+header.hero .mh-cred{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--rule);border-radius:8px;overflow:hidden;}
+header.hero .mh-cred > div{padding:11px 15px;border-right:1px solid var(--rule);}
+header.hero .mh-cred > div:last-child{border-right:0;}
+header.hero .mh-cred-k{font-family:var(--font-sans);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:3px;}
+header.hero .mh-cred-v{font-family:var(--font-sans);font-size:14px;color:var(--ink);font-weight:600;letter-spacing:-.005em;line-height:1.25;}
+header.hero .mh-cred-v small{display:block;font-weight:400;font-size:11.5px;color:var(--muted);margin-top:2px;letter-spacing:0;}
+header.hero .mh-cite{font-family:var(--font-sans);margin-top:14px;font-size:12px;color:var(--muted);border-left:2px solid var(--rule);padding-left:12px;line-height:1.5;}
+header.hero .mh-cite b{color:var(--ink-soft);}
+@media (max-width:620px){ header.hero .mh-cred{grid-template-columns:repeat(2,minmax(0,1fr));} header.hero .mh-cred > div:nth-child(2){border-right:0;} header.hero .mh-cred > div:nth-child(1),header.hero .mh-cred > div:nth-child(2){border-bottom:1px solid var(--rule);} }
+</style>
 <header class="hero">
-  <div class="eyebrow">Bedside Reference · Critical Care</div>
-  <h1>Guide to Ventilation</h1>
-  <p class="lede">Mechanical ventilation as a teaching reference, written for the people learning to manage vented patients — from the <strong>medical student</strong> on their first ICU rotation to the <strong>IM resident</strong> covering nights, the <strong>hospitalist</strong> running a stepdown, the <strong>PCCM fellow</strong> building toward independent ICU practice, and other <strong>healthcare trainees and practitioners</strong> who need a working knowledge of the vent. Physiology-first and decision-driven: the framework to walk up to a ventilator, read the screen, and pick the next change without guessing. Coverage spans physiology, mode mechanics, waveforms, disease-specific strategy, advanced concepts (driving pressure, transpulmonary pressure, mechanical power, prone, ECMO), and liberation, ending in bedside troubleshooting and cases.</p>
-  <div class="meta">Vol. I · Compiled May 2026 · Last reviewed June 2026 · Reflects ATS / ESICM / SCCM ARDS practice guideline 2024 and the Global Definition of ARDS 2024</div>
-  <div class="hero-stats" id="hero-stats">
-    <div class="stat"><span class="stat-num" id="hs-chapters">—</span><span class="stat-lbl">chapters</span></div>
-    <div class="stat"><span class="stat-num" id="hs-parts">—</span><span class="stat-lbl">parts</span></div>
-    <div class="stat"><span class="stat-num" id="hs-readtime">—</span><span class="stat-lbl">read time</span></div>
-    <div class="stat"><span class="stat-num">June 2026</span><span class="stat-lbl">last reviewed</span></div>
-    <div class="stat"><span class="stat-num" id="hs-equations">—</span><span class="stat-lbl">equations</span></div>
-    <div class="stat"><span class="stat-num" id="hs-figures">—</span><span class="stat-lbl">figures</span></div>
+  <div class="mh-imprint">
+    <div class="mh-mark">B</div>
+    <div>
+      <div class="mh-imprint-name">Bedside Reference</div>
+      <div class="mh-imprint-sub">Critical Care · Volume I</div>
+    </div>
+    <div class="mh-imprint-right">Teaching Reference</div>
   </div>
+  <h1 class="mh-title">Guide to Ventilation</h1>
+  <p class="mh-subtitle">From first principles to the next setting change &mdash; the physiology behind every decision at the ventilator.</p>
+  <div class="mh-rule"></div>
+  <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
+  <div class="mh-cred">
+    <div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I<small>Compiled May 2026</small></div></div>
+    <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Jun 2026<small>ARDS Global Def. 2024</small></div></div>
+    <div><div class="mh-cred-k">Guidelines</div><div class="mh-cred-v">ATS / ESICM / SCCM<small>2024 ARDS practice guideline</small></div></div>
+    <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">44</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology &rarr; liberation</small></div></div>
+  </div>
+  <div class="mh-cite"><b>How to cite &mdash;</b> Bedside Reference. <em>Guide to Ventilation</em>, Vol. I. May 2026 (reviewed Jun 2026).</div>
 </header>
 
 <section class="front-matter" aria-label="Reading guidance and disclaimer">
