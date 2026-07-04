@@ -2967,6 +2967,16 @@ window.softJump = function (el) {
       if (collSec.id) { try { localStorage.setItem('mv-collapsed-' + collSec.id, '0'); } catch (_) {} }
     }
   } catch (e) {}
+  // If the target sits in an inactive cheatsheet tab panel (hidden), switch to that tab
+  // by reusing the tab button's own handler, so the panel is shown before we measure.
+  try {
+    var ctp = el.closest ? el.closest('.cheat-tab-panel') : null;
+    if (ctp && ctp.dataset && ctp.dataset.tab && ctp.hidden) {
+      var ctb = document.querySelector('.cheat-tab-btn[data-tab="' + ctp.dataset.tab + '"]');
+      if (ctb) ctb.click();
+      else document.querySelectorAll('.cheat-tab-panel').forEach(function (p) { p.hidden = p.dataset.tab !== ctp.dataset.tab; });
+    }
+  } catch (e) {}
   // Open every closed <details> ancestor of the target (chap-acc, cheat-acc, or nested),
   // so a link landing inside any accordion reveals its target before we measure the jump.
   try {
