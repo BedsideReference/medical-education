@@ -6278,18 +6278,6 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   </ul>
   <p>In the ICU, the implications are practical: <strong>over-sedation suppresses central drive</strong> (RR drops, PaCO₂ rises, dyssynchrony with the vent appears as missed triggers); <strong>metabolic acidosis</strong> drives a tachypneic respiratory compensation that the vent must accommodate (high-rate alarm misuse causes auto-PEEP); <strong>chronic CO₂ retention</strong> resets central thresholds — overzealous correction back to normal PaCO₂ causes alkalosis-induced hypoventilation when sedated.</p>
   <div class="pearl"><strong>The chronic CO₂ retainer’s vent</strong>For a COPD patient with baseline PaCO₂ 60, target PaCO₂ at <em>their</em> baseline, not 40. Acute correction to 40 produces metabolic alkalosis, hypokalemia, weakness, and seizure risk (Owens, Hess).<sup class="cite"><a href="#r30">30</a></sup></div>
-  </details>
-<div class="takeaways">
-    <h5>Key takeaways</h5>
-    <ul>
-      <li>The five causes of hypoxemia: hypoventilation, low FiO₂, V/Q mismatch, shunt, diffusion impairment. Only shunt fails to correct on 100% O₂.</li>
-      <li>A–a gradient elevated → alveolar-capillary problem (V/Q, shunt, diffusion). A–a normal with hypoxemia → hypoventilation or low FiO₂.</li>
-      <li>Saturation × hemoglobin carries 98% of arterial O₂ content. Dissolved O₂ (0.003 × PaO₂) is trivial — don’t chase PaO₂ &gt; 80 with high FiO₂.</li>
-      <li>“Edge of the cliff”: SpO₂ 90% ≈ PaO₂ 60. Below this, small drops in PaO₂ cause big drops in saturation.</li>
-      <li>Bohr: high CO₂/H⁺/T → right-shifts oxy-Hb curve → unloads O₂ to tissues. Haldane: high O₂ → loads CO₂ off Hb in lungs. They are mirror effects of allosteric switching.</li>
-      <li>Three drives: central chemoreceptors (PaCO₂ — dominant), peripheral chemoreceptors (PaO₂ &lt; 60, chronic retention), stretch receptors. Don’t normalize PaCO₂ to 40 in a chronic retainer.</li>
-    </ul>
-  </div>
   <div class="figure">
     <svg class="anim-fig anim-vent-control" viewBox="0 0 780 580" role="img" aria-label="Schematic of the neural control of ventilation. The medullary respiratory centers in the brain stem receive inputs from central chemoreceptors (sensing CSF H⁺ derived from CO₂), the cerebral cortex (voluntary control), and the pontine respiratory centers, all inside the blood-brain barrier. From outside the blood-brain barrier, peripheral chemoreceptors in the carotid and aortic bodies (sensing low PaO₂, high PaCO₂, and H⁺) and pulmonary inputs (stretch, irritant, and J receptors) feed the medullary centers. Output drives lung movement through the phrenic and intercostal motor neurons." style="max-width:780px; width:100%; height:auto; display:block; margin:0 auto;">
       <defs>
@@ -6405,6 +6393,130 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       </g>
     </svg>
     <div class="cap"><b>Figure 4.4 — The neural control of ventilation.</b> The medullary respiratory centers are the central pattern generator. Inputs: (1) <strong>central chemoreceptors</strong> on the medullary surface sense CSF H⁺ (which tracks PaCO₂ via free CO₂ diffusion across the blood-brain barrier, then hydration to H₂CO₃ and dissociation) — dominant minute-to-minute drive in health; (2) <strong>peripheral chemoreceptors</strong> in the carotid and aortic bodies sense PaO₂, PaCO₂, and H⁺ — dominant when PaO₂ &lt; 60, in chronic CO₂ retention, and when central drive is depressed; (3) <strong>cerebral cortex</strong> for voluntary control; (4) <strong>pontine respiratory centers</strong> shape the rhythm; (5) <strong>pulmonary inputs</strong> — stretch, irritant, and J-receptors — provide reflexive feedback (Hering-Breuer, cough, J-reflex tachypnea in pulmonary edema). Output: phrenic and intercostal motor neurons → diaphragm and chest-wall muscles → lung movement.</div>
+  </div>
+  </details>
+  <details class="chap-acc" data-acc-id="c4-h4-5" open>
+    <summary>
+      <h4 id="c4-5">4.5 Reading the ABG — acid-base interpretation</h4>
+    </summary>
+
+  <p>Everything in this chapter converges on a single test. The PaCO₂ ∝ V̇CO₂ / V̇<sub>A</sub> relationship (<a class="xref" href="#c4-1" data-xref-chap="4">§4.1</a>) means the ventilator sets one of the two axes of acid-base balance directly: every change you make to minute ventilation moves PaCO₂, and PaCO₂ moves pH. The kidney owns the other axis — bicarbonate — and moves it over hours to days. Reading an arterial blood gas is nothing more than deciding, in order, which of those two levers is driving the pH and whether the other one has responded appropriately.</p>
+
+  <p>Read every gas the same way, in four steps. Skipping a step is how mixed disorders get missed.</p>
+
+  <ol>
+    <li><strong>Look at the pH.</strong> Acidemia is pH &lt; 7.35, alkalemia &gt; 7.45. This names the <em>net</em> disturbance only. A normal pH does <strong>not</strong> exclude a disorder — two opposing processes can cancel at the pH while both are severe (the salicylate patient, the vomiting-plus-sepsis patient).</li>
+    <li><strong>Find the primary process.</strong> Decide whether the PaCO₂ or the HCO₃⁻ is moving the pH in the direction it actually went. A high PaCO₂ acidifies (respiratory acidosis); a low HCO₃⁻ acidifies (metabolic acidosis); the mirror images alkalinize. The variable that "explains" the pH is the primary problem.</li>
+    <li><strong>Check the compensation.</strong> The body always compensates in the same direction but <em>never fully</em> corrects the pH. Calculate the expected compensation (table below) and compare it to what you measured. A value outside the expected window is a second, independent disorder — not "over-" or "under-compensation."</li>
+    <li><strong>Work the gaps.</strong> On any metabolic acidosis, calculate the anion gap, correct it for albumin, and — if the gap is high — run the delta ratio to unmask a concurrent normal-gap acidosis or metabolic alkalosis hiding behind a deceptively ordinary bicarbonate.</li>
+  </ol>
+
+  <table>
+    <caption>The four primary acid-base disorders</caption>
+    <thead><tr><th>Disorder</th><th>pH</th><th>Primary change</th><th>Compensatory response</th><th>Relevance on the vent</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Respiratory acidosis</strong></td><td>↓</td><td>↑ PaCO₂</td><td>↑ HCO₃⁻ (renal, slow)</td><td>You own it. Hypoventilation, dead space, or trapping — raise alveolar minute ventilation or fix the mechanics.</td></tr>
+      <tr><td><strong>Respiratory alkalosis</strong></td><td>↑</td><td>↓ PaCO₂</td><td>↓ HCO₃⁻ (renal, slow)</td><td>Over-ventilation, pain, sepsis, or the drive itself. Often iatrogenic on assist-control with a high spontaneous rate.</td></tr>
+      <tr><td><strong>Metabolic acidosis</strong></td><td>↓</td><td>↓ HCO₃⁻</td><td>↓ PaCO₂ (respiratory, fast)</td><td>The vent must <em>permit</em> the compensatory tachypnea. Match the patient's minute ventilation — do not clamp it down (see salicylate warning below).</td></tr>
+      <tr><td><strong>Metabolic alkalosis</strong></td><td>↑</td><td>↑ HCO₃⁻</td><td>↑ PaCO₂ (respiratory, limited)</td><td>Contraction, diuretics, NG losses, over-correction of a chronic retainer. Respiratory compensation plateaus — the lungs can only hypoventilate so far.</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>Compensation — the expected response.</strong> Compensation is predictable enough to calculate. For a <em>metabolic</em> problem the lungs respond within minutes, so there is one expected PaCO₂. For a <em>respiratory</em> problem the kidney responds over 2–5 days, so the expected bicarbonate depends on whether the disturbance is <strong>acute or chronic</strong> — and that single distinction changes the target. This is the same physiology behind the chronic CO₂ retainer whose vent you set to <em>their</em> baseline PaCO₂, not 40 (<a class="xref" href="#c4-4" data-xref-chap="4">§4.4</a>): their high bicarbonate is appropriate chronic compensation, and normalizing the PaCO₂ strands them in a metabolic alkalosis.</p>
+
+  <table>
+    <caption>Bedside compensation formulas and gap calculations</caption>
+    <thead><tr><th>Primary disorder</th><th>Expected compensation</th></tr></thead>
+    <tbody>
+      <tr><td>Metabolic acidosis</td><td>Expected PaCO₂ = 1.5 × HCO₃⁻ + 8 ± 2 &nbsp;(Winter's formula)</td></tr>
+      <tr><td>Metabolic alkalosis</td><td>Expected PaCO₂ = 40 + 0.7 × (HCO₃⁻ − 24) ± 2; respiratory compensation generally does not raise PaCO₂ beyond ~55 mmHg</td></tr>
+      <tr><td>Acute respiratory acidosis</td><td>HCO₃⁻ rises ~1 mEq/L per 10-mmHg rise in PaCO₂</td></tr>
+      <tr><td>Chronic respiratory acidosis</td><td>HCO₃⁻ rises ~3.5–4 mEq/L per 10-mmHg rise in PaCO₂</td></tr>
+      <tr><td>Acute respiratory alkalosis</td><td>HCO₃⁻ falls ~2 mEq/L per 10-mmHg fall in PaCO₂</td></tr>
+      <tr><td>Chronic respiratory alkalosis</td><td>HCO₃⁻ falls ~4–5 mEq/L per 10-mmHg fall in PaCO₂</td></tr>
+      <tr><td>Anion gap</td><td>AG = Na⁺ − (Cl⁻ + HCO₃⁻); corrected AG = AG + 2.5 × (4 − albumin g/dL)</td></tr>
+      <tr><td>Delta ratio</td><td>(corrected AG − 12) / (24 − HCO₃⁻). &lt; 1 suggests a concurrent normal-gap acidosis; &gt; 2 suggests a concurrent metabolic alkalosis</td></tr>
+      <tr><td>Internal consistency</td><td>Calculated pH = 6.1 + log₁₀ [ HCO₃⁻ / (0.03 × PaCO₂) ] — if it disagrees with the measured pH, suspect a lab or sampling error</td></tr>
+    </tbody>
+  </table>
+
+  <p>These slopes are common bedside approximations, not physiologic laws. Normal ranges and compensation coefficients vary modestly by source and laboratory method; treat a value that sits just outside a predicted window as a prompt to look harder, not as proof of a second disorder. The interactive tool below uses exactly these formulas, so the numbers it reports and the numbers in this table always agree.</p>
+
+  <p><strong>Anion gap and the delta ratio.</strong> The anion gap separates metabolic acidoses into those that add an unmeasured acid (high gap — lactate, ketones, toxins, uremia) and those that lose bicarbonate or gain chloride (normal gap — diarrhea, renal tubular acidosis, saline). Correct the gap for albumin first: each 1 g/dL fall in albumin drops the apparent gap by ~2.5 mEq/L, so a "normal" gap in a hypoalbuminemic ICU patient may actually be elevated. When the corrected gap <em>is</em> high, the delta ratio compares how far the gap rose against how far the bicarbonate fell. If bicarbonate fell far more than the gap rose (ratio &lt; 1), a second normal-gap acidosis is also present; if bicarbonate barely fell despite a wide gap (ratio &gt; 2), a metabolic alkalosis is propping it up. This is how a mixed disorder produces a near-normal-looking gas.</p>
+
+  <div class="pearl"><strong>A normal pH is not a normal patient</strong>Three normal-looking numbers can hide two severe disorders. If the story doesn't fit the gas — a septic, tachypneic patient with a "normal" ABG, or a vomiting patient who is somehow not alkalotic — calculate the anion gap and the delta ratio before you move on. The <em>gap</em> is where hidden metabolic acidosis lives even when the bicarbonate and pH look reassuring.</div>
+
+  <div class="misconception">
+    <strong>Common error</strong>"The patient is acidotic — I'll increase the rate and let the ventilator fix it."
+    A ventilator can correct a <em>respiratory</em> acidosis and can <em>rent time</em> against a metabolic one, but it does not treat the underlying acid. The danger is the reverse: a patient with a severe metabolic acidosis is surviving on a spontaneous minute ventilation of 30–40 L/min. Intubate and set a "normal" rate, and the PaCO₂ climbs, the pH crashes, and the arrest follows within minutes. The classic trap is salicylate toxicity.
+    <span class="corrected">In severe metabolic acidosis, match or exceed the patient's spontaneous minute ventilation, treat the cause, and never let a well-meaning "lung-protective" low rate drop the pH. If you can avoid intubation, do.</span>
+  </div>
+
+  <div class="figure" id="ch4-abg-simulator" style="margin-bottom:1.4rem;">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
+      <div>
+        <strong style="color:#0891b2; font-size:0.95rem;">Live ABG acid-base simulator</strong>
+        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— set a gas or pick a preset and watch the four-step read resolve</span>
+      </div>
+      <a href="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+        Open full-screen ↗︎
+      </a>
+    </div>
+    <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#fafaf7;">
+      <iframe
+        id="abg-sim-iframe"
+        data-src="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html"
+        title="ABG acid-base simulator — interactive interpretation with compensation and anion-gap analysis"
+        loading="lazy"
+        style="width:100%; height:1200px; border:0; display:block;"
+      ></iframe>
+    </div>
+    <script>
+      (function(){
+        const iframe = document.getElementById('abg-sim-iframe');
+        if (!iframe) return;
+        let reportedExact = false;
+        function estimateHeight(w) {
+          if (w >= 1120) return 1150;
+          if (w >= 760) return 1500;
+          return 2200;
+        }
+        function applyEstimated() {
+          if (reportedExact) return;
+          const w = iframe.clientWidth || iframe.getBoundingClientRect().width || 900;
+          iframe.style.height = estimateHeight(w) + 'px';
+        }
+        applyEstimated();
+        if (typeof ResizeObserver !== 'undefined') {
+          const ro = new ResizeObserver(applyEstimated);
+          ro.observe(iframe);
+        } else {
+          window.addEventListener('resize', applyEstimated);
+        }
+        window.addEventListener('message', function(e){
+          if (e && e.data && e.data.type === 'abg-sim-height' && typeof e.data.height === 'number') {
+            reportedExact = true;
+            const h = Math.max(500, Math.min(2600, e.data.height + 20));
+            iframe.style.height = h + 'px';
+          }
+        });
+      })();
+    </script>
+    <div class="cap"><b>Figure 4.5 — The ABG acid-base simulator.</b> Enter a pH, PaCO₂, and HCO₃⁻ — or load a clinical preset — and the tool walks the four-step read: it names the primary disorder, tests the compensation against the formulas in the table above, computes the albumin-corrected anion gap and delta ratio, and checks Henderson–Hasselbalch internal consistency. The PaCO₂–HCO₃⁻ map plots the gas against constant-pH lines so mixed disorders become visible as points that fall off the expected compensation track. Challenge mode hides the interpretation and quizzes you on unknown gases.</div>
+  </div>
+  </details>
+<div class="takeaways">
+    <h5>Key takeaways</h5>
+    <ul>
+      <li>The five causes of hypoxemia: hypoventilation, low FiO₂, V/Q mismatch, shunt, diffusion impairment. Only shunt fails to correct on 100% O₂.</li>
+      <li>A–a gradient elevated → alveolar-capillary problem (V/Q, shunt, diffusion). A–a normal with hypoxemia → hypoventilation or low FiO₂.</li>
+      <li>Saturation × hemoglobin carries 98% of arterial O₂ content. Dissolved O₂ (0.003 × PaO₂) is trivial — don’t chase PaO₂ &gt; 80 with high FiO₂.</li>
+      <li>“Edge of the cliff”: SpO₂ 90% ≈ PaO₂ 60. Below this, small drops in PaO₂ cause big drops in saturation.</li>
+      <li>Bohr: high CO₂/H⁺/T → right-shifts oxy-Hb curve → unloads O₂ to tissues. Haldane: high O₂ → loads CO₂ off Hb in lungs. They are mirror effects of allosteric switching.</li>
+      <li>Three drives: central chemoreceptors (PaCO₂ — dominant), peripheral chemoreceptors (PaO₂ &lt; 60, chronic retention), stretch receptors. Don’t normalize PaCO₂ to 40 in a chronic retainer.</li>
+      <li>Read every gas in four steps — pH → primary process → compensation → gaps. A normal pH never excludes a mixed disorder; the anion gap and delta ratio are where hidden metabolic acidosis lives.</li>
+      <li>The ventilator owns PaCO₂ (respiratory acid-base) directly but can only rent time against a metabolic acidosis. In severe metabolic acidosis, match the patient’s compensatory minute ventilation — never clamp it with a "normal" rate.</li>
+    </ul>
   </div>
 
   <div class="misconception">
