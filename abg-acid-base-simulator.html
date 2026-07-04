@@ -817,13 +817,24 @@
   <script>
     /* Report content height to a parent frame so the vent-book embed can auto-size. */
     (function(){
-      function postHeight(){
-        var h = Math.ceil(document.documentElement.scrollHeight);
-        try { parent.postMessage({ type: 'abg-sim-height', height: h }, '*'); } catch (e) {}
+      var embedded = false;
+      try { embedded = window.self !== window.top; } catch (e) { embedded = true; }
+      if (embedded) {
+        /* Don't stretch to the iframe's viewport — let true content height drive the frame. */
+        document.documentElement.style.minHeight = '0';
+        document.body.style.minHeight = '0';
       }
-      window.addEventListener('load', function(){ postHeight(); setTimeout(postHeight, 120); });
+      function contentHeight(){
+        var shell = document.querySelector('.app-shell');
+        var h = shell ? shell.getBoundingClientRect().bottom + window.scrollY : document.body.scrollHeight;
+        return Math.ceil(h);
+      }
+      function postHeight(){
+        try { parent.postMessage({ type: 'abg-sim-height', height: contentHeight() }, '*'); } catch (e) {}
+      }
+      window.addEventListener('load', function(){ postHeight(); setTimeout(postHeight, 150); });
       window.addEventListener('resize', postHeight);
-      document.addEventListener('click', function(){ setTimeout(postHeight, 80); });
+      document.addEventListener('click', function(){ setTimeout(postHeight, 90); });
       if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(postHeight).observe(document.body); }
     })();
   </script>
