@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive ABG and acid-base interpretation simulator for medical education." />
+  <title>ABG Acid–Base Simulator | Bedside Reference</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --font-display:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+      --font-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+      --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
+      /* light theme (default) */
+      --bg: radial-gradient(1100px 560px at 90% -12%, rgba(13,148,136,0.12), transparent 60%),
+            radial-gradient(800px 460px at -10% 110%, rgba(79,70,229,0.08), transparent 55%),
+            linear-gradient(180deg,#fbfcfe 0%,#eef2f7 100%);
+      --panel:#ffffff; --panel-2:#f4f7fb; --line:#e6eaf1; --line-strong:#d7deea;
+      --text:#0f1b2d; --muted:#475569; --faint:#64748b;
+      --accent:#0d9488; --accent-ink:#ffffff; --accent-soft:rgba(13,148,136,.85); --accent-bg:rgba(13,148,136,0.08);
+      --yellow:#0d9488;                 /* primary UI accent (teal) */
+      --teal:#0d9488; --green:#0d9488;  /* normal / consistent */
+      --red:#b91c1c; --blue:#4f46e5; --orange:#c2410c;
+      --accent-bg2:rgba(13,148,136,0.10);
+      --green-bg:rgba(13,148,136,0.10); --red-bg:rgba(185,28,28,0.10);
+      --blue-bg:rgba(79,70,229,0.08); --orange-bg:rgba(194,65,12,0.10);
+      --shadow:0 1px 2px rgba(16,24,40,0.04), 0 12px 28px -14px rgba(16,24,40,0.22);
+      --shadow-soft:0 1px 2px rgba(16,24,40,0.04), 0 6px 16px -10px rgba(16,24,40,0.16);
+      --radius: 14px;
+    }
+    body[data-theme="dark"] {
+      --bg: radial-gradient(1100px 560px at 90% -12%, rgba(45,212,191,0.16), transparent 60%),
+            radial-gradient(800px 460px at -10% 110%, rgba(99,102,241,0.12), transparent 55%),
+            linear-gradient(180deg,#0a0f1c 0%,#070b15 100%);
+      --panel:#0e1525; --panel-2:#131d31; --line:#21304b; --line-strong:#2c3e5e;
+      --text:#e7eef9; --muted:#aebed6; --faint:#8294b3;
+      --accent:#2dd4bf; --accent-ink:#04211d; --accent-soft:rgba(45,212,191,.85); --accent-bg:rgba(45,212,191,0.12);
+      --yellow:#2dd4bf; --teal:#2dd4bf; --green:#2dd4bf;
+      --red:#f87171; --blue:#818cf8; --orange:#fb923c;
+      --accent-bg2:rgba(45,212,191,0.14);
+      --green-bg:rgba(45,212,191,0.14); --red-bg:rgba(248,113,113,0.14);
+      --blue-bg:rgba(129,140,248,0.14); --orange-bg:rgba(251,146,60,0.14);
+      --shadow:0 12px 30px -14px rgba(0,0,0,0.7);
+      --shadow-soft:0 8px 20px -12px rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; }
+    html { overscroll-behavior-x: none; }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: var(--font-body);
+      background: var(--bg); color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    button, input, select { font: inherit; }
+    button, select, input[type="number"] { border-radius: 8px; }
+    button { cursor: pointer; }
+
+    .app-shell { max-width: 1540px; margin: 0 auto; padding: 22px; }
+
+    header.app-header {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 1rem;
+      justify-content: space-between;
+      padding: 8px 2px 18px; margin-bottom: 18px; border-bottom: 1px solid var(--line);
+    }
+    .header-titles { flex: 1; min-width: 260px; }
+    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+    h1 { margin: 0 0 5px; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.4rem, 2.4vw, 1.85rem); line-height: 1.08; letter-spacing: -.01em; color: var(--text); }
+    .subtitle { font-size: 13.5px; color: var(--muted); line-height: 1.5; max-width: 62ch; }
+    h2 { font-family: var(--font-display); }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px; background: var(--panel); color: var(--muted);
+      border: 1px solid var(--line); border-radius: 999px; padding: 8px 13px; box-shadow: var(--shadow-soft);
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; transition: all .15s;
+    }
+    .pill:hover { border-color: var(--line-strong); color: var(--text); }
+    .pill svg { width: 14px; height: 14px; display: block; }
+
+    .btn {
+      border: 1px solid var(--line); background: var(--panel); color: var(--text);
+      padding: 9px 14px; font-weight: 600; transition: .16s ease; box-shadow: var(--shadow-soft);
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+    .btn-primary:hover { filter: brightness(1.05); color: var(--accent-ink); }
+    .btn-teal { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+    .btn-teal:hover { filter: brightness(1.05); color: var(--accent-ink); }
+    .btn-danger { color: var(--red); border-color: color-mix(in srgb, var(--red) 40%, transparent); }
+    .btn-danger:hover { border-color: var(--red); color: var(--red); }
+    .btn-small { padding: 7px 10px; font-size: .84rem; }
+
+    .mode-tabs { display: inline-flex; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 4px; margin-bottom: 18px; }
+    .mode-tab { border: 0; color: var(--muted); background: transparent; padding: 9px 14px; border-radius: 9px; font-weight: 700; }
+    .mode-tab.active { color: var(--accent-ink); background: var(--accent); }
+
+    .sim-grid { display: grid; grid-template-columns: minmax(290px, .85fr) minmax(380px, 1.25fr) minmax(330px, 1fr); gap: 16px; align-items: start; }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-soft); overflow: hidden; }
+    .panel-head { padding: 15px 18px 13px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .panel-head h2 { font-size: 1rem; margin: 0; font-weight: 700; }
+    .panel-body { padding: 16px 18px 18px; }
+    .subtle { color: var(--muted); font-size: .82rem; line-height: 1.45; }
+
+    .preset-wrap { margin-bottom: 16px; }
+    label.field-label { display: block; font-family: var(--font-mono); font-size: .68rem; color: var(--faint); text-transform: uppercase; letter-spacing: .12em; font-weight: 600; margin-bottom: 7px; }
+    select, input[type="number"] { width: 100%; color: var(--text); background: var(--panel); border: 1px solid var(--line); padding: 10px 11px; outline: none; }
+    select:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg2); }
+
+    .input-group { padding: 13px 0; border-top: 1px solid var(--line); }
+    .input-group:first-of-type { border-top: 0; padding-top: 0; }
+    .input-row { display: grid; grid-template-columns: 1fr 88px; gap: 10px; align-items: center; }
+    .input-title { display: flex; align-items: baseline; gap: 7px; font-weight: 700; }
+    .unit { color: var(--muted); font-size: .72rem; font-weight: 500; }
+    input[type="range"] { width: 100%; height: 5px; border-radius: 3px; -webkit-appearance: none; appearance: none; background: var(--panel-2); outline: none; cursor: pointer; margin-top: 11px; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.25); cursor: pointer; }
+    input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--panel); cursor: pointer; }
+    input[type="range"]:disabled { opacity: .4; }
+    .normal-range { color: var(--muted); font-size: .72rem; margin-top: 2px; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .checkbox-row { display: flex; gap: 9px; align-items: flex-start; margin: 13px 0; color: var(--muted); font-size: .8rem; }
+    .checkbox-row input { accent-color: var(--accent); margin-top: 2px; }
+
+    .abg-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .abg-value { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 15px 12px; text-align: center; position: relative; overflow: hidden; }
+    .abg-value::after { content: ""; position: absolute; height: 3px; left: 0; right: 0; bottom: 0; background: var(--teal); }
+    .abg-value.acid::after { background: var(--red); }
+    .abg-value.alk::after { background: var(--blue); }
+    .abg-label { color: var(--faint); font-family: var(--font-mono); font-size: .66rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; }
+    .abg-number { font-family: var(--font-mono); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; color: var(--text); }
+    .abg-unit { color: var(--faint); font-size: .7rem; }
+
+    .status-banner { margin: 13px 0; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--accent-bg); border-radius: 12px; padding: 13px 14px; }
+    .status-banner.critical { border-color: color-mix(in srgb, var(--red) 35%, transparent); border-left-color: var(--red); background: var(--red-bg); }
+    .status-kicker { color: var(--accent); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .12em; font-size: .66rem; font-weight: 600; }
+    .status-banner.critical .status-kicker { color: var(--red); }
+    .status-title { font-family: var(--font-display); font-size: 1.08rem; font-weight: 700; margin: 3px 0 2px; }
+
+    .ph-scale { margin: 14px 0 17px; }
+    .scale-track-wrap { position: relative; padding-top: 34px; padding-bottom: 40px; }
+    .scale-track { height: 15px; border-radius: 99px; position: relative; background: linear-gradient(90deg, #b23b3b 0%, #d98b5f 50%, #2f9e8f 55%, #2f9e8f 65%, #5a6bd6 70%, #4338ca 100%); box-shadow: inset 0 0 0 1px rgba(15,23,42,.10); overflow: visible; }
+    /* The track spans pH 6.80-7.80. Therefore, 7.35-7.45 occupies 55%-65%, centered on pH 7.40 at 60%. */
+    .scale-normal { position: absolute; height: 21px; width: 10%; left: 55%; top: -3px; border: 2px solid var(--text); border-radius: 8px; opacity: .5; }
+    .scale-pointer { position: absolute; top: -31px; transform: translateX(-50%); transition: left .2s ease; display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; pointer-events: none; }
+    .scale-marker { width: 3px; height: 29px; background: var(--accent); border-radius: 3px; box-shadow: 0 0 0 3px var(--accent-bg2); }
+    .scale-current { color: var(--text); font-family: var(--font-mono); font-size: .92rem; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; text-align: center; line-height: 1; }
+    .scale-ticks { position: relative; height: 30px; margin-top: 8px; }
+    .scale-tick { position: absolute; top: 0; transform: translateX(-50%); width: 1px; height: 8px; background: color-mix(in srgb, var(--text) 28%, transparent); }
+    .scale-tick-label { position: absolute; top: 9px; transform: translateX(-50%); color: var(--muted); font-family: var(--font-mono); font-size: .6rem; font-variant-numeric: tabular-nums; white-space: nowrap; line-height: 1; }
+    .scale-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: .67rem; margin-top: 12px; gap: 12px; }
+    .scale-labels span { flex: 1; }
+    .scale-labels span:nth-child(2) { text-align: center; }
+    .scale-labels span:last-child { text-align: right; }
+
+    .map-wrap { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 9px; }
+    #acidMap { width: 100%; height: 300px; display: block; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px 14px; color: var(--muted); font-family: var(--font-mono); font-size: .64rem; margin-top: 8px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+    .result-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; margin-bottom: 10px; }
+    .result-card:last-child { margin-bottom: 0; }
+    .result-title { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: .66rem; text-transform: uppercase; color: var(--faint); font-weight: 600; letter-spacing: .1em; }
+    .result-main { font-weight: 700; font-size: 1rem; line-height: 1.35; margin-top: 5px; color: var(--text); }
+    .result-detail { color: var(--muted); font-size: .79rem; line-height: 1.5; margin-top: 5px; }
+    .pill.pill-good, .pill.pill-warn, .pill.pill-bad, .pill.pill-info,
+    span.pill { letter-spacing: .04em; }
+    .result-title .pill, .panel-head .pill, .status .pill { text-transform: none; letter-spacing: .02em; font-family: var(--font-body); }
+    .pill-good, .pill-warn, .pill-bad, .pill-info { display: inline-flex; align-items: center; border-radius: 99px; padding: 4px 9px; font-size: .64rem; font-weight: 700; letter-spacing: .02em; white-space: nowrap; box-shadow: none; border: 0; }
+    .pill-good { background: var(--green-bg); color: var(--green); }
+    .pill-warn { background: var(--orange-bg); color: var(--orange); }
+    .pill-bad { background: var(--red-bg); color: var(--red); }
+    .pill-info { background: var(--accent-bg); color: var(--accent); }
+    .equation { display: inline-block; font-family: var(--font-mono); color: var(--accent); background: var(--accent-bg); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); padding: 4px 7px; border-radius: 7px; margin-top: 6px; font-size: .8rem; }
+
+    .steps { counter-reset: step; }
+    .step { position: relative; padding: 0 0 14px 34px; color: var(--muted); font-size: .79rem; line-height: 1.45; }
+    .step:last-child { padding-bottom: 0; }
+    .step::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 23px; height: 23px; border-radius: 50%; background: var(--accent-bg); color: var(--accent); display: grid; place-items: center; font-family: var(--font-mono); font-size: .7rem; font-weight: 600; }
+    .step strong { color: var(--text); }
+
+    .challenge-panel { display: none; }
+    .challenge-panel.active { display: block; }
+    .simulator-panel.hidden { display: none; }
+    .challenge-layout { display: grid; grid-template-columns: minmax(350px, 1.15fr) minmax(320px, .85fr); gap: 16px; }
+    .case-vitals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+    .case-chip { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center; }
+    .case-chip b { display: block; font-family: var(--font-mono); font-size: 1.25rem; font-weight: 600; }
+    .quiz-grid { display: grid; gap: 12px; }
+    .feedback { display: none; margin-top: 14px; border-radius: 12px; padding: 14px; border: 1px solid var(--line); line-height: 1.55; }
+    .feedback.show { display: block; }
+    .feedback.correct { background: var(--green-bg); border-color: color-mix(in srgb, var(--green) 40%, transparent); }
+    .feedback.partial { background: var(--orange-bg); border-color: color-mix(in srgb, var(--orange) 40%, transparent); }
+    .score { font-size: .84rem; color: var(--muted); }
+    .score strong { color: var(--accent); font-family: var(--font-mono); }
+
+    dialog { width: min(780px, calc(100% - 28px)); border: 1px solid var(--line); border-radius: 16px; background: var(--panel); color: var(--text); box-shadow: var(--shadow); padding: 0; }
+    dialog::backdrop { background: rgba(8,12,22,.55); backdrop-filter: blur(3px); }
+    .dialog-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+    .dialog-body { padding: 18px; max-height: 70vh; overflow: auto; }
+    .formula-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    .formula-table th, .formula-table td { text-align: left; vertical-align: top; padding: 11px 9px; border-bottom: 1px solid var(--line); }
+    .formula-table th { color: var(--accent); background: var(--panel-2); }
+
+    footer { color: var(--muted); font-size: .73rem; text-align: center; padding: 22px 8px 4px; line-height: 1.5; border-top: 1px solid var(--line); margin-top: 18px; }
+    .eyebrow { color: var(--accent); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .13em; font-weight: 600; font-size: .68rem; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 1120px) {
+      .sim-grid { grid-template-columns: 330px 1fr; }
+      .interpret-panel { grid-column: 1 / -1; }
+    }
+    @media (max-width: 760px) {
+      .app-shell { padding: 13px; }
+      header.app-header { align-items: flex-start; }
+      .header-actions { justify-content: flex-start; }
+      .sim-grid, .challenge-layout { grid-template-columns: 1fr; }
+      .interpret-panel { grid-column: auto; }
+      .abg-strip, .case-vitals { grid-template-columns: repeat(3, 1fr); }
+      #acidMap { height: 250px; }
+    }
+    @media (max-width: 480px) {
+      .abg-strip, .case-vitals { grid-template-columns: 1fr; }
+      .mini-grid { grid-template-columns: 1fr; }
+      .input-row { grid-template-columns: 1fr 82px; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="header-titles">
+        <h1>ABG Acid–Base Simulator</h1>
+        <p class="subtitle">Set a blood gas or load a preset and watch the four-step acid–base read resolve — primary disorder, compensation, anion gap, and delta ratio.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="formulaBtn">Formula reference</button>
+        <button class="btn btn-danger" id="resetBtn">Reset</button>
+        <button id="theme-btn" class="pill" type="button" title="Toggle light / dark"><span id="theme-icon"></span><span id="theme-txt">Dark</span></button>
+      </div>
+    </header>
+
+    <div class="mode-tabs" role="tablist" aria-label="Simulator mode">
+      <button class="mode-tab active" data-mode="simulator" role="tab" aria-selected="true">Live simulator</button>
+      <button class="mode-tab" data-mode="challenge" role="tab" aria-selected="false">Challenge mode</button>
+    </div>
+
+    <main id="simulatorMode" class="simulator-panel">
+      <div class="sim-grid">
+        <section class="panel controls-panel" aria-labelledby="inputs-title">
+          <div class="panel-head">
+            <h2 id="inputs-title">Patient data</h2>
+            <span class="pill pill-info">Interactive</span>
+          </div>
+          <div class="panel-body">
+            <div class="preset-wrap">
+              <label class="field-label" for="preset">Clinical preset</label>
+              <select id="preset">
+                <option value="custom">Custom values</option>
+                <option value="normal">Normal ABG</option>
+                <option value="dka">Diabetic ketoacidosis</option>
+                <option value="lacticResp">Lactic acidosis + respiratory acidosis</option>
+                <option value="vomiting">Vomiting / metabolic alkalosis</option>
+                <option value="acuteCopd">Acute respiratory acidosis</option>
+                <option value="chronicCopd">Chronic respiratory acidosis</option>
+                <option value="panic">Acute respiratory alkalosis</option>
+                <option value="salicylate">Salicylate mixed disorder</option>
+                <option value="sepsis">Sepsis mixed disorder</option>
+                <option value="hiddenGap">Hidden HAGMA + metabolic alkalosis</option>
+              </select>
+            </div>
+
+            <label class="checkbox-row">
+              <input type="checkbox" id="linkPH" checked />
+              <span><strong style="color:var(--text)">Link pH</strong> to PaCO₂ and HCO₃⁻ using Henderson–Hasselbalch. Uncheck to paste a measured ABG and test internal consistency.</span>
+            </label>
+
+            <div class="input-group">
+              <div class="input-row">
+                <div>
+                  <div class="input-title">pH</div>
+                  <div class="normal-range">Normal: 7.35–7.45</div>
+                </div>
+                <input id="phNum" type="number" min="6.70" max="7.90" step="0.01" value="7.40" />
+              </div>
+              <input id="phRange" type="range" min="6.70" max="7.90" step="0.01" value="7.40" aria-label="pH" />
+            </div>
+
+            <div class="input-group">
+              <div class="input-row">
+                <div>
+                  <div class="input-title">PaCO₂ <span class="unit">mm Hg</span></div>
+                  <div class="normal-range">Normal: 35–45</div>
+                </div>
+                <input id="pco2Num" type="number" min="5" max="150" step="1" value="40" />
+              </div>
+              <input id="pco2Range" type="range" min="5" max="150" step="1" value="40" aria-label="PaCO2" />
+            </div>
+
+            <div class="input-group">
+              <div class="input-row">
+                <div>
+                  <div class="input-title">HCO₃⁻ <span class="unit">mEq/L</span></div>
+                  <div class="normal-range">Normal: 22–26</div>
+                </div>
+                <input id="hco3Num" type="number" min="2" max="60" step="1" value="24" />
+              </div>
+              <input id="hco3Range" type="range" min="2" max="60" step="1" value="24" aria-label="Bicarbonate" />
+            </div>
+
+            <div class="input-group">
+              <label class="field-label" for="timeCourse">Respiratory time course</label>
+              <select id="timeCourse">
+                <option value="auto">Auto: compare acute and chronic</option>
+                <option value="acute">Acute</option>
+                <option value="chronic">Chronic</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <div class="field-label">Electrolytes for anion gap</div>
+              <div class="mini-grid">
+                <div><label class="field-label" for="na">Na⁺</label><input id="na" type="number" min="80" max="190" step="1" value="140" /></div>
+                <div><label class="field-label" for="cl">Cl⁻</label><input id="cl" type="number" min="50" max="160" step="1" value="104" /></div>
+                <div><label class="field-label" for="albumin">Albumin</label><input id="albumin" type="number" min="0.5" max="6" step="0.1" value="4.0" /></div>
+                <div><label class="field-label" for="lactate">Lactate</label><input id="lactate" type="number" min="0" max="30" step="0.1" value="1.0" /></div>
+              </div>
+              <div class="subtle" style="margin-top:8px">Albumin in g/dL; lactate in mmol/L. Lactate is displayed for context but does not directly determine the diagnosis.</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="live-title">
+          <div class="panel-head">
+            <h2 id="live-title">Live acid–base state</h2>
+            <span id="consistencyPill" class="pill pill-good">Internally consistent</span>
+          </div>
+          <div class="panel-body">
+            <div class="abg-strip">
+              <div id="phCard" class="abg-value"><div class="abg-label">pH</div><div id="phDisplay" class="abg-number">7.40</div><div class="abg-unit">arterial</div></div>
+              <div id="pco2Card" class="abg-value"><div class="abg-label">PaCO₂</div><div id="pco2Display" class="abg-number">40</div><div class="abg-unit">mm Hg</div></div>
+              <div id="hco3Card" class="abg-value"><div class="abg-label">HCO₃⁻</div><div id="hco3Display" class="abg-number">24</div><div class="abg-unit">mEq/L</div></div>
+            </div>
+
+            <div id="statusBanner" class="status-banner">
+              <div class="status-kicker" id="statusKicker">Overall pH</div>
+              <div class="status-title" id="statusTitle">Normal acid–base state</div>
+              <div class="subtle" id="statusSubtitle">No acidemia or alkalemia.</div>
+            </div>
+
+            <div class="ph-scale" aria-label="pH scale from severe acidemia to severe alkalemia">
+              <div class="scale-track-wrap">
+                <div class="scale-track">
+                  <div class="scale-normal"></div>
+                  <div class="scale-pointer" id="phPointer">
+                    <div class="scale-marker" id="phMarker"></div>
+                    <div class="scale-current" id="phAxisLabel">7.40</div>
+                  </div>
+                </div>
+                <div class="scale-ticks" aria-hidden="true">
+                  <div class="scale-tick" style="left:0%"></div><div class="scale-tick-label" style="left:0%; top:9px;">6.80</div>
+                  <div class="scale-tick" style="left:55%"></div><div class="scale-tick-label" style="left:55%; top:9px;">7.35</div>
+                  <div class="scale-tick" style="left:60%"></div><div class="scale-tick-label" style="left:60%; top:20px;">7.40</div>
+                  <div class="scale-tick" style="left:65%"></div><div class="scale-tick-label" style="left:65%; top:9px;">7.45</div>
+                  <div class="scale-tick" style="left:100%"></div><div class="scale-tick-label" style="left:100%; top:9px;">7.80</div>
+                </div>
+              </div>
+              <div class="scale-labels"><span>acidemia</span><span>normal range</span><span>alkalemia</span></div>
+            </div>
+
+            <div class="map-wrap">
+              <canvas id="acidMap" width="800" height="520" aria-label="PaCO2 versus bicarbonate acid-base map"></canvas>
+              <div class="legend">
+                <span><i class="legend-dot" style="background:var(--yellow)"></i>Current ABG</span>
+                <span><i class="legend-dot" style="background:var(--green)"></i>Normal zone</span>
+                <span><i class="legend-dot" style="background:var(--blue)"></i>Constant-pH lines</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel interpret-panel" aria-labelledby="interpret-title">
+          <div class="panel-head">
+            <h2 id="interpret-title">Interpretation</h2>
+            <span class="pill pill-warn">Educational</span>
+          </div>
+          <div class="panel-body">
+            <div class="result-card">
+              <div class="result-title">Primary process <span id="primaryPill" class="pill pill-info">Step 1</span></div>
+              <div id="primaryMain" class="result-main">No primary disorder identified</div>
+              <div id="primaryDetail" class="result-detail">pH, PaCO₂, and HCO₃⁻ are within expected ranges.</div>
+            </div>
+
+            <div class="result-card">
+              <div class="result-title">Compensation <span id="compPill" class="pill pill-good">Appropriate</span></div>
+              <div id="compMain" class="result-main">No compensation calculation needed</div>
+              <div id="compDetail" class="result-detail">Adjust values to generate a primary disorder.</div>
+              <div id="compEquation" class="equation" style="display:none"></div>
+            </div>
+
+            <div class="result-card">
+              <div class="result-title">Anion gap <span id="agPill" class="pill pill-good">Normal</span></div>
+              <div id="agMain" class="result-main">AG 12 mEq/L</div>
+              <div id="agDetail" class="result-detail">Albumin-corrected AG: 12 mEq/L.</div>
+            </div>
+
+            <div class="result-card">
+              <div class="result-title">Delta analysis <span id="deltaPill" class="pill pill-info">Not indicated</span></div>
+              <div id="deltaMain" class="result-main">No elevated-gap acidosis detected</div>
+              <div id="deltaDetail" class="result-detail">Delta ratio is most useful when the corrected anion gap is elevated and bicarbonate is reduced.</div>
+            </div>
+
+            <div class="result-card">
+              <div class="result-title">Teaching sequence</div>
+              <div class="steps" id="teachingSteps"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <main id="challengeMode" class="challenge-panel">
+      <div class="challenge-layout">
+        <section class="panel">
+          <div class="panel-head"><h2>Unknown ABG</h2><span class="score">Score: <strong id="scoreText">0 / 0</strong></span></div>
+          <div class="panel-body">
+            <div class="eyebrow" id="caseTag">Case 1</div>
+            <h2 id="caseStem" style="margin:.35rem 0 0">A patient presents with an acid–base disturbance.</h2>
+            <div class="case-vitals">
+              <div class="case-chip"><span class="subtle">pH</span><b id="casePH">7.18</b></div>
+              <div class="case-chip"><span class="subtle">PaCO₂</span><b id="casePCO2">20</b><span class="subtle">mm Hg</span></div>
+              <div class="case-chip"><span class="subtle">HCO₃⁻</span><b id="caseHCO3">7</b><span class="subtle">mEq/L</span></div>
+            </div>
+            <div class="subtle" id="caseLabs">Na 132 · Cl 98 · albumin 4.0 g/dL</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px">
+              <button class="btn btn-teal" id="newCaseBtn">New case</button>
+              <button class="btn" id="loadCaseBtn">Open in simulator</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Your interpretation</h2><span class="pill pill-warn">No penalty</span></div>
+          <div class="panel-body">
+            <div class="quiz-grid">
+              <div><label class="field-label" for="quizPH">1. Overall pH</label><select id="quizPH"><option value="">Choose…</option><option value="acidemia">Acidemia</option><option value="normal">Normal range</option><option value="alkalemia">Alkalemia</option></select></div>
+              <div><label class="field-label" for="quizPrimary">2. Best overall interpretation</label><select id="quizPrimary"><option value="">Choose…</option><option value="normal">No primary disorder</option><option value="metAcid">Metabolic acidosis</option><option value="metAlk">Metabolic alkalosis</option><option value="respAcid">Respiratory acidosis</option><option value="respAlk">Respiratory alkalosis</option><option value="mixedAcid">Metabolic + respiratory acidosis</option><option value="mixedAlk">Metabolic + respiratory alkalosis</option><option value="respAlkMetAcid">Respiratory alkalosis + metabolic acidosis</option><option value="gapMetAlk">High-gap acidosis + metabolic alkalosis</option></select></div>
+              <div><label class="field-label" for="quizAG">3. Anion gap</label><select id="quizAG"><option value="">Choose…</option><option value="normal">Normal</option><option value="high">Elevated</option><option value="low">Low</option></select></div>
+              <button class="btn btn-primary" id="submitQuizBtn">Check answer</button>
+            </div>
+            <div id="quizFeedback" class="feedback"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      For medical education only. Compensation equations are approximations and must be interpreted with the clinical timeline, laboratory method, and patient context. This simulator is not a substitute for clinical judgment or local protocols.
+    </footer>
+  </div>
+
+  <dialog id="formulaDialog">
+    <div class="dialog-head"><div><div class="eyebrow">Reference</div><h2 style="margin:2px 0 0">Compensation formulas</h2></div><button class="btn btn-small" id="closeDialog">Close</button></div>
+    <div class="dialog-body">
+      <table class="formula-table">
+        <thead><tr><th>Primary disorder</th><th>Expected compensation used</th></tr></thead>
+        <tbody>
+          <tr><td>Metabolic acidosis</td><td>Expected PaCO₂ = 1.5 × HCO₃⁻ + 8 ± 2</td></tr>
+          <tr><td>Metabolic alkalosis</td><td>Expected PaCO₂ = 40 + 0.7 × (HCO₃⁻ − 24) ± 2; compensation generally does not raise PaCO₂ beyond ~55 mm Hg</td></tr>
+          <tr><td>Acute respiratory acidosis</td><td>HCO₃⁻ rises ~1 mEq/L per 10-mm Hg PaCO₂ increase</td></tr>
+          <tr><td>Chronic respiratory acidosis</td><td>HCO₃⁻ rises ~3.5–4 mEq/L per 10-mm Hg PaCO₂ increase</td></tr>
+          <tr><td>Acute respiratory alkalosis</td><td>HCO₃⁻ falls ~2 mEq/L per 10-mm Hg PaCO₂ decrease</td></tr>
+          <tr><td>Chronic respiratory alkalosis</td><td>HCO₃⁻ falls ~4–5 mEq/L per 10-mm Hg PaCO₂ decrease</td></tr>
+          <tr><td>Anion gap</td><td>AG = Na⁺ − (Cl⁻ + HCO₃⁻); corrected AG = AG + 2.5 × (4 − albumin)</td></tr>
+          <tr><td>Delta ratio</td><td>(Corrected AG − 12) / (24 − HCO₃⁻). Values &lt;1 suggest additional normal-gap acidosis; &gt;2 suggest additional metabolic alkalosis.</td></tr>
+          <tr><td>Internal consistency</td><td>Calculated pH = 6.1 + log₁₀[HCO₃⁻ / (0.03 × PaCO₂)]</td></tr>
+        </tbody>
+      </table>
+      <p class="subtle">Normal values and compensation slopes vary slightly by source and laboratory. The app uses common bedside approximations and displays uncertainty rather than treating them as exact physiologic laws.</p>
+    </div>
+  </dialog>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+    const round = (n, digits = 1) => Number(n).toFixed(digits);
+
+    const presets = {
+      normal: { ph: 7.40, pco2: 40, hco3: 24, na: 140, cl: 104, albumin: 4.0, lactate: 1.0, link: true },
+      dka: { ph: 7.18, pco2: 20, hco3: 7, na: 132, cl: 93, albumin: 4.0, lactate: 2.1, link: false },
+      lacticResp: { ph: 7.04, pco2: 50, hco3: 13, na: 140, cl: 105, albumin: 3.5, lactate: 9.2, link: false },
+      vomiting: { ph: 7.51, pco2: 50, hco3: 39, na: 138, cl: 88, albumin: 4.0, lactate: 1.2, link: false },
+      acuteCopd: { ph: 7.25, pco2: 60, hco3: 26, na: 139, cl: 103, albumin: 4.0, lactate: 1.4, link: false, time: 'acute' },
+      chronicCopd: { ph: 7.35, pco2: 60, hco3: 32, na: 140, cl: 100, albumin: 4.0, lactate: 1.0, link: false, time: 'chronic' },
+      panic: { ph: 7.62, pco2: 20, hco3: 20, na: 140, cl: 110, albumin: 4.0, lactate: 1.6, link: false, time: 'acute' },
+      salicylate: { ph: 7.47, pco2: 20, hco3: 14, na: 140, cl: 103, albumin: 4.0, lactate: 2.5, link: false, time: 'acute' },
+      sepsis: { ph: 7.48, pco2: 25, hco3: 18, na: 138, cl: 104, albumin: 3.0, lactate: 5.8, link: false, time: 'acute' },
+      hiddenGap: { ph: 7.40, pco2: 40, hco3: 24, na: 140, cl: 92, albumin: 4.0, lactate: 5.0, link: false }
+    };
+
+    const challengeCases = [
+      { key:'dka', stem:'A 24-year-old with polyuria, abdominal pain, and Kussmaul respirations.', tag:'Endocrine emergency', answer:{ph:'acidemia', primary:'metAcid', ag:'high'} },
+      { key:'lacticResp', stem:'A patient in shock becomes progressively somnolent with shallow respirations.', tag:'Critical care', answer:{ph:'acidemia', primary:'mixedAcid', ag:'high'} },
+      { key:'vomiting', stem:'A patient has several days of persistent emesis and volume depletion.', tag:'GI losses', answer:{ph:'alkalemia', primary:'metAlk', ag:'normal'} },
+      { key:'acuteCopd', stem:'A patient with COPD develops abrupt worsening hypercapnia and confusion.', tag:'Pulmonary', answer:{ph:'acidemia', primary:'respAcid', ag:'normal'} },
+      { key:'chronicCopd', stem:'A clinically stable patient has long-standing hypercapnia.', tag:'Pulmonary', answer:{ph:'normal', primary:'respAcid', ag:'normal'} },
+      { key:'panic', stem:'A patient is tachypneic during an acute panic episode.', tag:'Emergency medicine', answer:{ph:'alkalemia', primary:'respAlk', ag:'normal'} },
+      { key:'salicylate', stem:'A patient has tinnitus, nausea, tachypnea, and altered mental status.', tag:'Toxicology', answer:{ph:'alkalemia', primary:'respAlkMetAcid', ag:'high'} },
+      { key:'sepsis', stem:'A febrile hypotensive patient is tachypneic with elevated lactate.', tag:'Sepsis', answer:{ph:'alkalemia', primary:'respAlkMetAcid', ag:'high'} },
+      { key:'hiddenGap', stem:'A patient with vomiting and lactic acidosis has a deceptively normal-appearing ABG.', tag:'Mixed disorder', answer:{ph:'normal', primary:'gapMetAlk', ag:'high'} }
+    ];
+
+    let currentChallenge = challengeCases[0];
+    let score = { correct: 0, total: 0 };
+
+    function getValues() {
+      return {
+        ph: Number($('phNum').value), pco2: Number($('pco2Num').value), hco3: Number($('hco3Num').value),
+        na: Number($('na').value), cl: Number($('cl').value), albumin: Number($('albumin').value), lactate: Number($('lactate').value),
+        timeCourse: $('timeCourse').value
+      };
+    }
+
+    function hhPH(pco2, hco3) { return 6.1 + Math.log10(hco3 / (0.03 * pco2)); }
+    function pHState(ph) { return ph < 7.35 ? 'acidemia' : ph > 7.45 ? 'alkalemia' : 'normal'; }
+    function valueTone(value, low, high, inverse = false) {
+      if (value < low) return inverse ? 'alk' : 'acid';
+      if (value > high) return inverse ? 'acid' : 'alk';
+      return '';
+    }
+
+    function syncPair(numId, rangeId, source) {
+      const num = $(numId), range = $(rangeId);
+      if (source === 'num') range.value = clamp(Number(num.value), Number(range.min), Number(range.max));
+      else num.value = range.value;
+    }
+
+    function setABG(values, presetName = 'custom') {
+      $('linkPH').checked = values.link ?? $('linkPH').checked;
+      $('pco2Num').value = $('pco2Range').value = values.pco2;
+      $('hco3Num').value = $('hco3Range').value = values.hco3;
+      $('phNum').value = $('phRange').value = values.ph;
+      $('na').value = values.na; $('cl').value = values.cl; $('albumin').value = values.albumin; $('lactate').value = values.lactate;
+      $('timeCourse').value = values.time || 'auto';
+      $('preset').value = presetName;
+      updatePHLock();
+      update();
+    }
+
+    function updatePHLock() {
+      const linked = $('linkPH').checked;
+      $('phNum').disabled = linked;
+      $('phRange').disabled = linked;
+      $('phRange').style.opacity = linked ? '.38' : '1';
+      if (linked) {
+        const ph = hhPH(Number($('pco2Num').value), Number($('hco3Num').value));
+        $('phNum').value = $('phRange').value = round(clamp(ph, 6.7, 7.9), 2);
+      }
+    }
+
+    function primaryInterpretation(v) {
+      const state = pHState(v.ph);
+      const highCO2 = v.pco2 > 40, lowCO2 = v.pco2 < 40, highBicarb = v.hco3 > 24, lowBicarb = v.hco3 < 24;
+      let code = 'normal', main = 'No primary disorder identified', detail = 'pH, PaCO₂, and HCO₃⁻ do not demonstrate a clear primary disturbance.';
+
+      if (state === 'acidemia') {
+        if (highCO2 && lowBicarb) { code='mixedAcid'; main='Mixed respiratory + metabolic acidosis'; detail='PaCO₂ and HCO₃⁻ both move pH in the acidifying direction.'; }
+        else if (highCO2) { code='respAcid'; main='Primary respiratory acidosis'; detail='PaCO₂ is elevated in the direction that explains the acidemia.'; }
+        else if (lowBicarb) { code='metAcid'; main='Primary metabolic acidosis'; detail='HCO₃⁻ is reduced in the direction that explains the acidemia.'; }
+        else { code='indeterminate'; main='Acidemia with no clear driver'; detail='Recheck the entered values and internal consistency.'; }
+      } else if (state === 'alkalemia') {
+        if (lowCO2 && highBicarb) { code='mixedAlk'; main='Mixed respiratory + metabolic alkalosis'; detail='PaCO₂ and HCO₃⁻ both move pH in the alkalinizing direction.'; }
+        else if (lowCO2) { code='respAlk'; main='Primary respiratory alkalosis'; detail='PaCO₂ is reduced in the direction that explains the alkalemia.'; }
+        else if (highBicarb) { code='metAlk'; main='Primary metabolic alkalosis'; detail='HCO₃⁻ is elevated in the direction that explains the alkalemia.'; }
+        else { code='indeterminate'; main='Alkalemia with no clear driver'; detail='Recheck the entered values and internal consistency.'; }
+      } else {
+        if (v.pco2 >= 45 && v.hco3 >= 26) { code='offsetHigh'; main='Offsetting respiratory acidosis / metabolic alkalosis pattern'; detail='Near-normal pH with elevated PaCO₂ and HCO₃⁻ may reflect chronic respiratory acidosis, metabolic alkalosis, or both. Use time course and compensation fit.'; }
+        else if (v.pco2 <= 35 && v.hco3 <= 22) { code='offsetLow'; main='Offsetting respiratory alkalosis / metabolic acidosis pattern'; detail='Near-normal pH with reduced PaCO₂ and HCO₃⁻ may reflect chronic respiratory alkalosis, metabolic acidosis, or both.'; }
+        else if (v.pco2 > 45 && v.hco3 < 22) { code='inconsistent'; main='Both variables acidify, but pH is normal'; detail='This pattern is internally discordant; verify the ABG and chemistry values.'; }
+        else if (v.pco2 < 35 && v.hco3 > 26) { code='inconsistent'; main='Both variables alkalinize, but pH is normal'; detail='This pattern is internally discordant; verify the ABG and chemistry values.'; }
+        else { code='normal'; main='No primary ABG disorder identified'; detail='The ABG is within or near conventional reference ranges. Electrolytes may still reveal a hidden mixed metabolic disorder.'; }
+      }
+      return { state, code, main, detail };
+    }
+
+    function compareRange(actual, center, tolerance) {
+      const low = center - tolerance, high = center + tolerance;
+      return { low, high, fit: actual >= low && actual <= high, delta: actual - center };
+    }
+
+    function compensation(v, primary) {
+      const out = { status:'none', main:'No compensation calculation needed', detail:'Adjust values to generate a primary disorder.', equation:'', pill:'Not applicable', pillClass:'pill-info' };
+      const report = (actual, center, tol, lowDx, highDx, label, eq) => {
+        const r = compareRange(actual, center, tol);
+        out.equation = eq;
+        if (r.fit) { out.status='appropriate'; out.main='Compensation is within the expected range'; out.detail=`${label}: expected ${round(r.low,1)}–${round(r.high,1)}; measured ${round(actual,1)}.`; out.pill='Appropriate'; out.pillClass='pill-good'; }
+        else if (actual < r.low) { out.status='mixed'; out.main=lowDx; out.detail=`${label}: expected ${round(r.low,1)}–${round(r.high,1)}; measured ${round(actual,1)}.`; out.pill='Mixed disorder'; out.pillClass='pill-bad'; }
+        else { out.status='mixed'; out.main=highDx; out.detail=`${label}: expected ${round(r.low,1)}–${round(r.high,1)}; measured ${round(actual,1)}.`; out.pill='Mixed disorder'; out.pillClass='pill-bad'; }
+        return out;
+      };
+
+      if (primary.code === 'metAcid') {
+        const expected = 1.5 * v.hco3 + 8;
+        return report(v.pco2, expected, 2, 'Additional respiratory alkalosis', 'Additional respiratory acidosis', 'Expected PaCO₂', `1.5 × ${v.hco3} + 8 ± 2 = ${round(expected,1)} ± 2`);
+      }
+      if (primary.code === 'metAlk') {
+        const expected = 40 + 0.7 * (v.hco3 - 24);
+        const r = report(v.pco2, expected, 2, 'Additional respiratory alkalosis', 'Additional respiratory acidosis', 'Expected PaCO₂', `40 + 0.7 × (${v.hco3} − 24) ± 2 = ${round(expected,1)} ± 2`);
+        if (expected > 55) r.detail += ' PaCO₂ compensation generally plateaus near 55 mm Hg.';
+        return r;
+      }
+      if (primary.code === 'respAcid' || primary.code === 'offsetHigh') {
+        const delta = Math.max(0, v.pco2 - 40);
+        const acute = 24 + delta / 10;
+        const chronic = 24 + 3.5 * delta / 10;
+        if (v.timeCourse === 'acute') return report(v.hco3, acute, 2, 'Additional metabolic acidosis', 'Additional metabolic alkalosis', 'Expected HCO₃⁻ (acute)', `24 + 1 × (${v.pco2} − 40)/10 ≈ ${round(acute,1)}`);
+        if (v.timeCourse === 'chronic') return report(v.hco3, chronic, 2, 'Additional metabolic acidosis', 'Additional metabolic alkalosis', 'Expected HCO₃⁻ (chronic)', `24 + 3.5 × (${v.pco2} − 40)/10 ≈ ${round(chronic,1)}`);
+        const acuteDiff = Math.abs(v.hco3 - acute), chronicDiff = Math.abs(v.hco3 - chronic);
+        const best = chronicDiff < acuteDiff ? 'chronic' : 'acute';
+        const chosen = best === 'acute' ? acute : chronic;
+        const r = report(v.hco3, chosen, 2, 'Additional metabolic acidosis', 'Additional metabolic alkalosis', `Expected HCO₃⁻ (${best} pattern)`, `${best === 'acute' ? 'Acute' : 'Chronic'} estimate ≈ ${round(chosen,1)}; alternate estimate ${round(best === 'acute' ? chronic : acute,1)}`);
+        r.detail += ` Values fit the ${best} respiratory pattern more closely.`;
+        return r;
+      }
+      if (primary.code === 'respAlk' || primary.code === 'offsetLow') {
+        const delta = Math.max(0, 40 - v.pco2);
+        const acute = 24 - 2 * delta / 10;
+        const chronic = 24 - 4 * delta / 10;
+        if (v.timeCourse === 'acute') return report(v.hco3, acute, 2, 'Additional metabolic acidosis', 'Additional metabolic alkalosis', 'Expected HCO₃⁻ (acute)', `24 − 2 × (40 − ${v.pco2})/10 ≈ ${round(acute,1)}`);
+        if (v.timeCourse === 'chronic') return report(v.hco3, chronic, 2, 'Additional metabolic acidosis', 'Additional metabolic alkalosis', 'Expected HCO₃⁻ (chronic)', `24 − 4 × (40 − ${v.pco2})/10 ≈ ${round(chronic,1)}`);
+        const acuteDiff = Math.abs(v.hco3 - acute), chronicDiff = Math.abs(v.hco3 - chronic);
+        const best = chronicDiff < acuteDiff ? 'chronic' : 'acute';
+        const chosen = best === 'acute' ? acute : chronic;
+        const r = report(v.hco3, chosen, 2, 'Additional metabolic acidosis', 'Additional metabolic alkalosis', `Expected HCO₃⁻ (${best} pattern)`, `${best === 'acute' ? 'Acute' : 'Chronic'} estimate ≈ ${round(chosen,1)}; alternate estimate ${round(best === 'acute' ? chronic : acute,1)}`);
+        r.detail += ` Values fit the ${best} respiratory pattern more closely.`;
+        return r;
+      }
+      if (primary.code === 'mixedAcid' || primary.code === 'mixedAlk') {
+        out.status='mixed'; out.main='Two primary processes are already present'; out.detail='Because both PaCO₂ and HCO₃⁻ drive pH in the same abnormal direction, this is not simple compensation.'; out.pill='Mixed disorder'; out.pillClass='pill-bad';
+      }
+      return out;
+    }
+
+    function anionGap(v) {
+      const raw = v.na - (v.cl + v.hco3);
+      const corrected = raw + 2.5 * (4 - v.albumin);
+      let category = corrected > 12 ? 'high' : corrected < 8 ? 'low' : 'normal';
+      return { raw, corrected, category };
+    }
+
+    function deltaAnalysis(v, ag) {
+      const dAG = ag.corrected - 12;
+      const dHCO3 = 24 - v.hco3;
+      const correctedHCO3 = v.hco3 + Math.max(0, dAG);
+      if (!(ag.corrected > 12 && v.hco3 < 24 && dHCO3 > 0)) {
+        if (ag.corrected > 12 && v.hco3 >= 24) return { active:true, ratio:null, correctedHCO3, main:'Elevated gap with preserved bicarbonate', detail:`Corrected HCO₃⁻ = ${round(correctedHCO3,1)} mEq/L, strongly suggesting a concurrent metabolic alkalosis masking the gap acidosis.`, label:'Mixed metabolic', cls:'pill-bad' };
+        return { active:false, ratio:null, correctedHCO3, main:'No elevated-gap acidosis detected', detail:'Delta analysis is most useful when the corrected anion gap is elevated and bicarbonate is reduced.', label:'Not indicated', cls:'pill-info' };
+      }
+      const ratio = dAG / dHCO3;
+      if (ratio < 1) return { active:true, ratio, correctedHCO3, main:'High-gap + normal-gap metabolic acidosis', detail:`Δ ratio ${round(ratio,2)} (<1). Corrected HCO₃⁻ ${round(correctedHCO3,1)} mEq/L.`, label:'Mixed metabolic', cls:'pill-bad' };
+      if (ratio > 2) return { active:true, ratio, correctedHCO3, main:'High-gap acidosis + metabolic alkalosis', detail:`Δ ratio ${round(ratio,2)} (>2). Corrected HCO₃⁻ ${round(correctedHCO3,1)} mEq/L.`, label:'Mixed metabolic', cls:'pill-bad' };
+      return { active:true, ratio, correctedHCO3, main:'Proportionate high-gap metabolic acidosis', detail:`Δ ratio ${round(ratio,2)} (approximately 1–2). Corrected HCO₃⁻ ${round(correctedHCO3,1)} mEq/L.`, label:'Proportionate', cls:'pill-good' };
+    }
+
+    function drawMap(v) {
+      const canvas = $('acidMap'), ctx = canvas.getContext('2d');
+      const dark = document.body.getAttribute('data-theme') === 'dark';
+      const C = dark
+        ? {bg:'#0e1525', grid:'rgba(174,190,214,.10)', zoneF:'rgba(45,212,191,.16)', zoneS:'rgba(45,212,191,.6)', phMain:'rgba(129,140,248,.6)', phFaint:'rgba(129,140,248,.3)', phLbl:'rgba(129,140,248,.85)', axis:'rgba(231,238,249,.35)', axisTxt:'#aebed6', dotHalo:'rgba(45,212,191,.18)', dot:'#2dd4bf', dotRing:'#0e1525'}
+        : {bg:'#ffffff', grid:'rgba(15,27,45,.08)', zoneF:'rgba(13,148,136,.12)', zoneS:'rgba(13,148,136,.6)', phMain:'rgba(79,70,229,.55)', phFaint:'rgba(79,70,229,.28)', phLbl:'rgba(79,70,229,.85)', axis:'rgba(15,27,45,.35)', axisTxt:'#475569', dotHalo:'rgba(13,148,136,.16)', dot:'#0d9488', dotRing:'#ffffff'};
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const width = Math.max(320, Math.round(rect.width * dpr));
+      const height = Math.max(230, Math.round(rect.height * dpr));
+      if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      const W = rect.width, H = rect.height, m = {l:48,r:18,t:18,b:38};
+      const pw=W-m.l-m.r, ph=H-m.t-m.b;
+      const x = (pco2) => m.l + (pco2-10)/(90)*pw;
+      const y = (hco3) => m.t + ph - (hco3-2)/(48)*ph;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1;
+      for(let p=20;p<=100;p+=20){ctx.beginPath();ctx.moveTo(x(p),m.t);ctx.lineTo(x(p),m.t+ph);ctx.stroke();}
+      for(let b=10;b<=50;b+=10){ctx.beginPath();ctx.moveTo(m.l,y(b));ctx.lineTo(m.l+pw,y(b));ctx.stroke();}
+      ctx.fillStyle=C.zoneF; ctx.fillRect(x(35),y(26),x(45)-x(35),y(22)-y(26));
+      ctx.strokeStyle=C.zoneS; ctx.strokeRect(x(35),y(26),x(45)-x(35),y(22)-y(26));
+      const phLines=[7.2,7.35,7.45,7.6];
+      phLines.forEach((pH,i)=>{
+        ctx.beginPath(); let started=false;
+        for(let p=10;p<=100;p+=1){const b=.03*p*Math.pow(10,pH-6.1); if(b>=2&&b<=50){ if(!started){ctx.moveTo(x(p),y(b));started=true}else ctx.lineTo(x(p),y(b)); }}
+        ctx.strokeStyle=i===1||i===2?C.phMain:C.phFaint; ctx.lineWidth=i===1||i===2?1.8:1; ctx.stroke();
+        const labelP=92, labelB=.03*labelP*Math.pow(10,pH-6.1);
+        if(labelB>=2&&labelB<=50){ctx.fillStyle=C.phLbl;ctx.font='10px "IBM Plex Mono",system-ui';ctx.fillText(`pH ${pH}`,x(labelP)-34,y(labelB)-4);}
+      });
+      ctx.strokeStyle=C.axis;ctx.beginPath();ctx.moveTo(m.l,m.t);ctx.lineTo(m.l,m.t+ph);ctx.lineTo(m.l+pw,m.t+ph);ctx.stroke();
+      ctx.fillStyle=C.axisTxt;ctx.font='11px "IBM Plex Mono",system-ui';ctx.textAlign='center';
+      [20,40,60,80,100].forEach(p=>ctx.fillText(p,x(p),H-18));
+      ctx.fillText('PaCO₂ (mm Hg)',m.l+pw/2,H-3);
+      ctx.save();ctx.translate(13,m.t+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText('HCO₃⁻ (mEq/L)',0,0);ctx.restore();
+      ctx.textAlign='right';[10,20,30,40,50].forEach(b=>ctx.fillText(b,m.l-8,y(b)+4));
+      const px=x(clamp(v.pco2,10,100)), py=y(clamp(v.hco3,2,50));
+      ctx.beginPath();ctx.arc(px,py,11,0,Math.PI*2);ctx.fillStyle=C.dotHalo;ctx.fill();
+      ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fillStyle=C.dot;ctx.fill();ctx.strokeStyle=C.dotRing;ctx.lineWidth=1.5;ctx.stroke();
+    }
+
+    function renderSteps(v, primary, comp, ag, delta, calcPH, diff) {
+      const steps = [
+        `<strong>Check pH:</strong> ${v.ph.toFixed(2)} is ${primary.state === 'normal' ? 'within the conventional reference range' : primary.state}.`,
+        `<strong>Identify the driver:</strong> ${primary.main}.`,
+        `<strong>Check compensation:</strong> ${comp.main}.`,
+        `<strong>Calculate AG:</strong> ${round(ag.raw,1)} raw and ${round(ag.corrected,1)} after albumin correction.`,
+        `<strong>Look for hidden disorders:</strong> ${delta.main}.`,
+        `<strong>Verify consistency:</strong> Henderson–Hasselbalch predicts pH ${round(calcPH,2)} (${diff <= .03 ? 'close to measured' : 'discordant with measured'}).`
+      ];
+      $('teachingSteps').innerHTML = steps.map(s=>`<div class="step">${s}</div>`).join('');
+    }
+
+    function update() {
+      updatePHLock();
+      const v = getValues();
+      const calcPH = hhPH(v.pco2, v.hco3), diff = Math.abs(v.ph - calcPH);
+      const primary = primaryInterpretation(v), comp = compensation(v, primary), ag = anionGap(v), delta = deltaAnalysis(v, ag);
+
+      $('phDisplay').textContent=v.ph.toFixed(2); $('pco2Display').textContent=round(v.pco2,0); $('hco3Display').textContent=round(v.hco3,0);
+      $('phCard').className='abg-value '+valueTone(v.ph,7.35,7.45,false);
+      $('pco2Card').className='abg-value '+valueTone(v.pco2,35,45,true);
+      $('hco3Card').className='abg-value '+valueTone(v.hco3,22,26,false);
+
+      const marker=((clamp(v.ph,6.8,7.8)-6.8)/1.0)*100; $('phPointer').style.left=`${marker}%`; $('phAxisLabel').textContent=v.ph.toFixed(2);
+      $('statusTitle').textContent = primary.state === 'acidemia' ? 'Acidemia' : primary.state === 'alkalemia' ? 'Alkalemia' : 'pH within normal range';
+      $('statusSubtitle').textContent = primary.state === 'normal' ? 'A normal pH does not exclude a mixed acid–base disorder.' : primary.main;
+      const critical = v.ph < 7.10 || v.ph > 7.60; $('statusBanner').classList.toggle('critical',critical); $('statusKicker').textContent=critical?'Marked pH abnormality':'Overall pH';
+
+      const consistent=diff<=.03; $('consistencyPill').textContent=consistent?`H–H match (${round(calcPH,2)})`:`Check values: H–H ${round(calcPH,2)}`; $('consistencyPill').className=`pill ${consistent?'pill-good':'pill-bad'}`;
+
+      $('primaryMain').textContent=primary.main; $('primaryDetail').textContent=primary.detail; $('primaryPill').textContent=primary.state==='normal'?'Normal pH':primary.state; $('primaryPill').className=`pill ${primary.state==='normal'?'pill-info':primary.state==='acidemia'?'pill-bad':'pill-warn'}`;
+      $('compMain').textContent=comp.main; $('compDetail').textContent=comp.detail; $('compPill').textContent=comp.pill; $('compPill').className=`pill ${comp.pillClass}`; $('compEquation').style.display=comp.equation?'inline-block':'none'; $('compEquation').textContent=comp.equation;
+
+      $('agMain').textContent=`AG ${round(ag.raw,1)} mEq/L`;
+      $('agDetail').textContent=`Albumin-corrected AG: ${round(ag.corrected,1)} mEq/L (albumin ${round(v.albumin,1)} g/dL).`;
+      $('agPill').textContent=ag.category==='high'?'Elevated':ag.category==='low'?'Low':'Normal'; $('agPill').className=`pill ${ag.category==='normal'?'pill-good':ag.category==='high'?'pill-bad':'pill-warn'}`;
+
+      $('deltaMain').textContent=delta.main; $('deltaDetail').textContent=delta.detail; $('deltaPill').textContent=delta.label; $('deltaPill').className=`pill ${delta.cls}`;
+      renderSteps(v,primary,comp,ag,delta,calcPH,diff); drawMap(v);
+    }
+
+    [['phNum','phRange'],['pco2Num','pco2Range'],['hco3Num','hco3Range']].forEach(([num,range])=>{
+      $(num).addEventListener('input',()=>{syncPair(num,range,'num');$('preset').value='custom';update();});
+      $(range).addEventListener('input',()=>{syncPair(num,range,'range');$('preset').value='custom';update();});
+    });
+    ['na','cl','albumin','lactate','timeCourse'].forEach(id=>$(id).addEventListener('input',()=>{$('preset').value='custom';update();}));
+    $('linkPH').addEventListener('change',()=>{updatePHLock();update();});
+    $('preset').addEventListener('change',e=>{ if(e.target.value!=='custom') setABG(presets[e.target.value],e.target.value); });
+    $('resetBtn').addEventListener('click',()=>setABG(presets.normal,'normal'));
+    window.addEventListener('resize',()=>drawMap(getValues()));
+
+    document.querySelectorAll('.mode-tab').forEach(tab=>tab.addEventListener('click',()=>{
+      document.querySelectorAll('.mode-tab').forEach(t=>{t.classList.toggle('active',t===tab);t.setAttribute('aria-selected',t===tab?'true':'false');});
+      const challenge=tab.dataset.mode==='challenge'; $('simulatorMode').classList.toggle('hidden',challenge); $('challengeMode').classList.toggle('active',challenge);
+      if(challenge) renderChallenge(); else setTimeout(()=>drawMap(getValues()),0);
+    }));
+
+    function renderChallenge() {
+      const p=presets[currentChallenge.key];
+      $('caseTag').textContent=currentChallenge.tag; $('caseStem').textContent=currentChallenge.stem;
+      $('casePH').textContent=p.ph.toFixed(2); $('casePCO2').textContent=p.pco2; $('caseHCO3').textContent=p.hco3;
+      $('caseLabs').textContent=`Na ${p.na} · Cl ${p.cl} · albumin ${p.albumin.toFixed(1)} g/dL · lactate ${p.lactate.toFixed(1)} mmol/L`;
+      $('quizPH').value=''; $('quizPrimary').value=''; $('quizAG').value=''; $('quizFeedback').className='feedback'; $('quizFeedback').innerHTML='';
+      $('scoreText').textContent=`${score.correct} / ${score.total}`;
+    }
+    $('newCaseBtn').addEventListener('click',()=>{let next; do{next=challengeCases[Math.floor(Math.random()*challengeCases.length)]}while(next===currentChallenge&&challengeCases.length>1); currentChallenge=next; renderChallenge();});
+    $('loadCaseBtn').addEventListener('click',()=>{setABG(presets[currentChallenge.key],currentChallenge.key);document.querySelector('[data-mode="simulator"]').click();});
+    $('submitQuizBtn').addEventListener('click',()=>{
+      const ans=currentChallenge.answer; const picks={ph:$('quizPH').value,primary:$('quizPrimary').value,ag:$('quizAG').value};
+      if(!picks.ph||!picks.primary||!picks.ag){$('quizFeedback').className='feedback show partial';$('quizFeedback').textContent='Choose an answer for all three fields.';return;}
+      const hits=[picks.ph===ans.ph,picks.primary===ans.primary,picks.ag===ans.ag]; const n=hits.filter(Boolean).length; score.total++;
+      if(n===3) score.correct++;
+      const p=presets[currentChallenge.key]; const analysis=primaryInterpretation(p); const ag=anionGap(p); const delta=deltaAnalysis(p,ag); const comp=compensation({...p,timeCourse:p.time||'auto'},analysis);
+      $('scoreText').textContent=`${score.correct} / ${score.total}`;
+      $('quizFeedback').className=`feedback show ${n===3?'correct':'partial'}`;
+      $('quizFeedback').innerHTML=`<strong>${n===3?'Correct.':`${n}/3 components correct.`}</strong><br>${analysis.main}. ${comp.main}. Corrected AG ${round(ag.corrected,1)} mEq/L. ${delta.main}.`;
+    });
+
+    $('formulaBtn').addEventListener('click',()=>$('formulaDialog').showModal()); $('closeDialog').addEventListener('click',()=>$('formulaDialog').close());
+    $('formulaDialog').addEventListener('click',e=>{if(e.target===$('formulaDialog'))$('formulaDialog').close();});
+
+    setABG(presets.normal,'normal');
+    renderChallenge();
+  </script>
+
+  <script>
+    /* Theme — follow the device until the user overrides, matching the simulator family. */
+    (function(){
+      var ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+      var ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8 8 0 1 1 11.2 3a6 6 0 0 0 9.8 9.8z"/></svg>';
+      var body=document.body, iconEl=document.getElementById('theme-icon'), txtEl=document.getElementById('theme-txt');
+      var userPicked=false;
+      var mq=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+      function applyTheme(t){
+        body.setAttribute('data-theme', t);
+        if(iconEl) iconEl.innerHTML=(t==='dark')?ICON_SUN:ICON_MOON;
+        if(txtEl) txtEl.textContent=(t==='dark')?'Light':'Dark';
+        try { drawMap(getValues()); } catch(e){}
+      }
+      applyTheme(mq && mq.matches ? 'dark' : 'light');
+      if(mq){ var onChange=function(e){ if(!userPicked) applyTheme(e.matches?'dark':'light'); };
+        if(mq.addEventListener) mq.addEventListener('change', onChange); else if(mq.addListener) mq.addListener(onChange); }
+      var btn=document.getElementById('theme-btn');
+      if(btn) btn.addEventListener('click', function(){ userPicked=true; applyTheme(body.getAttribute('data-theme')==='dark'?'light':'dark'); });
+    })();
+  </script>
+
+  <script>
+    /* Report content height to a parent frame so the vent-book embed can auto-size. */
+    (function(){
+      function postHeight(){
+        var h = Math.ceil(document.documentElement.scrollHeight);
+        try { parent.postMessage({ type: 'abg-sim-height', height: h }, '*'); } catch (e) {}
+      }
+      window.addEventListener('load', function(){ postHeight(); setTimeout(postHeight, 120); });
+      window.addEventListener('resize', postHeight);
+      document.addEventListener('click', function(){ setTimeout(postHeight, 80); });
+      if (typeof ResizeObserver !== 'undefined') { new ResizeObserver(postHeight).observe(document.body); }
+    })();
+  </script>
+</body>
+</html>
