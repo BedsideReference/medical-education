@@ -6504,8 +6504,17 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         var polls = 0, timer = setInterval(function(){ polls++; measure(); if (polls > 40) clearInterval(timer); }, 500);
         if (typeof ResizeObserver !== 'undefined'){ new ResizeObserver(function(){ if (!measure()) estimate(); }).observe(iframe); }
         // Cross-origin fallback: the simulator posts its own content height.
+        // Guard against A/B/A scrollbar oscillation by locking to the larger value.
+        var recent = [];
         window.addEventListener('message', function(e){
-          if (e && e.data && e.data.type === 'abg-sim-height' && typeof e.data.height === 'number'){ setH(e.data.height + 8); }
+          if (!(e && e.data && e.data.type === 'abg-sim-height' && typeof e.data.height === 'number')) return;
+          var h = e.data.height + 8;
+          recent.push(h); if (recent.length > 4) recent.shift();
+          var n = recent.length;
+          if (n >= 3 && recent[n-1] === recent[n-3] && recent[n-1] !== recent[n-2]) {
+            h = Math.max(recent[n-1], recent[n-2]);   // oscillating — settle on the taller frame
+          }
+          setH(h);
         });
       })();
     </script>
