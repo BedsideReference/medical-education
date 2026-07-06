@@ -4397,7 +4397,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       A–a normal = age/4 + 4 (room air; underestimates on supplemental O₂).
       MP (VC) = 0.098 × RR × VT × (PIP − ½ΔP); MP (PC) = 0.098 × RR × VT × (PEEP + ΔP).
       CaO₂ = 1.34·Hb·SaO₂ + 0.003·PaO₂. ROX = (SpO₂/FiO₂)/RR.
-      Vd/Vt = (PaCO₂ − PēCO₂)/PaCO₂ (PēCO₂ = mixed expired; ETCO₂ only approximates it). OI = MAP × FiO₂ × 100 / PaO₂. DO₂ = CO × CaO₂ × 10.
+      Vd/Vt = (PaCO₂ − PēCO₂)/PaCO₂ (PēCO₂ = mixed expired; ETCO₂ only approximates it). OI = MAP × FiO₂ × 100 / PaO₂. DO₂ = CO × CaO₂.
       <strong>P<sub>L,insp</sub></strong> = Pplat − P<sub>esoph,insp</sub>;
       <strong>P<sub>L,exp</sub></strong> = PEEP − P<sub>esoph,exp</sub>.
       <strong>R<sub>aw</sub></strong> = (PIP − P<sub>plat</sub>) / flow (L/s). τ = R<sub>aw</sub> × C<sub>stat</sub> (in L/cmH₂O); T<sub>e</sub> ≥ 3τ avoids air-trapping.
@@ -4500,7 +4500,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li><strong>Anticipated decline</strong> — flail chest, escalating sepsis, expanding intracranial process, agitated patient with worsening trajectory. Intubate proactively when the trajectory is bad, not after the patient codes.</li>
   </ol>
 
-  <div class="phys"><strong>Physiology note</strong>The PaO₂/FiO₂ ratio (P/F) is the most-used hypoxemia index because it normalizes for FiO₂. Caveat: P/F is sensitive to PEEP and barometric pressure; the SpO₂/FiO₂ ratio (S/F) is a non-invasive surrogate (S/F ≈ 0.5 × P/F + 100) used in the 2024 Global Definition of ARDS.<sup class="cite"><a href="#r1">1</a></sup></div>
+  <div class="phys"><strong>Physiology note</strong>The PaO₂/FiO₂ ratio (P/F) is the most-used hypoxemia index because it normalizes for FiO₂ (arterial PaO₂ in mmHg ÷ FiO₂ as a fraction — e.g., 90 mmHg ÷ 0.5 = 180). Caveat: P/F is sensitive to PEEP and barometric pressure; the SpO₂/FiO₂ ratio (S/F) is a non-invasive surrogate (S/F ≈ 0.5 × P/F + 100) used in the 2024 Global Definition of ARDS.<sup class="cite"><a href="#r1">1</a></sup></div>
 
   <div class="pearl"><strong>Before you tube — NIV and HFNC are first-line for two specific phenotypes</strong>Not every patient on this list needs an endotracheal tube. <em>High-flow nasal cannula (HFNC)</em> is first-line for hypoxemic failure with preserved respiratory drive — the FLORALI trial showed a mortality benefit over standard O₂ in immunocompetent hypoxemic patients.<sup class="cite"><a href="#r41">41</a></sup> <em>Bilevel positive airway pressure (BiPAP)</em> is first-line for acute hypercapnic COPD exacerbation<sup class="cite"><a href="#r46">46</a></sup> and cardiogenic pulmonary edema.<sup class="cite"><a href="#r47">47</a></sup> The decision algorithm — when to trial NIV/HFNC and when to proceed straight to intubation — lives in <a class="xref" href="#c34" data-xref-chap="34">§34</a>. Detailed NIV/HFNC physiology and settings: <a class="xref" href="#c33" data-xref-chap="33">§33</a>.</div>
 
@@ -4602,7 +4602,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <caption>Standard adult lung volumes (sitting, healthy)</caption>
     <thead><tr><th>Term</th><th>What it is</th><th>Typical value</th></tr></thead>
     <tbody>
-      <tr><td><strong>V<sub>T</sub> — tidal volume</strong></td><td>Air moved per breath</td><td>~500 mL (6 mL/kg PBW)</td></tr>
+      <tr><td><strong>V<sub>T</sub> — tidal volume</strong></td><td>Air moved per breath</td><td>~500 mL (6 mL/kg predicted body weight, PBW)</td></tr>
       <tr><td><strong>IRV — inspiratory reserve</strong></td><td>Extra you could breathe in above V<sub>T</sub></td><td>~3000 mL</td></tr>
       <tr><td><strong>ERV — expiratory reserve</strong></td><td>Extra you could push out below V<sub>T</sub></td><td>~1100 mL</td></tr>
       <tr><td><strong>RV — residual volume</strong></td><td>Air left after maximal expiration (can’t exhale)</td><td>~1200 mL</td></tr>
@@ -4668,7 +4668,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>Dalton</strong></td><td>The total pressure of a gas mixture = the sum of its partial pressures</td><td>The <em>foundation</em> of the alveolar gas equation. PAO₂ depends only on what fraction of the inspired mix is O₂ (FiO₂) and how much PaCO₂ has displaced it.</td></tr>
       <tr><td><strong>Henry</strong></td><td>Dissolved gas concentration ∝ partial pressure × solubility</td><td>O₂’s solubility is tiny (0.003 mL/dL/mmHg) — that’s why the dissolved-O₂ term in CaO₂ contributes &lt; 2% of arterial content at a normal Hb. CO₂’s solubility is 24× higher — that’s why even small ventilation changes move PaCO₂ fast.</td></tr>
       <tr><td><strong>Fick</strong> <em>(diffusion)</em></td><td>Diffusion rate ∝ (Area × ΔP) / Thickness, scaled by the gas’s diffusion coefficient D</td><td>Healthy alveolar membrane is thin and the area is huge — diffusion is rarely rate-limiting. Disease shrinks area (emphysema), thickens the membrane (fibrosis), or both — and you see this as a fall in DLCO long before resting hypoxemia appears.</td></tr>
-      <tr><td><strong>Graham</strong> <em>(effusion / relative diffusivity)</em></td><td>Relative diffusion rate of two gases ∝ 1 / √MW</td><td>CO₂ has a much higher diffusion coefficient than O₂ (heavier molecule but ~24× more soluble — Henry dominates Graham here) — that’s why CO₂ retention almost always reflects ventilation, not diffusion, and why even severe diffusion-limited disease shows hypoxemia long before hypercapnia.</td></tr>
+      <tr><td><strong>Graham</strong> <em>(effusion / relative diffusivity)</em></td><td>Relative diffusion rate of two gases ∝ 1 / √MW</td><td>CO₂ diffuses through tissue far faster than O₂ despite being the heavier molecule, because it is ~24× more soluble — Henry’s-law solubility outweighs the Graham’s-law size penalty — that’s why CO₂ retention almost always reflects ventilation, not diffusion, and why even severe diffusion-limited disease shows hypoxemia long before hypercapnia.</td></tr>
     </tbody>
   </table>
   <div class="phys"><strong>Why this section is here</strong>Every later equation — alveolar gas, shunt fraction, oxygen content, the equation of motion — is just one or more of these four laws written in clinical units. If the algebra later feels arbitrary, it isn’t; it traces back to one of these four lines.</div>
@@ -5023,7 +5023,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <ul>
     <li><strong>Why proning works (§20.5, §31):</strong> dorsal lung in supine ARDS is atelectatic and locally hypoxic; HPV diverts blood away to ventral lung. Once prone, the dorsal lung re-aerates → HPV releases → blood returns to the now-better-ventilated dependent regions. V/Q matching improves regardless of any change in vent settings.</li>
     <li><strong>Why iNO works (§20.7):</strong> inhaled nitric oxide reaches only the alveoli that <em>are</em> ventilated, where it diffuses into adjacent capillaries and selectively dilates them — overcoming HPV in good units, redistributing flow toward them, and dropping PVR. NO inhaled into a shunt unit goes nowhere because there’s no gas exchange there.</li>
-    <li><strong>Why hyperoxia raises PaCO₂ in COPD (§21.6):</strong> three mechanisms contribute, in roughly descending order of magnitude. (1) <em>V/Q redistribution</em> — high FiO₂ raises alveolar PO₂ in poorly-ventilated regions, releasing HPV → blood flows there → those regions become high-V/Q dead space → effective alveolar ventilation drops → PaCO₂ rises. (2) <em>Haldane effect</em> — oxygenated hemoglobin holds less CO₂, so raising SaO₂ shifts CO₂ off Hb into plasma and raises measured PaCO₂ at any given V̇<sub>A</sub>. (3) <em>A small reduction in minute ventilation</em> from blunted central / peripheral chemoreceptor drive — historically called “loss of hypoxic drive,” it is real but contributes only modestly to the rise in PaCO₂ in most patients.</li>
+    <li><strong>Why hyperoxia raises PaCO₂ in COPD (§21.6):</strong> three mechanisms contribute, in roughly descending order of magnitude. (1) <em>V/Q redistribution</em> — high FiO₂ raises alveolar PO₂ in poorly-ventilated regions, releasing the hypoxic pulmonary vasoconstriction that had been diverting blood away from them; perfusion now returns to these low-V/Q units and is stolen from the better-ventilated ones, which become high-V/Q (dead-space-like). Overall V/Q matching worsens, effective alveolar ventilation for CO₂ falls → PaCO₂ rises. (2) <em>Haldane effect</em> — oxygenated hemoglobin holds less CO₂, so raising SaO₂ shifts CO₂ off Hb into plasma and raises measured PaCO₂ at any given V̇<sub>A</sub>. (3) <em>A small reduction in minute ventilation</em> from blunted central / peripheral chemoreceptor drive — historically called “loss of hypoxic drive,” it is real but contributes only modestly to the rise in PaCO₂ in most patients.</li>
     <li><strong>Why severe lung disease causes pulmonary hypertension and cor pulmonale:</strong> chronic widespread alveolar hypoxia → sustained HPV → vascular remodeling → fixed pulm HTN → RV failure (§25).</li>
     <li><strong>Why high-altitude pulmonary edema happens:</strong> hypoxia-induced HPV is heterogeneous; over-perfused non-constricted regions overpressurize and leak.</li>
   </ul>
@@ -5052,7 +5052,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <p>where Cc, Ca, Cv = end-capillary, arterial, mixed-venous O₂ content. Bedside estimate: PaO₂/FiO₂ &lt; 200 implies shunt &gt; ~20%; &lt; 100 implies shunt &gt; ~30%.</p>
   <p>To visualize the Berggren equation mechanically: mixed venous blood (Cv<sub>O₂</sub>) enters the pulmonary circulation and splits into two streams. The shunt fraction Q<sub>s</sub> bypasses gas exchange entirely — it traverses collapsed, flooded, or consolidated alveoli and exits with the same low O₂ content it arrived with. The remaining fraction passes through ventilated alveoli, equilibrates with alveolar gas, and exits as end-pulmonary-capillary blood (Cc<sub>O₂</sub>). These two streams then recombine to produce arterial blood (Ca<sub>O₂</sub>). The numerator of the shunt equation — Cc<sub>O₂</sub> − Ca<sub>O₂</sub> — is the oxygen the shunt fraction should have acquired but did not, diluting the oxygenated stream. The denominator — Cc<sub>O₂</sub> − Cv<sub>O₂</sub> — is the oxygen each unit of fully-oxygenated blood actually picks up. Their ratio is the shunt fraction Q<sub>s</sub>/Q<sub>t</sub>.</p>
 
-  <div class="phys"><strong>Worked example — Berggren with numbers</strong>ARDS patient on FiO₂ 1.0. ABG: PaO₂ 90, SaO₂ 97%; Hb 12; mixed-venous SvO₂ 65%.<br>
+  <div class="phys"><strong>Worked example — Berggren with numbers</strong>ARDS patient on FiO₂ 1.0. ABG: PaO₂ 90, SaO₂ 97%; Hb 12; mixed-venous SvO₂ 65% (assume mixed-venous PO₂ ≈ 40 mmHg, the normal value, since only SvO₂ was measured).<br>
     <strong>Compute oxygen contents</strong> (mL O₂/dL, using 1.34 × Hb × SaO₂ + 0.003 × PaO₂; dissolved-O₂ term included because PAO₂ is very high on 100% O₂):
     <ul style="margin:6px 0 0;">
       <li>Cc<sub>O₂</sub> (end-pulmonary-capillary, assume SaO₂ ≈ 100% and PAO₂ ≈ 660 on FiO₂ 1.0): 1.34 × 12 × 1.00 + 0.003 × 660 = 16.08 + 1.98 = <strong>18.1</strong></li>
@@ -5238,8 +5238,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     </summary>
 
   <p>Loading oxygen onto blood (<a class="xref" href="#c3-4" data-xref-chap="3">§3.4</a>) accomplishes nothing until that blood reaches tissue. The quantity that actually matters to the cell is <strong>oxygen delivery (DO₂)</strong> — content multiplied by the flow that carries it:</p>
-  <p><strong>DO₂ = cardiac output × CaO₂ × 10</strong>&nbsp; where &nbsp;<strong>CaO₂ = (1.34 × Hb × SaO₂) + (0.003 × PaO₂)</strong>.</p>
-  <p class="subtle" style="font-size:13.5px;color:var(--muted);">The <strong>× 10</strong> is only a unit conversion: CaO₂ is expressed per <em>deciliter</em> (mL O₂/dL) while cardiac output is in <em>liters</em> per minute, and 1 L = 10 dL — so the 10 reconciles the two and returns DO₂ in mL O₂/min. Sanity check: CO 5 L/min × CaO₂ ~20 mL/dL × 10 ≈ 1000 mL/min.</p>
+  <p><strong>DO₂ = cardiac output × CaO₂</strong>&nbsp; where &nbsp;<strong>CaO₂ = (1.34 × Hb × SaO₂) + (0.003 × PaO₂)</strong>.</p>
   <p>Written this way, delivery has <em>three</em> levers — cardiac output, hemoglobin, and saturation — and the ventilator only touches the last one. Worse, saturation is the <em>weakest</em> lever once the patient is on the flat top of the oxyhemoglobin curve (<a class="xref" href="#c3-5" data-xref-chap="3">§3.5</a>): above SaO₂ ~90%, adding FiO₂ to push PaO₂ from 80 to 120 buys a trivial amount of content, because saturation is already near-maximal and dissolved O₂ (the 0.003 × PaO₂ term) is negligible.</p>
 
   <table>
@@ -5565,10 +5564,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   </div>
 
   <p><strong>Anatomic dead space</strong> ≈ 2 mL/kg (~150 mL adult). <strong>Physiologic dead space</strong> = anatomic + alveolar; the alveolar component rises in pulmonary embolism (PE), low-output states, high PEEP, hyperinflation, and ARDS.</p>
-  <div class="pearl"><strong>Apparatus dead space — the bedside lever you can actually adjust</strong>Dead space added by the circuit itself — HME (heat-and-moisture exchanger), Y-piece, connectors, catheter mount, and the ETT lumen distal to the carina — totals ~ 50–100 mL on most setups and is the only dead-space compartment under direct clinical control. In a 70-kg adult on 6 mL/kg PBW (V<sub>T</sub> ≈ 360 mL), a single 60-mL HME wastes ~ 17% of every breath as rebreathed gas — V̇<sub>A</sub> falls, PaCO₂ climbs, and the patient compensates with a higher RR (which then erodes T<sub>e</sub> and drives auto-PEEP in obstructive disease). Whenever PaCO₂ rises out of proportion to the set V̇<sub>E</sub>, look at the circuit before changing the vent: switching from an HME to heated humidification, shortening the catheter mount, or removing inline filters typically buys back 30–60 mL of V<sub>T</sub> per breath. See also <a class="xref" href="#c37" data-xref-chap="37">§37</a> on humidification choices.</div>
+  <div class="pearl"><strong>Apparatus dead space — the bedside lever you can actually adjust</strong>Dead space added by the circuit itself — HME (heat-and-moisture exchanger), Y-piece, connectors, catheter mount, and the ETT lumen distal to the carina — totals ~ 50–100 mL on most setups and is the only dead-space compartment under direct clinical control. In an adult on 6 mL/kg PBW (V<sub>T</sub> ≈ 360 mL), a single 60-mL HME wastes ~ 17% of every breath as rebreathed gas — V̇<sub>A</sub> falls, PaCO₂ climbs, and the patient compensates with a higher RR (which then erodes T<sub>e</sub> and drives auto-PEEP in obstructive disease). Whenever PaCO₂ rises out of proportion to the set V̇<sub>E</sub>, look at the circuit before changing the vent: switching from an HME to heated humidification, shortening the catheter mount, or removing inline filters typically buys back 30–60 mL of V<sub>T</sub> per breath. See also <a class="xref" href="#c37" data-xref-chap="37">§37</a> on humidification choices.</div>
   <p>The <strong>Bohr-Enghoff dead-space equation</strong> at the bedside:</p>
   <div class="eq">$$\frac{V_d}{V_T} \;=\; \frac{P_aCO_2 - P_{\bar{e}}CO_2}{P_aCO_2}$$</div>
-  <p>where P<sub>ē</sub>CO₂ is mixed expired CO₂ (volumetric capnography). Normal V<sub>d</sub>/V<sub>T</sub> is 0.20–0.40; values > 0.6 predict difficulty weaning and worse ARDS outcomes (Nuckton 2002).<sup class="cite"><a href="#r29">29</a></sup> The arterial-to-end-tidal CO₂ gap, P(a−et)CO₂, is a clinical surrogate when full volumetric capnography isn’t available.</p>
+  <p>where P<sub>ē</sub>CO₂ is mixed expired CO₂ — the average CO₂ across the <em>whole</em> exhaled breath (diluted by dead-space gas), which is why it is lower than end-tidal CO₂ (volumetric capnography). Normal V<sub>d</sub>/V<sub>T</sub> is 0.20–0.40; values > 0.6 predict difficulty weaning and worse ARDS outcomes (Nuckton 2002).<sup class="cite"><a href="#r29">29</a></sup> The arterial-to-end-tidal CO₂ gap, P(a−et)CO₂, is a clinical surrogate when full volumetric capnography isn’t available.</p>
   <div class="pitfall"><strong>The PEEP / dead-space tradeoff</strong>Every increment of PEEP recruits some alveoli (good — fewer shunt units) but compresses pulmonary capillaries in already-open zones (bad — more dead space). When PaCO₂ rises after a PEEP increase, you’ve crossed into over-distension. The ETCO₂ trace is your real-time monitor.</div>
 
   <h5>4.1a CO₂ kinetics at the bedside — what changes VCO₂</h5>
@@ -6154,7 +6153,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <ul>
     <li><strong>Central chemoreceptors</strong> (medullary surface) sense CSF pH, which tracks PaCO₂ via free diffusion of CO₂ across the blood-brain barrier. This is the dominant minute-to-minute drive in health.</li>
     <li><strong>Peripheral chemoreceptors</strong> (carotid + aortic bodies) sense PaO₂, PaCO₂, and pH. They become the dominant drive when PaO₂ &lt; 60 mmHg, in chronic CO₂ retention, and when central drive is depressed (sedation, hypothyroidism).</li>
-    <li><strong>Stretch receptors</strong> (Hering-Breuer reflex) terminate inspiration at large lung volumes — the Cushing-like reflex behind some asynchrony.</li>
+    <li><strong>Stretch receptors</strong> (Hering-Breuer reflex) terminate inspiration at large lung volumes — a reflex that contributes to some patient–ventilator asynchrony.</li>
   </ul>
   <p>In the ICU, the implications are practical: <strong>over-sedation suppresses central drive</strong> (RR drops, PaCO₂ rises, dyssynchrony with the vent appears as missed triggers); <strong>metabolic acidosis</strong> drives a tachypneic respiratory compensation that the vent must accommodate (high-rate alarm misuse causes auto-PEEP); <strong>chronic CO₂ retention</strong> resets central thresholds — overzealous correction back to normal PaCO₂ causes alkalosis-induced hypoventilation when sedated.</p>
   <div class="pearl"><strong>The chronic CO₂ retainer’s vent</strong>For a COPD patient with baseline PaCO₂ 60, target PaCO₂ at <em>their</em> baseline, not 40. Acute correction to 40 produces metabolic alkalosis, hypokalemia, weakness, and seizure risk (Owens, Hess).<sup class="cite"><a href="#r30">30</a></sup></div>
@@ -6316,7 +6315,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td>Chronic respiratory alkalosis</td><td>HCO₃⁻ falls ~4–5 mEq/L per 10-mmHg fall in PaCO₂</td></tr>
       <tr><td>Anion gap</td><td>AG = Na⁺ − (Cl⁻ + HCO₃⁻); corrected AG = AG + 2.5 × (4 − albumin g/dL)</td></tr>
       <tr><td>Delta ratio</td><td>(corrected AG − 12) / (24 − HCO₃⁻). &lt; 1 suggests a concurrent normal-gap acidosis; &gt; 2 suggests a concurrent metabolic alkalosis</td></tr>
-      <tr><td>Internal consistency</td><td>Calculated pH = 6.1 + log₁₀ [ HCO₃⁻ / (0.03 × PaCO₂) ] — if it disagrees with the measured pH, suspect a lab or sampling error</td></tr>
+      <tr><td>Internal consistency</td><td>Calculated pH = 6.1 + log₁₀ [ HCO₃⁻ / (0.03 × PaCO₂) ] (0.03 = CO₂ solubility coefficient, mmol/L per mmHg — a different constant from the 0.003 dissolved-O₂ term) — if it disagrees with the measured pH, suspect a lab or sampling error</td></tr>
     </tbody>
   </table>
 
@@ -6835,7 +6834,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <thead><tr><th>Condition</th><th>FRC</th><th>CC</th><th>Mechanism</th></tr></thead>
     <tbody>
       <tr><td>Healthy young, upright</td><td>Normal</td><td>Normal (CC ≪ FRC)</td><td>Tidal breathing well above closing volume; no atelectasis.</td></tr>
-      <tr><td><strong>Aging</strong></td><td>Stable until late decades</td><td><strong>↑ ~ 50 mL per year of life</strong></td><td>Loss of elastin from airway walls and surrounding parenchyma → less radial traction. By age ~ 45 supine, by age ~ 65 upright, CC reaches FRC and tidal breathing dips into the closing zone.</td></tr>
+      <tr><td><strong>Aging</strong></td><td>Stable until late decades</td><td><strong>↑ steadily with age</strong></td><td>Loss of elastin from airway walls and surrounding parenchyma → less radial traction. By age ~ 45 supine, by age ~ 65 upright, CC reaches FRC and tidal breathing dips into the closing zone.</td></tr>
       <tr><td><strong>Smoking, chronic bronchitis, early COPD</strong></td><td>Variable (often ↑ with hyperinflation)</td><td><strong>↑↑</strong> — early</td><td>Mucosal inflammation thickens the airway wall, narrows the lumen, and accelerates the loss of elastin. CC rises long before FEV<sub>1</sub> changes — the small-airway disease that smokers develop in their 30s–40s.</td></tr>
       <tr><td><strong>Asthma / bronchospasm</strong></td><td>↑ (hyperinflation)</td><td><strong>↑↑</strong></td><td>Smooth-muscle constriction + mucosal edema + mucus plugging close the airways at higher lung volumes.</td></tr>
       <tr><td><strong>Obesity</strong></td><td><strong>↓↓ — up to 50%</strong></td><td>≈ Normal at baseline</td><td>The chest-wall (abdominal compartment) compliance falls; supine diaphragm rides higher; ERV is consumed. CC didn’t change but the FRC/CC ratio inverts — tidal breaths now happen inside the closing zone → shunt at rest.</td></tr>
@@ -6890,7 +6889,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   <div class="phys"><strong>The lung-vs-chest-wall ambiguity matters at the bedside</strong>A morbidly obese ARDS patient may have P<sub>plat</sub> 35 not because the lung is on the verge of barotrauma but because the chest wall is heavy and the abdomen pushes the diaphragm up. Pushing P<sub>plat</sub> ≤ 30 by lowering V<sub>T</sub> may under-ventilate that patient. <strong>Esophageal manometry</strong> (<a class="xref" href="#c28" data-xref-chap="28">§28</a>) decomposes P<sub>plat</sub> into transpulmonary pressure (the lung sees) and pleural pressure (the chest wall imposes), telling you which compartment to act on.</div>
 
-  <p><strong>Specific compliance</strong> = C<sub>rs</sub> / FRC. This normalizes for lung size — small lungs always have lower absolute compliance. Specific compliance is approximately constant (~ 0.05/cmH₂O) across mammals; a baby with C<sub>rs</sub> = 5 mL/cmH₂O can have perfectly normal specific compliance. Useful when interpreting low absolute numbers in pediatrics or in the “baby lung” of severe ARDS where only ~ 20% of lung is aerated and the absolute compliance reflects that small recruitable volume, not intrinsic lung stiffness.</p>
+  <p><strong>Specific compliance</strong> = C<sub>rs</sub> / FRC. This normalizes for lung size — small lungs always have lower absolute compliance. Specific compliance is approximately constant (≈ 0.05 cmH₂O⁻¹ — with C<sub>rs</sub> and FRC in the same volume units, so the ratio is dimensionless per cmH₂O) across mammals; a baby with C<sub>rs</sub> = 5 mL/cmH₂O can have perfectly normal specific compliance. Useful when interpreting low absolute numbers in pediatrics or in the “baby lung” of severe ARDS where only ~ 20% of lung is aerated and the absolute compliance reflects that small recruitable volume, not intrinsic lung stiffness.</p>
 
   <div class="pearl"><strong>Track C<sub>stat</sub> day to day</strong>The single most useful trended number on the vent. A falling C<sub>stat</sub> with stable resistance is the lung becoming stiffer — evolving ARDS, edema, fibrosis, atelectasis. A rising C<sub>stat</sub> is improvement (or, less commonly, derecruitment of overdistended lung after PEEP reduction). Driving pressure (P<sub>plat</sub> − PEEP) is C<sub>stat</sub>’s mirror image: ΔP = V<sub>T</sub> / C<sub>stat</sub>.</div>
   </details>
@@ -7146,7 +7145,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <p>Only β changes shape; <em>a</em> and <em>c</em> set the absolute pressure scale but not the curvature. Three values of β matter at the bedside:</p>
 
   <div class="figure">
-    <svg class="anim-fig" viewBox="0 0 900 320" role="img" aria-label="Three pressure-time scalars during constant-flow VC inspiration: concave-up (stress index less than 1, ongoing recruitment), linear (stress index ≈ 1, matched compliance), and convex-up (stress index greater than 1, overdistension). Each panel shows the actual pressure curve in solid color and the straight reference line dashed." style="max-width:900px; width:100%; height:auto; display:block; margin:0 auto;">
+    <svg class="anim-fig" viewBox="0 0 900 320" role="img" aria-label="Three pressure-time scalars during constant-flow VC inspiration: concave-down (stress index less than 1, ongoing recruitment), linear (stress index ≈ 1, matched compliance), and concave-up (stress index greater than 1, overdistension). Each panel shows the actual pressure curve in solid color and the straight reference line dashed." style="max-width:900px; width:100%; height:auto; display:block; margin:0 auto;">
       <defs>
         <marker id="siArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker>
       </defs>
@@ -7276,8 +7275,8 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4 id="c7-1">7.1 The static P-V loop — anatomy of the curve</h4>
     </summary>
   <div class="figure">
-    <img src="fig_07_01_pv_loop.png" alt="Pressure–volume loop. Y-axis: volume (L). X-axis: pressure (cmH2O). A closed sigmoidal loop with two limbs: the inflation (inspiratory) limb on the bottom and the deflation (expiratory) limb on top, separated by a shaded hysteresis area. Markers indicate the lower inflection point on the inflation limb, the upper inflection point at the start of overdistension, and the beaking plateau near peak airway pressure (Paw). The volume axis is bracketed to show tidal volume (V_T). The pressure axis is divided into four operational zones with colored backgrounds: PEEP (blue), alveolar recruitment and airway resistance (orange), optimal compliance — compliant lung (green), and alveolar overdistension (red)." style="max-width:900px; display:block; margin:0 auto;"/>
-    <div class="cap"><b>Figure 7.1 — The pressure–volume loop.</b> The <strong>inflation (inspiratory) limb</strong> climbs from the origin through the <strong>lower inflection point</strong> — where recruitment is largely complete and the curve steepens into its linear, best-compliance segment — and then through the <strong>upper inflection point</strong> (the start of overdistension) into the flat <strong>“beaking”</strong> plateau at <strong>peak airway pressure (P<sub>aw</sub>)</strong>. The <strong>deflation (expiratory) limb</strong> returns above the inflation limb because surfactant and viscoelastic forces hold alveoli open at lower pressures than were needed to open them; the shaded area between the limbs is <strong>hysteresis</strong> — energy dissipated per cycle. The pressure axis decomposes into four operational zones: <em>PEEP</em>, <em>alveolar recruitment &amp; airway resistance</em>, <em>optimal compliance (compliant lung)</em>, and <em>alveolar overdistension</em>; tidal breaths belong in the third zone (see <a class="xref" href="#c7-5" data-xref-chap="7">§7.5</a> for the bedside corollaries).</div>
+    <img src="fig_07_01_pv_loop.png" alt="Pressure–volume loop. Y-axis: volume (L). X-axis: pressure (cmH2O). A closed sigmoidal loop with two limbs: the inflation (inspiratory) limb on the bottom and the deflation (expiratory) limb on top, separated by a shaded hysteresis area. Markers indicate the lower inflection point on the inflation limb, the upper inflection point at the start of overdistension, and the beaking plateau near peak airway pressure (PIP). The volume axis is bracketed to show tidal volume (V_T). The pressure axis is divided into four operational zones with colored backgrounds: PEEP (blue), alveolar recruitment and airway resistance (orange), optimal compliance — compliant lung (green), and alveolar overdistension (red)." style="max-width:900px; display:block; margin:0 auto;"/>
+    <div class="cap"><b>Figure 7.1 — The pressure–volume loop.</b> The <strong>inflation (inspiratory) limb</strong> climbs from the origin through the <strong>lower inflection point</strong> — where recruitment is largely complete and the curve steepens into its linear, best-compliance segment — and then through the <strong>upper inflection point</strong> (the start of overdistension) into the flat <strong>“beaking”</strong> plateau at <strong>peak airway pressure (PIP)</strong>. The <strong>deflation (expiratory) limb</strong> returns above the inflation limb because surfactant and viscoelastic forces hold alveoli open at lower pressures than were needed to open them; the shaded area between the limbs is <strong>hysteresis</strong> — energy dissipated per cycle. The pressure axis decomposes into four operational zones: <em>PEEP</em>, <em>alveolar recruitment &amp; airway resistance</em>, <em>optimal compliance (compliant lung)</em>, and <em>alveolar overdistension</em>; tidal breaths belong in the third zone (see <a class="xref" href="#c7-5" data-xref-chap="7">§7.5</a> for the bedside corollaries).</div>
   </div>
   </details>
 
@@ -7779,7 +7778,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4 id="c8-5">8.5 Expiration — passive but not silent</h4>
     </summary>
 
-<p>Expiration is set by lung mechanics, not by the ventilator: the elastic recoil of lung + chest wall pushes air out through the resistance of airway + ETT. The shape is exponential decay with time constant τ = R × C (<a class="xref" href="#c6-4" data-xref-chap="6">§6.4</a>).</p>
+<p>Expiration is set by lung mechanics, not by the ventilator: the elastic recoil of lung + chest wall pushes air out through the resistance of airway + ETT. The shape is exponential decay with time constant τ = R × C (resistance × compliance; one τ empties ~63% of the breath, three τ ~95%) (<a class="xref" href="#c6-4" data-xref-chap="6">§6.4</a>).</p>
   <p>What the operator <em>does</em> control:</p>
   <ul>
     <li><strong>PEEP</strong> — the end-expiratory pressure floor.</li>
@@ -7920,7 +7919,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <tbody>
       <tr><td><strong>V<sub>T</sub></strong></td><td>6 mL/kg PBW</td><td>Lung-protective. PBW from height; see <a class="xref" href="#c13-1" data-xref-chap="13">§13.1</a>.</td></tr>
       <tr><td><strong>RR</strong></td><td>14–18</td><td>Match expected V̇<sub>E</sub> for normal metabolism; titrate to PaCO₂.</td></tr>
-      <tr><td><strong>Peak flow</strong></td><td>50–60 L/min, ramp pattern</td><td>Higher = shorter T<sub>i</sub> = longer T<sub>e</sub>. Ramp matches patient demand better than square in most situations.</td></tr>
+      <tr><td><strong>Peak flow</strong></td><td>50–60 L/min; prefer descending ramp</td><td>Higher = shorter T<sub>i</sub> = longer T<sub>e</sub>. A descending ramp matches patient demand better than the constant/square waveform many vents default to (see the flow-starvation pitfall below).</td></tr>
       <tr><td><strong>Flow pattern</strong></td><td>Decelerating (ramp)</td><td>More physiologic; lower peak pressures than square; gentler at end-inspiration.</td></tr>
       <tr><td><strong>I:E</strong></td><td>1:2 to 1:3 default; 1:4–1:5 in obstructive disease</td><td>Allows full exhalation; longer in obstructive lung disease to avoid auto-PEEP.</td></tr>
       <tr><td><strong>PEEP</strong></td><td>5 cmH₂O default; 8–18 in ARDS</td><td>Per ARDSnet ladder for FiO₂ &gt; 0.4; see <a class="xref" href="#c27" data-xref-chap="27">§27</a>.</td></tr>
@@ -7936,7 +7935,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
 <p>The diagnostic power of VC is that the <em>pressure trace</em> is the dependent variable — it draws the lung’s loading curve in real time:</p>
   <ul>
-    <li><strong>Linear pressure ramp during constant-flow inspiration</strong>: optimal compliance, no recruitment, no overdistension. β = 1 stress index. Maintain settings.</li>
+    <li><strong>Linear pressure ramp during constant-flow inspiration</strong>: optimal compliance, no recruitment, no overdistension. β = 1 stress index (curvature of the constant-flow pressure ramp; defined in §6.4.4). Maintain settings.</li>
     <li><strong>Concave-down ramp</strong> (β &lt; 1): continued recruitment with each volume increment — consider raising PEEP. (See <a class="xref" href="#c15-5" data-xref-chap="15">§15.5</a>.)</li>
     <li><strong>Concave-up ramp</strong> (β &gt; 1): overdistension — reduce V<sub>T</sub> first, then PEEP if Pplat still high.</li>
     <li><strong>“Scooped” / concave-down inspiratory limb</strong>: the patient is generating more flow demand than the set rate — flow starvation. Switch to ramp pattern, increase peak flow, or consider PSV. (See <a class="xref" href="#c18-4" data-xref-chap="18">§18.4</a>.)</li>
@@ -8134,7 +8133,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <caption>PS level — what each setting does</caption>
     <thead><tr><th>PS level</th><th>What it means</th><th>Use case</th></tr></thead>
     <tbody>
-      <tr><td><strong>PS 5</strong></td><td>Just enough to overcome ETT resistance (~5 cmH₂O for an 8.0 ETT)</td><td>Minimal support — used during SBT to test for liberation readiness</td></tr>
+      <tr><td><strong>PS 5</strong></td><td>Just enough to overcome ETT resistance (~5–8 cmH₂O depending on tube size)</td><td>Minimal support — used during a spontaneous breathing trial (SBT) to test for liberation readiness</td></tr>
       <tr><td><strong>PS 8–12</strong></td><td>Comfortable spontaneous breathing on the ventilator</td><td>Stable patient who is breathing on their own but not yet ready to extubate</td></tr>
       <tr><td><strong>PS 15–20</strong></td><td>Substantial support; vent doing most of the work</td><td>Recovering patient, transitioning out of A/C; or tachypnea / dyspnea on lower support</td></tr>
       <tr><td><strong>PS &gt; 20</strong></td><td>Approaching A/C-PC equivalence</td><td>The patient probably needs a controlled mode, not PSV</td></tr>
@@ -8243,7 +8242,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <p>A high continuous positive airway pressure (CPAP) at P<sub>high</sub>, interrupted by brief, periodic releases to P<sub>low</sub>. Spontaneous breathing is encouraged throughout. Settings:</p>
   <ul>
     <li><strong>P<sub>high</sub></strong>: 25–30 cmH₂O (titrate to Pplat &lt; 30 if measured during a hold).</li>
-    <li><strong>P<sub>low</sub></strong>: 0 cmH₂O (avoids exhaling against pressure but de-recruitment is prevented by the short T<sub>low</sub>).</li>
+    <li><strong>P<sub>low</sub></strong>: set to 0 cmH₂O — but because T<sub>low</sub> deliberately truncates the release (shorter than the lung’s expiratory time constant), airway pressure never actually falls to 0; a residual intrinsic PEEP of ~5–10 cmH₂O remains and prevents de-recruitment.</li>
     <li><strong>T<sub>high</sub></strong>: 4–6 s (time at P<sub>high</sub>).</li>
     <li><strong>T<sub>low</sub></strong>: 0.4–0.8 s (release time); titrate so expiratory flow terminates at ~75% of peak.</li>
   </ul>
@@ -8561,7 +8560,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   </details>
   <details class="chap-acc" data-acc-id="c13-h4-2" open>
     <summary>
-      <h4 id="c13-2">13.2 Why those numbers? The four mechanisms of ventilator-induced lung injury (VILI)</h4>
+      <h4 id="c13-2">13.2 Why those numbers? The four mechanisms of ventilator-induced lung injury (VILI) — plus P-SILI</h4>
     </summary>
 
 <p>The day-1 settings above are not arbitrary; they’re calibrated to avoid the four ways a ventilator damages a lung:</p>
@@ -8590,7 +8589,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>V<sub>T</sub> / PBW</strong></td><td>≤ 8 mL/kg (ARDS ≤ 6)</td><td>Volutrauma risk; drop V<sub>T</sub></td></tr>
       <tr><td><strong>P<sub>plat</sub></strong></td><td>≤ 30 cmH₂O</td><td>Barotrauma risk; drop V<sub>T</sub> by 1 mL/kg, then consider PEEP</td></tr>
       <tr><td><strong>ΔP</strong> (Pplat − PEEP)</td><td>≤ 15 cmH₂O (Amato 2015)</td><td>Strongest VILI predictor; drop V<sub>T</sub> first, then careful PEEP</td></tr>
-      <tr><td><strong>Mechanical power</strong></td><td>≤ 17 J/min</td><td>Mortality begins to climb above this threshold (Serpa Neto 2018<sup class="cite"><a href="#r17">17</a></sup>). Composite of V<sub>T</sub>, RR, ΔP, and PEEP — reduce RR or V<sub>T</sub> before raising PEEP.</td></tr>
+      <tr><td><strong>Mechanical power</strong></td><td>≤ 17 J/min</td><td>Mortality begins to climb above this threshold (Serpa Neto 2018<sup class="cite"><a href="#r17">17</a></sup>). Composite of V<sub>T</sub>, RR, ΔP, PEEP, and flow/resistance — reduce RR or V<sub>T</sub> before raising PEEP.</td></tr>
     </tbody>
   </table>
   <div class="phys"><strong>The bundle is one number, not four</strong>The four targets are not independent; they all derive from the equation of motion (<a class="xref" href="#c6-1" data-xref-chap="6">§6.1</a>). A high ΔP almost always implies high V<sub>T</sub> for the lung’s compliance. A high MP almost always implies one of {high V<sub>T</sub>, high RR, high ΔP}. The bedside skill is recognizing which of the four is the rate-limiting metric on this patient and adjusting that one — the others usually fall into line.</div>
@@ -8773,7 +8772,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         <line x1="166" y1="252" x2="170" y2="252" stroke="#475569" stroke-width="0.6"/>
         <text x="162" y="256" text-anchor="end" font-size="10" fill="#475569">0</text>
         <line x1="166" y1="296" x2="170" y2="296" stroke="#475569" stroke-width="0.6"/>
-        <text x="162" y="300" text-anchor="end" font-size="10" fill="#475569">− 51</text>
+        <text x="162" y="300" text-anchor="end" font-size="10" fill="#475569">− 50</text>
         <path d="M 170 252 L 172 216 L 290 216 L 295 252 L 410 252 L 415 296 L 510 270 L 580 258 L 660 254 L 820 252" fill="none" stroke="#E69F00" stroke-width="2.4"/>
 
         <!-- VOLUME PANEL -->
@@ -8864,7 +8863,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
 <p>Continuous waveform end-tidal CO₂ is the single most under-used screen at the bedside. It couples ventilation, perfusion, and metabolism into one trace, and the four-phase anatomy diagnoses problems no other monitor can.</p>
   <table>
-    <caption>The four phases of a normal capnogram (UpToDate / Krauss)</caption>
+    <caption>The four phases of a normal capnogram (after Krauss)</caption>
     <thead><tr><th>Phase</th><th>What it is</th><th>What it should look like</th></tr></thead>
     <tbody>
       <tr><td><strong>Phase 1</strong></td><td>Dead-space ventilation — start of exhalation; CO₂-free gas from the conducting airways</td><td>Flat, near-zero baseline</td></tr>
@@ -8897,13 +8896,13 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>Esophageal intubation</strong> — a few small waveforms decaying to a flat zero</td><td>Tube in the esophagus (stomach/esophageal CO₂ washout), no alveolar gas</td><td>Remove the tube and re-intubate; sustained normal-shaped waveforms confirm tracheal placement</td></tr>
       <tr><td><strong>Hypoventilation</strong> — EtCO₂ rising (&gt;45), taller / wider waveforms</td><td>Bradypnea or low V<sub>T</sub>: opioid or sedative effect, fatigue, post-ictal state</td><td>Support ventilation early; EtCO₂ &gt;70 in a patient without COPD signals respiratory failure</td></tr>
       <tr><td><strong>Hyperventilation</strong> — EtCO₂ falling (&lt;35), shorter / narrower waveforms</td><td>Fast or deep breathing: anxiety, pain, or compensation for a metabolic acidosis (DKA, sepsis)</td><td>Treat the underlying cause; avoid over-ventilation in brain injury (target eucapnia)</td></tr>
-      <tr><td><strong>Cardiac arrest</strong> — low-amplitude waveforms, low EtCO₂</td><td>Minimal pulmonary blood flow during arrest</td><td>EtCO₂ gauges compression quality; &lt;10 mmHg after 20 min of CPR predicts no ROSC</td></tr>
+      <tr><td><strong>Cardiac arrest</strong> — low-amplitude waveforms, low EtCO₂</td><td>Minimal pulmonary blood flow during arrest</td><td>EtCO₂ gauges compression quality; &lt;10 mmHg after 20 min of CPR makes ROSC very unlikely</td></tr>
       <tr><td><strong>ROSC</strong> — abrupt rise in EtCO₂ during compressions</td><td>Restored cardiac output suddenly delivers accumulated CO₂ to the lungs</td><td>Earliest sign of return of spontaneous circulation — note the rise, then check rhythm / pulse</td></tr>
       <tr><td><strong>“Camel-hump” — two peaks</strong> <em>(bonus; not in the interactive figure)</em></td><td>Lateral position with unilateral disease (one lung empties before the other)</td><td>Reposition; investigate unilateral pathology</td></tr>
     </tbody>
   </table>
 
-  <div class="pearl"><strong>Capnography in cardiac arrest</strong>The single most actionable use of waveform capnography is during CPR. ETCO₂ &lt; 10 mmHg after 20 minutes of high-quality compressions predicts no ROSC; a sudden rise to 35–40 mmHg is the most sensitive sign of <em>return of spontaneous circulation</em> — often before pulse is palpable. End every code with a capnogram check.</div>
+  <div class="pearl"><strong>Capnography in cardiac arrest</strong>The single most actionable use of waveform capnography is during CPR. ETCO₂ &lt; 10 mmHg after 20 minutes of high-quality compressions makes ROSC very unlikely (one prognostic input, not a sole basis to stop); a sudden rise to 35–40 mmHg is the most sensitive sign of <em>return of spontaneous circulation</em> — often before pulse is palpable. End every code with a capnogram check.</div>
 
   <div class="pitfall"><strong>ETCO₂ ≠ PaCO₂ in dead space</strong>The arterial-to-end-tidal gradient (P(a−et)CO₂) is normally 2–5 mmHg. In ARDS it can widen to 10–15; in pulmonary embolism, &gt; 20. Trend ETCO₂ on stable settings, but verify PaCO₂ with an ABG in any patient with high dead space (see <a class="xref" href="#c4-1" data-xref-chap="4">§4.1</a>).</div>
 
@@ -8960,7 +8959,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         });
       })();
     </script>
-    <div class="cap"><b>Figure 14.2 — Capnography waveform library (interactive).</b> Live sweep of eleven capnogram patterns — normal, obstructive (“shark-fin”), curare cleft, cardiogenic oscillations, rebreathing, sudden drop to zero, esophageal intubation, hypoventilation (rising ETCO₂), hyperventilation (falling ETCO₂), cardiac arrest, and return of spontaneous circulation (ROSC). Pick a pattern to load characteristic physiology, then drag the sliders (respiratory rate, peak ETCO₂, Phase 3 slope, baseline / β-angle, I:E, heart rate) to recreate the bedside trace. The numbered phases (1–4) label the live sweep; the <b>Study breath</b> toggle freezes and enlarges a single cycle with the A–E points and the α/β angles, and the on-screen labels track the waveform as its height changes. Phase and pattern conventions follow UpToDate (Krauss). Scanning order: Phase 3 plateau height (ETCO₂) → Phase 2 steepness → baseline return to zero → trend across breaths.</div>
+    <div class="cap"><b>Figure 14.2 — Capnography waveform library (interactive).</b> Live sweep of eleven capnogram patterns — normal, obstructive (“shark-fin”), curare cleft, cardiogenic oscillations, rebreathing, sudden drop to zero, esophageal intubation, hypoventilation (rising ETCO₂), hyperventilation (falling ETCO₂), cardiac arrest, and return of spontaneous circulation (ROSC). Pick a pattern to load characteristic physiology, then drag the sliders (respiratory rate, peak ETCO₂, Phase 3 slope, baseline / β-angle, I:E, heart rate) to recreate the bedside trace. The numbered phases (1–4) label the live sweep; the <b>Study breath</b> toggle freezes and enlarges a single cycle with the A–E points and the α/β angles, and the on-screen labels track the waveform as its height changes. Phase and pattern conventions follow Krauss.<sup class="cite"><a href="#r61">61</a></sup> Scanning order: Phase 3 plateau height (ETCO₂) → Phase 2 steepness → baseline return to zero → trend across breaths.</div>
   </div>
   </details>
   <details class="chap-acc" data-acc-id="c14-h4-7" open>
@@ -9633,7 +9632,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     </tbody>
   </table>
 
-  <p><strong>The physiology of matched PEEP.</strong> The patient’s inspiratory effort has to drop alveolar pressure <em>below</em> the trigger threshold to start a breath. With set PEEP 5 and auto-PEEP 12, the alveolus sits at 17; the patient must generate −2 below trigger, i.e., bring alveolar pressure from 17 → 3 → a 14 cmH₂O effort just to start a breath. Raising extrinsic PEEP to 10 means the alveolus sits at 17 (unchanged — extrinsic and intrinsic are not additive when the airway is dynamically obstructed; they overlap), but the trigger threshold is now relative to set PEEP 10 (i.e., 8), so the patient only has to drop alveolar pressure from 17 → 8 — a 9 cmH₂O effort. Work of triggering falls by about a third.</p>
+  <p><strong>The physiology of matched PEEP.</strong> The patient’s inspiratory effort has to drop alveolar pressure <em>below</em> the trigger threshold to start a breath. With set PEEP 5 and auto-PEEP 12, the alveolus sits at 17; the patient must generate −2 below trigger, i.e., bring alveolar pressure from 17 → 3 → a 14 cmH₂O effort just to start a breath. Raising extrinsic PEEP to 13 (≈ 75–80% of the total) means the alveolus still sits at 17 (unchanged — extrinsic and intrinsic are not additive when the airway is dynamically obstructed; they overlap), but the trigger threshold is now relative to set PEEP 13 (i.e., 11), so the patient only has to drop alveolar pressure from 17 → 11 — a 6 cmH₂O effort. Work of triggering falls by more than half.</p>
 
   <div class="phys"><strong>Why extrinsic and intrinsic PEEP overlap, not add</strong>In flow-limited obstructive disease, the small airways collapse dynamically on exhalation. Once collapsed, alveolar pressure is decoupled from airway opening pressure — the alveolus is at the auto-PEEP level regardless of what extrinsic PEEP you apply, up to the point where extrinsic PEEP exceeds the closing pressure of the collapsed airway. Above that crossover (typically ~ 80% of total PEEP), further extrinsic PEEP starts to add and you risk overdistension. Hence the 75–80% rule.</div>
   </details>
@@ -10303,7 +10302,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <p><strong>Physiology.</strong> A positive-pressure breath ↓ preload → ↓ SV → ↓ pulse pressure. The amplitude of cyclic pulse-pressure swing across a breath, normalized to mean pulse pressure, is PPV.</p>
   <div class="eq">$$\text{PPV} \;=\; \frac{PP_{\max} - PP_{\min}}{(PP_{\max} + PP_{\min})/2} \times 100\%$$</div>
   <div class="eq">$$\text{SVV} \;=\; \frac{SV_{\max} - SV_{\min}}{SV_{\text{mean}}} \times 100\%$$</div>
-  <p><strong>Threshold.</strong> PPV &gt; 13% (or SVV &gt; 10–12%) predicts fluid responsiveness with sens/spec ~ 85% — the workhorse dynamic test in the controlled-mode ICU patient.</p>
+  <p><strong>Threshold.</strong> PPV &gt; 13% (or SVV &gt; 12%) predicts fluid responsiveness with sens/spec ~ 85% — the workhorse dynamic test in the controlled-mode ICU patient.</p>
   <p><strong>Critical caveats — PPV/SVV is unreliable when:</strong></p>
   <ul>
     <li><strong>Spontaneous effort.</strong> Patient-triggered breaths replace machine-driven cyclic preload swings.</li>
@@ -10372,7 +10371,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <li>IVC variability has poor positive predictive value in isolation — pair with passive leg raise (PLR) for reliable fluid-responsiveness assessment.</li>
       <li>Focused cardiac POCUS (PLAX, PSAX, A4C, subxiphoid) answers five critical questions about LV, RV, pericardium, and tamponade within 5 minutes.</li>
       <li>Static filling pressures (CVP, PAWP) do <em>not</em> predict fluid responsiveness — abandon them as primary tools.</li>
-      <li>PPV &gt; 13% / SVV &gt; 10–12% predict responsiveness only under strict conditions: controlled mode, regular rhythm, VT ≥ 8 mL/kg PBW, no spontaneous effort.</li>
+      <li>PPV &gt; 13% / SVV &gt; 12% predict responsiveness only under strict conditions: controlled mode, regular rhythm, VT ≥ 8 mL/kg PBW, no spontaneous effort.</li>
       <li>PLR is the universal test — works regardless of mode, rhythm, or VT because it relies on physiology, not mechanics.</li>
       <li>Algorithm: PPV/SVV (if conditions met) → PLR → EEO → mini-bolus.</li>
     </ul>
@@ -10643,7 +10642,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <ul>
     <li><strong>Cisatracurium</strong> (Hofmann elimination, no organ dependence) is the historic first-line: 15–20 mg bolus, then 37.5–75 mg/h infusion. Reassess at 24 h, daily after.</li>
     <li><strong>Rocuronium</strong> (cheaper, hepatic clearance) acceptable; less ideal in liver failure.</li>
-    <li><strong>Monitor</strong> with train-of-four (TOF) at the orbicularis oculi or adductor pollicis; target 1–2 of 4 twitches.</li>
+    <li><strong>Monitor</strong> with train-of-four (TOF — four supramaximal stimuli over a peripheral nerve; the number of visible twitches indexes blockade depth, fewer twitches = deeper block) at the orbicularis oculi or adductor pollicis; target 1–2 of 4 twitches.</li>
     <li><strong>Adjuncts always</strong>: deep sedation (RASS −5), eye care (lubrication + tape), DVT prophylaxis, daily reassessment for discontinuation.</li>
     <li><strong>Risks</strong>: ICU-acquired weakness (myopathy especially with concurrent corticosteroids), nerve injury from positioning.</li>
   </ul>
@@ -10813,7 +10812,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   </ol>
 
   <h5 id="c21-5a">21.5a Heliox — the density-reduction trick</h5>
-  <p>Heliox is a helium–oxygen mixture (typically 70:30 or 80:20 helium:O₂). Helium is far less dense than nitrogen (~ ⅓ the density at the same FiO₂). Why does this help in obstruction?</p>
+  <p>Heliox is a helium–oxygen mixture (typically 70:30 or 80:20 helium:O₂). Helium is far less dense than nitrogen (molar mass 4 vs 28), so a heliox mixture is roughly a third the density of air at the same FiO₂. Why does this help in obstruction?</p>
   <ul>
     <li><strong>Reynolds number drops</strong> — turbulent flow through narrowed airways becomes laminar. Resistance to flow falls; less pressure is needed for the same flow.</li>
     <li><strong>Time constant shortens</strong> — τ = R × C; lower R means faster filling and emptying of obstructed lung units.</li>
@@ -10849,7 +10848,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4 id="c21-6">21.6 COPD — the NIV-first imperative</h4>
     </summary>
 
-<p>COPD exacerbations with hypercapnic respiratory failure (pH &lt; 7.35, PaCO₂ &gt; 45) and intact mental status / airway should receive NIV (BiPAP) <em>before</em> intubation. NIV reduces intubation rate by ~50% and mortality by ~40% in this population (multiple RCTs, Cochrane). Set IPAP 10–14, EPAP 4–6, titrate IPAP up by 2 q5 min for tidal volume of 6–8 mL/kg PBW. Reassess at 1 h: pH up, RR down, encephalopathy improving = winning. If not, intubate.</p>
+<p>COPD exacerbations with hypercapnic respiratory failure (pH &lt; 7.35, PaCO₂ &gt; 45) and intact mental status / airway should receive NIV (BiPAP) <em>before</em> intubation. NIV reduces intubation rate by ~50% and mortality by ~40% in this population (multiple RCTs, Cochrane). Set IPAP (inspiratory positive airway pressure) 10–14, EPAP (expiratory positive airway pressure) 4–6, titrate IPAP up by 2 q5 min for tidal volume of 6–8 mL/kg PBW. Reassess at 1 h: pH up, RR down, encephalopathy improving = winning. If not, intubate.</p>
   <div class="pitfall"><strong>The hyperoxia trap in COPD</strong>The classic teaching that “100% O₂ removes hypoxic drive and causes CO₂ retention” overstates the mechanism — but the observation is real. The actual mechanism is mostly <em>Haldane effect</em> (oxygenated Hb binds less CO₂, raising PaCO₂) plus <em>V/Q redistribution</em> (loss of hypoxic pulmonary vasoconstriction → more dead space). Either way: in COPD, target SpO₂ 88–92%, not 100%.</div>
   </details>
 <div class="takeaways">
@@ -10897,7 +10896,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <ul>
     <li><strong>CPAP 8–12 cmH₂O</strong> + FiO₂ titrated to SpO₂ &gt; 92%. Equivalent outcomes to BiPAP for pure cardiogenic edema; technically simpler.</li>
     <li><strong>BiPAP IPAP 10–14 / EPAP 5–8</strong> — preferred if hypercapnic (mixed COPD/CHF) or if work-of-breathing is a major component.</li>
-    <li><strong>Reassess at 1 h</strong>: SpO₂, RR, mental status, BP. Improvement → continue and diurese. Failure (HACOR &gt; 5, falling pH, deteriorating mental status) → intubate.</li>
+    <li><strong>Reassess at 1 h</strong>: SpO₂, RR, mental status, BP. Improvement → continue and diurese. Failure (HACOR score [Heart rate, Acidosis, Consciousness, Oxygenation, Respiratory rate] &gt; 5, falling pH, deteriorating mental status) → intubate.</li>
   </ul>
   </details>
   <details class="chap-acc" data-acc-id="c22-h4-3" open>
@@ -10951,7 +10950,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   <div class="misconception">
     <strong>Common error</strong>“BiPAP for cardiogenic edema needs high pressures.”
-    Most respond rapidly to modest pressures (IPAP 12–14, EPAP 6–8). The mechanism is intrathoracic pressure preload reduction, not lung recruitment — pushing higher doesn’t buy more benefit and worsens hemodynamics in marginal patients.
+    Most respond rapidly to modest pressures (IPAP 12–14, EPAP 6–8). The mechanism is hemodynamic — chiefly reduced LV afterload (with some preload reduction) from raised intrathoracic pressure, not lung recruitment — pushing higher doesn’t buy more benefit and worsens hemodynamics in marginal patients.
     <span class="corrected">Start modest. Escalate only if work of breathing and gas exchange aren’t improving in 30 minutes.</span>
   </div>
 </section>
@@ -11020,7 +11019,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     </summary>
 
 <ul>
-    <li><strong>Post-cardiac arrest:</strong> current standard is targeted normothermia 36–37.5°C with aggressive fever prevention × 72 h per TTM2 (2021).<sup class="cite"><a href="#r44">44</a></sup> Historical hypothermia at 33°C is no longer recommended for most patients; selected centers still use it in specific populations. Maintain PaCO₂ 35–45, PaO₂ 80–100 (avoid hyperoxia — multiple trials show worse neuro outcomes with PaO₂ &gt; 300).</li>
+    <li><strong>Post-cardiac arrest:</strong> current standard is targeted normothermia 36–37.5°C with aggressive fever prevention × 72 h per TTM2 (2021).<sup class="cite"><a href="#r44">44</a></sup> Historical hypothermia at 33°C is no longer recommended for most patients; selected centers still use it in specific populations. Maintain PaCO₂ 35–45, PaO₂ 80–100 (avoid hyperoxia — multiple trials show worse neuro outcomes with PaO₂ &gt; 200).</li>
     <li><strong>Status epilepticus:</strong> often intubated for airway protection or for sedation (propofol or midazolam infusions). Continuous EEG; deep sedation (RASS −5) until burst suppression in refractory cases.</li>
     <li><strong>Spinal cord injury (cervical):</strong> see §24. High C-spine: lifetime ventilation; consider phrenic pacing.</li>
     <li><strong>Cushing’s response</strong> (HTN + bradycardia + irregular respirations): impending herniation. Mannitol or hypertonic saline, hyperventilate briefly, neurosurgery STAT.</li>
@@ -11617,7 +11616,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <ul>
     <li><strong>Stress threshold for injury</strong>: P<sub>L</sub> &gt; 25 cmH₂O. Above this, alveolar wall stretch exceeds the breaking strength of the extracellular matrix.</li>
     <li><strong>Strain threshold for injury</strong>: total strain &gt; 1.5–2.0 (i.e., the lung inflates to 1.5–2× its FRC volume during a tidal breath). Strain &gt; 2 reliably produces VILI in animal models.</li>
-    <li><strong>The relationship</strong>: stress and strain are linked by lung-specific elastance (E<sub>L,specific</sub> ≈ 13.5 cmH₂O in humans). Stress = E<sub>L,specific</sub> × strain. So strain of 2 corresponds to stress of ~ 27 — right at the injury threshold.</li>
+    <li><strong>The relationship</strong>: stress and strain are linked by lung-specific elastance (E<sub>L,specific</sub> ≈ 13.5 cmH₂O in humans). Stress = E<sub>L,specific</sub> × strain. So strain of 2 corresponds to stress of ~ 27 — just above the ~25 cmH₂O injury threshold.</li>
   </ul>
   <p><strong>Why this beats ΔP alone</strong>: ΔP is the airway-pressure surrogate of stress, but it doesn’t account for chest-wall stiffness. An obese ARDS patient with airway ΔP 18 may have <em>lung</em> ΔP (transpulmonary) of only 10 — the chest wall is doing most of the resisting. ΔP-driven settings would underventilate this patient. Esophageal manometry measures the lung-only fraction directly.</p>
   <table>
@@ -11626,7 +11625,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <tbody>
       <tr><td>Stress (lung only)</td><td>Pplat − P<sub>es,end-insp</sub></td><td>&lt; 25 cmH₂O</td></tr>
       <tr><td>Tidal strain</td><td>VT / (predicted FRC = ~ 30 mL/kg PBW)</td><td>&lt; 1.5</td></tr>
-      <tr><td>Worked example</td><td>VT 400 mL, PBW 60 kg → predicted FRC ~ 1800 mL → strain = 0.22 (safe)</td><td>—</td></tr>
+      <tr><td>Worked example</td><td>VT 400 mL, PBW 60 kg → predicted FRC ~ 1800 mL → strain = 0.22 (safe by predicted FRC — but see the “baby lung” caveat below)</td><td>—</td></tr>
       <tr><td>ARDS “baby lung” caveat</td><td>True FRC may be 25–50% of predicted in severe ARDS — actual strain is 2–4× the calculated value</td><td>Use CT or imaging if uncertain</td></tr>
     </tbody>
   </table>
@@ -11696,7 +11695,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <p>ΔP captures stress per breath; mechanical power captures stress integrated over time — energy delivered to the lung per minute. It accounts for the four levers that all matter: VT, ΔP, RR, and peak flow.</p>
   <p><strong>Simplified power formula</strong>:</p>
   <div class="eq">$$\text{MP (J/min)} \;=\; 0.098 \times \text{RR} \times V_T \times \left(P_{IP} - \tfrac{1}{2}\Delta P\right)$$</div>
-  <p>Where: 0.098 is the conversion constant (mL × cmH₂O → J); RR is respiratory rate (breaths/min); VT is tidal volume in liters; PIP is peak inspiratory pressure; ΔP = Pplat − PEEP.</p>
+  <p>Where: 0.098 is the conversion constant (mL × cmH₂O → J); RR is respiratory rate (breaths/min); VT is tidal volume in liters; PIP is peak inspiratory pressure; ΔP = Pplat − PEEP. The term (PIP − ½ΔP) approximates the mean inspiratory pressure applied across the breath.</p>
   <p><strong>Worked example</strong>: ARDS patient on VC: VT 0.4 L, RR 24, PIP 35, Pplat 28, PEEP 12. ΔP = 28 − 12 = 16. MP = 0.098 × 24 × 0.4 × (35 − 8) = 0.098 × 24 × 0.4 × 27 = <strong>25 J/min</strong>. This is well above the threshold associated with mortality. To lower it: drop RR (every −1 RR = ~ −1 J/min), drop VT, drop ΔP via PEEP optimization, drop peak flow.</p>
   <p><strong>Threshold</strong>: MP &gt; 17 J/min has been associated with increased mortality in observational data (Serpa Neto 2018).<sup class="cite"><a href="#r17">17</a></sup> A more conservative alternative uses <em>normalized</em> mechanical power (per kg of predicted body weight, Costa 2021) — target ≤ 0.13 J/min/kg PBW, which for a 60-kg adult equates to ~ 8 J/min. The two metrics measure different things (absolute vs body-size-normalized); the literature has not converged on which to prefer. Use the absolute 17 J/min as the primary target; consider the normalized version when comparing across patient sizes.</p>
   </details>
@@ -11739,8 +11738,8 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   <div class="misconception">
     <strong>Common error</strong>“Lower mechanical power is always better.”
-    Power is V<sub>T</sub> &times; &Delta;P &times; RR — an integrated metric. The threshold matters: associations with mortality weaken below ~17–22 J/min. Minimizing further can compromise ventilation; some power is the cost of moving gas.
-    <span class="corrected">Use power to identify high-risk settings (> 22 J/min), not as a target to drive arbitrarily low. The components (&Delta;P, V<sub>T</sub>, RR) remain the levers you actually turn.</span>
+    Power is V<sub>T</sub> &times; &Delta;P &times; RR — an integrated metric. The threshold matters: associations with mortality weaken below ~17 J/min. Minimizing further can compromise ventilation; some power is the cost of moving gas.
+    <span class="corrected">Use power to identify high-risk settings (> 17 J/min), not as a target to drive arbitrarily low. The components (&Delta;P, V<sub>T</sub>, RR) remain the levers you actually turn.</span>
   </div>
 </section>
 
@@ -11810,7 +11809,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <li>Raise PEEP by 5 cmH<sub>2</sub>O every 2 minutes (e.g., 10 → 15 → 20 → 25).</li>
       <li>Stop when P<sub>plat</sub> (= ΔP + PEEP) reaches the target (typically 40–45 cmH<sub>2</sub>O — note this is the pressure range used in ART, where harm was seen; some post-ART protocols cap at 35–40) <em>or</em> any abort criterion triggers (<a class="xref" href="#c30-2" data-xref-chap="30">§30.2</a>).</li>
       <li>Hold the maximum pressure for 1–2 minutes; monitor SpO<sub>2</sub>, MAP, HR continuously.</li>
-      <li>Decrement PEEP by 2 cmH<sub>2</sub>O every 2–3 minutes. At each step, record dynamic compliance (C<sub>stat</sub> = V<sub>T</sub> / ΔP). The PEEP at which compliance is maximal is the post-recruitment titration target — set final PEEP 2–4 cmH<sub>2</sub>O above that value for a small safety margin.</li>
+      <li>Decrement PEEP by 2 cmH<sub>2</sub>O every 2–3 minutes. At each step, record static compliance (C<sub>stat</sub> = V<sub>T</sub> / ΔP). The PEEP at which compliance is maximal is the post-recruitment titration target — set final PEEP 2–4 cmH<sub>2</sub>O above that value for a small safety margin.</li>
       <li>Total time: 20–30 minutes.</li>
     </ol>
     <p><strong>Sustained inflation</strong> (when speed matters): CPAP 30–40 cmH<sub>2</sub>O × 30–40 s. Useful for post-suctioning atelectasis, post-disconnect derecruitment, or a one-time rescue. Higher hemodynamic risk than the stepwise approach — only when a 30-s window is enough.</p>
@@ -11944,7 +11943,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <p><strong>Best evidence.</strong> A multinational meta-trial of six concurrent RCTs (Ehrmann et al., <em>Lancet Respir Med</em> 2021; ~ 1100 patients on HFNC for COVID-related hypoxemia) showed reduced intubation with awake proning (40% vs 46%) without mortality difference; benefit concentrated in patients with P/F &lt; 200. A 2025 meta-analysis (14 RCTs, &gt; 3000 patients) confirmed the reduction in intubation in COVID-19 hypoxemia; a mortality benefit remains unproven and the evidence is COVID-predominant.</p>
   <p><strong>Selection.</strong> Cooperative, hypoxemic, isolated respiratory failure, able to self-reposition. <em>Not</em> appropriate when work of breathing is high (sustained RR &gt; 30, accessory-muscle use, paradoxical breathing), when GCS is impaired, when the patient cannot communicate distress, or when intubation is otherwise indicated. Awake proning is not a delay tactic for a patient who needs the tube.</p>
   <p><strong>Dose.</strong> 1–2 h cycles, ≥ 8 h/day, broken into 4 positions (left lateral, right lateral, prone, semi-prone). Effective in roughly half of those who can tolerate it — verify with SpO<sub>2</sub> response in the first 30 min and ROX index at 2 h.</p>
-  <p><strong>Monitoring.</strong> Continuous SpO<sub>2</sub>; ROX (= SpO<sub>2</sub>/FiO<sub>2</sub> / RR) at 2, 6, 12 h; reassess if SpO<sub>2</sub> falls or work of breathing rises. Discontinue and reassess for intubation at the first sign of failure — do not chase a falling SpO<sub>2</sub> with more proning.</p>
+  <p><strong>Monitoring.</strong> Continuous SpO<sub>2</sub>; ROX index (= [SpO<sub>2</sub> % ÷ FiO<sub>2</sub> as a fraction] ÷ RR — e.g., SpO₂ 92 / 0.5 / RR 24 = 7.7) at 2, 6, 12 h; reassess if SpO<sub>2</sub> falls or work of breathing rises. Discontinue and reassess for intubation at the first sign of failure — do not chase a falling SpO<sub>2</sub> with more proning.</p>
   <div class="pitfall"><strong>Awake-proning failure looks like success</strong>Patients can sustain SpO<sub>2</sub> with accelerating accessory-muscle work for hours; the SpO<sub>2</sub> reads “fine” right up to the crash. Trend the ROX, not the saturation.</div>
   </details>
   <details class="chap-acc" data-acc-id="c31-h4-8" open>
@@ -12039,7 +12038,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4 id="c32-4">32.4 ECMO physiology and the “ultra-protective vent”</h4>
     </summary>
 
-<p>VV-ECMO oxygenates and removes CO₂ extrapulmonarily — the lung can “rest.” Settings during ECMO:</p>
+<p>VV-ECMO (veno-venous — drains and returns blood on the venous side, supporting the lungs only; distinct from veno-arterial VA-ECMO, which returns blood to the arterial side to support the heart as well) oxygenates and removes CO₂ extrapulmonarily — the lung can “rest.” Settings during ECMO:</p>
   <table>
     <caption>Typical vent settings on VV-ECMO</caption>
     <thead><tr><th>Parameter</th><th>Setting</th></tr></thead>
@@ -12053,7 +12052,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td>ΔP target</td><td>&lt; 12</td></tr>
     </tbody>
   </table>
-  <p>Most patients spend 5–14 days on ECMO. Liberation: gradually reduce ECMO sweep gas while increasing native vent settings. Decannulation when patient tolerates near-normal vent settings off ECMO support for 4–6 hours.</p>
+  <p>Most patients spend 5–14 days on ECMO. Liberation: gradually reduce ECMO sweep gas (the fresh gas flowing past the membrane that controls CO₂ removal) while increasing native vent settings. Decannulation when patient tolerates near-normal vent settings off ECMO support for 4–6 hours.</p>
   </details>
   <details class="chap-acc" data-acc-id="c32-h4-5" open>
     <summary>
@@ -12077,7 +12076,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li><strong>Cannulation injury</strong>: vascular damage, malposition.</li>
     <li><strong>Hemolysis</strong>: from circuit; monitor LDH, free Hb.</li>
     <li><strong>Heparin-induced thrombocytopenia</strong>: switch to bivalirudin if HIT confirmed.</li>
-    <li><strong>Differential hypoxia (“North-South syndrome”)</strong> — primarily VA-ECMO; the VV-ECMO version is less common.</li>
+    <li><strong>Differential hypoxia (“North-South syndrome”)</strong> — essentially a peripheral VA-ECMO phenomenon (competing native cardiac output vs retrograde oxygenated flow); it does not meaningfully occur in VV-ECMO.</li>
     <li><strong>Right-heart strain</strong> from cannula impingement on the IVC/RA.</li>
   </ul>
   </details>
@@ -12285,7 +12284,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>BiPAP T</strong> (timed)</td><td>Machine-triggered only at fixed rate</td><td>Yes (the only rate)</td><td>Apneic / unresponsive patient bridging to intubation; rare in acute use</td></tr>
       <tr><td><strong>PCV</strong> (pressure control)</td><td>Time-cycled, fixed inspiratory time</td><td>Yes</td><td>NMD with weak inspiratory triggers; chronic ALS</td></tr>
       <tr><td><strong>AVAPS / iVAPS</strong></td><td>Auto-titrating IPAP between min/max to target a set VT</td><td>Yes</td><td>OHS, NMD with variable mechanics, chronic NIV</td></tr>
-      <tr><td><strong>ASV</strong> (adaptive servo-ventilation)</td><td>Beat-to-beat IPAP changes to target a moving-average minute ventilation</td><td>Yes</td><td>Central sleep apnea / Cheyne–Stokes — <em>contraindicated</em> in HFrEF (LVEF ≤ 45%) per SERVE-HF</td></tr>
+      <tr><td><strong>ASV</strong> (adaptive servo-ventilation)</td><td>Beat-to-beat IPAP changes to target a moving-average minute ventilation</td><td>Yes</td><td>Central sleep apnea / Cheyne–Stokes — <em>contraindicated</em> in HFrEF (heart failure with reduced ejection fraction; LVEF ≤ 45%) per SERVE-HF</td></tr>
     </tbody>
   </table>
   <div class="pearl"><strong>The hospital default:</strong> BiPAP S/T with a backup rate of 12–14 covers virtually every acute indication. Drop to CPAP only when there is no hypercapnia (cardiogenic edema, post-extubation oxygenation). Reserve AVAPS for OHS or chronic NIV settings.</div>
@@ -12500,7 +12499,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <tbody>
       <tr><td>Low-risk</td><td>&lt; 65 y, no underlying cardio-respiratory disease, &lt; 7 days vent, easy SBT</td><td>Standard O₂ or HFNC at extubation; wean as tolerated</td></tr>
       <tr><td>High-risk</td><td>≥ 65 y, HF, COPD, BMI &gt; 30, ≥ 7 days vent, multiple comorbidities, weak cough, prolonged SBT, copious secretions, post-op cardiac/abdominal surgery</td><td>HFNC during day + BiPAP 10/5 ≥ 4 h/day overnight × 48 h (Thille protocol)</td></tr>
-      <tr><td>Cuff-leak fail</td><td>Audible leak ≤ 110 mL or no audible leak</td><td>Methylprednisolone 20–40 mg IV q4 h × 12 h before extubation; have rescue airway ready</td></tr>
+      <tr><td>Cuff-leak fail</td><td>Leak &lt; 110 mL or no audible leak</td><td>Methylprednisolone 20–40 mg IV q4 h × 12 h before extubation; have rescue airway ready</td></tr>
       <tr><td>Stridor post-extubation</td><td>New stridor within hours</td><td>Racemic epinephrine, IV steroid, heliox bridge, low threshold to reintubate</td></tr>
     </tbody>
   </table>
@@ -12922,7 +12921,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <caption>Continuous-infusion sedatives</caption>
     <thead><tr><th>Agent</th><th>Dose range</th><th>Onset / offset</th><th>Mechanism / strengths</th><th>Watch for</th></tr></thead>
     <tbody>
-      <tr><td><strong>Propofol</strong></td><td>5–80 mcg/kg/min (max 4 mg/kg/h sustained)</td><td>30 s / 5–10 min</td><td>GABA agonist; rapid titration; ↓ ICP; antiseizure; first-line for most ICU sedation</td><td>Hypotension, hypertriglyceridemia, propofol infusion syndrome (rhabdo + acidosis + cardiac collapse; classically &gt; 5 mg/kg/h × 48 h but can occur at lower doses with concomitant steroids/catecholamines), pancreatitis, lipid burden in nutrition calc (1.1 kcal/mL)</td></tr>
+      <tr><td><strong>Propofol</strong></td><td>5–80 mcg/kg/min (max 4 mg/kg/h sustained)</td><td>30 s / 5–10 min</td><td>GABA agonist; rapid titration; ↓ ICP; antiseizure; first-line for most ICU sedation</td><td>Hypotension, hypertriglyceridemia, propofol infusion syndrome (rhabdo + acidosis + cardiac collapse; classically &gt; 4 mg/kg/h × 48 h but can occur at lower doses with concomitant steroids/catecholamines), pancreatitis, lipid burden in nutrition calc (1.1 kcal/mL)</td></tr>
       <tr><td><strong>Dexmedetomidine</strong></td><td>0.2–1.5 mcg/kg/h (no bolus in ICU)</td><td>15 min / 2–3 h</td><td>α₂-agonist; “cooperative sedation” — patient stays arousable; analgesic-sparing; less delirium than benzos; preserves respiratory drive</td><td>Bradycardia, hypotension; rebound HTN if abruptly stopped after &gt; 24 h; ineffective for deep sedation needs (max RASS achievable ≈ −2 to −3)</td></tr>
       <tr><td><strong>Midazolam</strong></td><td>0.02–0.1 mg/kg/h (upper end for refractory cases only)</td><td>2–3 min / 30 min to hours (much longer if &gt; 48 h)</td><td>GABA agonist; only when other options fail; status epilepticus second-line</td><td>Delirium ↑, prolonged duration after discontinuation (active metabolites accumulate in renal failure), tachyphylaxis, withdrawal</td></tr>
       <tr><td><strong>Ketamine</strong></td><td>0.1–2 mg/kg/h infusion</td><td>30 s / 10–15 min</td><td>NMDA antagonist; analgesic + sedative + bronchodilator; preserves hemodynamics; useful in opioid-tolerant patients and severe asthma</td><td>HTN, tachycardia, secretions, emergence reactions (mitigate with low-dose benzo); hepatotoxicity rare with prolonged use</td></tr>
@@ -13018,7 +13017,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li>Awake and follows commands (or progressing toward it; reasonable RASS −1 to 0).</li>
     <li>Absence of active uncontrolled ICP / ischemia / arrhythmia.</li>
   </ul>
-  <div class="pearl"><strong>Pair the SBT with a spontaneous awakening trial (SAT)</strong>The 2008 ABC trial showed that <em>combining</em> a daily SAT (sedation interruption) with the SBT shortened ventilator days by 3 and 1-year mortality by 14% versus SBT alone.<sup class="cite"><a href="#r21">21</a></sup> Sequence: SAT first (turn off sedation if eligible — no active seizures, withdrawal, escalating shock, paralytics) → if patient remains comfortable, proceed to SBT. This is the foundation of the modern ICU liberation (ABCDEF) bundle.</div>
+  <div class="pearl"><strong>Pair the SBT with a spontaneous awakening trial (SAT)</strong>The 2008 ABC trial showed that <em>combining</em> a daily SAT (sedation interruption) with the SBT shortened ventilator days by ~3 and cut 1-year mortality by ~14% (absolute) versus usual-care sedation — both arms received SBTs.<sup class="cite"><a href="#r21">21</a></sup> Sequence: SAT first (turn off sedation if eligible — no active seizures, withdrawal, escalating shock, paralytics) → if patient remains comfortable, proceed to SBT. This is the foundation of the modern ICU liberation (ABCDEF) bundle.</div>
   <h5>How to perform</h5>
   <ul>
     <li><strong>PSV trial — most common variant:</strong> PSV 5–8 cmH₂O over PEEP 5 × 30–120 min.</li>
@@ -13028,7 +13027,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   </ul>
   <h5>Predictors of success</h5>
   <ul>
-    <li><strong>Rapid shallow breathing index (RSBI) &lt; 105</strong> (RR ÷ V<sub>T</sub> in liters) at 1 min into a T-piece — sensitivity 0.97, specificity 0.65 for success.<sup class="cite"><a href="#r19">19</a></sup> Still widely used and a useful bedside tolerance check, but it predicts <em>SBT</em> (not extubation) failure, and the 2024 AARC guideline notes RSBI is not required to judge SBT readiness — treat it as supportive, not a mandatory gate.</li>
+    <li><strong>Rapid shallow breathing index (RSBI) &lt; 105</strong> (RR ÷ V<sub>T</sub> in liters — e.g., RR 28 ÷ 0.4 L = 70 breaths/min/L, under the 105 threshold) at 1 min into a T-piece — sensitivity 0.97, specificity 0.65 for success.<sup class="cite"><a href="#r19">19</a></sup> Still widely used and a useful bedside tolerance check, but it predicts <em>SBT</em> (not extubation) failure, and the 2024 AARC guideline notes RSBI is not required to judge SBT readiness — treat it as supportive, not a mandatory gate.</li>
     <li>Negative inspiratory force (NIF, also called maximum inspiratory pressure) more negative than −20 to −25 cmH₂O.</li>
     <li>adequate V<sub>T</sub>; RR &lt; 35; pH stable; SpO₂ ≥ 90%.</li>
     <li>No agitation, diaphoresis, accessory muscle use, hemodynamic deterioration.</li>
@@ -13172,7 +13171,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
 <ol>
     <li><strong>Mental status</strong> — follows commands; will protect airway.</li>
-    <li><strong>Cough</strong> — adequate, brisk, productive on demand. Voluntary “white card” cough strength predicts success.</li>
+    <li><strong>Cough</strong> — adequate, brisk, productive on demand. Voluntary “white-card” cough strength predicts success — hold a card a few centimetres from the open ETT and ask the patient to cough; visible moisture or spray indicates an adequate cough.</li>
     <li><strong>Secretions</strong> — manageable burden, infrequent suctioning.</li>
     <li><strong>Cuff leak</strong> — present (≥ 110 mL air loss with cuff down for VC, or audible leak); no leak suggests airway edema and risk of post-extubation stridor — consider IV steroid (methylprednisolone 20 mg q4h × 4 doses prior, or 40 mg single dose 4 h prior).</li>
   </ol>
@@ -13201,7 +13200,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <caption>Cuff pressure management</caption>
     <thead><tr><th>Item</th><th>Target / approach</th></tr></thead>
     <tbody>
-      <tr><td>Cuff pressure target</td><td><strong>20–30 cmH₂O</strong> (most institutions). &lt; 20 → aspiration risk + leak. &gt; 30 → tracheal mucosal ischemia (capillary perfusion pressure ~ 25–30).</td></tr>
+      <tr><td>Cuff pressure target</td><td><strong>20–30 cmH₂O</strong> (most institutions). &lt; 20 → aspiration risk + leak. &gt; 30 → tracheal mucosal ischemia (capillary perfusion pressure ~ 30).</td></tr>
       <tr><td>How to measure</td><td>Manual cuff manometer connected at the pilot balloon line. Check at least q-shift and after any ETT manipulation, repositioning, or new leak.</td></tr>
       <tr><td>“Minimum-leak” technique</td><td>Inflate the cuff just until the audible leak at end-inspiration disappears, then add 1 cmH₂O. Avoids over-inflation but doesn’t quantify pressure.</td></tr>
       <tr><td>Continuous cuff-pressure devices</td><td>Some ICUs use closed-loop systems that maintain cuff pressure automatically; reduces VAP rates in some studies.</td></tr>
@@ -13429,7 +13428,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <thead><tr><th>Mechanism</th><th>What happens at extubation</th><th>Clinical clues</th></tr></thead>
     <tbody>
       <tr><td><strong>Cardiogenic — &quot;weaning-induced pulmonary edema&quot;</strong></td><td>Sudden return to negative pleural pressure: ↑ venous return (preload bolus to RV and LV) <em>and</em> ↑ LV transmural pressure (afterload load). In a marginal LV this precipitates flash pulmonary edema within 1–4 hours.</td><td>History of HF, ischemia, valvular disease; rising NT-proBNP / hemoconcentration during SBT; new B-lines on lung US; failure to extubate despite normal mechanics.</td></tr>
-      <tr><td><strong>Respiratory pump failure</strong></td><td>Increased work of breathing without ventilator support exceeds the patient’s diaphragm reserve — pH drops, RR climbs, RSBI rises late.</td><td>Diaphragm thickening fraction &lt; 30% on US; RSBI &gt; 105; prior ICU-acquired weakness.</td></tr>
+      <tr><td><strong>Respiratory pump failure</strong></td><td>Increased work of breathing without ventilator support exceeds the patient’s diaphragm reserve — pH drops, RR climbs, RSBI rises late.</td><td>Diaphragm thickening fraction (TF — the % increase in diaphragm thickness from end-expiration to end-inspiration; <a class="xref" href="#c19-3" data-xref-chap="19">§19.3</a>) &lt; 30% on US; RSBI &gt; 105; prior ICU-acquired weakness.</td></tr>
       <tr><td><strong>Airway / upper-airway</strong></td><td>Post-extubation stridor from glottic edema; aspiration; secretion burden exceeding cough strength.</td><td>Failed cuff-leak test; weak cough; CN-X dysfunction; prolonged or traumatic intubation.</td></tr>
       <tr><td><strong>Encephalopathic</strong></td><td>Inadequate airway protection, inability to clear secretions, agitation.</td><td>RASS −2 or below despite sedation hold; persistent delirium; failure to follow commands.</td></tr>
     </tbody>
@@ -13446,9 +13445,9 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <div class="takeaways">
     <h5>Key takeaways</h5>
     <ul>
-      <li>Four extubation gates: (1) mental status (follows commands, airway protection), (2) cough (adequate, brisk, productive), (3) secretions (manageable, suctioning &lt; q2h), (4) cuff leak (≥ 110 mL or audible = no leak → consider IV methylprednisolone 4 h prior).</li>
+      <li>Four extubation gates: (1) mental status (follows commands, airway protection), (2) cough (adequate, brisk, productive), (3) secretions (manageable, suctioning &lt; q2h), (4) cuff leak (a leak &lt; 110 mL or no audible leak suggests laryngeal edema → consider IV methylprednisolone 4 h prior).</li>
       <li>Post-extubation support: high-risk (HF, COPD, age &gt; 65, prolonged intubation) → HFNC + intermittent NIV (Thille 2019 reduced reintubation &amp; mortality); average risk → HFNC alone is non-inferior.</li>
-      <li>Cuff pressure target 20–30 cmH₂O (checked q-shift, after manipulation); &lt; 20 → aspiration + leak; &gt; 30 → tracheal ischemia (capillary pressure ~ 25–30).</li>
+      <li>Cuff pressure target 20–30 cmH₂O (checked q-shift, after manipulation); &lt; 20 → aspiration + leak; &gt; 30 → tracheal ischemia (capillary pressure ~ 30).</li>
       <li>Tracheostomy indications: anticipated &gt; 14 days ventilation, weaning failure, secretion burden, neuromuscular weakness, upper-airway obstruction; timing: no mortality difference early vs late — practical default re-evaluate day 10–14.</li>
     </ul>
   </div>
@@ -13496,7 +13495,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td>Haloperidol</td><td>1–5 mg IV q4h PRN</td><td>—</td><td>Delirium, agitation refractory to opioid + benzo</td></tr>
     </tbody>
   </table>
-  <p><strong>The “no ceiling” principle</strong>: in terminal care, the comfort dose is whatever it takes. Doses far higher than ICU norms are appropriate when distress requires it. The doctrine of double effect is well-established legally and ethically.</p>
+  <p><strong>The “no ceiling” principle</strong>: in terminal care, the comfort dose is whatever it takes. Doses far higher than ICU norms are appropriate when distress requires it. The doctrine of double effect — that giving medication intending to relieve suffering is ethical even if it may foreseeably hasten death — is well-established legally and ethically.</p>
   </details>
   <details class="chap-acc" data-acc-id="c38-h4-3" open>
     <summary>
@@ -13763,7 +13762,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4>Case 3 — COPD exacerbation on NIV, decision point at 2 h</h4>
     </summary>
 
-<p><strong>72F</strong>, GOLD-D (Global Initiative for Chronic Obstructive Lung Disease, severity group D) COPD, exacerbation. On BiPAP IPAP 14 / EPAP 6, FiO₂ 0.4 × 2 h.<br>
+<p><strong>72F</strong>, GOLD-D (Global Initiative for Chronic Obstructive Lung Disease; the A–D groups historically stratified COPD by symptom burden and exacerbation risk, with D = high symptoms and high risk — GOLD later replaced this with the A/B/E grouping) COPD, exacerbation. On BiPAP IPAP 14 / EPAP 6, FiO₂ 0.4 × 2 h.<br>
   Started: pH 7.22, PaCO₂ 80, PaO₂ 58, RR 32, HR 110, GCS 13.<br>
   At 2 h: pH 7.32, PaCO₂ 60, PaO₂ 62, RR 22, HR 95, GCS 14.</p>
   <p><strong>Reasoning</strong>: Classic NIV success — pH up, PaCO₂ down, RR down, mentation improving. HACOR at 1 h was likely ≤ 5.</p>
@@ -13810,7 +13809,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4>Case 6 — Category E (massive) PE with shock</h4>
     </summary>
 
-<p><strong>61F</strong>, post-op day 3 from total knee, sudden hypotension and hypoxemia. CT: saddle PE. Echo: dilated RV, septal flattening, McConnell’s sign (apical sparing of RV free-wall hypokinesis — classic for acute PE). BP 80/50 on norepi 0.3 µg/kg/min, SpO₂ 88% on a non-rebreather (NRB) mask.</p>
+<p><strong>61F</strong>, post-op day 3 from total knee, sudden hypotension and hypoxemia. CT: saddle PE. Echo: dilated RV, septal flattening, McConnell’s sign (RV free-wall hypokinesis with apical sparing — classic for acute PE). BP 80/50 on norepi 0.3 µg/kg/min, SpO₂ 88% on a non-rebreather (NRB) mask.</p>
   <p><strong>Reasoning</strong>: RV-led obstructive shock. Intubation will likely worsen RV (induction drops SVR; positive pressure drops preload). Consider catheter-directed therapy or thrombolysis <em>before</em> intubation.</p>
   <p><strong>Plan</strong> (escalating):</p>
   <ol>
@@ -14015,7 +14014,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>Stress-ulcer + DVT prophylaxis</strong></td><td>Standard ICU bundle</td><td>Strong</td></tr>
       <tr><td><strong>Avoid unnecessary circuit changes</strong></td><td>Routine changes increase contamination, do not reduce VAP</td><td>Strong; change only when visibly soiled or malfunctioning</td></tr>
       <tr><td><strong>Closed (in-line) suction</strong></td><td>Reduces cross-contamination from open-system splash</td><td>Modest; benefit in derecruitment prevention more than VAP rate</td></tr>
-      <tr><td><strong>Selective digestive decontamination (SDD)</strong></td><td>Topical + IV antibiotics suppress gut Gram-negatives</td><td>Strong in ICUs with low baseline resistance (Netherlands data); not adopted in US due to AMR concerns</td></tr>
+      <tr><td><strong>Selective digestive decontamination (SDD)</strong></td><td>Topical + IV antibiotics suppress gut Gram-negatives</td><td>Strong in ICUs with low baseline resistance (Netherlands data); not adopted in US due to antimicrobial-resistance (AMR) concerns</td></tr>
       <tr><td><strong>Probiotics</strong></td><td>Modulates gut flora</td><td>Conflicting — recent large trials negative; not currently recommended</td></tr>
       <tr><td><strong>PPI vs H₂ blocker for stress prophylaxis</strong></td><td>H₂ blockers may have lower VAP rate (less alkalinization → less gastric overgrowth)</td><td>Modest; PPI may be preferred for GI bleeding prevention; tradeoff is institution-dependent</td></tr>
     </tbody>
@@ -14235,7 +14234,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <caption>Drug overdoses with characteristic ventilator implications</caption>
     <thead><tr><th>Toxin</th><th>Typical pattern</th><th>Vent strategy</th><th>Antidote / specifics</th></tr></thead>
     <tbody>
-      <tr><td><strong>Salicylate</strong> (aspirin)</td><td>Tachypnea + mixed acid-base (resp alkalosis + AG metabolic acidosis)</td><td><strong>Avoid intubation if possible</strong>. If intubated: <em>match or exceed</em> the patient’s spontaneous minute ventilation (often 30–40 L/min); never let PaCO₂ rise — drives salicylate into CNS</td><td>NaHCO₃ 1–2 mEq/kg IV bolus, then 150 mEq in 1 L D5W at 150–250 mL/h (goal serum pH 7.50–7.55, urine pH &gt; 7.5); KCl repletion (alkalinization causes hypokalemia); HD if level &gt; 100 mg/dL (acute) or &gt; 60 (chronic), refractory acidosis, AMS, or pulmonary edema</td></tr>
+      <tr><td><strong>Salicylate</strong> (aspirin)</td><td>Tachypnea + mixed acid-base (resp alkalosis + AG metabolic acidosis)</td><td><strong>Avoid intubation if possible</strong>. If intubated: <em>match or exceed</em> the patient’s spontaneous minute ventilation (often 30–40 L/min); never let PaCO₂ rise — drives salicylate into CNS</td><td>NaHCO₃ 1–2 mEq/kg IV bolus, then 150 mEq in 1 L D5W at 150–250 mL/h (goal serum pH 7.50–7.55, urine pH &gt; 7.5); KCl repletion (alkalinization causes hypokalemia); HD if level &gt; 100 mg/dL (acute) or &gt; 60 (chronic; dialyze at lower levels if symptomatic or renal impairment), refractory acidosis, AMS, or pulmonary edema</td></tr>
       <tr><td><strong>Tricyclic antidepressant (TCA)</strong></td><td>Sedation, seizures, wide QRS, hypotension</td><td>Standard sedation/airway protection; lung-protective settings</td><td>NaHCO₃ 1–2 mEq/kg IV bolus for QRS &gt; 100 ms (repeat q5–10 min until QRS narrows); maintenance NaHCO₃ drip (150 mEq in 1 L D5W at 150–250 mL/h) to keep arterial pH 7.50–7.55. Avoid Class Ia/Ic antiarrhythmics. Lipid emulsion 1.5 mL/kg IV bolus → 0.25 mL/kg/min for refractory cardiotoxicity.</td></tr>
       <tr><td><strong>Opioid</strong></td><td>Apnea / hypoventilation, miosis, decreased LOC</td><td>Bag-mask ventilate; intubate only if reversal incomplete or aspiration risk</td><td><strong>Naloxone first</strong>: 0.04–0.4 mg IV (low-dose start in chronic users to avoid acute withdrawal); titrate up to 2 mg q2–3 min PRN; up to 10 mg may be required for synthetics (fentanyl analogues). For sustained reversal: drip at 2/3 of effective bolus dose per hour. Watch for re-narcotization with long-acting opioids (methadone, fentanyl patches).</td></tr>
       <tr><td><strong>Sedative-hypnotic (benzo, GHB, barbiturate)</strong></td><td>CNS depression, hypoventilation, hypotension (barbiturate), aspiration</td><td>Supportive ventilation; usually short course; flumazenil 0.2 mg IV (avoid in benzo OD — precipitates seizures in chronic users; reserved for iatrogenic over-sedation in naïve patient)</td><td>GHB typically resolves spontaneously in 4–6 h; intubate only for airway protection if severe; barbiturate severe — alkalinize urine (NaHCO₃ as above) for phenobarbital</td></tr>
@@ -14353,7 +14352,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
 <p>Bench and animal data (Volpe, Marini) show that the <em>direction</em> mucus moves in a vent circuit depends on the ratio of peak expiratory to peak inspiratory flow:</p>
   <ul>
-    <li><strong>Expiratory flow ≫ inspiratory flow (B/A &gt; 1)</strong> → mucus moves toward the airway opening (good).</li>
+    <li><strong>Expiratory flow ≫ inspiratory flow (B/A &gt; 1</strong>, where B = peak expiratory flow and A = peak inspiratory flow<strong>)</strong> → mucus moves toward the airway opening (good).</li>
     <li><strong>Inspiratory flow ≫ expiratory flow (B/A &lt; 1)</strong> → mucus moves toward the alveoli (bad — atelectasis).</li>
   </ul>
   <p>Clinical implication: in the vented patient with abundant secretions, modify settings to bias flow expiratorily. Lower the inspiratory flow (longer T<sub>i</sub>), shorten T<sub>e</sub> to maintain rate (within auto-PEEP limits), or use modes with higher peak expiratory flow (PSV with low support, decelerating-flow PC). The opposite — high peak inspiratory flow with brief expiratory time — drives mucus distally.</p>
@@ -14734,7 +14733,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <caption>ICU sedation infusions</caption>
     <thead><tr><th>Drug</th><th>Dose range</th><th>Onset / Offset</th><th>Notes</th></tr></thead>
     <tbody>
-      <tr><td>Propofol</td><td>5–80 mcg/kg/min (max 4 mg/kg/h sustained)</td><td>30 s / 5–10 min</td><td>First-line; PRIS (rhabdo + acidosis + cardiac collapse); classically &gt; 5 mg/kg/h × 48 h but possible at lower doses; lipid load</td></tr>
+      <tr><td>Propofol</td><td>5–80 mcg/kg/min (max 4 mg/kg/h sustained)</td><td>30 s / 5–10 min</td><td>First-line; PRIS (rhabdo + acidosis + cardiac collapse); classically &gt; 4 mg/kg/h × 48 h but possible at lower doses; lipid load</td></tr>
       <tr><td>Dexmedetomidine</td><td>0.2–1.5 mcg/kg/h (no bolus)</td><td>15 min / 2–3 h</td><td>“Cooperative sedation”; preserves respiratory drive; bradycardia/hypotension</td></tr>
       <tr><td>Midazolam</td><td>0.02–0.1 mg/kg/h</td><td>2–3 min / hours-days</td><td>Avoid as routine; ↑ delirium; accumulates in renal failure</td></tr>
       <tr><td>Ketamine</td><td>0.1–2 mg/kg/h</td><td>30 s / 10–15 min</td><td>Analgesic + sedative + bronchodilator; ↑ HR/BP; emergence reactions</td></tr>
@@ -14981,7 +14980,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <tr><td>CABG</td><td>Coronary artery bypass graft</td><td>CAM-ICU</td><td>Confusion Assessment Method for the ICU</td></tr>
     <tr><td>CPAP</td><td>Continuous positive airway pressure</td><td>Cstat</td><td>Static compliance</td></tr>
     <tr><td>CXR</td><td>Chest X-ray</td><td>DAD</td><td>Diffuse alveolar damage</td></tr>
-    <tr><td>DLCO</td><td>Diffusing capacity for carbon monoxide</td><td>DO₂</td><td>Oxygen delivery (CaO₂ × CO × 10)</td></tr>
+    <tr><td>DLCO</td><td>Diffusing capacity for carbon monoxide</td><td>DO₂</td><td>Oxygen delivery (CaO₂ × CO)</td></tr>
     <tr><td>DOPES / DOTTS</td><td>Mnemonics for vent troubleshooting</td><td>EIT</td><td>Electrical impedance tomography</td></tr>
     <tr><td>ETT</td><td>Endotracheal tube</td><td>FEV₁</td><td>Forced expiratory volume in 1 s</td></tr>
     <tr><td>FiO₂</td><td>Fraction of inspired oxygen</td><td>FRC</td><td>Functional residual capacity</td></tr>
@@ -15083,6 +15082,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li id="r58">Akoumianaki E, Lyazidi A, Rey N, et al. Mechanical ventilation-induced reverse-triggered breaths: a frequently unrecognized form of neuromechanical coupling. <em>Chest</em>. 2013;143(4):927-938.</li>
     <li id="r59">Qadir N, Sahetya S, Munshi L, et al. An Update on Management of Adult Patients with Acute Respiratory Distress Syndrome: An Official American Thoracic Society Clinical Practice Guideline. <em>Am J Respir Crit Care Med</em>. 2024;209(1):24-36. (Conditional recommendation for VV-ECMO in selected severe ARDS; see also the 2021 ELSO VV-ECMO management guideline and the 2025 ELSO narrative ECMO guideline for operational practice.)</li>
     <li id="r60">Combes A, Peek GJ, Hajage D, et al. ECMO for severe ARDS: systematic review and individual patient data meta-analysis. <em>Intensive Care Med</em>. 2020;46(11):2048-2057. (EOLIA + CESAR pooled; 90-day mortality RR 0.75, 95% CI 0.60–0.94.)</li>
+    <li id="r61">Capnogram phase and pattern conventions (§14.5) follow the scheme popularized by Krauss and colleagues, as summarized in UpToDate (Waltham, MA: UpToDate Inc.).</li>
   </ol>
   <p class="footer-note">For clinician education only; not a substitute for institutional protocols, current FDA labeling, or specialist consultation. Verify dosing and ventilator-specific behavior at the bedside. Companion <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-bedside-one-pager.html" style="color:var(--accent);">bedside one-pager</a> (single-page rounds reference) · standalone <a href="https://bedsidereference.github.io/medical-education/bedside-calculator.html" style="color:var(--accent);">interactive calculator</a> with threshold-coded outputs, LPV-bundle status row, ARDSnet PEEP/FiO₂ ladder lookup, Vd/Vt, DO₂, OI, transpulmonary pressures, target-PaCO₂ helper, and saveable snapshots.</p>
 </section>
@@ -17679,7 +17679,7 @@ saveInputs();
         const vtPerKg = s.vt / pbw;
         if (vtPerKg > 8) warnings.push(`VT ${vtPerKg.toFixed(1)} mL/kg PBW exceeds 8 — lung-injurious`);
         if (state.deltaP > 16) warnings.push(`ΔP ${state.deltaP.toFixed(1)} > 16 — mortality risk`);
-        if (state.mp > 22) warnings.push(`MP ${state.mp.toFixed(1)} > 22 J/min — sustained injury`);
+        if (state.mp > 17) warnings.push(`MP ${state.mp.toFixed(1)} > 17 J/min — sustained injury`);
         if (s.fio2 >= 0.6 && s.peep <= 8 && state.pf < 200) warnings.push('FiO₂ ≥ 0.6 with PEEP ≤ 8 — try the high-PEEP/FiO₂ table');
         if (state.pf < 150 && !s.prone) warnings.push('P/F < 150 — proning has the largest survival benefit (PROSEVA)');
         if (s.nmb && s.rass > -3) warnings.push('NMB without deep sedation (RASS goal −4 to −5)');
