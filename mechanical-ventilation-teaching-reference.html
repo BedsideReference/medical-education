@@ -6543,6 +6543,75 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <h3><span class="num">6</span>Lung mechanics — compliance, resistance, time constants</h3>
   
   
+  <details class="chap-acc" data-acc-id="c6-h4-0" open>
+    <summary>
+      <h4 id="c6-0">6.0 The pressures — a map, and what moves them</h4>
+    </summary>
+
+  <p>Every ventilator decision is a statement about pressure: how much to apply, where it lands, and what it distends. Before this chapter turns pressure into compliance and resistance, it helps to see all of the pressures as one system — four <em>compartment pressures</em> and the <em>gradients</em> between them. Master the map here and the waveforms in Part III, the P–V loop (<a class="xref" href="#c7" data-xref-chap="7">§7</a>), and esophageal manometry (<a class="xref" href="#c28" data-xref-chap="28">§28</a>) all become readouts of the same few quantities.</p>
+
+  <p><strong>The four compartment pressures.</strong> A pressure by itself does nothing physiologic — only the <em>difference</em> between two points moves gas or stretches tissue. But to build the differences, first name the four reference points.</p>
+  <table>
+    <caption>The compartment pressures — the reference points</caption>
+    <thead><tr><th>Pressure</th><th>Symbol</th><th>Where it is</th><th>How it’s known at the bedside</th></tr></thead>
+    <tbody>
+      <tr><td>Airway-opening pressure</td><td>P<sub>ao</sub></td><td>At the mouth / ETT connector — the top of the airway</td><td>The number on the ventilator’s pressure gauge</td></tr>
+      <tr><td>Alveolar pressure</td><td>P<sub>alv</sub></td><td>Inside the alveolus</td><td>Not measured directly; equals P<sub>ao</sub> only at zero flow (an inspiratory hold → plateau)</td></tr>
+      <tr><td>Pleural pressure</td><td>P<sub>pl</sub></td><td>The pleural space, surrounding the lung</td><td>Estimated by esophageal balloon pressure (<a class="xref" href="#c28" data-xref-chap="28">§28</a>)</td></tr>
+      <tr><td>Body-surface pressure</td><td>P<sub>bs</sub></td><td>Outside the chest wall</td><td>Atmospheric; taken as the 0 reference</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>The gradients — the pressures that actually do work.</strong> Subtract one compartment pressure from another and you get a <em>transmural</em> pressure — the pressure that distends a structure or drives flow. These are the quantities that matter clinically.</p>
+  <table>
+    <caption>The transmural gradients</caption>
+    <thead><tr><th>Gradient</th><th>Definition</th><th>What it does</th><th>Set by</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Trans-airway</strong></td><td>P<sub>ta</sub> = P<sub>ao</sub> − P<sub>alv</sub></td><td>Drives gas <em>flow</em> down the airways</td><td>Airway resistance × flow</td></tr>
+      <tr><td><strong>Transpulmonary</strong> (the important one)</td><td>P<sub>L</sub> = P<sub>alv</sub> − P<sub>pl</sub></td><td>Distends the <em>lung</em> — the true stretching stress on alveolar tissue</td><td>Lung volume and lung compliance</td></tr>
+      <tr><td><strong>Trans-chest-wall</strong></td><td>P<sub>cw</sub> = P<sub>pl</sub> − P<sub>bs</sub></td><td>Distends the <em>chest wall</em></td><td>Chest-wall + abdominal compliance</td></tr>
+      <tr><td><strong>Transrespiratory</strong> (whole system)</td><td>P<sub>rs</sub> = P<sub>ao</sub> − P<sub>bs</sub></td><td>Drives the entire respiratory system</td><td>The sum of the parts</td></tr>
+    </tbody>
+  </table>
+  <p>Because these are just subtractions along the same path, they add up. Across a whole breath, <strong>P<sub>rs</sub> = P<sub>ta</sub> + P<sub>L</sub> + P<sub>cw</sub></strong> (airway drop + lung distension + chest-wall distension). And the total elastic load splits between the lung and the chest wall — two springs in series: <strong>1 / C<sub>rs</sub> = 1 / C<sub>L</sub> + 1 / C<sub>cw</sub></strong>. This is why a stiff chest wall (obesity, ascites) or a stiff lung (ARDS) both raise the pressure you must apply, but for entirely different reasons — and with entirely different implications for the lung.</p>
+
+  <div class="phys"><strong>Why zero flow is the magic condition</strong>When gas is moving, P<sub>ao</sub> exceeds P<sub>alv</sub> by the trans-airway drop, so the gauge reads more than the alveolus feels. Stop the flow — an inspiratory hold — and P<sub>ta</sub> collapses to zero, so P<sub>ao</sub> now equals P<sub>alv</sub>. That is exactly what the <em>plateau pressure</em> is: airway-opening pressure at zero flow, standing in for alveolar pressure. Peak minus plateau is therefore the resistive (trans-airway) pressure; plateau itself is the elastic (alveolar) pressure. This split is the whole basis of the two-question algorithm in <a class="xref" href="#c16" data-xref-chap="16">§16</a>.</div>
+
+  <p><strong>From compartments to the bedside numbers.</strong> The pressures you actually name on rounds are just points on this map.</p>
+  <table>
+    <caption>Bedside pressures, located on the map</caption>
+    <thead><tr><th>Bedside term</th><th>What it is</th><th>Reads out</th></tr></thead>
+    <tbody>
+      <tr><td>PIP (peak)</td><td>Highest P<sub>ao</sub> during inspiration, <em>with</em> flow</td><td>Resistance + elastance together</td></tr>
+      <tr><td>P<sub>plat</sub></td><td>P<sub>ao</sub> at end-inspiratory zero-flow hold ≈ P<sub>alv</sub></td><td>End-inspiratory elastic pressure</td></tr>
+      <tr><td>PEEP</td><td>P<sub>ao</sub> held at end-expiration</td><td>Baseline alveolar pressure (set + any auto-PEEP)</td></tr>
+      <tr><td>ΔP (driving)</td><td>P<sub>plat</sub> − PEEP</td><td>Tidal elastic stress; V<sub>T</sub> / C<sub>rs</sub></td></tr>
+      <tr><td>P<sub>L</sub></td><td>P<sub>plat</sub> − P<sub>pl</sub> (esophageal)</td><td>What the lung tissue truly feels</td></tr>
+      <tr><td>auto-PEEP</td><td>Trapped end-expiratory P<sub>alv</sub> above set PEEP</td><td>Incomplete emptying (<a class="xref" href="#c17" data-xref-chap="17">§17</a>)</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>What moves each pressure — the affecting factors.</strong> This is the payoff of the map: once you know which compartment a pressure lives in, you know what changes it. Read each row as “if this pressure is abnormal, look here.”</p>
+  <table>
+    <caption>Affecting factors, pressure by pressure</caption>
+    <thead><tr><th>Pressure</th><th>↑ Raised by</th><th>↓ Lowered by</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Peak (PIP)</strong></td><td>Anything that raises plateau (below) <em>plus</em> ↑ resistance or ↑ flow: bronchospasm, secretions, small/kinked/bitten ETT, high inspiratory flow rate, water in the circuit</td><td>Bronchodilation, suctioning, larger tube, lower set flow, treating the elastic cause</td></tr>
+      <tr><td><strong>Plateau (P<sub>alv</sub>, elastic)</strong></td><td>↑ tidal volume; ↓ respiratory-system compliance — stiff <em>lung</em> (ARDS, edema, fibrosis, pneumonia, atelectasis) or stiff <em>chest wall</em> (obesity, ascites, abdominal hypertension, chest-wall edema); ↑ PEEP; gas trapping (auto-PEEP)</td><td>Smaller V<sub>T</sub>; recruiting collapsed lung; relieving the abdomen/chest wall; treating the parenchymal process</td></tr>
+      <tr><td><strong>Trans-airway (PIP − P<sub>plat</sub>)</strong></td><td>↑ airway resistance (bronchospasm, mucus, small tube) or ↑ flow — the <em>resistive</em> load only</td><td>Bronchodilators, secretion clearance, larger tube, slower flow</td></tr>
+      <tr><td><strong>Pleural (P<sub>pl</sub>)</strong></td><td>Stiff/loaded chest wall: obesity, ascites, abdominal compartment syndrome, large pleural effusion, position (prone/supine), chest-wall burns/edema; applied airway pressure transmits partly to the pleura</td><td>Vigorous <em>spontaneous effort</em> makes it more negative; drainage of effusion; relieving intra-abdominal pressure</td></tr>
+      <tr><td><strong>Transpulmonary (P<sub>L</sub>)</strong></td><td>↑ P<sub>alv</sub> (high V<sub>T</sub>, high PEEP) <em>or</em> ↓ P<sub>pl</sub> (strong spontaneous effort — the P-SILI mechanism)</td><td>Lower V<sub>T</sub>/plateau; sedation ± paralysis to blunt effort; note a high-P<sub>pl</sub> patient tolerates a high plateau at a <em>safe</em> P<sub>L</sub></td></tr>
+      <tr><td><strong>PEEP (baseline P<sub>alv</sub>)</strong></td><td>Set PEEP; added auto-PEEP from incomplete exhalation (high rate, obstruction, short expiratory time)</td><td>Lower set PEEP; lengthen expiratory time, treat obstruction, lower rate (for auto-PEEP)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pearl"><strong>The lung feels transpulmonary pressure, not the gauge</strong>A plateau of 32 cmH₂O looks dangerous — but in a patient with a stiff chest wall (morbid obesity, tense ascites), much of that pressure is spent distending the chest wall, and the lung’s own stress (P<sub>L</sub>) may be modest and safe. The mirror-image trap is the strongly spontaneously breathing patient whose airway pressures look benign while violently negative pleural swings drive a dangerously high P<sub>L</sub> — injurious stretch that the ventilator’s numbers never show. This is why plateau alone can mislead in both directions, and why esophageal manometry (<a class="xref" href="#c28" data-xref-chap="28">§28</a>) exists.</div>
+
+  <div class="note"><strong>Two clinical anchors to carry forward</strong>(1) <em>Peak vs plateau separates resistance from compliance.</em> A rising peak with a stable plateau is an airway (resistive) problem; a rising plateau is an alveolar/chest-wall (elastic) problem. (2) <em>Driving pressure (P<sub>plat</sub> − PEEP) is tidal stress normalized to the size of the aerated lung</em> — it embeds compliance, which is why it tracks with outcome more tightly than plateau or V<sub>T</sub> alone. Both ideas are developed with numbers in <a class="xref" href="#c16" data-xref-chap="16">§16</a>.</div>
+
+  <div class="phys"><strong>How this connects to the rest of the chapter</strong>Compliance and resistance (below) are simply the two things that convert volume and flow into these pressures: elastance sets plateau, resistance sets the peak-to-plateau gap. The P–V curve (<a class="xref" href="#c7" data-xref-chap="7">§7</a>) plots alveolar pressure against volume; its “five pressures” figure is this same map drawn across a breath. Everything downstream — modes, waveforms, ARDS strategy, weaning — is a decision about where on this pressure map to operate.</div>
+  </details>
+
   <details class="chap-acc" data-acc-id="c6-h4-1" open>
     <summary>
       <h4 id="c6-1">6.1 The equation of motion</h4>
@@ -12631,6 +12700,87 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     Sux: 30–45 s onset, 5–10 min duration. Contraindicated in hyperK, burns > 24 h old, neuromuscular disease, malignant hyperthermia history. Roc: 60–90 s onset, 30–60 min duration, reversible with sugammadex. Choose by airway anticipated difficulty + contraindication profile, not by habit.
     <span class="corrected">Roc 1.2 mg/kg = sux-like onset speed with longer duration — useful in difficult airway anticipating multiple attempts. Sux remains the choice when rapid offset matters and contraindications are absent.</span>
   </div>
+  <details class="chap-acc" data-acc-id="c34-h4-8" open>
+    <summary>
+      <h4 id="c34-8">34.8 Equipment selection — building the airway setup</h4>
+    </summary>
+
+  <p>The tube, the blade, the camera, and the adjuncts are not interchangeable commodities — each is a solution to a specific mechanical problem: getting a line of sight to the glottis, steering a soft tube through it, and then sealing the airway at a pressure the mucosa can tolerate. This section describes what each piece of equipment <em>is</em> and the physics of what it does, so the choices are reasoned rather than habitual.</p>
+
+  <div class="note"><strong>Scope of this section</strong>The content here is deliberately equipment and physiology — device design, sizing conventions, and physical trade-offs. Which device to reach for first, predicted first-attempt success, and the difficult-airway decision tree are evidence- and guideline-driven and change over time; they are out of scope here. Anchor those to your institution’s airway algorithm and a current difficult-airway guideline (and see <a class="xref" href="#c34-4" data-xref-chap="34">§34.4</a>).</div>
+
+  <h5>The endotracheal tube</h5>
+  <p>A modern cuffed ETT is a curved PVC tube built around a few deliberate features:</p>
+  <ul>
+    <li><strong>Bevel and Murphy eye.</strong> The angled bevel presents a narrow leading edge to the cords; the <em>Murphy eye</em> — a hole in the sidewall near the tip — is a backup gas path if the bevel abuts the tracheal wall or a carina.</li>
+    <li><strong>Cuff and pilot balloon.</strong> An inflatable cuff seals the trachea so positive pressure isn’t lost and supraglottic material isn’t aspirated. The external pilot balloon reports (roughly) whether the cuff is inflated.</li>
+    <li><strong>Markings.</strong> A radiopaque line makes the tube visible on chest film; centimeter depth markings let you fix the tip mid-trachea, well above the carina and below the cords.</li>
+    <li><strong>15-mm connector.</strong> The universal proximal fitting that mates with bag, circuit, and capnography.</li>
+    <li><strong>Preformed curve.</strong> Approximates the oropharyngeal-to-tracheal path; a stylet lets you modify it.</li>
+  </ul>
+  <p><strong>Sizing — internal diameter and the r⁴ penalty.</strong> Tubes are labelled by <em>internal diameter (ID) in mm</em>. ID is the single most consequential choice for the patient’s later ventilator course, because airway resistance through a tube scales with roughly the <em>fourth power</em> of the radius (Poiseuille; steeper still under turbulent flow) — the same physics developed in <a class="xref" href="#c6-3" data-xref-chap="6">§6.3</a>. Halving the radius raises resistance ~16-fold.</p>
+  <table>
+    <caption>Tube ID and its consequences (conventions, not a protocol)</caption>
+    <thead><tr><th>Consideration</th><th>Larger ID</th><th>Smaller ID</th></tr></thead>
+    <tbody>
+      <tr><td>Airflow resistance / work of breathing</td><td>Lower — easier spontaneous breathing and weaning</td><td>Higher — can dominate a failing SBT</td></tr>
+      <tr><td>Suctioning &amp; bronchoscopy</td><td>Accommodates larger catheters / scope</td><td>May not admit a therapeutic bronchoscope</td></tr>
+      <tr><td>Passage through the glottis</td><td>Higher risk of laryngeal trauma / tight fit</td><td>Easier passage in a small or swollen airway</td></tr>
+    </tbody>
+  </table>
+  <p>Adult tubes are commonly stocked around 7.0–8.0 mm ID, sized to patient anatomy rather than a fixed rule; representative resistances (adult, moderate flow) run roughly 6.0 ≈ 12, 7.0 ≈ 6, 8.0 ≈ 4 cmH₂O/(L/s) — i.e., a 7.0 has about double the resistance of an 8.0. If a patient is repeatedly failing weaning on a small tube, that resistance is a real and fixable contributor (<a class="xref" href="#c6-3" data-xref-chap="6">§6.3</a>).</p>
+
+  <p><strong>Cuff physiology.</strong> Modern cuffs are <em>high-volume, low-pressure</em>: a large, floppy cuff seals by conforming to the trachea at low wall pressure, spreading force over a wide area. The limiting number is <em>mucosal</em>, not airway: tracheal capillary perfusion pressure is on the order of ~30 cmH₂O, so cuff pressures kept in roughly the 20–30 cmH₂O band seal the airway while preserving the blood supply of the mucosa beneath. Chronic over-inflation blanches the mucosa and is a mechanism of tracheal stenosis and, at the extreme, tracheo-esophageal injury; under-inflation permits leak and micro-aspiration.</p>
+  <table>
+    <caption>Purpose-built ETT variants</caption>
+    <thead><tr><th>Tube</th><th>Design feature</th><th>Problem it solves</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Reinforced / armored</strong></td><td>Wire coil in the wall</td><td>Resists kinking when the head is turned or the tube is shared with a surgical field</td></tr>
+      <tr><td><strong>RAE (preformed)</strong></td><td>Sharp preformed bend</td><td>Directs the circuit away from a head/neck operative field</td></tr>
+      <tr><td><strong>Subglottic-suction (SSD)</strong></td><td>Dorsal lumen opening above the cuff</td><td>Aspirates pooled secretions on top of the cuff — a VAP-reduction design</td></tr>
+      <tr><td><strong>Double-lumen / bronchial blocker</strong></td><td>Two lumens, or a blocker balloon</td><td>Lung isolation / one-lung ventilation</td></tr>
+    </tbody>
+  </table>
+
+  <h5>Laryngoscope blades — the line-of-sight problem</h5>
+  <p>Direct laryngoscopy works by physically displacing the tongue and lifting the jaw so the operator’s eye, the mouth, and the glottis fall on one line. The two classic blade shapes solve the epiglottis differently:</p>
+  <table>
+    <caption>Macintosh vs Miller — the mechanical difference</caption>
+    <thead><tr><th></th><th>Macintosh (curved)</th><th>Miller (straight)</th></tr></thead>
+    <tbody>
+      <tr><td>Tip placement</td><td>Into the <strong>vallecula</strong> (the pocket in front of the epiglottis)</td><td><strong>Under</strong> the epiglottis itself</td></tr>
+      <tr><td>How the epiglottis lifts</td><td><em>Indirectly</em> — tension on the hyoepiglottic ligament flips it up</td><td><em>Directly</em> — the blade physically lifts it</td></tr>
+      <tr><td>Working room</td><td>Broad flange; more room to pass the tube</td><td>Slimmer; less room but controls a floppy or high/anterior epiglottis</td></tr>
+      <tr><td>Typical adult size</td><td>Mac 3–4</td><td>Miller 2–3</td></tr>
+    </tbody>
+  </table>
+  <p>Blade choice here is a mechanical fit to the airway in front of you (epiglottis shape and position, mouth opening, tongue size), not a ranked hierarchy.</p>
+
+  <h5>Video laryngoscopy — decoupling the view from the axes</h5>
+  <p>A video laryngoscope places a <strong>camera at the blade tip</strong>, so the operator sees the glottis on a screen rather than along a direct sight line. The physical payoff is that the mouth–pharynx–larynx axes no longer have to be aligned to see the cords — the camera “looks around the corner.” Two blade geometries follow:</p>
+  <ul>
+    <li><strong>Standard (Macintosh-shaped) video blades.</strong> Used much like a direct Mac, with the camera adding a view; the tube is passed along a familiar, gentle curve.</li>
+    <li><strong>Hyperangulated blades.</strong> A sharp curve gives an excellent view of an anterior larynx <em>without</em> lifting the tongue as forcefully — but the same angle the eye sees around, the tube must also be steered around, which requires a <strong>rigid angled stylet</strong> shaped to match the blade. A great view does not by itself deliver the tube; the delivery angle is the new problem.</li>
+  </ul>
+  <p>Devices are also <strong>channeled</strong> (a guide groove holds and directs the tube) or <strong>non-channeled</strong> (tube steered freehand over a stylet). These are design categories; the trade-off is view quality versus tube-delivery difficulty and the equipment needed to manage it.</p>
+  <div class="phys"><strong>Why a perfect view can still fail to intubate</strong>Direct laryngoscopy couples the view and the tube path — if you can see it, the tube goes where you look. Hyperangulated video laryngoscopy <em>separates</em> them: the camera earns a view around a corner the rigid tube cannot follow without a correspondingly angled stylet and a deliberate rotation/withdrawal technique. Understanding this decoupling is the difference between “great view, tube won’t pass” and a smooth first pass.</div>
+
+  <h5>Adjuncts — stylets, bougies, and rescue airways</h5>
+  <table>
+    <caption>Introducers and adjuncts</caption>
+    <thead><tr><th>Device</th><th>What it is</th><th>Physical principle</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Malleable stylet</strong></td><td>Bendable rod inside the tube</td><td>Shapes the tube (straight-to-cuff, “hockey stick”) so its tip goes where aimed; withdrawn as the tube passes the cords</td></tr>
+      <tr><td><strong>Rigid angled stylet</strong></td><td>Pre-curved rigid stylet</td><td>Matches a hyperangulated VL blade so the tube can follow the camera’s corner</td></tr>
+      <tr><td><strong>Bougie (tracheal introducer)</strong></td><td>Long thin semi-rigid stick with an angled <em>coudé</em> tip</td><td>Passed first through a partial view; the tip clicks over tracheal rings (tactile confirmation) and stops at the smaller airways (<em>hold-up</em>) — then the tube railroads over it</td></tr>
+      <tr><td><strong>Supraglottic airway (LMA)</strong></td><td>A mask that seats over the laryngeal inlet</td><td>Rescue ventilation without passing the cords — buys time when intubation and mask ventilation are failing</td></tr>
+    </tbody>
+  </table>
+  <div class="pearl"><strong>The bougie is a feel, not a view</strong>Its value is precisely when the view is poor: the coudé tip transmits the bump of the tracheal rings and then hangs up at ~24–40 cm as the airway narrows — two tactile signs you’re in the trachea and not the esophagus (which is soft and lets the bougie run in endlessly). It converts a partial glottic view into a confident tube pass.</div>
+
+  <div class="note"><strong>Match the pieces, then check them</strong>The setup is a system: a hyperangulated blade wants a rigid angled stylet; a small tube trades passage for downstream weaning resistance; a cuff seals only within a mucosa-safe pressure band. Before induction, the durable habit is to confirm the pieces fit together and work — tube patency and cuff integrity, blade light and camera image, suction, and a bag — independent of whichever algorithm you follow for <em>when</em> and <em>how</em> to use them.</div>
+  </details>
+
 </section>
 
 <section class="chap" id="c35" data-part="part6">
