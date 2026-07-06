@@ -847,6 +847,8 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .crumb .crumb-sec { color: var(--ink-soft); flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* ========== FONT-SIZE CONTROLS ========== */
+  html[data-fontscale="xxsmall"] body { font-size: 12px; }
+  html[data-fontscale="xsmall"] body { font-size: 13px; }
   html[data-fontscale="small"] body { font-size: 14.5px; }
   html[data-fontscale="large"] body { font-size: 17.5px; }
   html[data-fontscale="xlarge"] body { font-size: 19px; }
@@ -14945,7 +14947,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   // ============== FONT-SIZE CONTROLS ==============
   try {
-  const FS_LEVELS = ['small', 'normal', 'large', 'xlarge'];
+  const FS_LEVELS = ['xxsmall', 'xsmall', 'small', 'normal', 'large', 'xlarge'];
   let fsIdx = FS_LEVELS.indexOf(localStorage.getItem('mv-fontsize') || 'normal');
   if (fsIdx < 0) fsIdx = 1;
   function applyFs() {
@@ -19296,7 +19298,7 @@ document.addEventListener('click', function (e) {
     document.addEventListener('vent-theme-change', syncTheme);
 
     // Text size -> delegate to the existing toolbar font-size buttons
-    var FS_LABEL = { small: 'Small', normal: 'Default', large: 'Large', xlarge: 'X-Large' };
+    var FS_LABEL = { xxsmall: 'XX-Small', xsmall: 'X-Small', small: 'Small', normal: 'Default', large: 'Large', xlarge: 'X-Large' };
     var readout = document.getElementById('more-fs-read');
     function syncFs() { var lvl = document.documentElement.getAttribute('data-fontscale') || 'normal'; readout.textContent = FS_LABEL[lvl] || 'Default'; }
     document.getElementById('more-fs-down').addEventListener('click', function () { var b = document.getElementById('btn-fs-down'); if (b) b.click(); syncFs(); });
