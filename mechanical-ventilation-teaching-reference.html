@@ -5232,6 +5232,31 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   })();
   </script>
   </details>
+  <details class="chap-acc" data-acc-id="c3-h4-4a" open>
+    <summary>
+      <h4 id="c3-4a">3.4a Oxygen delivery and consumption — content is only half the story</h4>
+    </summary>
+
+  <p>Loading oxygen onto blood (<a class="xref" href="#c3-4" data-xref-chap="3">§3.4</a>) accomplishes nothing until that blood reaches tissue. The quantity that actually matters to the cell is <strong>oxygen delivery (DO₂)</strong> — content multiplied by the flow that carries it:</p>
+  <p><strong>DO₂ = cardiac output × CaO₂ × 10</strong>&nbsp; where &nbsp;<strong>CaO₂ = (1.34 × Hb × SaO₂) + (0.003 × PaO₂)</strong>.</p>
+  <p class="subtle" style="font-size:13.5px;color:var(--muted);">The <strong>× 10</strong> is only a unit conversion: CaO₂ is expressed per <em>deciliter</em> (mL O₂/dL) while cardiac output is in <em>liters</em> per minute, and 1 L = 10 dL — so the 10 reconciles the two and returns DO₂ in mL O₂/min. Sanity check: CO 5 L/min × CaO₂ ~20 mL/dL × 10 ≈ 1000 mL/min.</p>
+  <p>Written this way, delivery has <em>three</em> levers — cardiac output, hemoglobin, and saturation — and the ventilator only touches the last one. Worse, saturation is the <em>weakest</em> lever once the patient is on the flat top of the oxyhemoglobin curve (<a class="xref" href="#c3-5" data-xref-chap="3">§3.5</a>): above SaO₂ ~90%, adding FiO₂ to push PaO₂ from 80 to 120 buys a trivial amount of content, because saturation is already near-maximal and dissolved O₂ (the 0.003 × PaO₂ term) is negligible.</p>
+
+  <table>
+    <caption>The three determinants of oxygen delivery</caption>
+    <thead><tr><th>Lever</th><th>Contributes</th><th>Raised by</th><th>The vent’s reach</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Cardiac output</strong></td><td>The flow carrying the oxygen</td><td>Fluids, inotropes, rate/rhythm; <em>lowered</em> by high mean airway pressure / PEEP</td><td>Indirect — high airway pressure can <em>reduce</em> it</td></tr>
+      <tr><td><strong>Hemoglobin</strong></td><td>The carrying capacity (≈ 98% of content)</td><td>Transfusion, treating the cause of anemia</td><td>None</td></tr>
+      <tr><td><strong>SaO₂</strong></td><td>How full the carrier is</td><td>FiO₂, PEEP</td><td>Direct — but flat once ≥ 90%</td></tr>
+    </tbody>
+  </table>
+
+  <p>On the consumption side, tissues extract only about a quarter of what’s delivered at rest (V̇O₂ ≈ 250 mL/min against DO₂ ≈ 1000 mL/min, an extraction ratio ~25%). That reserve is why the <em>venous</em> saturation (SvO₂ / central ScvO₂) is a useful readout of the delivery–consumption balance: a falling mixed venous saturation means the tissues are extracting harder because delivery has dropped or demand has risen — a warning that the arterial numbers alone will miss.</p>
+
+  <div class="pearl"><strong>A perfect PaO₂ can sit on top of tissue hypoxia</strong>The reflex to chase PaO₂ &gt; 80 with more FiO₂ treats the smallest lever while ignoring the two large ones. In the hypoxic patient who isn’t improving, ask what delivery actually depends on: an SaO₂ of 99% with a hemoglobin of 6 or a cardiac index of 1.5 is delivering far less oxygen than a saturation of 91% with normal Hb and output. Fix the big levers — bleeding, anemia, shock — before escalating an FiO₂ that is already on the flat of the curve, and remember that pushing mean airway pressure to buy saturation can lower the cardiac-output lever it depends on.</div>
+  </details>
+
   <details class="chap-acc" data-acc-id="c3-h4-5" open>
     <summary>
       <h4 id="c3-5">3.5 The oxyhemoglobin dissociation curve — Bohr effect</h4>
@@ -7649,6 +7674,41 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   
   
+  <details class="chap-acc" data-acc-id="c8-h4-0" open>
+    <summary>
+      <h4 id="c8-0">8.0 The two control axes — oxygenation vs ventilation</h4>
+    </summary>
+
+  <p>Before the modes, settings, and waveforms of Part II make sense, hold on to the single most useful idea in mechanical ventilation: a ventilator does only <em>two</em> physiologic jobs, and they run on <strong>largely independent axes</strong>. One axis moves oxygen into the blood; the other clears carbon dioxide. Almost every setting you touch belongs to one axis or the other, and diagnosing a bad blood gas begins by deciding which axis is failing.</p>
+
+  <table>
+    <caption>The two axes — what controls each</caption>
+    <thead><tr><th></th><th>Oxygenation axis</th><th>Ventilation axis</th></tr></thead>
+    <tbody>
+      <tr><td>The job</td><td>Load O₂ onto arterial blood</td><td>Clear CO₂</td></tr>
+      <tr><td>Governed by</td><td><strong>FiO₂</strong> and <strong>mean airway pressure</strong> (chiefly <strong>PEEP</strong>)</td><td><strong>Alveolar minute ventilation</strong> = (V<sub>T</sub> − V<sub>D</sub>) × RR</td></tr>
+      <tr><td>Physiologic basis</td><td>FiO₂ sets the alveolar O₂ offered; PEEP recruits and keeps alveoli open, shrinking shunt and raising the surface for exchange (<a class="xref" href="#c3" data-xref-chap="3">§3</a>)</td><td>PaCO₂ ∝ V̇CO₂ / V̇<sub>A</sub> — move air past alveoli and CO₂ falls (<a class="xref" href="#c4-1" data-xref-chap="4">§4.1</a>)</td></tr>
+      <tr><td>You read it as</td><td>SpO₂ / PaO₂</td><td>PaCO₂ / pH</td></tr>
+      <tr><td>The knobs</td><td>FiO₂ ↑, PEEP ↑</td><td>RR ↑, V<sub>T</sub> ↑</td></tr>
+    </tbody>
+  </table>
+
+  <p>The practical payoff is that the axes are <em>mostly</em> separable: you can raise PaO₂ by turning up FiO₂ or PEEP without meaningfully changing CO₂, and you can lower a high PaCO₂ by raising the rate without changing oxygenation. The first move at the bedside is therefore always the same — <strong>name the axis</strong>:</p>
+  <table>
+    <caption>Reading a bad gas — which axis?</caption>
+    <thead><tr><th>Abnormality</th><th>Axis</th><th>Reach for</th></tr></thead>
+    <tbody>
+      <tr><td>Low PaO₂ / SpO₂ (hypoxemia)</td><td>Oxygenation</td><td>FiO₂, then PEEP (or PEEP first in recruitable ARDS)</td></tr>
+      <tr><td>High PaCO₂ (hypercapnia, respiratory acidosis)</td><td>Ventilation</td><td>↑ RR, then ↑ V<sub>T</sub> within lung-protective limits</td></tr>
+      <tr><td>Low PaCO₂ (over-ventilation)</td><td>Ventilation</td><td>↓ RR (and check for pain, agitation, acidosis driving it)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="phys"><strong>Where the axes are not fully independent</strong>The separation is a working approximation, not a law. PEEP lives on the oxygenation axis but bleeds onto the other two systems: too much PEEP overdistends aerated lung, raising dead space and thus PaCO₂, and it raises mean airway pressure enough to impede venous return and cardiac output. Large tidal volumes recruit a little (nudging oxygenation up) at the cost of stretch injury. And oxygenation ultimately serves <em>delivery</em>, not just arterial content — a good PaO₂ with a low hemoglobin or cardiac output still starves tissue (<a class="xref" href="#c3-4" data-xref-chap="3">§3.4a</a>). Hold the two-axis model as the first cut, then layer these couplings on top.</div>
+
+  <div class="pearl"><strong>Don’t fix the wrong axis</strong>The classic reflex error is answering a rising CO₂ by turning up the FiO₂ — treating a ventilation problem with an oxygenation knob. It does nothing for the CO₂ and masks the real issue. Match the knob to the axis: hypoxemia → FiO₂/PEEP; hypercapnia → rate/tidal volume. Everything in the setup chapter (<a class="xref" href="#c13" data-xref-chap="13">§13</a>) is built on this split.</div>
+  </details>
+
   <details class="chap-acc" data-acc-id="c8-h4-1" open>
     <summary>
       <h4 id="c8-1">8.1 The four phases at a glance</h4>
@@ -7795,6 +7855,33 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     T<sub>I</sub> should be set from disease physiology. Obstructive disease needs short T<sub>I</sub> and long T<sub>E</sub> (avoid air trapping); ARDS-like restrictive disease can tolerate longer T<sub>I</sub> to improve oxygenation. Default 1.0 s is fine starting volume-control, but it’s a starting offer, not a target.
     <span class="corrected">Pick T<sub>I</sub> from I:E ratio appropriate to physiology: 1:3 to 1:5 in obstructive, 1:2 in normal/restrictive, sometimes 1:1 or inverse in severe ARDS. Watch the expiratory flow waveform.</span>
   </div>
+  <details class="chap-acc" data-acc-id="c8-h4-7" open>
+    <summary>
+      <h4 id="c8-7">8.7 The ventilator controls — what every knob does</h4>
+    </summary>
+
+  <p>The phases of a breath (<a class="xref" href="#c8-1" data-xref-chap="8">§8.1</a>) are shaped by a small set of controls that recur across every mode, even when the labels differ by manufacturer. This is the one-screen glossary: what each control does and which of the two axes (<a class="xref" href="#c8-0" data-xref-chap="8">§8.0</a>) it serves. Which controls are <em>available</em> depends on the mode — a volume mode exposes flow and V<sub>T</sub>; a pressure mode exposes an inspiratory pressure and rise time instead — but the meaning of each is constant.</p>
+
+  <table>
+    <caption>The ventilator controls</caption>
+    <thead><tr><th>Control</th><th>What it sets</th><th>Axis / effect</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FiO₂</strong></td><td>Fraction of inspired oxygen (0.21–1.0)</td><td>Oxygenation</td><td>Fastest oxygenation lever; wean toward ≤ 0.4–0.6 to limit hyperoxia</td></tr>
+      <tr><td><strong>PEEP</strong></td><td>Positive end-expiratory pressure held at end-exhalation</td><td>Oxygenation (recruits) — but affects CO₂ and hemodynamics</td><td>Baseline alveolar pressure; too much overdistends and impedes venous return (<a class="xref" href="#c6-0" data-xref-chap="6">§6.0</a>)</td></tr>
+      <tr><td><strong>Tidal volume (V<sub>T</sub>)</strong></td><td>Volume delivered per breath (volume modes)</td><td>Ventilation</td><td>Set to predicted body weight (≈ 4–8 mL/kg PBW); the core lung-protective number</td></tr>
+      <tr><td><strong>Respiratory rate (RR)</strong></td><td>Mandatory breaths per minute</td><td>Ventilation</td><td>With V<sub>T</sub>, sets minute ventilation; watch for auto-PEEP at high rates</td></tr>
+      <tr><td><strong>Inspiratory pressure / PS</strong></td><td>Target pressure above PEEP (pressure modes / support)</td><td>Ventilation (drives the delivered volume)</td><td>Delivered V<sub>T</sub> is then <em>dependent</em> on compliance and resistance</td></tr>
+      <tr><td><strong>Inspiratory flow (rate &amp; pattern)</strong></td><td>How fast gas is delivered, and the waveform shape (square vs decelerating; volume modes)</td><td>Sets inspiratory time and the peak-to-plateau gap</td><td>Higher flow → shorter T<sub>i</sub>, longer expiratory time (helps trapping); shape changes peak pressure</td></tr>
+      <tr><td><strong>I:E ratio / T<sub>i</sub></strong></td><td>The split of the cycle between inspiration and expiration</td><td>Timing</td><td>Long expiration for obstruction; longer inspiration can raise mean airway pressure / oxygenation</td></tr>
+      <tr><td><strong>Trigger (type &amp; sensitivity)</strong></td><td>What effort starts a patient breath — flow or pressure, and how much is required</td><td>Patient interaction</td><td>Flow-trigger is the modern default; too insensitive → missed triggers, too sensitive → auto-triggering (<a class="xref" href="#c8-2" data-xref-chap="8">§8.2</a>)</td></tr>
+      <tr><td><strong>Rise time</strong></td><td>How quickly pressure ramps to target at breath onset (pressure modes)</td><td>Comfort / synchrony</td><td>Fast rise for high demand; too fast can overshoot and feel “punchy”</td></tr>
+      <tr><td><strong>Cycle threshold (E<sub>sens</sub>)</strong></td><td>The % of peak inspiratory flow at which a supported breath ends</td><td>Timing (ends inspiration)</td><td>Default ~25%; lower % → longer T<sub>i</sub> (late cycling in COPD), higher % → shorter T<sub>i</sub> (<a class="xref" href="#c8-4" data-xref-chap="8">§8.4</a>)</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note"><strong>Two habits</strong>(1) Read a strange screen by control, not by brand name — find the FiO₂, the PEEP, the size or pressure of the breath, the rate, and how it triggers and cycles, and any mode becomes legible. (2) Every control belongs to an axis or to timing; changing one to fix a problem on a different axis is how settings drift out of sense.</div>
+  </details>
+
 </section>
 
 <section class="chap" id="c9" data-part="part2">
