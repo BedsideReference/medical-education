@@ -19394,18 +19394,18 @@ document.addEventListener('click', function (e) {
     }
     html[data-bar-hidden="1"] .mobile-actionbar { transform: translateY(115%); }
     .mobile-actionbar button {
-      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
       background: none; border: 0; color: var(--ink-soft); font-family: inherit;
-      padding: 11px 0 12px; cursor: pointer; min-height: 62px;
+      padding: 6px 0 7px; cursor: pointer; min-height: 48px;
       -webkit-tap-highlight-color: transparent; transition: color 0.12s ease;
     }
     .mobile-actionbar button:active { color: var(--accent); }
     .mobile-actionbar button:active .mab-icon { transform: scale(0.9); }
-    .mobile-actionbar .mab-icon { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.12s ease; }
-    .mobile-actionbar .mab-label { font-size: 11px; letter-spacing: 0.02em; font-weight: 500; }
+    .mobile-actionbar .mab-icon { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.12s ease; }
+    .mobile-actionbar .mab-label { font-size: 10px; letter-spacing: 0.02em; font-weight: 500; }
     .mobile-actionbar .mab-bedside { color: var(--warn); }
     .mobile-actionbar .mab-bedside:active { color: var(--danger); }
-    body { padding-bottom: calc(68px + env(safe-area-inset-bottom, 0)); }
+    body { padding-bottom: calc(52px + env(safe-area-inset-bottom, 0)); }
     /* Float the back-to-top (right) and quick-calc (left) above the action bar,
        on opposite sides so they never overlap each other. */
     .back-top { bottom: calc(78px + env(safe-area-inset-bottom, 0)) !important; right: 16px; }
