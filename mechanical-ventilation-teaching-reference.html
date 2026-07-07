@@ -15,7 +15,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<script>/* mobile-view: force a mobile render width on tablets / when chosen, before paint */(function(){try{var vp=document.querySelector('meta[name="viewport"]');if(!vp)return;var s=null;try{s=localStorage.getItem('mv-mobileview');}catch(e){}var on;if(s==='1')on=true;else if(s==='0')on=false;else{var coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;on=!!coarse&&Math.min(screen.width,screen.height)>=700;}if(on)vp.setAttribute('content','width=768, viewport-fit=cover');document.documentElement.setAttribute('data-mobileview',on?'on':'off');}catch(e){}})();</script>
+<script>/* mobile-view: force a mobile render width on tablets / when chosen, before paint */(function(){try{var vp=document.querySelector('meta[name="viewport"]');if(!vp)return;var s=null;try{s=localStorage.getItem('mv-mobileview');}catch(e){}var on;if(s==='1')on=true;else if(s==='0')on=false;else{var coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;on=!!coarse&&Math.min(screen.width,screen.height)>=700;}if(on){var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100);vp.setAttribute('content','initial-scale='+sc+', viewport-fit=cover');}document.documentElement.setAttribute('data-mobileview',on?'on':'off');}catch(e){}})();</script>
 <title>Guide to Ventilation — Bedside Reference</title>
 <meta name="description" content="Physiology-first teaching reference on invasive mechanical ventilation for medical students, IM residents, hospitalists, PCCM fellows, and other healthcare trainees and practitioners. Written for the bedside." />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -29,7 +29,7 @@
 <meta name="apple-mobile-web-app-title" content="Vent Guide" />
 <meta name="author" content="Bedside Reference" />
 <style>
-  html { font-size: 16px; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   /* Mobile/desktop performance: skip rendering off-screen chapters until they
      scroll near the viewport. Cuts initial layout/paint cost and memory on a
      very long single-page document (prevents mobile freezes/crashes). Older
@@ -19390,7 +19390,9 @@ document.addEventListener('click', function (e) {
       background: var(--surface); border-top: 1px solid var(--rule);
       padding-bottom: env(safe-area-inset-bottom, 0);
       backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: transform .28s ease; will-change: transform;
     }
+    html[data-bar-hidden="1"] .mobile-actionbar { transform: translateY(115%); }
     .mobile-actionbar button {
       flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
       background: none; border: 0; color: var(--ink-soft); font-family: inherit;
@@ -20222,10 +20224,11 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
 (function(){
   var vp=document.querySelector('meta[name="viewport"]');
   if(!vp)return;
-  var MOBILE='width=768, viewport-fit=cover', DESKTOP='width=device-width, initial-scale=1, viewport-fit=cover';
+  var DESKTOP='width=device-width, initial-scale=1, viewport-fit=cover';
+  function MOBILE(){ var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100); return 'initial-scale='+sc+', viewport-fit=cover'; }
   function state(){ return document.documentElement.getAttribute('data-mobileview')==='on'; }
   function set(on){
-    vp.setAttribute('content', on?MOBILE:DESKTOP);
+    vp.setAttribute('content', on?MOBILE():DESKTOP);
     document.documentElement.setAttribute('data-mobileview', on?'on':'off');
     var tb=document.getElementById('btn-mobileview'); if(tb) tb.setAttribute('aria-pressed', on?'true':'false');
     try{ localStorage.setItem('mv-mobileview', on?'1':'0'); }catch(e){}
@@ -20234,6 +20237,20 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
   if(tb){ tb.setAttribute('aria-pressed', state()?'true':'false'); tb.addEventListener('click', function(){ set(!state()); }); }
   var dv=document.getElementById('more-desktopview');
   if(dv) dv.addEventListener('click', function(){ set(false); });
+
+  /* auto-hide the bottom action bar on scroll-down, reveal on scroll-up / near edges */
+  var lastY = window.pageYOffset||0, ticking=false, TH=8, de=document.documentElement;
+  function onScroll(){
+    var y = window.pageYOffset || de.scrollTop || 0, dy = y - lastY;
+    var atBottom = (window.innerHeight + y) >= (de.scrollHeight - 6);
+    if (y < 72 || atBottom) de.removeAttribute('data-bar-hidden');
+    else if (dy > TH) de.setAttribute('data-bar-hidden','1');
+    else if (dy < -TH) de.removeAttribute('data-bar-hidden');
+    lastY = y; ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ requestAnimationFrame(onScroll); ticking=true; } }, {passive:true});
+  // never keep it hidden while the More sheet / mobile search is open
+  ['mab-more','mab-search','mab-contents','mab-bedside'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', function(){ de.removeAttribute('data-bar-hidden'); }); });
 })();
 </script>
 </body>
