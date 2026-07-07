@@ -700,13 +700,23 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     .toc-toggle-cb:checked ~ .toc-overlay {
       background: rgba(0,0,0,0.4); pointer-events: auto;
     }
-    /* Reliable fallback: a plain class on <body> opens the drawer even when iOS Safari
-       fails to re-evaluate the :checked ~ sibling selector under the forced-mobile zoom. */
-    body.toc-open nav.toc { left: 0; }
-    body.toc-open .toc-overlay { background: rgba(0,0,0,0.4); pointer-events: auto; }
     /* Lock body scroll when drawer open via overflow:hidden on html */
     .toc-toggle-cb:checked ~ .layout main,
     .toc-toggle-cb:checked ~ .layout header.hero { /* nothing — overflow handled by overlay */ }
+  }
+
+  /* Bulletproof drawer: a plain class on <body> forces the TOC into an overlay drawer
+     regardless of viewport width, the @media breakpoint, or the :checked selector — needed
+     because iOS Safari can fail to re-evaluate those under the forced-mobile zoom viewport.
+     On desktop this class is never set (the Contents/hamburger controls are hidden > 920). */
+  body.toc-open nav.toc {
+    position: fixed !important; top: 0; left: 0; width: 290px; max-width: 85vw; height: 100vh;
+    background: var(--surface); padding: 70px 18px 18px; border-right: 1px solid var(--rule);
+    box-shadow: 4px 0 16px rgba(0,0,0,0.15); overflow-y: auto; z-index: 950;
+  }
+  body.toc-open .toc-overlay {
+    display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    pointer-events: auto; z-index: 940;
   }
 
   /* ========== ACTIVE SECTION HIGHLIGHT ========== */
@@ -19737,8 +19747,9 @@ document.addEventListener('click', function (e) {
     if (i) { window.scrollTo({ top: 0, behavior: 'auto' }); i.focus(); }
   });
   if (c) c.addEventListener('click', function () {
-    var cb = document.getElementById('toc-toggle');
-    if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+    var open = !document.body.classList.contains('toc-open');
+    document.body.classList.toggle('toc-open', open);
+    var cb = document.getElementById('toc-toggle'); if (cb) cb.checked = open;
   });
   if (b) b.addEventListener('click', function () {
     var t = document.getElementById('bedside-now');
