@@ -163,12 +163,9 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .front-matter {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 1.4fr 1fr;
+    grid-template-columns: 1fr;
     gap: 18px;
     margin: 0 0 18px;
-  }
-  @media (max-width: 920px) {
-    .front-matter { grid-template-columns: 1fr; }
   }
   .how-to-read, .disclaimer-block {
     border: 1px solid var(--rule);
@@ -3295,14 +3292,22 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">44</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology &rarr; liberation</small></div></div>
   </div>
   <div class="mh-cite"><b>How to cite &mdash;</b> Bedside Reference. <em>Guide to Ventilation</em>, Vol. I. May 2026 (reviewed Jul 2026).</div>
+  <aside class="disclaimer-block" id="disclaimer" aria-label="Medical disclaimer">
+    <div class="ftm-title">Disclaimer</div>
+    <p>This reference is for <strong>educational use by licensed clinicians and trainees</strong> — not patients or the general public. It is not medical advice, not a substitute for clinical judgment, institutional protocols, or bedside evaluation, and creates no physician–patient relationship.</p>
+    <p>Drug doses, device specifications, contraindications, and practice patterns change, and some uses described may be off-label. Verify every clinically actionable detail — <strong>especially drug doses</strong> — against primary sources, current guidelines, product labeling, and your institution’s standards before applying it to a patient. Content reflects evidence and consensus as of July 2026 and may since have changed.</p>
+    <p>AI tools were used to help <strong>organize and draft</strong> this material, and its clinical content has been <strong>reviewed by a physician</strong>. As with any reference it may still contain errors — treat it as a study aid to verify independently, not an authority.</p>
+    <p>Provided “as is,” without warranty of any kind, express or implied. <em>Bedside Reference</em> accepts no liability for outcomes arising from use of this material. By continuing, you acknowledge these terms.</p>
+  </aside>
 </header>
 
 <style id="frontmatter-css">
-.front-matter{grid-template-columns:1.55fr 1fr;align-items:start;}
+.front-matter{grid-template-columns:1fr;align-items:start;}
 .how-to-read{padding:18px 20px;}
 .how-to-read h3{font-size:1.1875rem;margin:0 0 14px;}
 .how-to-read .modes{gap:16px;}
-.how-to-read .mode{border-left:0;padding:0;}
+.how-to-read .mode{border-left:0;padding:12px 14px;background:var(--bg);border:1px solid var(--rule);border-radius:8px;}
+.how-to-read .mode-cue{margin-left:auto;font-family:var(--font-mono);font-size:0.625rem;letter-spacing:.02em;color:var(--muted);background:var(--accent-soft);padding:2px 8px;border-radius:999px;white-space:nowrap;}
 .how-to-read .mode-head{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
 .how-to-read .mode-chip{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--font-sans);font-weight:700;font-size:0.75rem;line-height:1;display:flex;align-items:center;justify-content:center;flex:none;}
 .how-to-read .mode-cat{font-family:var(--font-sans);font-size:0.65625rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;}
@@ -3313,34 +3318,30 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 .disclaimer-block p+p{margin-top:7px;}
 .disclaimer-block strong,.disclaimer-block em{color:var(--ink-soft);}
 </style>
-<section class="front-matter" aria-label="Reading guidance and disclaimer">
+<section class="front-matter" aria-label="Reading guidance">
+
   <div class="how-to-read" id="how-to-read">
     <div class="ftm-title">How to read</div>
     <h3>Three ways in</h3>
     <div class="modes">
       <div class="mode">
-        <div class="mode-head"><span class="mode-chip">1</span><span class="mode-cat">Linear</span></div>
+        <div class="mode-head"><span class="mode-chip">1</span><span class="mode-cat">Linear</span><span class="mode-cue">~14 h</span></div>
         <div class="mode-name">Cover to cover</div>
-        <p>Parts I–IX build sequentially. ~14 h end-to-end.</p>
+        <p>Parts I–IX build sequentially, front to back.</p>
       </div>
       <div class="mode">
-        <div class="mode-head"><span class="mode-chip">2</span><span class="mode-cat">Reference</span></div>
-        <div class="mode-name">Look up &amp; out</div>
+        <div class="mode-head"><span class="mode-chip">2</span><span class="mode-cat">Reference</span><span class="mode-cue">seconds</span></div>
+        <div class="mode-name">Look something up</div>
         <p>Start from <a href="#reference-cards">high-yield cards</a> or the <a href="#cheatsheet">bedside cheat sheet</a>. Chapters stand alone.</p>
       </div>
       <div class="mode">
-        <div class="mode-head"><span class="mode-chip">3</span><span class="mode-cat">Bedside</span></div>
+        <div class="mode-head"><span class="mode-chip">3</span><span class="mode-cat">Bedside</span><span class="mode-cue">now</span></div>
         <div class="mode-name">Patient in front of you</div>
         <p>Jump to <a href="#c40">cases (Ch 40)</a>, <a href="#c39">troubleshooting (Ch 39)</a>, or the disease chapter in <a href="#part4">Part IV</a>.</p>
       </div>
     </div>
   </div>
 
-  <aside class="disclaimer-block" id="disclaimer" aria-label="Medical disclaimer">
-    <div class="ftm-title">Disclaimer</div>
-    <p>This reference is for <strong>educational use only</strong>. It does not constitute medical advice and is not a substitute for clinical judgment, institutional protocols, or the care of a qualified clinician at the bedside.</p>
-    <p>Drug doses, equipment specifications, contraindications, and practice patterns change. Verify every clinically actionable detail against primary sources, current guidelines, and your institution’s standards before applying it to a patient. Content reflects evidence and consensus as of July 2026. <em>Bedside Reference</em> accepts no liability for outcomes arising from use of this material. By reading further, you acknowledge these terms.</p>
-  </aside>
 </section>
 
 <nav class="toc" aria-label="Contents">
