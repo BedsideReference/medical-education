@@ -700,6 +700,10 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     .toc-toggle-cb:checked ~ .toc-overlay {
       background: rgba(0,0,0,0.4); pointer-events: auto;
     }
+    /* Reliable fallback: a plain class on <body> opens the drawer even when iOS Safari
+       fails to re-evaluate the :checked ~ sibling selector under the forced-mobile zoom. */
+    body.toc-open nav.toc { left: 0; }
+    body.toc-open .toc-overlay { background: rgba(0,0,0,0.4); pointer-events: auto; }
     /* Lock body scroll when drawer open via overflow:hidden on html */
     .toc-toggle-cb:checked ~ .layout main,
     .toc-toggle-cb:checked ~ .layout header.hero { /* nothing — overflow handled by overlay */ }
@@ -1648,9 +1652,9 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .sim-state .sim-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--rule); font-size: 0.8125rem; }
   .sim-state .sim-row .lbl { color: var(--muted); }
   .sim-state .sim-row .val { font-weight: 600; font-variant-numeric: tabular-nums; }
-  .sim-state .sim-row.warn .val { color: #c95a2c; }
-  .sim-state .sim-row.bad .val { color: #c0322f; }
-  .sim-state .sim-row.good .val { color: #1f7a4f; }
+  .sim-state .sim-row.warn .val { color: var(--warn); }
+  .sim-state .sim-row.bad .val { color: var(--danger); }
+  .sim-state .sim-row.good .val { color: var(--good); }
   .sim-log {
     margin-top: 10px; padding: 8px 10px;
     background: var(--bg); border: 1px solid var(--rule); border-radius: 4px;
@@ -1673,7 +1677,7 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .sim-scenario-bar label { font-size: 0.75rem; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
   .sim-scenario-bar select { padding: 4px 8px; font-size: 0.8125rem; font-family: inherit; border: 1px solid var(--rule); border-radius: 4px; background: var(--surface); color: var(--ink); }
   .sim-controls h5 { font-size: 0.6875rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin: 8px 0 4px; }
-  .sim-controls input.sim-bad, .sim-controls select.sim-bad { border-color: #c95a2c; box-shadow: 0 0 0 2px rgba(201,90,44,0.12); }
+  .sim-controls input.sim-bad, .sim-controls select.sim-bad { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(201,90,44,0.12); }
   .sim-warning {
     display: flex; align-items: center; gap: 6px;
     margin: 4px 0; padding: 4px 8px;
@@ -1696,9 +1700,9 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   .sim-grade-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .sim-grade-summary { font-size: 0.8125rem; color: var(--ink); flex: 1; }
   .sim-grade-detail { font-size: 0.71875rem; color: var(--ink-soft); margin-top: 6px; line-height: 1.6; }
-  .sim-grade-detail .ok { color: #1f7a4f; font-weight: 600; }
-  .sim-grade-detail .warn { color: #c95a2c; font-weight: 600; }
-  .sim-grade-detail .bad { color: #c0322f; font-weight: 600; }
+  .sim-grade-detail .ok { color: var(--good); font-weight: 600; }
+  .sim-grade-detail .warn { color: var(--warn); font-weight: 600; }
+  .sim-grade-detail .bad { color: var(--danger); font-weight: 600; }
   .sim-event {
     background: #fff5e6; border-left: 3px solid #c95a2c; border-radius: 0 4px 4px 0;
     padding: 8px 12px; margin: 8px 0;
@@ -1857,7 +1861,7 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     margin-left: auto; background: none; border: none; color: var(--muted);
     cursor: pointer; font-size: 0.6875rem; padding: 0 4px;
   }
-  .annotate-item .meta button.del:hover { color: #c00; }
+  .annotate-item .meta button.del:hover { color: var(--danger); }
   @media (max-width: 700px) { .annotate-panel { width: 92vw; } }
   @media print { .annotate-fab, .annotate-popup, .annotate-panel { display: none !important; } }
 
@@ -2459,7 +2463,7 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     border-color: var(--accent);
   }
   .mc-copy-confirm {
-    font-size: 0.6875rem; color: #2c8f3a; font-weight: 600;
+    font-size: 0.6875rem; color: var(--good); font-weight: 600;
   }
 
 
@@ -2544,9 +2548,9 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     font-size: 0.65625rem; font-weight: 600; padding: 1px 7px; border-radius: 999px;
     background: var(--surface); color: var(--muted); border: 1px solid var(--rule);
   }
-  .calc-result.ok   .bin { color: #146c43; background: #eaf6ee; border-color: #cfead8; }
-  .calc-result.warn .bin { color: #875010; background: #fbf0d4; border-color: #f3dfb6; }
-  .calc-result.bad  .bin { color: #8b1e1e; background: #fbe7e7; border-color: #f1c0c0; }
+  .calc-result.ok   .bin { color: var(--good); background: var(--good-soft); border-color: var(--good-soft); }
+  .calc-result.warn .bin { color: var(--warn); background: var(--warn-soft); border-color: var(--warn-soft); }
+  .calc-result.bad  .bin { color: var(--danger); background: var(--danger-soft); border-color: var(--danger-soft); }
 
   /* Inline interpretation line */
   .calc-result .interpret {
@@ -2612,18 +2616,18 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     text-transform: uppercase; letter-spacing: 0.04em; }
   .calc .snap-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
   .calc .snap-table td .delta { font-size: 0.6875rem; color: var(--muted); margin-left: 4px; }
-  .calc .snap-table td .delta.up   { color: #8b1e1e; }
-  .calc .snap-table td .delta.down { color: #146c43; }
+  .calc .snap-table td .delta.up   { color: var(--danger); }
+  .calc .snap-table td .delta.down { color: var(--good); }
   .calc .snap-table td.actions { text-align: right; }
   .calc .snap-table td.actions button {
     padding: 2px 8px; font-size: 0.6875rem;
     background: transparent; color: var(--muted); border: 1px solid var(--rule);
     border-radius: 4px; cursor: pointer; margin-left: 4px; font-family: inherit;
   }
-  .calc .snap-table td.actions button:hover { color: #8b1e1e; border-color: #f1c0c0; }
+  .calc .snap-table td.actions button:hover { color: var(--danger); border-color: var(--danger); }
   .calc .snap-empty { font-size: 0.78125rem; color: var(--muted); font-style: italic; margin-top: 10px; }
 
-  .calc-copy-confirm { font-size: 0.75rem; color: #146c43; font-weight: 600; }
+  .calc-copy-confirm { font-size: 0.75rem; color: var(--good); font-weight: 600; }
 
   /* Tighter print rules for the new sections */
   @media print {
@@ -3078,6 +3082,7 @@ window.addEventListener('hashchange', expandCollapsedFromHash);
 <div class="progress-bar"><div class="fill"></div></div>
 
 <input type="checkbox" id="toc-toggle" class="toc-toggle-cb" aria-label="Open table of contents"/>
+<script>(function(){var cb=document.getElementById("toc-toggle");if(!cb)return;function sync(){document.body.classList.toggle("toc-open",cb.checked);}cb.addEventListener("change",sync);document.addEventListener("DOMContentLoaded",sync);})();</script>
 
 <div class="toolbar" role="toolbar" aria-label="Document tools">
   <label class="tb-btn hamburger" for="toc-toggle" aria-label="Toggle table of contents" title="Open menu"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></label>
@@ -4721,10 +4726,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure" id="ch2-aag-calculator" style="margin-bottom:1.4rem;">
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
-        <strong style="color:#0891b2; font-size:0.95rem;">Live alveolar gas equation</strong>
+        <strong style="color:var(--accent); font-size:0.95rem;">Live alveolar gas equation</strong>
         <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— drag the variables to see P<sub>A</sub>O₂ recompute</span>
       </div>
-      <a href="https://bedsidereference.github.io/medical-education/alveolar_gas_equation.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+      <a href="https://bedsidereference.github.io/medical-education/alveolar_gas_equation.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:var(--accent); text-decoration:none; border:1px solid var(--accent); padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
@@ -5273,7 +5278,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
 <div class="figure">
     <div style="display:flex; justify-content:center; gap:8px; margin-bottom:6px;">
-      <button type="button" id="ohbc-anim-toggle" style="font-size:12px; padding:4px 12px; border:1px solid #cbd5e1; background:#fff; border-radius:14px; cursor:pointer; color:#1f3a5f;" aria-pressed="false">⏸︎ Pause animation</button>
+      <button type="button" id="ohbc-anim-toggle" style="font-size:12px; padding:4px 12px; border:1px solid #cbd5e1; background:#fff; border-radius:14px; cursor:pointer; color:var(--accent);" aria-pressed="false">⏸︎ Pause animation</button>
       <span id="ohbc-anim-state" style="font-size:11px; color:var(--muted); align-self:center; font-style:italic;">cycling left ↔︎ right shift every 6 s</span>
     </div>
     <svg id="ohbc-anim-svg" class="anim-fig anim-ohbc" viewBox="0 0 580 410" role="img" aria-label="Oxyhemoglobin dissociation curve, animating between right-shift (acidosis, hypercapnia, hyperthermia, increased 2,3-BPG) and left-shift (alkalemia, hypocapnia, hypothermia, decreased 2,3-BPG). The P50 marker moves accordingly. Animation can be paused with the button above." style="max-width:580px; width:100%; height:auto; display:block; margin:0 auto;">
@@ -6150,7 +6155,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         </g>
       </g>
     </svg>
-    <div class="cap"><b>Figure 4.3 — Diffusion vs perfusion limitation along the alveolar capillary.</b> Each curve traces the partial pressure of one gas as a red blood cell traverses the pulmonary capillary (~0.75 s at rest, ~0.25 s in exercise; the cyan line shows the moving RBC). <strong style="color:#7c3aed;">N₂O</strong> equilibrates almost immediately — its uptake is limited only by how much blood passes (<em>perfusion-limited</em>). <strong style="color:#1f5f99;">O₂ in health</strong> equilibrates by ~0.25 s — also perfusion-limited. <strong style="color:#c4452f;">O₂ in fibrosis, ARDS, or during exercise</strong> never reaches the alveolar value within transit time — <em>diffusion-limited</em>. <strong style="color:var(--muted);">CO</strong> is the textbook diffusion-limited gas: it binds hemoglobin so avidly that the capillary blood never fills up — DLCO measurement exploits this. After West.<sup class="cite"><a href="#r28">28</a></sup></div>
+    <div class="cap"><b>Figure 4.3 — Diffusion vs perfusion limitation along the alveolar capillary.</b> Each curve traces the partial pressure of one gas as a red blood cell traverses the pulmonary capillary (~0.75 s at rest, ~0.25 s in exercise; the cyan line shows the moving RBC). <strong style="color:#7c3aed;">N₂O</strong> equilibrates almost immediately — its uptake is limited only by how much blood passes (<em>perfusion-limited</em>). <strong style="color:var(--accent);">O₂ in health</strong> equilibrates by ~0.25 s — also perfusion-limited. <strong style="color:#c4452f;">O₂ in fibrosis, ARDS, or during exercise</strong> never reaches the alveolar value within transit time — <em>diffusion-limited</em>. <strong style="color:var(--muted);">CO</strong> is the textbook diffusion-limited gas: it binds hemoglobin so avidly that the capillary blood never fills up — DLCO measurement exploits this. After West.<sup class="cite"><a href="#r28">28</a></sup></div>
   </div>
   <div class="phys"><strong>Why this matters at the bedside</strong>If a patient becomes hypoxemic <em>only on exertion</em> with a relatively preserved resting PaO₂, suspect a <strong>diffusion limitation</strong> — fibrosis, pulmonary vascular disease, or early ARDS. The shortened transit time of exercise crosses the threshold where O₂ can’t keep up. Conversely, the septic ARDS patient with hyperdynamic cardiac output is paradoxically <em>worse</em> oxygenated because of the same physiology — high CO compresses transit time. Slowing the heart (β-blocker in the right setting) sometimes helps; more often, the lever is recruitment and PEEP to enlarge the diffusing surface.</div>
   </details>
@@ -6344,10 +6349,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure" id="ch4-abg-simulator" style="margin-bottom:1.4rem;">
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
-        <strong style="color:#0891b2; font-size:0.95rem;">Live ABG acid-base simulator</strong>
+        <strong style="color:var(--accent); font-size:0.95rem;">Live ABG acid-base simulator</strong>
         <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— set a gas or pick a preset and watch the four-step read resolve</span>
       </div>
-      <a href="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+      <a href="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:var(--accent); text-decoration:none; border:1px solid var(--accent); padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
@@ -6714,7 +6719,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <p>Drag compliance, resistance, V<sub>T</sub>, and PEEP to see how each of the three terms stacks into airway pressure. The vanishing of the red (resistive) band during the end-inspiratory hold is the visual answer to the “PIP high? P<sub>plat</sub> high?” question that diagnoses most pressure alarms (§6.3).</p>
   <div class="figure interactive-fig" id="if-eom">
     <div style="margin-bottom:10px;">
-      <strong style="color:#0891b2; font-size:0.95rem;">Equation of motion — decomposing every breath</strong>
+      <strong style="color:var(--accent); font-size:0.95rem;">Equation of motion — decomposing every breath</strong>
       <div style="font-size:0.85rem; color:var(--muted); margin-top:2px;">P<sub>aw</sub>(t) = V(t)/C  +  V&#775;(t)·R  +  PEEP. Drag the three components to see how each colored band stacks into total airway pressure.</div>
     </div>
     <div class="if-controls">
@@ -6733,10 +6738,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div class="if-stats" style="grid-template-columns: repeat(4, 1fr);">
       <div class="if-stat"><div class="if-stat-label">PIP</div><div class="if-stat-val" id="eom-pip">25</div><div class="if-stat-sub">peak insp. (cmH₂O)</div></div>
       <div class="if-stat"><div class="if-stat-label">P<sub>plat</sub></div><div class="if-stat-val" id="eom-pplat">15</div><div class="if-stat-sub">end-insp hold (cmH₂O)</div></div>
-      <div class="if-stat"><div class="if-stat-label">ΔP (driving)</div><div class="if-stat-val" id="eom-dp" style="color:#1f5f99;">10</div><div class="if-stat-sub" id="eom-dpstat">P<sub>plat</sub> − PEEP</div></div>
-      <div class="if-stat"><div class="if-stat-label">Resistive ΔP</div><div class="if-stat-val" id="eom-rp" style="color:#9b2c2c;">10</div><div class="if-stat-sub" id="eom-rpstat">PIP − P<sub>plat</sub></div></div>
+      <div class="if-stat"><div class="if-stat-label">ΔP (driving)</div><div class="if-stat-val" id="eom-dp" style="color:var(--accent);">10</div><div class="if-stat-sub" id="eom-dpstat">P<sub>plat</sub> − PEEP</div></div>
+      <div class="if-stat"><div class="if-stat-label">Resistive ΔP</div><div class="if-stat-val" id="eom-rp" style="color:var(--danger);">10</div><div class="if-stat-sub" id="eom-rpstat">PIP − P<sub>plat</sub></div></div>
     </div>
-    <div style="display:flex; gap:18px; justify-content:flex-start; align-items:center; margin:8px 0 6px; font-size:11px; color:#1f3a5f; padding:6px 10px; background:#f8fafc; border-radius:4px;">
+    <div style="display:flex; gap:18px; justify-content:flex-start; align-items:center; margin:8px 0 6px; font-size:11px; color:var(--accent); padding:6px 10px; background:#f8fafc; border-radius:4px;">
       <span><span style="display:inline-block; width:12px; height:12px; background:rgba(31,95,153,0.35); border:1px solid #1f5f99; vertical-align:middle; margin-right:4px;"></span>Elastic (V/C)</span>
       <span><span style="display:inline-block; width:12px; height:12px; background:rgba(155,44,44,0.35); border:1px solid #9b2c2c; vertical-align:middle; margin-right:4px;"></span>Resistive (V&#775;·R)</span>
       <span><span style="display:inline-block; width:12px; height:12px; background:rgba(93,161,105,0.35); border:1px solid #5da169; vertical-align:middle; margin-right:4px;"></span>PEEP (baseline)</span>
@@ -6945,7 +6950,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     </tbody>
   </table>
 
-  <div class="pearl"><strong>The two-question diagnostic algorithm</strong>(1) Is <span style="color:#9b2c2c; font-weight:600;">PIP</span> high? (2) Is <span style="color:#1f5f99; font-weight:600;">P<sub>plat</sub></span> high? <em>Yes/No</em>: <span style="color:#9b2c2c; font-weight:600;">resistance problem</span> — fix the airway (suction, bronchodilator, replace ETT, treat bronchospasm). <em>Yes/Yes</em>: <span style="color:#1f5f99; font-weight:600;">lung-mechanics problem</span> — ARDS, edema, atelectasis, abdominal hypertension. This dichotomy alone solves most pressure alarms. Do not raise PEEP for a resistive problem.</div>
+  <div class="pearl"><strong>The two-question diagnostic algorithm</strong>(1) Is <span style="color:var(--danger); font-weight:600;">PIP</span> high? (2) Is <span style="color:var(--accent); font-weight:600;">P<sub>plat</sub></span> high? <em>Yes/No</em>: <span style="color:var(--danger); font-weight:600;">resistance problem</span> — fix the airway (suction, bronchodilator, replace ETT, treat bronchospasm). <em>Yes/Yes</em>: <span style="color:var(--accent); font-weight:600;">lung-mechanics problem</span> — ARDS, edema, atelectasis, abdominal hypertension. This dichotomy alone solves most pressure alarms. Do not raise PEEP for a resistive problem.</div>
 
   <div class="pitfall"><strong>Inhaled bronchodilator response</strong>A 10–30% drop in R<sub>aw</sub> after albuterol within 10–15 min confirms reversible bronchospasm. No response argues for fixed obstruction (chronic bronchitis, mucus plug, ETT issue) and changes the management ladder.</div>
   </details>
@@ -6994,13 +6999,13 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       .if-control .if-val { font-weight: 600; color: var(--ink, #1e3a8a); margin-left: 6px; }
       .if-control input[type="range"] { width: 100%; }
       .if-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-      .if-stat { background: #f1f5f9; border-radius: 6px; padding: 8px 10px; }
+      .if-stat { background: var(--accent-soft); border-radius: 6px; padding: 8px 10px; }
       .if-stat .if-stat-label { font-size: 11px; color:var(--muted); }
-      .if-stat .if-stat-val { font-size: 18px; font-weight: 600; color: #1e3a8a; }
+      .if-stat .if-stat-val { font-size: 18px; font-weight: 600; color: var(--accent); }
       .if-stat .if-stat-sub { font-size: 10.5px; color:var(--muted); }
       .if-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-      .if-presets button { font-size: 11.5px; padding: 4px 10px; border: 1px solid #cbd5e1; background: #fff; border-radius: 12px; cursor: pointer; color:var(--muted); }
-      .if-presets button:hover { background: #f1f5f9; border-color: #94a3b8; }
+      .if-presets button { font-size: 11.5px; padding: 4px 10px; border: 1px solid var(--rule); background: var(--surface); border-radius: 12px; cursor: pointer; color:var(--muted); }
+      .if-presets button:hover { background: var(--accent-soft); border-color: var(--muted); }
       .if-chart { width: 100%; height: auto; max-height: 280px; }
       /* ---- Figure 3.4 (#if-abg): book-native polish, scoped so sibling interactive figures are untouched ---- */
       #if-abg { padding: 18px 18px 16px; }
@@ -7220,7 +7225,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         <text x="450" y="305" text-anchor="middle" font-size="10" fill="#475569" font-style="italic">Mentally draw the dashed line from start of ramp to PIP. The middle of the breath tells you which way you’ve drifted.</text>
       </g>
     </svg>
-    <div class="cap"><b>Figure 6.3 — The three shapes of the stress index.</b> A passive, constant-flow VC breath produces a pressure ramp whose <em>shape</em> reveals regional lung mechanics. <strong style="color:#9b2c2c;">β &lt; 1 (concave-down)</strong>: pressure rises quickly at first, then flattens — the curve bulges <em>above</em> the straight reference line; compliance is improving as alveoli recruit, and the lung is cyclically opening with each breath (atelectrauma). <strong style="color:#1d5a2c;">β ≈ 1 (linear)</strong>: pressure rises in a straight line, overlapping the reference; compliance is constant and the breath sits in the safe operating zone. <strong style="color:#7c2d12;">β &gt; 1 (concave-up)</strong>: pressure rises slowly at first, then accelerates — the curve sags <em>below</em> the reference; compliance is falling as alveoli reach the upper inflection, and the breath is being driven into overdistension. The dashed line in each panel is the straight reference drawn from the start of inspiration to PIP; comparing the actual trace to this reference is the eyeball read of β.</div>
+    <div class="cap"><b>Figure 6.3 — The three shapes of the stress index.</b> A passive, constant-flow VC breath produces a pressure ramp whose <em>shape</em> reveals regional lung mechanics. <strong style="color:var(--danger);">β &lt; 1 (concave-down)</strong>: pressure rises quickly at first, then flattens — the curve bulges <em>above</em> the straight reference line; compliance is improving as alveoli recruit, and the lung is cyclically opening with each breath (atelectrauma). <strong style="color:#1d5a2c;">β ≈ 1 (linear)</strong>: pressure rises in a straight line, overlapping the reference; compliance is constant and the breath sits in the safe operating zone. <strong style="color:#7c2d12;">β &gt; 1 (concave-up)</strong>: pressure rises slowly at first, then accelerates — the curve sags <em>below</em> the reference; compliance is falling as alveoli reach the upper inflection, and the breath is being driven into overdistension. The dashed line in each panel is the straight reference drawn from the start of inspiration to PIP; comparing the actual trace to this reference is the eyeball read of β.</div>
   </div>
 
   <table>
@@ -8669,10 +8674,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure" id="ch14-live-simulator" style="margin-bottom:1.4rem;">
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
-        <strong style="color:#0072B2; font-size:0.95rem;">Live waveform simulator</strong>
+        <strong style="color:var(--accent); font-size:0.95rem;">Live waveform simulator</strong>
         <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— manipulate the equation of motion in real time</span>
       </div>
-      <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+      <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:var(--accent); text-decoration:none; border:1px solid var(--accent); padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
@@ -8920,10 +8925,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure" id="ch14-capno-simulator" style="margin-bottom:1.4rem;">
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
-        <strong style="color:#0891b2; font-size:0.95rem;">Live capnography library</strong>
+        <strong style="color:var(--accent); font-size:0.95rem;">Live capnography library</strong>
         <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— pick a pattern or adjust the physiology directly</span>
       </div>
-      <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+      <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:var(--accent); text-decoration:none; border:1px solid var(--accent); padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
@@ -9351,7 +9356,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>PIP − Pplat</strong></td><td>Resistive pressure (flow × Raw)</td><td>&lt; 5 suggests low airway resistance (flow-dependent heuristic; compare at consistent set flow)</td></tr>
     </tbody>
   </table>
-  <div class="pearl"><strong>The two-question diagnostic algorithm</strong>1. Is <span style="color:#9b2c2c; font-weight:600;">PIP</span> high? 2. Is <span style="color:#1f5f99; font-weight:600;">P<sub>plat</sub></span> high? &nbsp; If yes/yes → <span style="color:#1f5f99; font-weight:600;">lung mechanics</span> (ARDS, edema, atelectasis, abdominal hypertension). If yes/no → <span style="color:#9b2c2c; font-weight:600;">resistance</span> (ETT, bronchospasm, biting, secretions). This dichotomy alone solves most pressure alarms.</div>
+  <div class="pearl"><strong>The two-question diagnostic algorithm</strong>1. Is <span style="color:var(--danger); font-weight:600;">PIP</span> high? 2. Is <span style="color:var(--accent); font-weight:600;">P<sub>plat</sub></span> high? &nbsp; If yes/yes → <span style="color:var(--accent); font-weight:600;">lung mechanics</span> (ARDS, edema, atelectasis, abdominal hypertension). If yes/no → <span style="color:var(--danger); font-weight:600;">resistance</span> (ETT, bronchospasm, biting, secretions). This dichotomy alone solves most pressure alarms.</div>
 
   
   
@@ -9688,10 +9693,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure" id="ch18-dyssynchrony-simulator" style="margin-bottom:1.4rem;">
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
-        <strong style="color:#4F46E5; font-size:0.95rem;">Patient–ventilator dyssynchrony explorer</strong>
+        <strong style="color:var(--accent); font-size:0.95rem;">Patient–ventilator dyssynchrony explorer</strong>
         <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— live waveforms for the eight common patterns</span>
       </div>
-      <a href="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
+      <a href="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:var(--accent); text-decoration:none; border:1px solid var(--accent); padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
@@ -10535,24 +10540,24 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <style>
       #fig-20-1-peepfio2 .ladder-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
       @media (min-width: 760px) { #fig-20-1-peepfio2 .ladder-grid { grid-template-columns: 1fr 1fr; } }
-      #fig-20-1-peepfio2 .ladder-card { border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #ffffff; }
+      #fig-20-1-peepfio2 .ladder-card { border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; background: var(--surface); }
       #fig-20-1-peepfio2 .ladder-title { background: #1f3a5f; color: #ffffff; padding: 8px 12px; font-weight: 700; font-size: 12.5px; letter-spacing: 0.02em; }
       #fig-20-1-peepfio2 .ladder-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-      #fig-20-1-peepfio2 .ladder-tbl th, #fig-20-1-peepfio2 .ladder-tbl td { border: 1px solid #cbd5e1; padding: 5px 8px; text-align: center; vertical-align: middle; }
-      #fig-20-1-peepfio2 .ladder-tbl thead th { background: #f1f5f9; font-weight: 700; color: #1f3a5f; }
-      #fig-20-1-peepfio2 .ladder-tbl thead .col-step { background: #e2e8f0; width: 18%; }
-      #fig-20-1-peepfio2 .ladder-tbl thead .col-fio2 { background: #fef3c7; color: #854d0e; width: 36%; }
-      #fig-20-1-peepfio2 .ladder-tbl thead .col-peep { background: #dbeafe; color: #1e3a8a; width: 46%; }
-      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-step { background: #f8fafc; font-weight: 600; color:var(--muted); }
-      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-fio2 { background: #fffbeb; font-weight: 600; color: #854d0e; font-variant-numeric: tabular-nums; }
-      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-peep { background: #eff6ff; font-weight: 700; color: #1e3a8a; font-variant-numeric: tabular-nums; }
+      #fig-20-1-peepfio2 .ladder-tbl th, #fig-20-1-peepfio2 .ladder-tbl td { border: 1px solid var(--rule); padding: 5px 8px; text-align: center; vertical-align: middle; }
+      #fig-20-1-peepfio2 .ladder-tbl thead th { background: var(--accent-soft); font-weight: 700; color: var(--accent); }
+      #fig-20-1-peepfio2 .ladder-tbl thead .col-step { background: var(--accent-soft); width: 18%; }
+      #fig-20-1-peepfio2 .ladder-tbl thead .col-fio2 { background: var(--warn-soft); color: var(--warn); width: 36%; }
+      #fig-20-1-peepfio2 .ladder-tbl thead .col-peep { background: var(--accent-soft); color: var(--accent); width: 46%; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-step { background: var(--surface); font-weight: 600; color:var(--muted); }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-fio2 { background: var(--warn-soft); font-weight: 600; color: var(--warn); font-variant-numeric: tabular-nums; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-peep { background: var(--accent-soft); font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
       #fig-20-1-peepfio2 .ladder-tbl tbody tr { display: table-row !important; visibility: visible !important; }
-      #fig-20-1-peepfio2 .ladder-tbl tbody tr:hover td { background: #f0f9ff; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody tr:hover td { background: var(--accent-soft); }
       /* Override the global sticky-thead rule (~line 1647) — the ladder is
          compact and the sticky thead was floating over the first tbody row,
          visually clipping it. Keep the header in normal flow here. */
       #fig-20-1-peepfio2 .ladder-tbl thead th { position: static !important; top: auto !important; z-index: auto !important; }
-      #fig-20-1-peepfio2 .ladder-note { font-size: 11.5px; color:var(--muted); padding: 8px 12px 10px; line-height: 1.45; background: #f8fafc; border-top: 1px solid #cbd5e1; }
+      #fig-20-1-peepfio2 .ladder-note { font-size: 11.5px; color:var(--muted); padding: 8px 12px 10px; line-height: 1.45; background: var(--surface); border-top: 1px solid var(--rule); }
     </style>
     <div class="ladder-grid">
       <div class="ladder-card">
@@ -14587,13 +14592,13 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4>Card 2 — Two-question algorithm: PIP vs P<sub>plat</sub> (from §6.3, §16)</h4>
     </summary>
   <p>Every pressure alarm in the ICU triages on two questions and three numbers.</p>
-  <div class="pearl"><strong>Ask in order:</strong> <strong style="color:#9b2c2c;">(1) Is PIP high?</strong>  <strong style="color:#1f5f99;">(2) Is P<sub>plat</sub> high?</strong></div>
+  <div class="pearl"><strong>Ask in order:</strong> <strong style="color:var(--danger);">(1) Is PIP high?</strong>  <strong style="color:var(--accent);">(2) Is P<sub>plat</sub> high?</strong></div>
   <table>
     <caption>The two-question algorithm at a glance</caption>
     <thead><tr><th>PIP</th><th>P<sub>plat</sub></th><th>Problem</th><th>Common causes</th><th>Fix</th></tr></thead>
     <tbody>
-      <tr><td>↑</td><td>Normal</td><td><span style="color:#9b2c2c; font-weight:600;">Resistance</span></td><td>Kinked / bitten / plugged ETT · secretions · bronchospasm · water in circuit</td><td>Suction · bite block · bronchodilator · drain water trap</td></tr>
-      <tr><td>↑</td><td>↑</td><td><span style="color:#1f5f99; font-weight:600;">Lung mechanics</span></td><td>PTX · ARDS progression · pulmonary edema · atelectasis · abdominal hypertension</td><td>POCUS for PTX · diuresis · recruit · bladder pressure · esophageal manometry if chest-wall component suspected</td></tr>
+      <tr><td>↑</td><td>Normal</td><td><span style="color:var(--danger); font-weight:600;">Resistance</span></td><td>Kinked / bitten / plugged ETT · secretions · bronchospasm · water in circuit</td><td>Suction · bite block · bronchodilator · drain water trap</td></tr>
+      <tr><td>↑</td><td>↑</td><td><span style="color:var(--accent); font-weight:600;">Lung mechanics</span></td><td>PTX · ARDS progression · pulmonary edema · atelectasis · abdominal hypertension</td><td>POCUS for PTX · diuresis · recruit · bladder pressure · esophageal manometry if chest-wall component suspected</td></tr>
       <tr><td>Normal</td><td>↑</td><td>Stiff lung with high PEEP / chest wall</td><td>Rising auto-PEEP · obesity · ascites · evolving ARDS</td><td>Check auto-PEEP (end-exp hold); consider esophageal manometry</td></tr>
     </tbody>
   </table>
@@ -14617,7 +14622,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li><strong>↑ peak inspiratory flow (VC) or ↓ T<sub>i</sub> (PC)</strong> — shortens inspiration to lengthen expiration.</li>
     <li><strong>Treat the bronchospasm</strong> — aggressive β-agonist + ipratropium + steroid; in severe asthma add IV magnesium, ketamine, heliox; consider NMB.</li>
     <li><strong>Match ~75–80% of total PEEP</strong> if the patient is triggering against auto-PEEP — reduces trigger work (<a class="xref" href="#c17-4" data-xref-chap="17">§17.4</a>).</li>
-    <li><strong>If hemodynamic collapse:</strong> <span style="color:#9b2c2c; font-weight:700;">DISCONNECT the circuit</span> and let the chest passively empty for 20–30 s. Resume bagging RR 6–8, slow flow, long T<sub>E</sub>. The post-intubation obstructive crash rescue (<a class="xref" href="#c17-3" data-xref-chap="17">§17.3</a>).</li>
+    <li><strong>If hemodynamic collapse:</strong> <span style="color:var(--danger); font-weight:700;">DISCONNECT the circuit</span> and let the chest passively empty for 20–30 s. Resume bagging RR 6–8, slow flow, long T<sub>E</sub>. The post-intubation obstructive crash rescue (<a class="xref" href="#c17-3" data-xref-chap="17">§17.3</a>).</li>
   </ol>
   </details>
 
@@ -14682,7 +14687,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <h4>Card 6 — Bedside troubleshooting flowchart (from §39.1)</h4>
     </summary>
   <p>Three branches by what changed, plus the universal first move and the obstructive-crash emergency. Full annotated figure at <a class="xref" href="#c39" data-xref-chap="39">§39.1 (Fig 39.1)</a>; condensed text form below.</p>
-  <div class="pearl"><strong>First move — always, in order:</strong> Look at the patient → FiO₂ to 1.0 → confirm chest rise + EtCO₂ → if no chest rise: <span style="color:#9b2c2c; font-weight:700;">DISCONNECT</span> from vent, bag with PEEP valve at slow rate (RR 6–8).</div>
+  <div class="pearl"><strong>First move — always, in order:</strong> Look at the patient → FiO₂ to 1.0 → confirm chest rise + EtCO₂ → if no chest rise: <span style="color:var(--danger); font-weight:700;">DISCONNECT</span> from vent, bag with PEEP valve at slow rate (RR 6–8).</div>
   <table>
     <caption>Triage by what changed</caption>
     <thead><tr><th>Symptom</th><th>Discriminator</th><th>Causes / next step</th></tr></thead>
@@ -14692,7 +14697,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <tr><td><strong>Gas exchange</strong> (SpO₂ drop, PaCO₂ rising)</td><td>DOPES for hypoxemia; PaCO₂ ∝ V̇CO₂ / V̇<sub>A</sub> for hypercapnia</td><td>Tube, obstruction, PTX, equipment, stacked breaths, PE, atelectasis, PFO, asynchrony. Hypercapnia bucket: ↑VCO₂ vs ↑dead space vs ↓V̇<sub>A</sub>. Card 3 for auto-PEEP rescue.</td></tr>
     </tbody>
   </table>
-  <div class="pitfall"><strong>EMERGENCY — Obstructive crash (asthma / COPD):</strong> Sudden post-intubation hypotension or hypoxemia → assume <span style="color:#9b2c2c; font-weight:700;">stacked breaths</span> until proven otherwise. <strong>DISCONNECT</strong> the circuit, let the chest passively empty 20–30 s, resume bagging RR 6–8, slow flow, long T<sub>E</sub>. Full rescue at <a class="xref" href="#c17-3" data-xref-chap="17">§17.3</a>.</div>
+  <div class="pitfall"><strong>EMERGENCY — Obstructive crash (asthma / COPD):</strong> Sudden post-intubation hypotension or hypoxemia → assume <span style="color:var(--danger); font-weight:700;">stacked breaths</span> until proven otherwise. <strong>DISCONNECT</strong> the circuit, let the chest passively empty 20–30 s, resume bagging RR 6–8, slow flow, long T<sub>E</sub>. Full rescue at <a class="xref" href="#c17-3" data-xref-chap="17">§17.3</a>.</div>
   </details>
 
   <p style="font-size:0.9rem; color:var(--muted); font-style:italic; margin-top:1.2rem;">More cards will be added as new high-yield tables and decision charts earn their place. Candidate additions for future editions: asynchrony pattern atlas (§18), ECMO criteria (§32.3), NIV failure scores (§33), VAP prevention bundle (§41.2).</p>
@@ -16030,15 +16035,15 @@ saveInputs();
           }
         }
         if (window.innerWidth <= 920) {
-          setTimeout(() => { tocCb.checked = false; }, 80);
+          setTimeout(() => { tocCb.checked = false; tocCb.dispatchEvent(new Event('change')); }, 80);
         }
       }
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && tocCb.checked) tocCb.checked = false;
+      if (e.key === 'Escape' && tocCb.checked) { tocCb.checked = false; tocCb.dispatchEvent(new Event('change')); }
     });
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 920 && tocCb.checked) tocCb.checked = false;
+      if (window.innerWidth > 920 && tocCb.checked) { tocCb.checked = false; tocCb.dispatchEvent(new Event('change')); }
     });
   }
   } catch (err) { console.error('[HAMBURGER (MOBILE) — CSS-only via #toc-toggle checkbox; JS adds polish] error:', err); }
@@ -19733,7 +19738,7 @@ document.addEventListener('click', function (e) {
   });
   if (c) c.addEventListener('click', function () {
     var cb = document.getElementById('toc-toggle');
-    if (cb) cb.checked = !cb.checked;
+    if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
   });
   if (b) b.addEventListener('click', function () {
     var t = document.getElementById('bedside-now');
