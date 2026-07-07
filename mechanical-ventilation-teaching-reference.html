@@ -19408,8 +19408,12 @@ document.addEventListener('click', function (e) {
     body { padding-bottom: calc(52px + env(safe-area-inset-bottom, 0)); }
     /* Float the back-to-top (right) and quick-calc (left) above the action bar,
        on opposite sides so they never overlap each other. */
-    .back-top { bottom: calc(78px + env(safe-area-inset-bottom, 0)) !important; right: 16px; }
-    .mini-calc-fab { bottom: calc(78px + env(safe-area-inset-bottom, 0)) !important; left: 16px; right: auto; }
+    .back-top { bottom: calc(78px + env(safe-area-inset-bottom, 0)) !important; right: 16px; transition: transform .28s ease, opacity .2s ease; }
+    .mini-calc-fab { bottom: calc(78px + env(safe-area-inset-bottom, 0)) !important; left: 16px; right: auto; transition: transform .28s ease, opacity .28s ease; }
+    /* hide the floating calc + back-to-top on scroll-down (same as the action bar) so they don't cover text */
+    html[data-bar-hidden="1"] .back-top,
+    html[data-bar-hidden="1"] .mini-calc-fab { transform: translateY(180%) !important; opacity: 0; pointer-events: none; }
+    html[data-bar-hidden="1"] .mini-calc-fab.active { transform: none !important; opacity: 1; pointer-events: auto; }
     .mini-calc-panel { bottom: calc(136px + env(safe-area-inset-bottom, 0)) !important; left: 12px; right: auto; width: auto; max-width: calc(100vw - 24px); }
     body.reader-mode .mobile-actionbar { display: none; }
     /* Inputs ≥16px so iOS doesn't zoom the page when one is focused. */
