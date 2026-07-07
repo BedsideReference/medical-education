@@ -3033,7 +3033,7 @@ document.addEventListener('click', function (e) {
   // Route cross-refs AND the auto-generated Index-of-tools-&-tables links through the
   // robust jump. Index links are plain <a href="#…"> (no .xref), so on mobile they would
   // otherwise use native scroll and mis-land against content-visibility:auto estimates.
-  var a = e.target.closest ? e.target.closest('a.xref[href^="#"], #book-index a[href^="#"]') : null;
+  var a = e.target.closest ? e.target.closest('a.xref[href^="#"], #book-index a[href^="#"], .front-matter a[href^="#"]') : null;
   if (!a) return;
   var href = a.getAttribute('href') || '';
   if (href.length < 2) return;
@@ -4722,7 +4722,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
         <strong style="color:#0891b2; font-size:0.95rem;">Live alveolar gas equation</strong>
-        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— drag the variables to see P<sub>A</sub>O₂ recompute</span>
+        <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— drag the variables to see P<sub>A</sub>O₂ recompute</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/alveolar_gas_equation.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
@@ -5026,8 +5026,8 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <p>The vertical V/Q ratio in a healthy upright lung is ~3.3 at the apex (high V/Q — wasted ventilation) to ~0.6 at the base (low V/Q — preferentially perfused). Mechanical ventilation, supine positioning, and PEEP all redistribute this gradient.</p>
 
   <h5 id="c3-hpv-master" style="background:linear-gradient(90deg,#1f3a5f,#3e577d); color:#fff; padding:0.55rem 0.9rem; border-radius:6px 6px 0 0; margin-top:1.6rem; margin-bottom:0; font-size:1.05rem;">3.2a · Master concept — Hypoxic pulmonary vasoconstriction (HPV)</h5>
-  <div style="background:#eef5fb; border:1px solid #9bb8d4; border-top:none; border-radius:0 0 6px 6px; padding:0.9rem 1.1rem; margin-bottom:0.9rem;">
-    <p style="margin:0 0 0.6rem 0;"><strong style="color:#1f3a5f;">If you remember one concept from this chapter, make it this one.</strong> HPV is the single physiologic mechanism that unifies most of the bedside oxygenation decisions you’ll make in the ICU — proning, iNO, the COPD oxygen-paradox, cor pulmonale, and high-altitude pulmonary edema all live downstream of it.</p>
+  <div style="background:var(--accent-soft); border:1px solid var(--accent); border-top:none; border-radius:0 0 6px 6px; padding:0.9rem 1.1rem; margin-bottom:0.9rem;">
+    <p style="margin:0 0 0.6rem 0;"><strong style="color:var(--accent);">If you remember one concept from this chapter, make it this one.</strong> HPV is the single physiologic mechanism that unifies most of the bedside oxygenation decisions you’ll make in the ICU — proning, iNO, the COPD oxygen-paradox, cor pulmonale, and high-altitude pulmonary edema all live downstream of it.</p>
   </div>
   <p>When alveolar PO₂ drops in a region of lung, the local pulmonary arterioles <em>constrict</em>, diverting blood away from the poorly-ventilated unit toward better-ventilated lung. This <strong>hypoxic pulmonary vasoconstriction (HPV)</strong> — historically called the <em>von Euler-Liljestrand mechanism</em> after the two physiologists who first described it in 1946 — is a uniquely pulmonary reflex (systemic arteries dilate to hypoxia; pulmonary arteries constrict). It is the body’s automatic V/Q matching system — and it explains a striking number of clinical observations:</p>
   <ul>
@@ -5274,7 +5274,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <div class="figure">
     <div style="display:flex; justify-content:center; gap:8px; margin-bottom:6px;">
       <button type="button" id="ohbc-anim-toggle" style="font-size:12px; padding:4px 12px; border:1px solid #cbd5e1; background:#fff; border-radius:14px; cursor:pointer; color:#1f3a5f;" aria-pressed="false">⏸︎ Pause animation</button>
-      <span id="ohbc-anim-state" style="font-size:11px; color:#64748b; align-self:center; font-style:italic;">cycling left ↔︎ right shift every 6 s</span>
+      <span id="ohbc-anim-state" style="font-size:11px; color:var(--muted); align-self:center; font-style:italic;">cycling left ↔︎ right shift every 6 s</span>
     </div>
     <svg id="ohbc-anim-svg" class="anim-fig anim-ohbc" viewBox="0 0 580 410" role="img" aria-label="Oxyhemoglobin dissociation curve, animating between right-shift (acidosis, hypercapnia, hyperthermia, increased 2,3-BPG) and left-shift (alkalemia, hypocapnia, hypothermia, decreased 2,3-BPG). The P50 marker moves accordingly. Animation can be paused with the button above." style="max-width:580px; width:100%; height:auto; display:block; margin:0 auto;">
       <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
@@ -5910,7 +5910,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <div class="bh-equation-card">
         <div class="bh-eq-title">Coupled chemistry</div>
         <div class="bh-equation">Hb·4O₂ + 2H⁺ + 2CO₂  <span class="bh-arrow-eq">⇌</span>  Hb·(H⁺)₂·(CO₂)₂ + 4O₂</div>
-        <div class="bh-equation" style="margin-top:6px;color:#5F5E5A;font-size:12px">← shift in lungs (Haldane)  ·  shift in tissue (Bohr) →</div>
+        <div class="bh-equation" style="margin-top:6px;color:var(--muted);font-size:12px">← shift in lungs (Haldane)  ·  shift in tissue (Bohr) →</div>
       </div>
     </div>
     <script>
@@ -6150,7 +6150,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         </g>
       </g>
     </svg>
-    <div class="cap"><b>Figure 4.3 — Diffusion vs perfusion limitation along the alveolar capillary.</b> Each curve traces the partial pressure of one gas as a red blood cell traverses the pulmonary capillary (~0.75 s at rest, ~0.25 s in exercise; the cyan line shows the moving RBC). <strong style="color:#7c3aed;">N₂O</strong> equilibrates almost immediately — its uptake is limited only by how much blood passes (<em>perfusion-limited</em>). <strong style="color:#1f5f99;">O₂ in health</strong> equilibrates by ~0.25 s — also perfusion-limited. <strong style="color:#c4452f;">O₂ in fibrosis, ARDS, or during exercise</strong> never reaches the alveolar value within transit time — <em>diffusion-limited</em>. <strong style="color:#475569;">CO</strong> is the textbook diffusion-limited gas: it binds hemoglobin so avidly that the capillary blood never fills up — DLCO measurement exploits this. After West.<sup class="cite"><a href="#r28">28</a></sup></div>
+    <div class="cap"><b>Figure 4.3 — Diffusion vs perfusion limitation along the alveolar capillary.</b> Each curve traces the partial pressure of one gas as a red blood cell traverses the pulmonary capillary (~0.75 s at rest, ~0.25 s in exercise; the cyan line shows the moving RBC). <strong style="color:#7c3aed;">N₂O</strong> equilibrates almost immediately — its uptake is limited only by how much blood passes (<em>perfusion-limited</em>). <strong style="color:#1f5f99;">O₂ in health</strong> equilibrates by ~0.25 s — also perfusion-limited. <strong style="color:#c4452f;">O₂ in fibrosis, ARDS, or during exercise</strong> never reaches the alveolar value within transit time — <em>diffusion-limited</em>. <strong style="color:var(--muted);">CO</strong> is the textbook diffusion-limited gas: it binds hemoglobin so avidly that the capillary blood never fills up — DLCO measurement exploits this. After West.<sup class="cite"><a href="#r28">28</a></sup></div>
   </div>
   <div class="phys"><strong>Why this matters at the bedside</strong>If a patient becomes hypoxemic <em>only on exertion</em> with a relatively preserved resting PaO₂, suspect a <strong>diffusion limitation</strong> — fibrosis, pulmonary vascular disease, or early ARDS. The shortened transit time of exercise crosses the threshold where O₂ can’t keep up. Conversely, the septic ARDS patient with hyperdynamic cardiac output is paradoxically <em>worse</em> oxygenated because of the same physiology — high CO compresses transit time. Slowing the heart (β-blocker in the right setting) sometimes helps; more often, the lever is recruitment and PEEP to enlarge the diffusing surface.</div>
   </details>
@@ -6345,13 +6345,13 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
         <strong style="color:#0891b2; font-size:0.95rem;">Live ABG acid-base simulator</strong>
-        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— set a gas or pick a preset and watch the four-step read resolve</span>
+        <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— set a gas or pick a preset and watch the four-step read resolve</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
-    <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#fafaf7;">
+    <div style="position:relative; width:100%; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--surface);">
       <iframe
         id="abg-sim-iframe"
         data-src="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html"
@@ -6418,6 +6418,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div class="cap"><b>Figure 4.5 — The ABG acid-base simulator.</b> Enter a pH, PaCO₂, and HCO₃⁻ — or load a clinical preset — and the tool walks the four-step read: it names the primary disorder, tests the compensation against the formulas in the table above, computes the albumin-corrected anion gap and delta ratio, and checks Henderson–Hasselbalch internal consistency. The PaCO₂–HCO₃⁻ map plots the gas against constant-pH lines so mixed disorders become visible as points that fall off the expected compensation track. Challenge mode hides the interpretation and quizzes you on unknown gases.</div>
   </div>
   </details>
+
 <div class="takeaways">
     <h5>Key takeaways</h5>
     <ul>
@@ -6714,7 +6715,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="figure interactive-fig" id="if-eom">
     <div style="margin-bottom:10px;">
       <strong style="color:#0891b2; font-size:0.95rem;">Equation of motion — decomposing every breath</strong>
-      <div style="font-size:0.85rem; color:#475569; margin-top:2px;">P<sub>aw</sub>(t) = V(t)/C  +  V&#775;(t)·R  +  PEEP. Drag the three components to see how each colored band stacks into total airway pressure.</div>
+      <div style="font-size:0.85rem; color:var(--muted); margin-top:2px;">P<sub>aw</sub>(t) = V(t)/C  +  V&#775;(t)·R  +  PEEP. Drag the three components to see how each colored band stacks into total airway pressure.</div>
     </div>
     <div class="if-controls">
       <div class="if-control"><label>Compliance C: <span class="if-val" id="eom-cv">50 mL/cmH₂O</span></label><input type="range" id="eom-c" min="15" max="100" step="1" value="50"/></div>
@@ -6994,11 +6995,11 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       .if-control input[type="range"] { width: 100%; }
       .if-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
       .if-stat { background: #f1f5f9; border-radius: 6px; padding: 8px 10px; }
-      .if-stat .if-stat-label { font-size: 11px; color: #64748b; }
+      .if-stat .if-stat-label { font-size: 11px; color:var(--muted); }
       .if-stat .if-stat-val { font-size: 18px; font-weight: 600; color: #1e3a8a; }
-      .if-stat .if-stat-sub { font-size: 10.5px; color: #64748b; }
+      .if-stat .if-stat-sub { font-size: 10.5px; color:var(--muted); }
       .if-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-      .if-presets button { font-size: 11.5px; padding: 4px 10px; border: 1px solid #cbd5e1; background: #fff; border-radius: 12px; cursor: pointer; color: #475569; }
+      .if-presets button { font-size: 11.5px; padding: 4px 10px; border: 1px solid #cbd5e1; background: #fff; border-radius: 12px; cursor: pointer; color:var(--muted); }
       .if-presets button:hover { background: #f1f5f9; border-color: #94a3b8; }
       .if-chart { width: 100%; height: auto; max-height: 280px; }
       /* ---- Figure 3.4 (#if-abg): book-native polish, scoped so sibling interactive figures are untouched ---- */
@@ -7847,23 +7848,6 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   <div class="pearl"><strong>Reading any mode in 5 seconds</strong>Walk up to a vent screen and ask the four questions in order: <em>What’s triggering?</em> (set RR vs spontaneous breaths between mandatory) → <em>What’s set vs dependent?</em> (look at pressure shape — square = PC; ramp = VC; patient-shaped = PSV) → <em>What’s cycling?</em> (look at when inspiration ends — fixed T<sub>i</sub> = time-cycled; flow tail-off = flow-cycled) → <em>What’s the τ?</em> (does expiratory flow return to zero before the next breath?). That four-question pass diagnoses the mode and screens for asynchrony.</div>
   </details>
-<div class="takeaways">
-    <h5>Key takeaways</h5>
-    <ul>
-      <li>Every breath has four phases: trigger, inspiration, cycle, expiration. Every mode is a recombination of choices for each.</li>
-      <li>Three triggers (time, pressure, flow); flow is the modern default, lowest patient work, but susceptible to auto-triggering from condensation, leaks, cardiac oscillations.</li>
-      <li>Inspiration: exactly one of {volume, pressure} is the set target; the other is dependent on lung mechanics.</li>
-      <li>Three cycle mechanisms (volume, time, flow); time-cycle T<sub>i</sub> too short → double-trigger, too long → late-cycle dyssynchrony; flow-cycle threshold default 25% of peak.</li>
-      <li>Expiration is passive — operator controls PEEP and (indirectly) T<sub>e</sub>; T<sub>e</sub> &lt; 3τ → auto-PEEP.</li>
-      <li>The equation of motion (P<sub>vent</sub> + P<sub>mus</sub> = V/C + V̇·R + PEEP) makes mode choice arithmetic: which side does the operator clamp? VC fixes the right side (V is set; pressure is whatever it has to be). PC fixes the vent’s contribution to the left side (P<sub>vent</sub> is set; volume is dependent). PSV fixes the vent’s <em>support level</em> on the left side and lets P<sub>mus</sub> share the work — which is why the same setting feels different breath-to-breath as the patient’s effort changes.</li>
-    </ul>
-  </div>
-
-  <div class="misconception">
-    <strong>Common error</strong>“Set inspiratory time to ~1 second by default.”
-    T<sub>I</sub> should be set from disease physiology. Obstructive disease needs short T<sub>I</sub> and long T<sub>E</sub> (avoid air trapping); ARDS-like restrictive disease can tolerate longer T<sub>I</sub> to improve oxygenation. Default 1.0 s is fine starting volume-control, but it’s a starting offer, not a target.
-    <span class="corrected">Pick T<sub>I</sub> from I:E ratio appropriate to physiology: 1:3 to 1:5 in obstructive, 1:2 in normal/restrictive, sometimes 1:1 or inverse in severe ARDS. Watch the expiratory flow waveform.</span>
-  </div>
   <details class="chap-acc" data-acc-id="c8-h4-7" open>
     <summary>
       <h4 id="c8-7">8.7 The ventilator controls — what every knob does</h4>
@@ -7890,6 +7874,23 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   <div class="note"><strong>Two habits</strong>(1) Read a strange screen by control, not by brand name — find the FiO₂, the PEEP, the size or pressure of the breath, the rate, and how it triggers and cycles, and any mode becomes legible. (2) Every control belongs to an axis or to timing; changing one to fix a problem on a different axis is how settings drift out of sense.</div>
   </details>
+<div class="takeaways">
+    <h5>Key takeaways</h5>
+    <ul>
+      <li>Every breath has four phases: trigger, inspiration, cycle, expiration. Every mode is a recombination of choices for each.</li>
+      <li>Three triggers (time, pressure, flow); flow is the modern default, lowest patient work, but susceptible to auto-triggering from condensation, leaks, cardiac oscillations.</li>
+      <li>Inspiration: exactly one of {volume, pressure} is the set target; the other is dependent on lung mechanics.</li>
+      <li>Three cycle mechanisms (volume, time, flow); time-cycle T<sub>i</sub> too short → double-trigger, too long → late-cycle dyssynchrony; flow-cycle threshold default 25% of peak.</li>
+      <li>Expiration is passive — operator controls PEEP and (indirectly) T<sub>e</sub>; T<sub>e</sub> &lt; 3τ → auto-PEEP.</li>
+      <li>The equation of motion (P<sub>vent</sub> + P<sub>mus</sub> = V/C + V̇·R + PEEP) makes mode choice arithmetic: which side does the operator clamp? VC fixes the right side (V is set; pressure is whatever it has to be). PC fixes the vent’s contribution to the left side (P<sub>vent</sub> is set; volume is dependent). PSV fixes the vent’s <em>support level</em> on the left side and lets P<sub>mus</sub> share the work — which is why the same setting feels different breath-to-breath as the patient’s effort changes.</li>
+    </ul>
+  </div>
+
+  <div class="misconception">
+    <strong>Common error</strong>“Set inspiratory time to ~1 second by default.”
+    T<sub>I</sub> should be set from disease physiology. Obstructive disease needs short T<sub>I</sub> and long T<sub>E</sub> (avoid air trapping); ARDS-like restrictive disease can tolerate longer T<sub>I</sub> to improve oxygenation. Default 1.0 s is fine starting volume-control, but it’s a starting offer, not a target.
+    <span class="corrected">Pick T<sub>I</sub> from I:E ratio appropriate to physiology: 1:3 to 1:5 in obstructive, 1:2 in normal/restrictive, sometimes 1:1 or inverse in severe ARDS. Watch the expiratory flow waveform.</span>
+  </div>
 
 </section>
 
@@ -8669,7 +8670,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
         <strong style="color:#0072B2; font-size:0.95rem;">Live waveform simulator</strong>
-        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— manipulate the equation of motion in real time</span>
+        <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— manipulate the equation of motion in real time</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
@@ -8920,7 +8921,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
         <strong style="color:#0891b2; font-size:0.95rem;">Live capnography library</strong>
-        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— pick a pattern or adjust the physiology directly</span>
+        <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— pick a pattern or adjust the physiology directly</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
@@ -9368,7 +9369,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     </summary>
 
 <p>Plug in your numbers and get all three:</p>
-  <div style="border:1px solid var(--rule); border-radius:8px; padding:14px 16px; background:#fafaf7; margin:12px 0;">
+  <div style="border:1px solid var(--rule); border-radius:8px; padding:14px 16px; background:var(--surface); margin:12px 0;">
     <div style="display:grid; grid-template-columns: 160px 1fr; gap:8px 14px; align-items:center; font-size:14px;">
       <label for="cv-vt"><strong>Tidal volume (V<sub>T</sub>)</strong></label>
       <span><input type="number" id="cv-vt" value="420" step="10" style="width:90px;padding:4px 6px;border:1px solid var(--rule);border-radius:4px;"> mL</span>
@@ -9406,11 +9407,11 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       };
       out.innerHTML =
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;">'+
-        '<div><strong>Driving pressure (ΔP)</strong>: '+c(dpClass,dp.toFixed(1)+' cmH₂O')+' &nbsp;<span style="color:#6b7280;font-size:12.5px;">target ≤ 15</span></div>'+
-        '<div><strong>Plateau (Pplat)</strong>: '+c(ppClass,pp.toFixed(0)+' cmH₂O')+' &nbsp;<span style="color:#6b7280;font-size:12.5px;">target ≤ 30</span></div>'+
-        '<div><strong>Static compliance (C<sub>stat</sub>)</strong>: '+cstat.toFixed(1)+' mL/cmH₂O &nbsp;<span style="color:#6b7280;font-size:12.5px;">normal 60–100; ARDS 20–40</span></div>'+
-        '<div><strong>Resistive ΔP (PIP − Pplat)</strong>: '+raw.toFixed(0)+' cmH₂O &nbsp;<span style="color:#6b7280;font-size:12.5px;">&lt; 5 = low resistance (flow-dependent)</span></div>'+
-        '<div><strong>Mechanical power</strong>: '+c(mpClass,mp.toFixed(1)+' J/min')+' &nbsp;<span style="color:#6b7280;font-size:12.5px;">concerning &gt; 17</span></div>'+
+        '<div><strong>Driving pressure (ΔP)</strong>: '+c(dpClass,dp.toFixed(1)+' cmH₂O')+' &nbsp;<span style="color:var(--muted);font-size:12.5px;">target ≤ 15</span></div>'+
+        '<div><strong>Plateau (Pplat)</strong>: '+c(ppClass,pp.toFixed(0)+' cmH₂O')+' &nbsp;<span style="color:var(--muted);font-size:12.5px;">target ≤ 30</span></div>'+
+        '<div><strong>Static compliance (C<sub>stat</sub>)</strong>: '+cstat.toFixed(1)+' mL/cmH₂O &nbsp;<span style="color:var(--muted);font-size:12.5px;">normal 60–100; ARDS 20–40</span></div>'+
+        '<div><strong>Resistive ΔP (PIP − Pplat)</strong>: '+raw.toFixed(0)+' cmH₂O &nbsp;<span style="color:var(--muted);font-size:12.5px;">&lt; 5 = low resistance (flow-dependent)</span></div>'+
+        '<div><strong>Mechanical power</strong>: '+c(mpClass,mp.toFixed(1)+' J/min')+' &nbsp;<span style="color:var(--muted);font-size:12.5px;">concerning &gt; 17</span></div>'+
         '</div>';
     }
     ['cv-vt','cv-pplat','cv-peep','cv-pip','cv-rr'].forEach(function(id){
@@ -9688,13 +9689,13 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:0.4rem; flex-wrap:wrap;">
       <div>
         <strong style="color:#4F46E5; font-size:0.95rem;">Patient–ventilator dyssynchrony explorer</strong>
-        <span style="color:#475569; font-size:0.85rem; margin-left:0.5rem;">— live waveforms for the eight common patterns</span>
+        <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">— live waveforms for the eight common patterns</span>
       </div>
       <a href="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html" target="_blank" rel="noopener" style="font-size:0.8rem; color:#2c5282; text-decoration:none; border:1px solid #2c5282; padding:0.15rem 0.55rem; border-radius:3px;">
         Open full-screen ↗︎
       </a>
     </div>
-    <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#FAF9F5;">
+    <div style="position:relative; width:100%; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--surface);">
       <iframe
         id="dys-explorer-iframe"
         data-src="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html"
@@ -10542,7 +10543,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       #fig-20-1-peepfio2 .ladder-tbl thead .col-step { background: #e2e8f0; width: 18%; }
       #fig-20-1-peepfio2 .ladder-tbl thead .col-fio2 { background: #fef3c7; color: #854d0e; width: 36%; }
       #fig-20-1-peepfio2 .ladder-tbl thead .col-peep { background: #dbeafe; color: #1e3a8a; width: 46%; }
-      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-step { background: #f8fafc; font-weight: 600; color: #475569; }
+      #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-step { background: #f8fafc; font-weight: 600; color:var(--muted); }
       #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-fio2 { background: #fffbeb; font-weight: 600; color: #854d0e; font-variant-numeric: tabular-nums; }
       #fig-20-1-peepfio2 .ladder-tbl tbody td.cell-peep { background: #eff6ff; font-weight: 700; color: #1e3a8a; font-variant-numeric: tabular-nums; }
       #fig-20-1-peepfio2 .ladder-tbl tbody tr { display: table-row !important; visibility: visible !important; }
@@ -10551,7 +10552,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
          compact and the sticky thead was floating over the first tbody row,
          visually clipping it. Keep the header in normal flow here. */
       #fig-20-1-peepfio2 .ladder-tbl thead th { position: static !important; top: auto !important; z-index: auto !important; }
-      #fig-20-1-peepfio2 .ladder-note { font-size: 11.5px; color: #475569; padding: 8px 12px 10px; line-height: 1.45; background: #f8fafc; border-top: 1px solid #cbd5e1; }
+      #fig-20-1-peepfio2 .ladder-note { font-size: 11.5px; color:var(--muted); padding: 8px 12px 10px; line-height: 1.45; background: #f8fafc; border-top: 1px solid #cbd5e1; }
     </style>
     <div class="ladder-grid">
       <div class="ladder-card">
@@ -10712,7 +10713,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li>PEEP per phenotype + table</li>
     <li>FiO₂ for SpO₂ 88–95%</li>
   </ol>
-  <p style="font-size:0.92em; color:#475569; font-style:italic;">Note on the Pplat ceiling: this book uses the ARDSnet / ARMA convention of ≤ 30 cmH₂O. Hess emphasizes a more conservative target of ≤ 28 cmH₂O on the grounds that VILI risk is continuous rather than threshold-based — driving pressure below 15 with Pplat hovering near 30 is borderline. Both views agree the goal is to keep Pplat as low as the patient’s gas exchange allows; ≤ 30 is the regulatory ceiling, ≤ 28 is the conservative target when feasible.</p>
+  <p style="font-size:0.92em; color:var(--muted); font-style:italic;">Note on the Pplat ceiling: this book uses the ARDSnet / ARMA convention of ≤ 30 cmH₂O. Hess emphasizes a more conservative target of ≤ 28 cmH₂O on the grounds that VILI risk is continuous rather than threshold-based — driving pressure below 15 with Pplat hovering near 30 is borderline. Both views agree the goal is to keep Pplat as low as the patient’s gas exchange allows; ≤ 30 is the regulatory ceiling, ≤ 28 is the conservative target when feasible.</p>
   </details>
 <div class="takeaways">
     <h5>Key takeaways</h5>
@@ -12781,21 +12782,6 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="phys"><strong>The dead-space cost is real in ARDS</strong>An adult ARDSnet patient at 6 mL/kg PBW (e.g., 360 mL V<sub>T</sub>) on a typical 50–60 mL HME is wasting ~14–17% of every breath on apparatus dead space — the V̇<sub>A</sub> drops, PaCO₂ rises, and RR climbs to compensate. Switch to heated humidification once an ARDSnet protocol begins; revisit the choice if you re-protocolize a patient onto low V<sub>T</sub>.</div>
   <div class="pearl"><strong>Bedside checks for adequate humidification</strong>Look at the ETT inner lumen on suction passes — clear droplets visible = adequate; dry, crusty = inadequate. A thick mucus plug retrieved during routine suctioning is a humidification failure, not a patient problem.</div>
   </details>
-<div class="takeaways">
-    <h5>Key takeaways</h5>
-    <ul>
-      <li>RSI checklist (7 P’s): prep equipment, preoxygenation 3–5 min (apneic oxygenation if hypoxemic), pre-treat shock, paralysis + induction simultaneous, position &amp; proof (capnography is gold-standard), post-intubation drips ready.</li>
-      <li>Ketamine + rocuronium is standard in shock; etomidate in borderline-hypotensive patients; propofol only if hemodynamically stable.</li>
-      <li>Difficult airway plan: have Plan A (video laryngoscopy + bougie), Plan B (supraglottic), Plan C (awake fibro if predictable), Plan D (surgical airway if CICO).</li>
-      <li>Three attempts maximum by one operator before escalating — each failed laryngoscopy causes airway edema and makes the next attempt harder.</li>
-    </ul>
-  </div>
-
-  <div class="misconception">
-    <strong>Common error</strong>“Roc and sux are interchangeable.”
-    Sux: 30–45 s onset, 5–10 min duration. Contraindicated in hyperK, burns > 24 h old, neuromuscular disease, malignant hyperthermia history. Roc: 60–90 s onset, 30–60 min duration, reversible with sugammadex. Choose by airway anticipated difficulty + contraindication profile, not by habit.
-    <span class="corrected">Roc 1.2 mg/kg = sux-like onset speed with longer duration — useful in difficult airway anticipating multiple attempts. Sux remains the choice when rapid offset matters and contraindications are absent.</span>
-  </div>
   <details class="chap-acc" data-acc-id="c34-h4-8" open>
     <summary>
       <h4 id="c34-8">34.8 Equipment selection — building the airway setup</h4>
@@ -12876,6 +12862,21 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
   <div class="note"><strong>Match the pieces, then check them</strong>The setup is a system: a hyperangulated blade wants a rigid angled stylet; a small tube trades passage for downstream weaning resistance; a cuff seals only within a mucosa-safe pressure band. Before induction, the durable habit is to confirm the pieces fit together and work — tube patency and cuff integrity, blade light and camera image, suction, and a bag — independent of whichever algorithm you follow for <em>when</em> and <em>how</em> to use them.</div>
   </details>
+<div class="takeaways">
+    <h5>Key takeaways</h5>
+    <ul>
+      <li>RSI checklist (7 P’s): prep equipment, preoxygenation 3–5 min (apneic oxygenation if hypoxemic), pre-treat shock, paralysis + induction simultaneous, position &amp; proof (capnography is gold-standard), post-intubation drips ready.</li>
+      <li>Ketamine + rocuronium is standard in shock; etomidate in borderline-hypotensive patients; propofol only if hemodynamically stable.</li>
+      <li>Difficult airway plan: have Plan A (video laryngoscopy + bougie), Plan B (supraglottic), Plan C (awake fibro if predictable), Plan D (surgical airway if CICO).</li>
+      <li>Three attempts maximum by one operator before escalating — each failed laryngoscopy causes airway edema and makes the next attempt harder.</li>
+    </ul>
+  </div>
+
+  <div class="misconception">
+    <strong>Common error</strong>“Roc and sux are interchangeable.”
+    Sux: 30–45 s onset, 5–10 min duration. Contraindicated in hyperK, burns > 24 h old, neuromuscular disease, malignant hyperthermia history. Roc: 60–90 s onset, 30–60 min duration, reversible with sugammadex. Choose by airway anticipated difficulty + contraindication profile, not by habit.
+    <span class="corrected">Roc 1.2 mg/kg = sux-like onset speed with longer duration — useful in difficult airway anticipating multiple attempts. Sux remains the choice when rapid offset matters and contraindications are absent.</span>
+  </div>
 
 </section>
 
@@ -14694,7 +14695,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   <div class="pitfall"><strong>EMERGENCY — Obstructive crash (asthma / COPD):</strong> Sudden post-intubation hypotension or hypoxemia → assume <span style="color:#9b2c2c; font-weight:700;">stacked breaths</span> until proven otherwise. <strong>DISCONNECT</strong> the circuit, let the chest passively empty 20–30 s, resume bagging RR 6–8, slow flow, long T<sub>E</sub>. Full rescue at <a class="xref" href="#c17-3" data-xref-chap="17">§17.3</a>.</div>
   </details>
 
-  <p style="font-size:0.9rem; color:#64748b; font-style:italic; margin-top:1.2rem;">More cards will be added as new high-yield tables and decision charts earn their place. Candidate additions for future editions: asynchrony pattern atlas (§18), ECMO criteria (§32.3), NIV failure scores (§33), VAP prevention bundle (§41.2).</p>
+  <p style="font-size:0.9rem; color:var(--muted); font-style:italic; margin-top:1.2rem;">More cards will be added as new high-yield tables and decision charts earn their place. Candidate additions for future editions: asynchrony pattern atlas (§18), ECMO criteria (§32.3), NIV failure scores (§33), VAP prevention bundle (§41.2).</p>
 </section>
 
 <section class="chap" id="drugs" data-part="appendix">
