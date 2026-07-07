@@ -14,7 +14,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <script>/* mobile-view: force a mobile render width on tablets / when chosen, before paint */(function(){try{var vp=document.querySelector('meta[name="viewport"]');if(!vp)return;var s=null;try{s=localStorage.getItem('mv-mobileview');}catch(e){}var on;if(s==='1')on=true;else if(s==='0')on=false;else{var coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;on=!!coarse&&Math.min(screen.width,screen.height)>=700;}if(on){var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100);vp.setAttribute('content','initial-scale='+sc+', viewport-fit=cover');}document.documentElement.setAttribute('data-mobileview',on?'on':'off');}catch(e){}})();</script>
 <title>Guide to Ventilation — Bedside Reference</title>
 <meta name="description" content="Physiology-first teaching reference on invasive mechanical ventilation for medical students, IM residents, hospitalists, PCCM fellows, and other healthcare trainees and practitioners. Written for the bedside." />
@@ -120,7 +120,11 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     color: var(--ink);
     line-height: 1.55;
     font-size: 1rem;
+    padding-top: env(safe-area-inset-top, 0);
   }
+  /* Paint the top status-bar safe area with the page background so text never
+     shows through behind the clock/battery when viewport-fit=cover is active. */
+  body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0); background: var(--bg); z-index: 999; pointer-events: none; }
   .layout {
     max-width: 1600px;
     margin: 0 auto;
@@ -2166,8 +2170,10 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
      palette block). */
   :root {
     /* Sticky-header offset = toolbar (~46px) + crumb (~30px) */
-    --sticky-top: 76px;
+    --sticky-top: calc(76px + env(safe-area-inset-top, 0));
   }
+  /* Keep the sticky toolbar below the top status-bar safe area (iPad desktop mode). */
+  .toolbar { top: env(safe-area-inset-top, 0); }
   section.chap[data-part="part1"] > h3 .num,
   body.printing-chapter .chap-print-wrap section.chap[data-part="part1"] > h3 .num
     { background: var(--part1-soft); color: var(--part1-accent); }
@@ -19393,6 +19399,7 @@ document.addEventListener('click', function (e) {
       transition: transform .28s ease; will-change: transform;
     }
     html[data-bar-hidden="1"] .mobile-actionbar { transform: translateY(115%); }
+    .mobile-actionbar::after { content: ""; position: absolute; top: 100%; left: 0; right: 0; height: 80px; background: var(--surface); pointer-events: none; }
     .mobile-actionbar button {
       flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
       background: none; border: 0; color: var(--ink-soft); font-family: inherit;
