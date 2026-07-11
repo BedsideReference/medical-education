@@ -16501,14 +16501,14 @@ saveInputs();
           if (chap.classList.contains('chip-nav-expanded')) {
             // In expand-all mode, chip click just scrolls to the section
             const target = document.getElementById(chip.dataset.target);
-            if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+            if (target) { if (window.softJump) window.softJump(target); else target.scrollIntoView({block: 'start'}); }
             return;
           }
           openOnly(chip.dataset.target);
           // Scroll into view (h3 first, so the section header is visible)
           const sectionTop = chap.getBoundingClientRect().top + window.scrollY;
           if (window.scrollY > sectionTop + 100) {
-            chap.scrollIntoView({behavior: 'smooth', block: 'start'});
+            if (window.softJump) window.softJump(chap); else chap.scrollIntoView({block: 'start'});
           }
         });
       });
@@ -18881,7 +18881,7 @@ saveInputs();
         if (card.dataset.jump === '1') {
           const jt = document.getElementById(partId);
           setFocus(null);
-          if (jt) jt.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (jt) { if (window.softJump) window.softJump(jt); else jt.scrollIntoView({ block: 'start' }); }
           return;
         }
         if (partId === '__all__') {
@@ -18940,7 +18940,7 @@ saveInputs();
     const bnFilters = document.getElementById('bn-filters');
     function jumpToBedside() {
       if (!bnSection) return;
-      bnSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (window.softJump) window.softJump(bnSection); else bnSection.scrollIntoView({ block: 'start' });
       // Update URL hash without firing the scroll twice
       try { history.replaceState(null, '', '#bedside-now'); } catch (e) {}
     }
@@ -20231,7 +20231,12 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
 
         goBtn.addEventListener('click', function(){
           hide();
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Use softJump, not scrollIntoView({behavior:'smooth'}): a smooth scroll animates
+          // through content-visibility:auto chapters whose heights are still estimates, so the
+          // document height shifts mid-flight and the landing over/undershoots (worst on mobile).
+          // softJump forces layout, expands collapsed sections, and lands exactly.
+          if (window.softJump) window.softJump(target);
+          else target.scrollIntoView({ block: 'start' });
         });
         pillV.textContent = chapTitle(target);
 
