@@ -8699,7 +8699,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         data-src="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html"
         title="Ventilator waveform simulator — pressure, flow, and volume traces driven by the equation of motion"
         loading="lazy"
-        style="width:100%; height:2400px; border:0; display:block;"
+        style="width:100%; height:3060px; border:0; display:block;"
         allow="clipboard-write"
       ></iframe>
     </div>
@@ -8714,10 +8714,15 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         // has, stop applying the width-based estimate so we don't fight the
         // exact postMessage value.
         let reportedExact = false;
+        // Pre-postMessage fallback only; the iframed page reports its exact
+        // height within ~1s and that wins. Values below are measured from the
+        // v2.19 simulator. Note the shape is NOT monotonic: at >=1181px the
+        // simulator lays out as a 3-column workspace and is comparatively
+        // short; below that it stacks into one tall column.
         function estimateHeight(w) {
-          if (w >= 1200) return 2200;
-          if (w >= 800)  return 2400;
-          return 2800;
+          if (w >= 1181) return 3060;  // 3-column workspace  (measured ~3000)
+          if (w >= 620)  return 4780;  // stacked single column (measured ~4400-4750)
+          return 3750;                 // phone widths          (measured ~3400-3700)
         }
         function applyEstimated() {
           if (reportedExact) return;
@@ -8732,16 +8737,22 @@ header.hero .mh-cite b{color:var(--ink-soft);}
           window.addEventListener('resize', applyEstimated);
         }
         window.addEventListener('message', function(e){
-          if (e && e.data && e.data.type === 'vent-sim-height' && typeof e.data.height === 'number') {
-            reportedExact = true;
-            const h = Math.max(600, Math.min(6000, e.data.height + 20));
-            iframe.style.height = h + 'px';
-          }
+          if (!e || !e.data) return;
+          // Accept both the legacy type and the v2.19+ type.
+          const t = e.data.type;
+          if (t !== 'vent-sim-height' && t !== 'vent-simulator-height') return;
+          if (typeof e.data.height !== 'number') return;
+          reportedExact = true;
+          const h = Math.max(600, Math.min(6000, e.data.height + 20));
+          // Only apply real changes — avoids a resize feedback loop with the
+          // iframed page's own ResizeObserver.
+          if (Math.abs(parseFloat(iframe.style.height) - h) < 8) return;
+          iframe.style.height = h + 'px';
         });
       })();
     </script>
     <div class="cap" style="margin-top:0.6rem;">
-      <b>Live simulator.</b> Sweep traces driven by P<sub>aw</sub>(t) = V(t)/C + Flow(t)·R + PEEP. Pick a <em>mode</em> (VC, PC, PRVC, PS, SIMV, CPAP, APRV) and a <em>scenario</em> (ARDS, COPD, auto-PEEP, ineffective triggering, double-triggering, reverse-triggering, premature/delayed cycling) and watch the shapes change. Drag <em>Compliance</em> and <em>Resistance</em> to feel how the slope of the pressure trace splits into elastic vs resistive components. Use <em>Inspiratory Hold</em> to read P<sub>plat</sub> and compute static compliance; use <em>Expiratory Hold</em> to unmask intrinsic PEEP. The simulator’s traces are the same physiology this chapter walks through in static form — the figures below are snapshots of what you’ll see here.
+      <b>Live simulator.</b> Sweep traces driven by P<sub>aw</sub>(t) = V(t)/C + Flow(t)·R + PEEP. Pick a <em>mode</em> (VC, PC, PRVC, PS, SIMV, CPAP, APRV), then build a patient by combining findings across independent axes — <em>mechanics</em> (ARDS, obstructive), <em>trigger</em> (ineffective effort, delayed, auto-triggering, cardiogenic oscillation), <em>interaction</em> (double-triggering, reverse-triggering), <em>cycling</em> (premature, delayed), <em>pressurization</em> (flow starvation, slow rise, overshoot), <em>expiratory</em> (auto-PEEP, active expiration), and <em>circuit</em> (secretions, leak). Because the axes compose, you can reproduce the messy real-world combinations that single-defect figures can’t show. Drag <em>Compliance</em> and <em>Resistance</em> to feel the pressure trace split into elastic vs resistive components; use <em>Inspiratory Hold</em> to read P<sub>plat</sub> and static compliance, and <em>Expiratory Hold</em> to unmask intrinsic PEEP. The simulator also carries a gas-exchange and hemodynamic model (PaO<sub>2</sub>/SpO<sub>2</sub>, PaCO<sub>2</sub>/pH, mean airway pressure, MAP, RSBI) and a set of scored cases — severe ARDS, status asthmaticus, spontaneous breathing trial, ARDS with shock — so a change in the waveform has consequences beyond the waveform. The traces are the same physiology this chapter walks through in static form; the figures below are snapshots of what you’ll see here.
     </div>
   </div>
 
