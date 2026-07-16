@@ -289,12 +289,13 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   nav.toc a.part-link:hover h4 { color: var(--accent); background: var(--accent-soft); }
   html {
     scroll-behavior: smooth;
-    /* Global scroll offset so anchor/TOC jumps land BELOW the sticky toolbar
-       + chip nav. Per-element scroll-margin-top doesn't cover every target
-       (h5s, generated heading anchors, .part jumps), so we set it once on
-       the scroll container. JS updates --scroll-pad-top at runtime to
-       match the actual rendered sticky chrome (reader mode hides it, etc). */
-    scroll-padding-top: var(--scroll-pad-top, 110px);
+    /* NOTE: scroll-padding-top is deliberately NOT set here. The CSS spec applies
+       BOTH the scroller's scroll-padding-top AND the target's scroll-margin-top,
+       so setting both stacked the offset (~2x) and native #anchor / :target / back-
+       forward jumps landed ~one header-height too low. scroll-margin-top on the
+       targets below is the single source of truth (also the cross-browser reliable
+       one — Safari historically ignored scroll-padding for smooth scrollIntoView).
+       JS updates --scroll-pad-top at runtime to match the rendered sticky chrome. */
   }
   body.reader-mode { --scroll-pad-top: 28px; }
   nav.toc ol { list-style: none; padding: 0; margin: 0; }
@@ -317,7 +318,8 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
   section.chap > h6,
   main h3, main h4, main h5, main h6,
   .part,
-  main [id] {
+  main [id],
+  [id] {
     scroll-margin-top: var(--scroll-pad-top, 110px);
   }
   .part {
@@ -3042,19 +3044,28 @@ window.softJump = function (el) {
     }, 300);
   }
 };
-/* Cross-reference (§x.y) links have the same content-visibility landing issue;
-   route them through the robust jump too. */
+/* Route EVERY in-page anchor click through the robust jump. Native #anchor
+   navigation cannot reveal a target that sits inside a collapsed chapter or a
+   closed <details> accordion, and it mis-lands against content-visibility:auto
+   height estimates on mobile — so citation superscripts (#r6…), heading "#"
+   anchor-links, cross-refs, index links, and any plain prose <a href="#…"> all
+   jumped to the wrong place. softJump expands the destination first, then lands
+   it at the correct sticky-header offset.
+
+   Handlers that own their anchors (TOC sidebar, chip-nav, Cmd-K) run first on
+   closer nodes and call preventDefault(); the defaultPrevented guard below makes
+   this delegated fallback skip them, so nothing is handled twice. */
 document.addEventListener('click', function (e) {
+  if (e.defaultPrevented) return;
   if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  // Route cross-refs AND the auto-generated Index-of-tools-&-tables links through the
-  // robust jump. Index links are plain <a href="#…"> (no .xref), so on mobile they would
-  // otherwise use native scroll and mis-land against content-visibility:auto estimates.
-  var a = e.target.closest ? e.target.closest('a.xref[href^="#"], #book-index a[href^="#"], .front-matter a[href^="#"]') : null;
+  var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
   if (!a) return;
+  // Respect explicit opt-outs and links the browser should handle natively.
+  if (a.hasAttribute('data-no-softjump') || a.getAttribute('target') === '_blank') return;
   var href = a.getAttribute('href') || '';
-  if (href.length < 2) return;
-  var target = document.getElementById(href.slice(1));
-  if (!target || !window.softJump) return;
+  if (href.length < 2) return;                         // bare "#" (buttons/toggles)
+  var target = document.getElementById(decodeURIComponent(href.slice(1)));
+  if (!target || !window.softJump) return;             // unknown target → leave to browser
   e.preventDefault();
   if (history.pushState) { try { history.pushState(null, '', href); } catch (_) {} }
   window.softJump(target);
@@ -10522,7 +10533,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     </summary>
 
 <p><strong>Berlin criteria (2012):</strong> acute (&lt; 1 wk) bilateral opacities not fully explained by cardiac failure, with hypoxemia on PEEP ≥ 5: mild (P/F 200–300), moderate (100–200), severe (&lt; 100).<sup class="cite"><a href="#r7">7</a></sup></p>
-  <p><strong>Global Definition of ARDS (2024):</strong> expands to include patients on HFNC ≥ 30 L/min and uses SpO₂/FiO₂ ratio when blood gas not available; recognizes ARDS in resource-limited settings.<sup class="cite"><a href="#r1">1</a></sup></p>
+  <p><strong>Global Definition of ARDS (2024):</strong> broadens Berlin so it can be applied without an arterial blood gas. Acute hypoxemia = <strong>PaO₂/FiO₂ ≤ 300</strong> <em>or</em> <strong>SpO₂/FiO₂ ≤ 315</strong> — the SpO₂/FiO₂ criterion is valid only when <strong>SpO₂ ≤ 97%</strong> (above that, SpO₂ sits on the flat top of the oxyhemoglobin curve and no longer tracks PaO₂, so S/F overreads). Support level: <strong>PEEP ≥ 5</strong> (invasive or NIV) <em>or</em> <strong>HFNC ≥ 30 L/min</strong>; bilateral opacities may be confirmed on CXR, CT, <em>or</em> lung ultrasound; in resource-limited settings the PEEP/flow-rate/device requirements are dropped. This creates a <em>non-intubated ARDS</em> category (HFNC ≥ 30 L/min, or CPAP/NIV with PEEP ≥ 5). Severity grading (mild/moderate/severe) still uses the Berlin P/F bands above for intubated patients.<sup class="cite"><a href="#r1">1</a></sup></p>
   <p><strong>Pathophysiology — diffuse alveolar damage (DAD).</strong> Three sequential phases: exudative (0–7 d, capillary leak + neutrophil influx + hyaline membranes), proliferative (7–21 d, type-II pneumocyte hyperplasia, fibroblast activation), fibrotic (after ~3 wk, collagen deposition; the cause of long-term restrictive deficit).<sup class="cite"><a href="#r30">30</a></sup> The exudative phase explains the shunt physiology and edema; the proliferative phase explains why the lung becomes harder to recruit; the fibrotic phase explains chronic morbidity.</p>
 
   <table>
@@ -20267,23 +20278,122 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
 })();
 </script>
 
+<style id="mvp-style">
+  .mvp-overlay{ position:fixed; inset:0; z-index:4000; background:rgba(10,15,25,.62);
+    -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+    display:flex; flex-direction:column; }
+  .mvp-bar{ flex:0 0 auto; display:flex; align-items:center; gap:14px; padding:10px 16px;
+    background:#0f1a2c; color:#e6eefb; box-shadow:0 1px 0 rgba(255,255,255,.06);
+    font:600 14px/1.2 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .mvp-title{ font-weight:700; letter-spacing:.01em; }
+  .mvp-hint{ font-weight:400; color:#9fb3d0; font-size:12.5px; }
+  .mvp-seg{ display:inline-flex; border:1px solid rgba(255,255,255,.22); border-radius:8px; overflow:hidden; }
+  .mvp-w{ appearance:none; -webkit-appearance:none; border:0; background:transparent; color:#c7d5ea; padding:6px 14px; cursor:pointer; font:inherit; }
+  .mvp-w.is-on{ background:#2563eb; color:#fff; }
+  .mvp-close{ margin-left:auto; appearance:none; -webkit-appearance:none; border:1px solid rgba(255,255,255,.22);
+    background:transparent; color:#e6eefb; padding:6px 14px; border-radius:8px; cursor:pointer; font:inherit; }
+  .mvp-close:hover{ background:rgba(255,255,255,.10); }
+  .mvp-frame-wrap{ flex:1 1 auto; min-height:0; display:flex; align-items:stretch; justify-content:center; padding:22px; }
+  .mvp-stage{ flex:0 0 auto; width:390px; height:100%; background:#000;
+    border-radius:34px; padding:0; overflow:hidden;
+    box-shadow:0 30px 90px rgba(0,0,0,.55), 0 0 0 10px #11151d, 0 0 0 12px #2a2f3a; }
+  .mvp-frame{ display:block; width:100%; height:100%; border:0; border-radius:34px; background:#fff; }
+  @media print{ .mvp-overlay{ display:none !important; } }
+</style>
 <script id="mobile-view-js">
 (function(){
+  var de=document.documentElement;
+  // Detect whether THIS document instance is the one rendered inside the phone
+  // preview iframe, so it never spawns a nested preview of itself.
+  var inPreview;
+  try { inPreview = (window.top !== window.self); } catch(e){ inPreview = true; }
+  if (/(^|[?&])mvpreview=1(&|$)/.test(location.search)) inPreview = true;
+
+  // ---- Touch / tablet path: rewriting the viewport meta works there (mobile
+  //      browsers honor it), so keep that lightweight behavior unchanged. ----
   var vp=document.querySelector('meta[name="viewport"]');
-  if(!vp)return;
   var DESKTOP='width=device-width, initial-scale=1, viewport-fit=cover';
   function MOBILE(){ var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100); return 'initial-scale='+sc+', viewport-fit=cover'; }
-  function state(){ return document.documentElement.getAttribute('data-mobileview')==='on'; }
-  function set(on){
-    vp.setAttribute('content', on?MOBILE():DESKTOP);
-    document.documentElement.setAttribute('data-mobileview', on?'on':'off');
-    var tb=document.getElementById('btn-mobileview'); if(tb) tb.setAttribute('aria-pressed', on?'true':'false');
+  function metaState(){ return de.getAttribute('data-mobileview')==='on'; }
+  function metaSet(on){
+    if(vp) vp.setAttribute('content', on?MOBILE():DESKTOP);
+    de.setAttribute('data-mobileview', on?'on':'off');
+    var b=document.getElementById('btn-mobileview'); if(b) b.setAttribute('aria-pressed', on?'true':'false');
     try{ localStorage.setItem('mv-mobileview', on?'1':'0'); }catch(e){}
   }
+
+  // ---- Desktop path: a desktop browser IGNORES the viewport meta tag, so the
+  //      only faithful way to show the phone/tablet layout is to give the page
+  //      its own narrow viewport. An iframe does exactly that: loaded at 390px
+  //      wide, every @media (max-width:…) rule in this document fires for real. ----
+  var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  var useIframe = !coarse && !inPreview;
+  var WIDTHS = { phone: 390, tablet: 768 };
+  var curW = 'phone';
+  var overlay = null, stage = null;
+
+  function fit(){ if(stage) stage.style.width = WIDTHS[curW] + 'px'; }
+  function escClose(e){ if(e.key==='Escape') closePreview(); }
+  function previewOpen(){ return !!overlay; }
+  function setPressed(on){ var b=document.getElementById('btn-mobileview'); if(b) b.setAttribute('aria-pressed', on?'true':'false'); }
+
+  function openPreview(){
+    if(overlay) return;
+    overlay = document.createElement('div');
+    overlay.className = 'mvp-overlay';
+    overlay.innerHTML =
+      '<div class="mvp-bar">'
+      +   '<span class="mvp-title">Mobile preview</span>'
+      +   '<span class="mvp-hint">how this page looks on a phone / tablet</span>'
+      +   '<div class="mvp-seg" role="group" aria-label="Preview width">'
+      +     '<button type="button" class="mvp-w is-on" data-w="phone">Phone</button>'
+      +     '<button type="button" class="mvp-w" data-w="tablet">Tablet</button>'
+      +   '</div>'
+      +   '<button type="button" class="mvp-close" aria-label="Close mobile preview">Close &#10005;</button>'
+      + '</div>'
+      + '<div class="mvp-frame-wrap"><div class="mvp-stage"><iframe class="mvp-frame" title="Mobile preview"></iframe></div></div>';
+    document.body.appendChild(overlay);
+    stage = overlay.querySelector('.mvp-stage');
+    var frame = overlay.querySelector('.mvp-frame');
+    var base = location.href.split('#')[0];
+    frame.src = base + (base.indexOf('?')>=0 ? '&' : '?') + 'mvpreview=1';
+    overlay.addEventListener('click', function(e){
+      if(e.target===overlay || (e.target.classList && e.target.classList.contains('mvp-frame-wrap'))) closePreview();
+    });
+    overlay.querySelector('.mvp-close').addEventListener('click', closePreview);
+    Array.prototype.forEach.call(overlay.querySelectorAll('.mvp-w'), function(b){
+      b.addEventListener('click', function(){
+        curW = b.getAttribute('data-w');
+        Array.prototype.forEach.call(overlay.querySelectorAll('.mvp-w'), function(x){ x.classList.toggle('is-on', x===b); });
+        fit();
+      });
+    });
+    window.addEventListener('resize', fit);
+    document.addEventListener('keydown', escClose);
+    curW = 'phone'; fit();
+    setPressed(true);
+  }
+  function closePreview(){
+    if(!overlay) return;
+    window.removeEventListener('resize', fit);
+    document.removeEventListener('keydown', escClose);
+    overlay.parentNode && overlay.parentNode.removeChild(overlay);
+    overlay = null; stage = null;
+    setPressed(false);
+  }
+
+  function toggle(){
+    if(useIframe){ previewOpen() ? closePreview() : openPreview(); }
+    else { metaSet(!metaState()); }
+  }
+
   var tb=document.getElementById('btn-mobileview');
-  if(tb){ tb.setAttribute('aria-pressed', state()?'true':'false'); tb.addEventListener('click', function(){ set(!state()); }); }
+  if(tb && !inPreview){
+    tb.setAttribute('aria-pressed', (useIframe ? previewOpen() : metaState()) ? 'true':'false');
+    tb.addEventListener('click', toggle);
+  }
   var dv=document.getElementById('more-desktopview');
-  if(dv) dv.addEventListener('click', function(){ set(false); });
+  if(dv) dv.addEventListener('click', function(){ if(useIframe) closePreview(); else metaSet(false); });
 
   /* auto-hide the bottom action bar on scroll-down, reveal on scroll-up / near edges */
   var lastY = window.pageYOffset||0, ticking=false, TH=8, de=document.documentElement;
