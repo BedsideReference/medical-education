@@ -15458,11 +15458,16 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       const STORAGE_MODE      = 'mv-calc-mode-v2';
       const MAX_SNAPSHOTS     = 8;
 
-      // ARDSnet PEEP/FiO₂ ladder — [FiO₂, low-PEEP, high-PEEP].
+      // ARDSnet PEEP/FiO₂ ladders — the PEEP paired with each FiO₂ is a RANGE on
+      // the published cards (repeated FiO₂ rows), so store [FiO₂, lowMin, lowMax,
+      // highMin, highMax]. Values match Figure 20.2 exactly (ARMA low-PEEP table;
+      // ALVEOLI/LOVS high-PEEP table) — do not replace with single midpoints, or
+      // the tool will suggest PEEPs (6, 9, 21…) that appear on no protocol card.
       const LADDER = [
-        [0.30,  5, 12], [0.40,  6, 14], [0.50,  9, 17], [0.60, 10, 20],
-        [0.70, 12, 20], [0.80, 14, 22], [0.90, 16, 22], [1.00, 21, 23]
+        [0.30,  5,  5,  5, 14], [0.40,  5,  8, 14, 16], [0.50,  8, 10, 16, 20], [0.60, 10, 10, 20, 20],
+        [0.70, 10, 14, 20, 20], [0.80, 14, 14, 20, 22], [0.90, 14, 18, 22, 22], [1.00, 18, 24, 22, 24]
       ];
+      const _rng = (a, b) => (a === b ? String(a) : a + '–' + b);
 
       const $ = id => document.getElementById(id);
       const num = id => { const el = $(id); if (!el) return NaN;
@@ -15557,14 +15562,14 @@ header.hero .mh-cite b{color:var(--ink-soft);}
         if (!isFinite(fio2)) return null;
         let best = LADDER[0];
         for (const e of LADDER) if (Math.abs(e[0]-fio2) < Math.abs(best[0]-fio2)) best = e;
-        return { fio2: best[0], low: best[1], high: best[2] };
+        return { fio2: best[0], lowMin: best[1], lowMax: best[2], highMin: best[3], highMax: best[4] };
       }
-      function ladderInterpret(curPeep, low, high) {
-        if (!isFinite(curPeep) || !isFinite(low)) return '';
-        if (curPeep < low - 1) return 'PEEP below low-PEEP target — consider ↑PEEP per ARDSnet.';
-        if (curPeep > high + 1) return 'PEEP above high-PEEP target — verify recruitable lung; risk of overdistension.';
-        if (curPeep <= low + 1) return 'On low-PEEP table.';
-        if (curPeep >= high - 1) return 'On high-PEEP (LOVS) table.';
+      function ladderInterpret(curPeep, lowMin, lowMax, highMin, highMax) {
+        if (!isFinite(curPeep) || !isFinite(lowMin)) return '';
+        if (curPeep < lowMin - 1) return 'PEEP below low-PEEP target — consider ↑PEEP per ARDSnet.';
+        if (curPeep > highMax + 1) return 'PEEP above high-PEEP target — verify recruitable lung; risk of overdistension.';
+        if (curPeep <= lowMax + 1) return 'On low-PEEP (ARMA) table.';
+        if (curPeep >= highMin - 1) return 'On high-PEEP (ALVEOLI/LOVS) table.';
         return 'Between low and high PEEP tables.';
       }
 
@@ -15750,11 +15755,12 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 
           const lad = ladderLookup(fio2);
           if (lad) {
-            setText('ladder-low',  '~' + lad.low);
-            setText('ladder-high', '~' + lad.high);
+            const loTxt = _rng(lad.lowMin, lad.lowMax), hiTxt = _rng(lad.highMin, lad.highMax);
+            setText('ladder-low',  loTxt);
+            setText('ladder-high', hiTxt);
             setText('ladder-cur',  isFinite(peep) ? String(peep) : '—');
-            setFormula('f-ladder', `Closest FiO₂ row: ${lad.fio2.toFixed(2)} → low ~${lad.low} cmH₂O · high ~${lad.high} cmH₂O`);
-            setInterpret('i-ladder', ladderInterpret(peep, lad.low, lad.high));
+            setFormula('f-ladder', `Closest FiO₂ row: ${lad.fio2.toFixed(2)} → low-PEEP ${loTxt} · high-PEEP ${hiTxt} cmH₂O (Fig 20.2)`);
+            setInterpret('i-ladder', ladderInterpret(peep, lad.lowMin, lad.lowMax, lad.highMin, lad.highMax));
           } else {
             setText('ladder-low','—'); setText('ladder-high','—'); setText('ladder-cur','—');
             setFormula('f-ladder',''); setInterpret('i-ladder','');
@@ -17241,7 +17247,21 @@ saveInputs();
     ["ECMO","extracorporeal membrane oxygenation","VV ECMO"],
     ["iNO","inhaled nitric oxide"],["prone","proning","prone positioning"],
     ["V/Q","ventilation-perfusion","ventilation perfusion"],
-    ["HPV","hypoxic pulmonary vasoconstriction"],["DO₂","oxygen delivery"]
+    ["HPV","hypoxic pulmonary vasoconstriction"],["DO₂","oxygen delivery"],
+    // Brand → generic (the book indexes generics; physicians often search brands)
+    ["Diprivan","propofol"],["Precedex","dexmedetomidine"],["Versed","midazolam"],
+    ["Ketalar","ketamine"],["Amidate","etomidate"],["Anectine","succinylcholine"],
+    ["Zemuron","rocuronium"],["Nimbex","cisatracurium"],
+    ["Levophed","norepinephrine","noradrenaline"],["Vasostrict","vasopressin"],
+    ["Neo-Synephrine","Neosynephrine","phenylephrine"],["Sublimaze","fentanyl"],
+    // Procedures / mnemonics / targets that use a shorthand a physician may type
+    ["cric","cricothyrotomy","surgical airway","front of neck access","FONA"],
+    ["RSI","rapid sequence intubation"],["DSI","delayed sequence intubation"],
+    ["VL","video laryngoscopy","video laryngoscope"],["DL","direct laryngoscopy"],
+    ["RASS","Richmond agitation sedation scale"],["CPOT","critical care pain observation tool"],
+    ["SAT","spontaneous awakening trial"],["awake prone","self-proning","self proning"],
+    ["lung protective","LPV","lung-protective ventilation","ARDSnet"],
+    ["terminal extubation","comfort care","withdrawal of life support","compassionate extubation"]
   ];
   function __ventNorm(str){
     str=(str||'').toLowerCase();
@@ -20017,6 +20037,41 @@ document.addEventListener('click', function (e) {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js').catch(function () {});
+
+      // Auto-warm the offline cache for the cross-origin simulators. They're
+      // never fetched until tapped, so a first-time offline user would get blank
+      // frames. Prefetch them ONCE per SW version, when online, idle, and not on
+      // a data-saver / metered connection — so it's invisible and bandwidth-polite.
+      try {
+        var VER = 'vent-sw-2026-06-15';                 // bump to force a re-warm
+        var conn = navigator.connection || {};
+        if (conn.saveData) return;                       // respect Data Saver
+        if (/^(slow-2g|2g)$/.test(conn.effectiveType || '')) return;
+        if (localStorage.getItem('mv-offline-warmed') === VER) return;
+        var warm = function () {
+          var sw = navigator.serviceWorker;
+          if (!sw || !sw.controller) return;             // no active SW yet — try next load
+          if (!navigator.onLine) return;
+          var urls = Array.prototype.slice.call(document.querySelectorAll('iframe[data-src]'))
+            .map(function (f) { return f.getAttribute('data-src'); }).filter(Boolean);
+          urls = urls.filter(function (u, i) { return urls.indexOf(u) === i; });
+          if (!urls.length) return;
+          var done = function (e) {
+            if (!e.data || e.data.type !== 'prefetch-done') return;
+            sw.removeEventListener('message', done);
+            try { localStorage.setItem('mv-offline-warmed', VER); } catch (e2) {}
+          };
+          sw.addEventListener('message', done);
+          sw.controller.postMessage({ type: 'prefetch', urls: urls });
+        };
+        var schedule = function () {
+          if (window.requestIdleCallback) requestIdleCallback(warm, { timeout: 8000 });
+          else setTimeout(warm, 4000);
+        };
+        // Wait until a controller exists (first visit registers but doesn't control yet).
+        if (navigator.serviceWorker.controller) setTimeout(schedule, 3000);
+        else navigator.serviceWorker.addEventListener('controllerchange', function () { setTimeout(schedule, 3000); });
+      } catch (e) {}
     });
   }
 </script>
