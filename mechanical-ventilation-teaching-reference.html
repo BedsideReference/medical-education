@@ -9462,6 +9462,29 @@ header.hero .mh-cite b{color:var(--ink-soft);}
   </script>
   <div class="pearl"><strong>Why this matters at the bedside</strong>Three numbers — V<sub>T</sub>, Pplat, PEEP — generate the four mortality-correlated mechanics (ΔP, C<sub>stat</sub>, mechanical power, resistive ΔP). Track them on every set of vent rounds, every mode change, and every clinical worsening.</div>
   </details>
+
+  <details class="chap-acc" data-acc-id="c16-h4-3" open>
+    <summary>
+      <h4 id="c16-3">16.3 Conductive pressure — the early jump, and when driving pressure lies</h4>
+    </summary>
+
+  <p>Look at the very start of a constant-flow VC breath. Airway pressure jumps <em>abruptly</em> the instant flow begins, before any meaningful volume has entered the lung. That step is the <strong>conductive pressure (P<sub>cond</sub>)</strong> — the pressure needed to drive gas from the circuit into the alveoli.<sup class="cite"><a href="#r62">62</a></sup> In the normal case it is nothing new: it equals the <strong>resistive pressure</strong>, P<sub>res</sub> = PIP − P<sub>plat</sub>. Read it straight off the pressure–time trace as the height of that initial vertical step.</p>
+
+  <p>The teaching point is what it means when the early jump is <em>bigger</em> than the resistive pressure you measure at end-inspiration. P<sub>cond</sub> exceeds P<sub>res</sub> in exactly two situations:</p>
+  <table>
+    <caption>P<sub>cond</sub> &gt; P<sub>res</sub> — two mechanisms</caption>
+    <thead><tr><th>Pattern</th><th>Why the early jump is large</th><th>Relationship</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Intrinsic PEEP</strong> (dynamic hyperinflation)</td><td>Inspiratory flow can’t begin until airway pressure climbs past <em>total</em> PEEP</td><td>P<sub>cond</sub> = P<sub>res</sub> + PEEP<sub>i</sub></td></tr>
+      <tr><td><strong>Airway closure above PEEP</strong></td><td>Flow can’t begin until pressure reaches the airway <em>opening</em> pressure (AOP)</td><td>P<sub>cond</sub> = P<sub>res</sub> + (AOP − PEEP)</td></tr>
+    </tbody>
+  </table>
+  <p>An <strong>end-expiratory occlusion</strong> tells the two apart: it reveals total PEEP directly, so a total PEEP above the set value means intrinsic PEEP; a normal total PEEP with a still-large early jump points to airway closure — measure the AOP (<a class="xref" href="#c17-6" data-xref-chap="17">§17.6</a>). The reassuring direction also holds: when P<sub>cond</sub> and P<sub>res</sub> are roughly <em>equal</em>, airway closure above PEEP is essentially excluded (negative predictive value &gt; 95%)<sup class="cite"><a href="#r64">64</a></sup>.</p>
+
+  <div class="phys"><strong>Why this matters — your driving pressure can be wrong</strong>Driving pressure is the pressure the lung sees across a breath: P<sub>plat</sub> minus the <em>real</em> end-expiratory alveolar pressure. When P<sub>cond</sub> &gt; P<sub>res</sub>, that real baseline is higher than the PEEP on the dial — it is total PEEP (with auto-PEEP) or the AOP (with airway closure). Computing ΔP as “P<sub>plat</sub> − set PEEP” then <strong>overestimates</strong> the true driving pressure: a patient can read ΔP 18 and be pushed toward a V<sub>T</sub> cut when the true ΔP — measured off total PEEP or AOP — is comfortably lower. Subtract the right baseline before you act on the number.<sup class="cite"><a href="#r63">63</a></sup></div>
+
+  <div class="pitfall"><strong>Where P<sub>cond</sub> is hard to read</strong>The early step is only clean when inspiratory flow is strictly <em>constant</em> (square-wave VC). With decelerating or variable flow the jump smears and P<sub>cond</sub> can’t be read reliably off the trace — fall back to occlusion maneuvers (total PEEP, AOP) to recover the true baseline.</div>
+  </details>
 <div class="takeaways">
     <h5>Key takeaways</h5>
     <ul>
@@ -9469,6 +9492,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <li>Is PIP high? Is Pplat high? Yes/yes = lung mechanics (ARDS, edema, atelectasis). Yes/no = resistance (ETT, bronchospasm, biting).</li>
       <li>ΔP is the variable most strongly correlated with ARDS mortality (Amato 2015) — each ~7 cmH₂O higher ΔP carries roughly 1.4× the mortality risk. Target ≤ 15 (lower is better).</li>
       <li>Mechanical power (MP) = 0.098 × RR × VT × (PIP − ½ΔP) in J/min; &gt; 17 associated with mortality — reduces via ↓RR (most impactful), ↓VT, ↓ΔP, ↓peak flow.</li>
+      <li>Conductive pressure (the abrupt early jump in a square-wave VC breath) normally = resistive pressure (PIP − Pplat). When it’s larger, the lung is starting the breath above set PEEP — intrinsic PEEP or airway closure — and “Pplat − set PEEP” overestimates the true driving pressure (§16.3).</li>
     </ul>
   </div>
 
@@ -9701,6 +9725,25 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li><strong>If hemodynamic collapse</strong>: disconnect the circuit and let the chest passively empty for 20–30 s, then resume bagging slowly (§17.3).</li>
   </ol>
   </details>
+
+  <details class="chap-acc" data-acc-id="c17-h4-6" open>
+    <summary>
+      <h4 id="c17-6">17.6 Airway opening pressure (AOP) — the closing pressure you can measure</h4>
+    </summary>
+
+  <p>Auto-PEEP is not the only reason the alveolus starts a breath above the set PEEP. In some lungs — classically injured, oedematous, or heterogeneous ARDS, not only obstructive disease — distal airways and unstable units <strong>collapse at end-expiration</strong> and re-open only once airway pressure climbs to a threshold: the <strong>airway opening pressure (AOP)</strong>. Below the AOP no gas moves and the closed units contribute nothing. Airway closure is common in ARDS and easy to miss.<sup class="cite"><a href="#r65">65</a></sup></p>
+
+  <p><strong>Measuring it — the low-flow insufflation.</strong> Deliver one slow, constant-flow breath and read the pressure–volume (or pressure–time) curve:</p>
+  <ol>
+    <li>Set a low respiratory rate (~8/min) and a <strong>low inspiratory flow (~5 L/min)</strong> — most modern ventilators have a low-flow or P–V-tool mode that does this for you.</li>
+    <li>Read the curve in three parts: an initial nearly-flat linear segment (you are only pressurising the <em>circuit</em> — compliance ≈ 2.5 mL/cmH₂O, almost no volume reaching the patient), then a <strong>breakpoint</strong>, then a steeper linear segment as the lung finally inflates.</li>
+    <li>The pressure at the breakpoint <strong>is the AOP</strong>.<sup class="cite"><a href="#r62">62</a></sup></li>
+  </ol>
+
+  <div class="pearl"><strong>What to do with it — set PEEP ≥ AOP</strong>If there is an AOP above your set PEEP, every breath spends part of itself just re-opening airways and the closed units stay derecruited. <strong>Set PEEP at least at the AOP</strong> so the lung starts each breath open. And an unrecognised AOP inflates the <em>apparent</em> driving pressure — you are subtracting set PEEP instead of the true opening pressure (<a class="xref" href="#c16-3" data-xref-chap="16">§16.3</a>) — which can steer you to the wrong settings.</div>
+
+  <div class="phys"><strong>Airway closure vs auto-PEEP — both start the breath high, different fix</strong>Both raise the pressure the alveolus sees at end-expiration, and both make conductive pressure exceed resistive pressure (<a class="xref" href="#c16-3" data-xref-chap="16">§16.3</a>). The end-expiratory occlusion separates them: a total PEEP above set PEEP is intrinsic PEEP from incomplete emptying (fix by lengthening expiration / lowering minute ventilation); a normal total PEEP with a large early jump — and a breakpoint on the low-flow curve — is airway closure (fix by setting PEEP to the AOP).</div>
+  </details>
   <div class="takeaways">
     <h5>Key takeaways</h5>
     <ul>
@@ -9709,6 +9752,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
       <li>Fix (in order): ↓RR (most effective), ↓VT, lengthen expiratory time, treat bronchospasm, match ~75–80% of total PEEP if patient is triggering.</li>
       <li><strong>Post-intubation collapse in an obstructive patient = stacked breaths until proven otherwise.</strong> Disconnect the circuit, let the chest decompress, resume slow bagging. The “S” of DOPES.</li>
       <li>The bedside τ check: pause the flow trace at exhalation — it should reach zero before the next breath (≥ 3τ). If not, you’re trapping gas.</li>
+      <li>Airway closure (common in ARDS, not just obstruction) also starts the breath above set PEEP. Measure the airway opening pressure (AOP) with a low-flow insufflation — the breakpoint on the P–V curve — and set PEEP ≥ AOP; an unrecognised AOP overestimates driving pressure (§17.6).</li>
     </ul>
   </div>
 
@@ -15132,6 +15176,10 @@ header.hero .mh-cite b{color:var(--ink-soft);}
     <li id="r59">Qadir N, Sahetya S, Munshi L, et al. An Update on Management of Adult Patients with Acute Respiratory Distress Syndrome: An Official American Thoracic Society Clinical Practice Guideline. <em>Am J Respir Crit Care Med</em>. 2024;209(1):24-36. (Conditional recommendation for VV-ECMO in selected severe ARDS; see also the 2021 ELSO VV-ECMO management guideline and the 2025 ELSO narrative ECMO guideline for operational practice.)</li>
     <li id="r60">Combes A, Peek GJ, Hajage D, et al. ECMO for severe ARDS: systematic review and individual patient data meta-analysis. <em>Intensive Care Med</em>. 2020;46(11):2048-2057. (EOLIA + CESAR pooled; 90-day mortality RR 0.75, 95% CI 0.60–0.94.)</li>
     <li id="r61">Capnogram phase and pattern conventions (§14.5) follow the scheme popularized by Krauss and colleagues, as summarized in UpToDate (Waltham, MA: UpToDate Inc.).</li>
+    <li id="r62">Carteaux G, Spinelli E, Jaber S. Understanding lung physiology through ventilator screen. <em>Intensive Care Med</em>. 2026;52(9):1537-1541.</li>
+    <li id="r63">Rezoagli E, Pozzi M, Cereda M, Foti G. Overestimation of driving pressure by the analysis of the conductive pressure during veno-arterial ECMO: airway closure or intrinsic PEEP? <em>Crit Care</em>. 2023;27(1):497.</li>
+    <li id="r64">Haudebourg A-F, Moncomble E, Lesimple A, et al. A novel method for assessment of airway opening pressure without the need for low-flow insufflation. <em>Crit Care</em>. 2023;27(1):273.</li>
+    <li id="r65">Chen L, Del Sorbo L, Grieco DL, et al. Airway closure in acute respiratory distress syndrome: an underestimated and misinterpreted phenomenon. <em>Am J Respir Crit Care Med</em>. 2018;197(2):132-136.</li>
   </ol>
   <p class="footer-note">For clinician education only; not a substitute for institutional protocols, current FDA labeling, or specialist consultation. Verify dosing and ventilator-specific behavior at the bedside. Companion <a href="https://bedsidereference.github.io/medical-education/mechanical-ventilation-bedside-one-pager.html" style="color:var(--accent);">bedside one-pager</a> (single-page rounds reference) · standalone <a href="https://bedsidereference.github.io/medical-education/bedside-calculator.html" style="color:var(--accent);">interactive calculator</a> with threshold-coded outputs, LPV-bundle status row, ARDSnet PEEP/FiO₂ ladder lookup, Vd/Vt, DO₂, OI, transpulmonary pressures, target-PaCO₂ helper, and saveable snapshots.</p>
 </section>
