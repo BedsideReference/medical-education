@@ -5,7 +5,7 @@
    - Cross-origin GET (KaTeX CDN + fonts): cache-first runtime.
    - Navigation requests: fall back to the cached book when offline.
 */
-var VERSION = 'vent-v1-2026-06-15';
+var VERSION = 'vent-v2-2026-07-26';
 var CORE_CACHE = 'core-' + VERSION;
 var RUNTIME_CACHE = 'runtime-' + VERSION;
 
@@ -22,6 +22,7 @@ var CORE_ASSETS = [
   'fig_07_01_pv_loop.png',
   'fig_07_02_mechanics_five_pressures.png',
   'fig_12_01_aprv_waveforms.png',
+  'fig_16_01_paw_decomposition.png',
   'fig_29_01_cardiopulmonary_interactions.png',
   // Math typesetting (CDN)
   'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css',
