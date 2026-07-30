@@ -227,14 +227,19 @@
       .mini-grid { grid-template-columns: 1fr; }
       .input-row { grid-template-columns: 1fr 82px; }
     }
+  
+    body.embedded header.app-header .header-actions{display:none}
+    body.embedded header.app-header{padding-bottom:12px;margin-bottom:12px}
+    .validation-note{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--blue-bg);color:var(--muted);font-size:.78rem;line-height:1.45}
   </style>
 </head>
 <body data-theme="light">
+  <script>try{if(window.self!==window.top)document.body.classList.add('embedded')}catch(e){document.body.classList.add('embedded')}</script>
   <div class="app-shell">
     <header class="app-header">
       <div class="header-titles">
         <h1>ABG Acid–Base Simulator</h1>
-        <p class="subtitle">Set a blood gas or load a preset and watch the four-step acid–base read resolve — primary disorder, compensation, anion gap, and delta ratio.</p>
+        <p class="subtitle">Set a blood gas or load a preset and follow a validated eight-step interpretation — data check, pH, primary process, compensation, anion gap, delta analysis, mixed disorders, and clinical safety.</p>
       </div>
       <div class="header-actions">
         <button class="btn" id="formulaBtn">Formula reference</button>
@@ -270,6 +275,9 @@
                 <option value="salicylate">Salicylate mixed disorder</option>
                 <option value="sepsis">Sepsis mixed disorder</option>
                 <option value="hiddenGap">Hidden HAGMA + metabolic alkalosis</option>
+                <option value="postHypercap">Post-hypercapnic alkalosis</option>
+                <option value="rta">Normal-gap acidosis / RTA</option>
+                <option value="intubationRisk">Severe metabolic acidosis before intubation</option>
               </select>
             </div>
 
@@ -327,8 +335,10 @@
                 <div><label class="field-label" for="cl">Cl⁻</label><input id="cl" type="number" min="50" max="160" step="1" value="104" /></div>
                 <div><label class="field-label" for="albumin">Albumin</label><input id="albumin" type="number" min="0.5" max="6" step="0.1" value="4.0" /></div>
                 <div><label class="field-label" for="lactate">Lactate</label><input id="lactate" type="number" min="0" max="30" step="0.1" value="1.0" /></div>
+                <div><label class="field-label" for="k">K⁺</label><input id="k" type="number" min="1" max="10" step="0.1" value="4.0" /></div>
+                <div><label class="field-label" for="chemCO2">Chemistry total CO₂</label><input id="chemCO2" type="number" min="2" max="60" step="1" value="24" /></div>
               </div>
-              <div class="subtle" style="margin-top:8px">Albumin in g/dL; lactate in mmol/L. Lactate is displayed for context but does not directly determine the diagnosis.</div>
+              <div class="subtle" style="margin-top:8px">Albumin in g/dL; lactate and K⁺ in mmol/L. Chemistry total CO₂ is an independent plausibility check and should usually approximate bicarbonate.</div>
             </div>
           </div>
         </section>
@@ -413,6 +423,12 @@
               <div id="deltaDetail" class="result-detail">Delta ratio is most useful when the corrected anion gap is elevated and bicarbonate is reduced.</div>
             </div>
 
+            <div class="result-card" id="safetyCard">
+              <div class="result-title">Safety and context <span id="safetyPill" class="pill pill-info">Review</span></div>
+              <div id="safetyMain" class="result-main">No immediate physiologic warning</div>
+              <div id="safetyDetail" class="result-detail">Interpret the gas with the patient, timeline, and treatment context.</div>
+            </div>
+
             <div class="result-card">
               <div class="result-title">Teaching sequence</div>
               <div class="steps" id="teachingSteps"></div>
@@ -489,16 +505,19 @@
     const round = (n, digits = 1) => Number(n).toFixed(digits);
 
     const presets = {
-      normal: { ph: 7.40, pco2: 40, hco3: 24, na: 140, cl: 104, albumin: 4.0, lactate: 1.0, link: true },
-      dka: { ph: 7.18, pco2: 20, hco3: 7, na: 132, cl: 93, albumin: 4.0, lactate: 2.1, link: false },
-      lacticResp: { ph: 7.04, pco2: 50, hco3: 13, na: 140, cl: 105, albumin: 3.5, lactate: 9.2, link: false },
-      vomiting: { ph: 7.51, pco2: 50, hco3: 39, na: 138, cl: 88, albumin: 4.0, lactate: 1.2, link: false },
-      acuteCopd: { ph: 7.25, pco2: 60, hco3: 26, na: 139, cl: 103, albumin: 4.0, lactate: 1.4, link: false, time: 'acute' },
-      chronicCopd: { ph: 7.35, pco2: 60, hco3: 32, na: 140, cl: 100, albumin: 4.0, lactate: 1.0, link: false, time: 'chronic' },
-      panic: { ph: 7.62, pco2: 20, hco3: 20, na: 140, cl: 110, albumin: 4.0, lactate: 1.6, link: false, time: 'acute' },
-      salicylate: { ph: 7.47, pco2: 20, hco3: 14, na: 140, cl: 103, albumin: 4.0, lactate: 2.5, link: false, time: 'acute' },
-      sepsis: { ph: 7.48, pco2: 25, hco3: 18, na: 138, cl: 104, albumin: 3.0, lactate: 5.8, link: false, time: 'acute' },
-      hiddenGap: { ph: 7.40, pco2: 40, hco3: 24, na: 140, cl: 92, albumin: 4.0, lactate: 5.0, link: false }
+      normal: { ph: 7.40, pco2: 40, hco3: 24, na: 140, cl: 104, albumin: 4.0, lactate: 1.0, k: 4.0, chemCO2: null, link: true },
+      dka: { ph: 7.18, pco2: 20, hco3: 7, na: 132, cl: 93, albumin: 4.0, lactate: 2.1, k: 4.0, chemCO2: null, link: false },
+      lacticResp: { ph: 7.04, pco2: 50, hco3: 13, na: 140, cl: 105, albumin: 3.5, lactate: 9.2, k: 4.0, chemCO2: null, link: false },
+      vomiting: { ph: 7.51, pco2: 50, hco3: 39, na: 138, cl: 88, albumin: 4.0, lactate: 1.2, k: 4.0, chemCO2: null, link: false },
+      acuteCopd: { ph: 7.25, pco2: 60, hco3: 26, na: 139, cl: 103, albumin: 4.0, lactate: 1.4, k: 4.0, chemCO2: null, link: false, time: 'acute' },
+      chronicCopd: { ph: 7.35, pco2: 60, hco3: 32, na: 140, cl: 100, albumin: 4.0, lactate: 1.0, k: 4.0, chemCO2: null, link: false, time: 'chronic' },
+      panic: { ph: 7.62, pco2: 20, hco3: 20, na: 140, cl: 110, albumin: 4.0, lactate: 1.6, k: 4.0, chemCO2: null, link: false, time: 'acute' },
+      salicylate: { ph: 7.47, pco2: 20, hco3: 14, na: 140, cl: 103, albumin: 4.0, lactate: 2.5, k: 4.0, chemCO2: null, link: false, time: 'acute' },
+      sepsis: { ph: 7.48, pco2: 25, hco3: 18, na: 138, cl: 104, albumin: 3.0, lactate: 5.8, k: 4.0, chemCO2: null, link: false, time: 'acute' },
+      hiddenGap: { ph: 7.40, pco2: 40, hco3: 24, na: 140, cl: 92, albumin: 4.0, lactate: 5.0, k: 4.0, chemCO2: null, link: false },
+      postHypercap: { ph: 7.52, pco2: 48, hco3: 38, na: 140, cl: 92, albumin: 3.5, lactate: 1.0, k: 2.9, chemCO2: 38, link:false },
+      rta: { ph: 7.24, pco2: 28, hco3: 12, na: 138, cl: 116, albumin: 4.0, lactate: 1.0, k: 3.0, chemCO2: 13, link:false },
+      intubationRisk: { ph: 7.05, pco2: 18, hco3: 5, na: 136, cl: 101, albumin: 3.0, lactate: 11.0, k: 5.8, chemCO2: 7, link:false }
     };
 
     const challengeCases = [
@@ -510,7 +529,10 @@
       { key:'panic', stem:'A patient is tachypneic during an acute panic episode.', tag:'Emergency medicine', answer:{ph:'alkalemia', primary:'respAlk', ag:'normal'} },
       { key:'salicylate', stem:'A patient has tinnitus, nausea, tachypnea, and altered mental status.', tag:'Toxicology', answer:{ph:'alkalemia', primary:'respAlkMetAcid', ag:'high'} },
       { key:'sepsis', stem:'A febrile hypotensive patient is tachypneic with elevated lactate.', tag:'Sepsis', answer:{ph:'alkalemia', primary:'respAlkMetAcid', ag:'high'} },
-      { key:'hiddenGap', stem:'A patient with vomiting and lactic acidosis has a deceptively normal-appearing ABG.', tag:'Mixed disorder', answer:{ph:'normal', primary:'gapMetAlk', ag:'high'} }
+      { key:'hiddenGap', stem:'A patient with vomiting and lactic acidosis has a deceptively normal-appearing ABG.', tag:'Mixed disorder', answer:{ph:'normal', primary:'gapMetAlk', ag:'high'} },
+      { key:'postHypercap', stem:'After rapid correction of chronic hypercapnia, a patient is difficult to liberate from the ventilator.', tag:'Post-hypercapnic alkalosis', answer:{ph:'alkalemia', primary:'metAlk', ag:'normal'} },
+      { key:'rta', stem:'A patient has weakness, hyperchloremia, and a normal-anion-gap metabolic acidosis.', tag:'Renal tubular acidosis', answer:{ph:'acidemia', primary:'metAcid', ag:'normal'} },
+      { key:'intubationRisk', stem:'A patient with shock and Kussmaul breathing is being prepared for intubation.', tag:'Physiologically difficult airway', answer:{ph:'acidemia', primary:'metAcid', ag:'high'} }
     ];
 
     let currentChallenge = challengeCases[0];
@@ -519,7 +541,7 @@
     function getValues() {
       return {
         ph: Number($('phNum').value), pco2: Number($('pco2Num').value), hco3: Number($('hco3Num').value),
-        na: Number($('na').value), cl: Number($('cl').value), albumin: Number($('albumin').value), lactate: Number($('lactate').value),
+        na: Number($('na').value), cl: Number($('cl').value), albumin: Number($('albumin').value), lactate: Number($('lactate').value), k: Number($('k').value), chemCO2: Number($('chemCO2').value),
         timeCourse: $('timeCourse').value
       };
     }
@@ -543,7 +565,7 @@
       $('pco2Num').value = $('pco2Range').value = values.pco2;
       $('hco3Num').value = $('hco3Range').value = values.hco3;
       $('phNum').value = $('phRange').value = values.ph;
-      $('na').value = values.na; $('cl').value = values.cl; $('albumin').value = values.albumin; $('lactate').value = values.lactate;
+      $('na').value = values.na; $('cl').value = values.cl; $('albumin').value = values.albumin; $('lactate').value = values.lactate; $('k').value = values.k ?? 4.0; $('chemCO2').value = values.chemCO2 ?? values.hco3;
       $('timeCourse').value = values.time || 'auto';
       $('preset').value = presetName;
       updatePHLock();
@@ -709,6 +731,7 @@
 
     function renderSteps(v, primary, comp, ag, delta, calcPH, diff) {
       const steps = [
+        `<strong>Validate the data:</strong> confirm sample type, timing, internal consistency, chemistry bicarbonate, albumin, chloride, lactate, and clinical context.`,
         `<strong>Check pH:</strong> ${v.ph.toFixed(2)} is ${primary.state === 'normal' ? 'within the conventional reference range' : primary.state}.`,
         `<strong>Identify the driver:</strong> ${primary.main}.`,
         `<strong>Check compensation:</strong> ${comp.main}.`,
@@ -719,11 +742,23 @@
       $('teachingSteps').innerHTML = steps.map(s=>`<div class="step">${s}</div>`).join('');
     }
 
+
+    function safetyContext(v, primary, calcPH, diff) {
+      const issues=[];
+      if (diff > .03) issues.push(`Entered values are internally discordant; Henderson–Hasselbalch predicts pH ${round(calcPH,2)}.`);
+      if (Number.isFinite(v.chemCO2) && Math.abs(v.chemCO2-v.hco3)>4) issues.push(`Chemistry total CO₂ (${round(v.chemCO2,0)}) differs substantially from ABG HCO₃⁻ (${round(v.hco3,0)}); verify timing and specimen.`);
+      if (v.ph < 7.10 && v.hco3 < 15) issues.push('Severe metabolic acidemia may depend on very high compensatory minute ventilation. Sedation, apnea, or inadequate post-intubation ventilation can cause abrupt deterioration.');
+      if (primary.code==='respAcid' && v.pco2>=60) issues.push('Assess chronicity before rapidly normalizing PaCO₂; post-hypercapnic alkalemia can complicate liberation.');
+      if (v.k < 2.8 || v.k > 6.0) issues.push(`Potassium ${round(v.k,1)} mmol/L is a separate urgent safety issue.`);
+      return issues.length ? {main:'Physiologic warning', detail:issues.join(' '), pill:'Caution', cls:'pill-bad'} : {main:'No immediate physiologic warning', detail:'Interpret the gas with the timeline, renal function, albumin, chloride balance, and treatment context.', pill:'Context', cls:'pill-info'};
+    }
+
     function update() {
       updatePHLock();
       const v = getValues();
       const calcPH = hhPH(v.pco2, v.hco3), diff = Math.abs(v.ph - calcPH);
       const primary = primaryInterpretation(v), comp = compensation(v, primary), ag = anionGap(v), delta = deltaAnalysis(v, ag);
+      const safety = safetyContext(v, primary, calcPH, diff);
 
       $('phDisplay').textContent=v.ph.toFixed(2); $('pco2Display').textContent=round(v.pco2,0); $('hco3Display').textContent=round(v.hco3,0);
       $('phCard').className='abg-value '+valueTone(v.ph,7.35,7.45,false);
@@ -745,6 +780,7 @@
       $('agPill').textContent=ag.category==='high'?'Elevated':ag.category==='low'?'Low':'Normal'; $('agPill').className=`pill ${ag.category==='normal'?'pill-good':ag.category==='high'?'pill-bad':'pill-warn'}`;
 
       $('deltaMain').textContent=delta.main; $('deltaDetail').textContent=delta.detail; $('deltaPill').textContent=delta.label; $('deltaPill').className=`pill ${delta.cls}`;
+      $('safetyMain').textContent=safety.main; $('safetyDetail').textContent=safety.detail; $('safetyPill').textContent=safety.pill; $('safetyPill').className=`pill ${safety.cls}`;
       renderSteps(v,primary,comp,ag,delta,calcPH,diff); drawMap(v);
     }
 
@@ -752,7 +788,7 @@
       $(num).addEventListener('input',()=>{syncPair(num,range,'num');$('preset').value='custom';update();});
       $(range).addEventListener('input',()=>{syncPair(num,range,'range');$('preset').value='custom';update();});
     });
-    ['na','cl','albumin','lactate','timeCourse'].forEach(id=>$(id).addEventListener('input',()=>{$('preset').value='custom';update();}));
+    ['na','cl','albumin','lactate','k','chemCO2','timeCourse'].forEach(id=>$(id).addEventListener('input',()=>{$('preset').value='custom';update();}));
     $('linkPH').addEventListener('change',()=>{updatePHLock();update();});
     $('preset').addEventListener('change',e=>{ if(e.target.value!=='custom') setABG(presets[e.target.value],e.target.value); });
     $('resetBtn').addEventListener('click',()=>setABG(presets.normal,'normal'));
@@ -768,7 +804,7 @@
       const p=presets[currentChallenge.key];
       $('caseTag').textContent=currentChallenge.tag; $('caseStem').textContent=currentChallenge.stem;
       $('casePH').textContent=p.ph.toFixed(2); $('casePCO2').textContent=p.pco2; $('caseHCO3').textContent=p.hco3;
-      $('caseLabs').textContent=`Na ${p.na} · Cl ${p.cl} · albumin ${p.albumin.toFixed(1)} g/dL · lactate ${p.lactate.toFixed(1)} mmol/L`;
+      $('caseLabs').textContent=`Na ${p.na} · Cl ${p.cl} · albumin ${p.albumin.toFixed(1)} g/dL · K ${Number(p.k ?? 4).toFixed(1)} · lactate ${p.lactate.toFixed(1)} mmol/L`;
       $('quizPH').value=''; $('quizPrimary').value=''; $('quizAG').value=''; $('quizFeedback').className='feedback'; $('quizFeedback').innerHTML='';
       $('scoreText').textContent=`${score.correct} / ${score.total}`;
     }
