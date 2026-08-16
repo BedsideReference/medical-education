@@ -1,3 +1,4 @@
+<!-- MOBILE_PWA_POLISH_v1_10_107 · 2026-08-16 · removed the mobile skip-link exposure, repaired first-run onboarding dismissal on touch devices, stabilized the mobile action bar, reduced scroll-time layout work, removed nonessential haptics and expensive mobile backdrop blur, and cached mobile-search text; Chapters 1–43 science, prose, figures, equations, references, and simulators unchanged -->
 <!-- FINALIZATION_PHASE4_PWA_UPDATE_LOCK_v1_10_106 · 2026-08-16 · stabilized the installed-web-app identity and launch URL, added canonical-entry migration, network-fresh app-shell navigation, deterministic cache replacement, no-cache service-worker updates, a build-version handshake, and legacy home-screen entry redirects; Chapters 1–43 science, prose, figures, and tools unchanged -->
 <!-- FINALIZATION_PHASE2_APPROVED_VISUAL_INTEGRATION_v1_10_104 · 2026-08-16 · embedded approved Foundation Figure Preview v1.1 and Interactive Laboratory Style Preview v1.1; replaced Figures 1.1, 3.3, 3.4 and the Chapter 3 localization workflow; normalized Figures 5.2, 6.1, and 6.2 while preserving the full PFT interpreter logic and the approved mechanics model boundaries; Chapters 2, 4, and 7–43 unchanged -->
 <!-- FINALIZATION_PHASE1_RUNTIME_LOCK_v1_10_103 · 2026-08-16 · corrected numbered-chapter and reading-time runtime counting, separated public edition from internal build metadata, removed destructive cache reset, added scoped offline support, and repaired semantic abbreviation-order validation; scientific/prose/approved-figure locks preserved -->
@@ -20,7 +21,7 @@
   • Equations load from KaTeX via jsDelivr. The first hosted render requires internet; successfully fetched equation assets can then be retained for later offline reading.
   • All script features are independently try/caught: a failure in one feature will not break the calculator or another feature.
 -->
-<html data-build="v1.10.106" data-public-edition="1.2" lang="en">
+<html data-build="v1.10.107" data-public-edition="1.2" lang="en">
 <!-- FOUNDATION_SCIENTIFIC_ACCURACY_AUDIT_CH1_6_v1_10_17 · 2026-08-08 · restored prose re-audited against authoritative physiology, current guidelines, and primary/peer-reviewed evidence -->
 <!-- FOUNDATION_PROSE_RESTORATION_CH1_6_v1_10_16 · original content-preservation baseline reconciled with current scientific/UI baseline -->
 <!-- PROSE_INTEGRITY_BASELINE {"c1":733,"c2":1898,"c3":2723,"c4":3916,"c5":1562,"c6":6424} -->
@@ -91,8 +92,8 @@
 <script id="offline-sw-bootstrap-v110106">
 (function(){
   'use strict';
-  var BUILD = 'v1.10.106';
-  var BUILD_NUM = '1.10.106';
+  var BUILD = 'v1.10.107';
+  var BUILD_NUM = '1.10.107';
   var SW_FILE = 'ventilation-guide-sw.js';
   var VERSION_FILE = 'ventilation-guide-version.json';
   var CANONICAL_FILE = 'mechanical-ventilation-teaching-reference.html';
@@ -239,12 +240,12 @@
 })();
 </script>
 <script>/* mobile-view: force a mobile render width on tablets / when chosen, before paint */(function(){try{var vp=document.querySelector('meta[name="viewport"]');if(!vp)return;var s=null;try{s=localStorage.getItem('mv-mobileview');}catch(e){}var on;if(s==='1')on=true;else if(s==='0')on=false;else{var coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;on=!!coarse&&Math.min(screen.width,screen.height)>=700;}if(on){var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100);vp.setAttribute('content','initial-scale='+sc+', viewport-fit=cover');}document.documentElement.setAttribute('data-mobileview',on?'on':'off');}catch(e){}})();</script>
-<title>Guide to Ventilation — Public edition 1.2 · Build v1.10.106</title>
+<title>Guide to Ventilation — Public edition 1.2 · Build v1.10.107</title>
 <meta content="Physiology-first teaching reference on invasive mechanical ventilation for medical students, IM residents, hospitalists, PCCM fellows, and other healthcare trainees and practitioners. Written for the bedside." name="description"/>
 <link href="apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="manifest.webmanifest?build=1.10.106" rel="manifest"/>
+<link href="manifest.webmanifest?build=1.10.107" rel="manifest"/>
 <link href="mechanical-ventilation-teaching-reference.html" rel="canonical"/>
 <meta content="mechanical-ventilation-teaching-reference.html" name="application-start-url"/>
 <meta content="#0b1f3a" name="theme-color"/>
@@ -254,7 +255,7 @@
 <meta content="Vent Guide" name="apple-mobile-web-app-title"/>
 <meta content="Bedside Reference" name="author"/>
 <meta content="1.2" name="public-edition"/>
-<meta content="v1.10.106" name="internal-build"/>
+<meta content="v1.10.107" name="internal-build"/>
 <script id="ui-v11050-first-paint-bootstrap">
 (function(){
   var root=document.documentElement;
@@ -4495,7 +4496,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.106</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.107</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Current through Aug 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -13736,7 +13737,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li id="r256">Volpe MS, Adams AB, Amato MBP, Marini JJ. Ventilation patterns influence airway secretion movement. <em>Respir Care</em>. 2008;53(10):1287–1294. PMID: 18811989.</li>
 <li id="r257">Li J, Liu K, Lyu S, et al. Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em>. 2023;13(1):63. doi:10.1186/s13613-023-01147-4. PMID: 37428465.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.106.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.107.</p>
 </section>
 </main>
 </div>
@@ -13745,7 +13746,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
      mirroring the layout's max-width and horizontal padding. -->
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.106 · Chapters 1–43 scientifically locked · Installed-app update continuity complete · Last reviewed August 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.107 · Chapters 1–43 scientifically locked · Mobile PWA polish complete · Last reviewed August 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -13809,28 +13810,28 @@ A ventilator should deliver an appropriate breath size for the available lung, e
   } catch (err) { console.error('[DARK MODE] error:', err); }
 
 
-  // ============== READING PROGRESS BAR ==============
+  // ============== SCROLL CHROME: PROGRESS + BACK TO TOP ==============
   try {
   const fill = document.querySelector('.progress-bar > .fill');
-  function updateProgress() {
-    const h = document.documentElement;
-    const total = h.scrollHeight - h.clientHeight;
-    const pct = total > 0 ? (h.scrollTop / total) * 100 : 0;
-    fill.style.width = pct.toFixed(1) + '%';
-  }
-  document.addEventListener('scroll', updateProgress, {passive: true});
-  updateProgress();
-  } catch (err) { console.error('[READING PROGRESS BAR] error:', err); }
-
-
-  // ============== BACK TO TOP ==============
-  try {
   const backTop = document.getElementById('back-top');
-  document.addEventListener('scroll', () => {
-    backTop.classList.toggle('show', window.scrollY > 600);
-  }, {passive: true});
-  backTop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
-  } catch (err) { console.error('[BACK TO TOP] error:', err); }
+  let scrollChromeFrame = 0;
+  function updateScrollChrome() {
+    scrollChromeFrame = 0;
+    const h = document.scrollingElement || document.documentElement;
+    const total = Math.max(0, h.scrollHeight - h.clientHeight);
+    const y = window.scrollY || h.scrollTop || 0;
+    const ratio = total > 0 ? Math.max(0, Math.min(1, y / total)) : 0;
+    if (fill) fill.style.transform = 'scaleX(' + ratio.toFixed(4) + ')';
+    if (backTop) backTop.classList.toggle('show', y > 600);
+  }
+  function scheduleScrollChrome() {
+    if (!scrollChromeFrame) scrollChromeFrame = requestAnimationFrame(updateScrollChrome);
+  }
+  document.addEventListener('scroll', scheduleScrollChrome, {passive: true});
+  window.addEventListener('resize', scheduleScrollChrome, {passive: true});
+  if (backTop) backTop.addEventListener('click', () => window.scrollTo({top: 0, behavior: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}));
+  updateScrollChrome();
+  } catch (err) { console.error('[SCROLL CHROME] error:', err); }
 
 
   // ============== FONT-SIZE CONTROLS ==============
@@ -13891,6 +13892,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
     const sections = [...document.querySelectorAll('section.chap')];
     const parts = [...document.querySelectorAll('.part')];
     const POS_FOLLOWING = Node.DOCUMENT_POSITION_FOLLOWING;
+    const crumbMobile = window.matchMedia ? window.matchMedia('(max-width: 920px)') : { matches: false };
     function partFor(chap) {
       const c = chap.closest('.part'); if (c) return c;
       let p = null;
@@ -13900,6 +13902,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
       return p;
     }
     function update() {
+      if (crumbMobile.matches) { crumb.classList.remove('show'); return; }
       if (window.scrollY <= 200) { crumb.classList.remove('show'); return; }
       // The line just under the breadcrumb; pick the chapter crossing it.
       const offset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--crumb-offset')) || 0;
@@ -13935,9 +13938,12 @@ A ventilator should deliver an appropriate breath size for the available lung, e
     }
     let ticking = false;
     document.addEventListener('scroll', () => {
+      if (crumbMobile.matches) return;
       if (!ticking) { ticking = true; requestAnimationFrame(() => { update(); ticking = false; }); }
     }, {passive: true});
     window.addEventListener('resize', update, {passive: true});
+    if (crumbMobile.addEventListener) crumbMobile.addEventListener('change', update);
+    else if (crumbMobile.addListener) crumbMobile.addListener(update);
     update();
   }
   } catch (err) { console.error('[STICKY CHAPTER BREADCRUMB] error:', err); }
@@ -17589,13 +17595,6 @@ saveInputs();
   })();
 </script>
 <script>
-/* Subtle haptic tap on key controls, where the device supports it. */
-document.addEventListener('click', function (e) {
-  if (!navigator.vibrate) return;
-  var t = e.target.closest && e.target.closest('.tb-btn, nav.toc a, .lib-card, .chip-nav-bar button, summary, .sim-facade, #back-top');
-  if (t) { try { navigator.vibrate(8); } catch (_) {} }
-}, true);
-
 /* Edge-swipe from the left to open the Contents drawer; swipe left to close it. */
 (function () {
   var cb = document.getElementById('toc-toggle');
@@ -17895,6 +17894,7 @@ document.addEventListener('click', function (e) {
   var back = document.getElementById('m-search-back');
   if (!ov || !input) return;
   var RECENT_KEY = 'mv-recent-search';
+  var searchIndex = null;
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
   function getRecents() { try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch (e) { return []; } }
@@ -17909,9 +17909,23 @@ document.addEventListener('click', function (e) {
     var c = h3.cloneNode(true); c.querySelectorAll('.anchor-link').forEach(function (a) { a.remove(); });
     return c.textContent.replace(/\s+/g, ' ').trim();
   }
+  function getSearchIndex() {
+    if (searchIndex) return searchIndex;
+    searchIndex = Array.prototype.map.call(document.querySelectorAll('section.chap'), function (chap) {
+      return { chap: chap, text: chap.textContent || '', title: chapTitle(chap) };
+    });
+    return searchIndex;
+  }
+  function warmSearchIndex() {
+    if (searchIndex) return;
+    var build = function () { try { getSearchIndex(); } catch (_) {} };
+    if (window.requestIdleCallback) requestIdleCallback(build, { timeout: 900 });
+    else setTimeout(build, 180);
+  }
   function open() {
     ov.classList.add('show'); document.body.style.overflow = 'hidden';
     input.value = ''; render('');
+    warmSearchIndex();
     setTimeout(function () { input.focus(); }, 60);
   }
   function close() { ov.classList.remove('show'); document.body.style.overflow = ''; }
@@ -17934,12 +17948,13 @@ document.addEventListener('click', function (e) {
     q = (q || '').trim();
     if (q.length < 2) { renderRecents(); return; }
     var re = new RegExp(escRe(q), 'i');
-    var chaps = document.querySelectorAll('section.chap');
+    var entries = getSearchIndex();
     var frag = document.createDocumentFragment();
     var shown = 0;
-    chaps.forEach(function (chap) {
+    entries.forEach(function (entry) {
       if (shown >= 40) return;
-      var text = chap.textContent || '';
+      var chap = entry.chap;
+      var text = entry.text;
       var idx = text.search(re);
       if (idx < 0) return;
       shown++;
@@ -17947,7 +17962,7 @@ document.addEventListener('click', function (e) {
       var snip = (start > 0 ? '…' : '') + esc(text.slice(start, idx)) + '<mark>' + esc(text.slice(idx, idx + q.length)) + '</mark>' + esc(text.slice(idx + q.length, end)) + (end < text.length ? '…' : '');
       var item = document.createElement('button');
       item.type = 'button'; item.className = 'm-result';
-      item.innerHTML = '<div class="m-result-chap">' + esc(chapTitle(chap)) + '</div><div class="m-result-snip">' + snip + '</div>';
+      item.innerHTML = '<div class="m-result-chap">' + esc(entry.title) + '</div><div class="m-result-snip">' + snip + '</div>';
       item.addEventListener('click', function () {
         saveRecent(q);
         var target = chap;
@@ -18103,7 +18118,7 @@ document.addEventListener('click', function (e) {
   .intro-rd b { color: var(--ink-soft); }
   .intro-got { width: 100%; background: var(--accent); color: var(--bg); border: 0; border-radius: 10px; padding: 13px; font-size: 14.5px; font-weight: 600; font-family: inherit; margin-top: 4px; cursor: pointer; }
 </style>
-<div aria-label="Welcome" aria-modal="true" class="intro-backdrop" id="intro-backdrop" role="dialog">
+<div aria-hidden="true" aria-label="Welcome" aria-modal="true" class="intro-backdrop" id="intro-backdrop" role="dialog">
 <div class="intro-sheet">
 <div class="intro-grip"></div>
 <div class="intro-title">Welcome to the bedside guide</div>
@@ -18127,46 +18142,90 @@ document.addEventListener('click', function (e) {
 <button class="intro-got" id="intro-got" type="button">Got it</button>
 </div>
 </div>
-<script>
+<script id="mobile-onboarding-v110107">
 (function () {
-  try {
-    if (localStorage.getItem('mv-seen-intro')) return;
-    if (!(window.matchMedia && window.matchMedia('(max-width: 920px)').matches)) return;
-    var bd = document.getElementById('intro-backdrop');
-    var got = document.getElementById('intro-got');
-    if (!bd || !got) return;
-    function dismiss() {
-      bd.classList.remove('show');
-      try { localStorage.setItem('mv-seen-intro', '1'); } catch (e) {}
-      setTimeout(function () { bd.style.display = 'none'; }, 260);
+  var seen = false;
+  try { seen = localStorage.getItem('mv-seen-intro') === '1'; } catch (_) {}
+  if (seen) return;
+  if (!(window.matchMedia && window.matchMedia('(max-width: 920px)').matches)) return;
+
+  var bd = document.getElementById('intro-backdrop');
+  var got = document.getElementById('intro-got');
+  if (!bd || !got) return;
+
+  var sheet = bd.querySelector('.intro-sheet');
+  var grip = bd.querySelector('.intro-grip');
+  var dismissed = false;
+  var hideTimer = 0;
+
+  function persistSeen() {
+    try { localStorage.setItem('mv-seen-intro', '1'); } catch (_) {}
+  }
+
+  function dismiss(event) {
+    if (event) {
+      if (event.cancelable) event.preventDefault();
+      event.stopPropagation();
     }
-    function open() { bd.style.display = 'block'; requestAnimationFrame(function () { bd.classList.add('show'); }); }
-    got.addEventListener('click', dismiss);
-    bd.addEventListener('click', function (e) { if (e.target === bd) dismiss(); });
-    // Swipe-down-to-dismiss (the grip handle implies it).
-    var sheet = bd.querySelector('.intro-sheet');
-    if (sheet) {
-      var startY = 0, dy = 0, dragging = false;
-      sheet.addEventListener('touchstart', function (e) {
-        if (!e.touches || e.touches.length !== 1) return;
-        startY = e.touches[0].clientY; dy = 0; dragging = true; sheet.style.transition = 'none';
-      }, { passive: true });
-      sheet.addEventListener('touchmove', function (e) {
-        if (!dragging) return;
-        dy = e.touches[0].clientY - startY;
-        if (dy < 0) dy = dy * 0.25;
-        sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)';
-      }, { passive: true });
-      var endDrag = function () {
-        if (!dragging) return;
-        dragging = false; sheet.style.transition = ''; sheet.style.transform = '';
-        if (dy > 90) dismiss();
-      };
-      sheet.addEventListener('touchend', endDrag, { passive: true });
-      sheet.addEventListener('touchcancel', endDrag, { passive: true });
-    }
-    setTimeout(open, 650);
-  } catch (e) {}
+    if (dismissed) return;
+    dismissed = true;
+    persistSeen();
+    got.disabled = true;
+    bd.classList.remove('show');
+    bd.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('intro-open');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(function () {
+      bd.style.display = 'none';
+      got.disabled = false;
+    }, 220);
+  }
+
+  function open() {
+    if (dismissed) return;
+    bd.style.display = 'block';
+    bd.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('intro-open');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { if (!dismissed) bd.classList.add('show'); });
+    });
+  }
+
+  got.addEventListener('click', dismiss);
+  /* iOS standalone can suppress a synthesized click when a parent touch
+     gesture mutates transforms. Handle touch completion directly. */
+  got.addEventListener('touchend', dismiss, { passive: false });
+  bd.addEventListener('click', function (e) { if (e.target === bd) dismiss(e); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && bd.classList.contains('show')) dismiss(e); });
+
+  /* Dragging is limited to the visible grip, so tapping the action button is
+     never enrolled in the sheet's swipe recognizer. */
+  if (sheet && grip) {
+    var startY = 0, dy = 0, dragging = false;
+    grip.addEventListener('touchstart', function (e) {
+      if (!e.touches || e.touches.length !== 1) return;
+      startY = e.touches[0].clientY;
+      dy = 0;
+      dragging = true;
+      sheet.style.transition = 'none';
+    }, { passive: true });
+    grip.addEventListener('touchmove', function (e) {
+      if (!dragging || !e.touches || !e.touches.length) return;
+      dy = e.touches[0].clientY - startY;
+      sheet.style.transform = 'translateY(' + Math.max(0, dy) + 'px)';
+    }, { passive: true });
+    var endDrag = function () {
+      if (!dragging) return;
+      dragging = false;
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      if (dy > 90) dismiss();
+    };
+    grip.addEventListener('touchend', endDrag, { passive: true });
+    grip.addEventListener('touchcancel', endDrag, { passive: true });
+  }
+
+  setTimeout(open, 420);
 })();
 </script>
 <script>
@@ -18662,19 +18721,14 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
   var dv=document.getElementById('more-desktopview');
   if(dv) dv.addEventListener('click', function(){ set(false); });
 
-  /* auto-hide the bottom action bar on scroll-down, reveal on scroll-up / near edges */
-  var lastY = window.pageYOffset||0, ticking=false, TH=8, de=document.documentElement;
-  function onScroll(){
-    var y = window.pageYOffset || de.scrollTop || 0, dy = y - lastY;
-    var atBottom = (window.innerHeight + y) >= (de.scrollHeight - 6);
-    if (y < 72 || atBottom) de.removeAttribute('data-bar-hidden');
-    else if (dy > TH) de.setAttribute('data-bar-hidden','1');
-    else if (dy < -TH) de.removeAttribute('data-bar-hidden');
-    lastY = y; ticking = false;
-  }
-  window.addEventListener('scroll', function(){ if(!ticking){ requestAnimationFrame(onScroll); ticking=true; } }, {passive:true});
-  // never keep it hidden while the More sheet / mobile search is open
-  ['mab-more','mab-search','mab-learn','mab-bedside'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', function(){ de.removeAttribute('data-bar-hidden'); }); });
+  /* A stable bottom action bar is easier to use and avoids scroll-linked
+     transforms in iOS/installed-app mode. Clear stale state from older builds. */
+  var de=document.documentElement;
+  function keepBarVisible(){ de.removeAttribute('data-bar-hidden'); }
+  keepBarVisible();
+  window.addEventListener('pageshow',keepBarVisible,{passive:true});
+  window.addEventListener('orientationchange',keepBarVisible,{passive:true});
+  ['mab-more','mab-search','mab-learn','mab-bedside','mab-contents'].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener('click', keepBarVisible); });
 })();
 </script>
 <script id="product-revision-js">
@@ -20272,7 +20326,7 @@ section.chap.reference-cards > details.chap-acc > .tbl-pos {
     },true);
 
     window.addEventListener('scroll',function(){
-      if(frame)return;
+      if(innerWidth<=920 || frame)return;
       frame=requestAnimationFrame(function(){frame=0;sync(Date.now()<directRevealUntil?'smooth':'auto');});
     },{passive:true});
     window.addEventListener('hashchange',function(){setTimeout(function(){sync('smooth');},40);});
@@ -20547,6 +20601,57 @@ html,body{max-width:100%;overflow-x:hidden}
 })();
 </script>
 
+
+<style id="mobile-pwa-polish-css-v110107">
+/* Mobile PWA polish: stable controls, compositor-friendly progress, and no
+   first-focus exposure of the desktop keyboard skip link on touch devices. */
+.progress-bar>.fill{
+  width:100%!important;
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:none!important;
+  will-change:transform;
+}
+@media (max-width:920px), (pointer:coarse){
+  .skip-link{display:none!important}
+}
+@media (max-width:920px){
+  html{-webkit-tap-highlight-color:transparent}
+  main{touch-action:pan-y pinch-zoom}
+  :where(button,a,summary,[role="button"],input,select,textarea){touch-action:manipulation}
+  .mobile-actionbar{
+    background:var(--surface)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    transition:none!important;
+    will-change:auto!important;
+    transform:none!important;
+    box-shadow:0 -2px 14px rgba(15,23,42,.08)!important;
+  }
+  html[data-bar-hidden="1"] .mobile-actionbar{transform:none!important}
+  html[data-bar-hidden="1"] .back-top,
+  html[data-bar-hidden="1"] .mini-calc-fab{transform:none!important;opacity:1;pointer-events:auto}
+  .toc-mobile-head{
+    background:var(--surface)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  .intro-backdrop{touch-action:none}
+  .intro-sheet{touch-action:pan-y;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+  .intro-grip{touch-action:none;cursor:grab}
+  .intro-got{
+    position:relative;z-index:2;min-height:48px;
+    touch-action:manipulation;-webkit-appearance:none;appearance:none;
+    -webkit-user-select:none;user-select:none;
+  }
+  body.intro-open{overflow:hidden!important}
+}
+@media (display-mode:standalone) and (max-width:920px){
+  body{overscroll-behavior-y:auto}
+  .mobile-actionbar{contain:layout paint}
+}
+</style>
+<div hidden="" id="mobile-pwa-polish-build-v110107" data-public-edition="1.2" data-internal-build="v1.10.107" data-canonical-entry="mechanical-ventilation-teaching-reference.html">MOBILE_PWA_POLISH_COMPLETE</div>
 <div hidden="" id="finalization-phase4-build-v110106" data-public-edition="1.2" data-internal-build="v1.10.106" data-canonical-entry="mechanical-ventilation-teaching-reference.html">FINALIZATION_PHASE4_PWA_UPDATE_COMPLETE</div>
 </body>
 </html>

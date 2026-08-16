@@ -1,9 +1,9 @@
 {
   "name": "Guide to Ventilation — Bedside Reference",
   "publicEdition": "1.2",
-  "build": "v1.10.106",
+  "build": "v1.10.107",
   "canonical": "mechanical-ventilation-teaching-reference.html",
   "serviceWorker": "ventilation-guide-sw.js",
-  "cache": "ventilation-guide-core-v1.10.106",
+  "cache": "ventilation-guide-core-v1.10.107",
   "released": "2026-08-16"
 }
