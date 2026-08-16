@@ -1,3 +1,5 @@
+<!-- COMPLETE_HEADING_LABELS_LOCK_v1_10_109 · 2026-08-16 · removed deep-link # glyphs and arbitrary truncation from runtime-generated chapter, subsection, related-chapter, cross-reference, mobile-search, and note-context labels; all direct subsection names now appear in full in the horizontal chapter map; lightweight installed-app architecture and Chapters 1–43 science/prose/figures remain unchanged -->
+<!-- PWA_STABILITY_AND_APP_SHELL_v1_10_108 · 2026-08-16 · moved installed-home-screen use to a lightweight chapter-at-a-time app shell, removed forced update reload loops and service-worker client navigation, externalized deployment-only embedded image payloads for the installed app, and preserved the continuous browser edition; Chapters 1–43 science, prose, figures, equations, references, and simulator models unchanged -->
 <!-- MOBILE_PWA_POLISH_v1_10_107 · 2026-08-16 · removed the mobile skip-link exposure, repaired first-run onboarding dismissal on touch devices, stabilized the mobile action bar, reduced scroll-time layout work, removed nonessential haptics and expensive mobile backdrop blur, and cached mobile-search text; Chapters 1–43 science, prose, figures, equations, references, and simulators unchanged -->
 <!-- FINALIZATION_PHASE4_PWA_UPDATE_LOCK_v1_10_106 · 2026-08-16 · stabilized the installed-web-app identity and launch URL, added canonical-entry migration, network-fresh app-shell navigation, deterministic cache replacement, no-cache service-worker updates, a build-version handshake, and legacy home-screen entry redirects; Chapters 1–43 science, prose, figures, and tools unchanged -->
 <!-- FINALIZATION_PHASE2_APPROVED_VISUAL_INTEGRATION_v1_10_104 · 2026-08-16 · embedded approved Foundation Figure Preview v1.1 and Interactive Laboratory Style Preview v1.1; replaced Figures 1.1, 3.3, 3.4 and the Chapter 3 localization workflow; normalized Figures 5.2, 6.1, and 6.2 while preserving the full PFT interpreter logic and the approved mechanics model boundaries; Chapters 2, 4, and 7–43 unchanged -->
@@ -21,7 +23,7 @@
   • Equations load from KaTeX via jsDelivr. The first hosted render requires internet; successfully fetched equation assets can then be retained for later offline reading.
   • All script features are independently try/caught: a failure in one feature will not break the calculator or another feature.
 -->
-<html data-build="v1.10.107" data-public-edition="1.2" lang="en">
+<html data-build="v1.10.109" data-public-edition="1.2" lang="en">
 <!-- FOUNDATION_SCIENTIFIC_ACCURACY_AUDIT_CH1_6_v1_10_17 · 2026-08-08 · restored prose re-audited against authoritative physiology, current guidelines, and primary/peer-reviewed evidence -->
 <!-- FOUNDATION_PROSE_RESTORATION_CH1_6_v1_10_16 · original content-preservation baseline reconciled with current scientific/UI baseline -->
 <!-- PROSE_INTEGRITY_BASELINE {"c1":733,"c2":1898,"c3":2723,"c4":3916,"c5":1562,"c6":6424} -->
@@ -73,6 +75,20 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<script id="pwa-lightweight-entry-v110109">
+(function(){
+  try{
+    if(!/^https?:$/.test(location.protocol))return;
+    var p=new URLSearchParams(location.search||'');
+    if(p.get('full')==='1'||p.get('review')==='1')return;
+    var standalone=navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+    if(!standalone)return;
+    var target=new URL('ventilation-guide-app.html',location.href);
+    target.search=location.search;target.searchParams.delete('full');target.searchParams.delete('review');target.hash=location.hash;
+    if(target.href!==location.href)location.replace(target.href);
+  }catch(_){ }
+})();
+</script>
 <script id="pwa-canonical-entry-v110106">
 (function(){
   try {
@@ -89,163 +105,29 @@
   } catch (_) {}
 })();
 </script>
-<script id="offline-sw-bootstrap-v110106">
+<script id="offline-sw-bootstrap-v110109">
 (function(){
   'use strict';
-  var BUILD = 'v1.10.107';
-  var BUILD_NUM = '1.10.107';
-  var SW_FILE = 'ventilation-guide-sw.js';
-  var VERSION_FILE = 'ventilation-guide-version.json';
-  var CANONICAL_FILE = 'mechanical-ventilation-teaching-reference.html';
-  var localhost = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname || '');
-  var supported = ('serviceWorker' in navigator) && (location.protocol === 'https:' || (location.protocol === 'http:' && localhost));
-  var state = { supported:supported, build:BUILD, canonical:CANONICAL_FILE, registration:null, ready:null, error:null, externalSimulators:0, reloading:false, lastCheck:0 };
-  window.__ventGuideOffline = state;
-  document.documentElement.setAttribute('data-pwa-build', BUILD);
-
-  function canonicalUrl(includeHash, cacheBust) {
-    var target = new URL(CANONICAL_FILE, location.href);
-    target.search = '';
-    if (cacheBust) target.searchParams.set('app-build', String(cacheBust).replace(/^v/, ''));
-    target.hash = includeHash ? (location.hash || '') : '';
-    return target;
-  }
-
-  function addUrl(list, raw, sourceType) {
-    if (!raw || /^(data:|blob:|javascript:|mailto:|tel:|#)/i.test(raw)) return;
-    try {
-      var url = new URL(raw, location.href);
-      if (sourceType === 'simulator' && url.origin !== location.origin) {
-        state.externalSimulators += 1;
-        return;
-      }
-      if (/^ventilation_guide_master_.*\.html$/i.test(url.pathname.split('/').pop() || '')) url = canonicalUrl(false, null);
-      list.push(url.href.split('#')[0]);
-    } catch (_) {}
-  }
-
-  state.collectUrls = function(){
-    state.externalSimulators = 0;
-    var urls = [
-      canonicalUrl(false, null).href,
-      new URL(SW_FILE, location.href).href,
-      new URL(VERSION_FILE, location.href).href,
-      new URL('manifest.webmanifest', location.href).href
-    ];
-    document.querySelectorAll('link[href],script[src],img[src],source[src]').forEach(function(el){
-      addUrl(urls, el.getAttribute('href') || el.getAttribute('src'), 'asset');
-    });
-    document.querySelectorAll('iframe[src],iframe[data-src]').forEach(function(el){
-      addUrl(urls, el.getAttribute('src') || el.getAttribute('data-src'), 'simulator');
-    });
-    try { performance.getEntriesByType('resource').forEach(function(entry){ addUrl(urls, entry.name, 'asset'); }); }
-    catch (_) {}
-    return urls.filter(function(url, index){ return urls.indexOf(url) === index; });
-  };
-
-  function registerWorker(){
-    return navigator.serviceWorker.register(SW_FILE, { scope:'./', updateViaCache:'none' })
-      .catch(function(){ return navigator.serviceWorker.register(SW_FILE, { scope:'./' }); });
-  }
-
-  function requestUpdate(reg){
-    if (!reg || typeof reg.update !== 'function') return Promise.resolve(reg);
-    return reg.update().catch(function(){ return reg; }).then(function(){ return reg; });
-  }
-
-  function moveToCanonical(build){
-    if (state.reloading) return;
-    state.reloading = true;
-    var normalized = String(build || BUILD);
-    var key = 'vg-pwa-refresh-' + normalized;
-    try {
-      if (sessionStorage.getItem(key) === '1') { state.reloading = false; return; }
-      sessionStorage.setItem(key, '1');
-    } catch (_) {}
-    location.replace(canonicalUrl(true, normalized).href);
-  }
-
-  state.checkLatest = function(force){
-    if (!/^https?:$/.test(location.protocol)) return Promise.resolve(null);
-    var now = Date.now();
-    if (!force && now - state.lastCheck < 60000) return Promise.resolve(null);
-    state.lastCheck = now;
-    var versionUrl = new URL(VERSION_FILE, location.href);
-    versionUrl.searchParams.set('_', now.toString(36));
-    return fetch(versionUrl.href, { cache:'no-store', credentials:'same-origin' })
-      .then(function(response){ if (!response.ok) throw new Error('Version check failed'); return response.json(); })
-      .then(function(info){
-        if (info && info.build && info.build !== BUILD) {
-          return Promise.resolve(state.registration ? requestUpdate(state.registration) : null).then(function(){
-            moveToCanonical(info.build);
-            return info;
-          });
-        }
-        return info;
-      })
-      .catch(function(){ return null; });
-  };
-
-  state.register = function(){
-    if (!supported) return Promise.reject(new Error('Offline installation requires HTTPS or localhost.'));
-    if (state.ready) return state.ready;
-    state.ready = registerWorker()
-      .then(function(reg){
-        state.registration = reg;
-        return requestUpdate(reg).then(function(){ return navigator.serviceWorker.ready; });
-      })
-      .then(function(reg){
-        state.registration = reg;
-        document.documentElement.setAttribute('data-offline-capability','ready');
-        try { document.dispatchEvent(new CustomEvent('vent-guide-offline-ready', { detail:{ build:BUILD } })); } catch (_) {}
-        return reg;
-      })
-      .catch(function(err){
-        state.error = err;
-        document.documentElement.setAttribute('data-offline-capability','error');
-        throw err;
-      });
-    return state.ready;
-  };
-
-  if (supported) {
-    navigator.serviceWorker.addEventListener('controllerchange', function(){ moveToCanonical(BUILD); });
-    navigator.serviceWorker.addEventListener('message', function(event){
-      var data = event.data || {};
-      if (data.type === 'vent-guide-update-ready' && data.build && data.build !== BUILD) moveToCanonical(data.build);
-    });
-    window.addEventListener('load', function(){
-      state.register().then(function(reg){
-        setTimeout(function(){ requestUpdate(reg); }, 800);
-        setTimeout(function(){ state.checkLatest(true); }, 1200);
-      }).catch(function(){});
-    }, { once:true });
-    window.addEventListener('pageshow', function(event){
-      if (event.persisted && state.registration) requestUpdate(state.registration);
-      if (event.persisted) state.checkLatest(true);
-    });
-    window.addEventListener('online', function(){
-      if (state.registration) requestUpdate(state.registration);
-      state.checkLatest(true);
-    });
-    document.addEventListener('visibilitychange', function(){
-      if (!document.hidden) {
-        if (state.registration) requestUpdate(state.registration);
-        state.checkLatest(false);
-      }
-    });
-  } else {
-    document.documentElement.setAttribute('data-offline-capability','unavailable');
-  }
+  var BUILD='v1.10.109',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
+  var APP_FILE='ventilation-guide-app.html';
+  var localhost=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname||'');
+  var supported=('serviceWorker' in navigator)&&(location.protocol==='https:'||(location.protocol==='http:'&&localhost));
+  var state={supported:supported,build:BUILD,canonical:APP_FILE,registration:null,ready:null,error:null,externalSimulators:0,lastCheck:0};
+  window.__ventGuideOffline=state;document.documentElement.setAttribute('data-pwa-build',BUILD);
+  function addUrl(list,raw,kind){if(!raw||/^(data:|blob:|javascript:|mailto:|tel:|#)/i.test(raw))return;try{var u=new URL(raw,location.href);if(kind==='simulator'&&u.origin!==location.origin){state.externalSimulators++;return;}if(/^ventilation_guide_(?:master|chapter_6_revised)_.*\.html$/i.test(u.pathname.split('/').pop()||''))u=new URL(APP_FILE,location.href);list.push(u.href.split('#')[0]);}catch(_){}}
+  state.collectUrls=function(){state.externalSimulators=0;var urls=[new URL(APP_FILE,location.href).href,new URL(SW_FILE,location.href).href,new URL(VERSION_FILE,location.href).href,new URL('manifest.webmanifest',location.href).href];document.querySelectorAll('link[href],script[src],img[src],source[src]').forEach(function(el){addUrl(urls,el.getAttribute('href')||el.getAttribute('src'),'asset');});document.querySelectorAll('iframe[src],iframe[data-src]').forEach(function(el){addUrl(urls,el.getAttribute('src')||el.getAttribute('data-src'),'simulator');});return urls.filter(function(u,i){return urls.indexOf(u)===i;});};
+  state.register=function(){if(!supported)return Promise.reject(new Error('Offline installation requires HTTPS or localhost.'));if(state.ready)return state.ready;state.ready=navigator.serviceWorker.register(SW_FILE,{scope:'./',updateViaCache:'none'}).catch(function(){return navigator.serviceWorker.register(SW_FILE,{scope:'./'});}).then(function(reg){state.registration=reg;document.documentElement.setAttribute('data-offline-capability','ready');return reg;}).catch(function(err){state.error=err;document.documentElement.setAttribute('data-offline-capability','error');throw err;});return state.ready;};
+  state.checkLatest=function(force){if(!/^https?:$/.test(location.protocol))return Promise.resolve(null);var now=Date.now();if(!force&&now-state.lastCheck<21600000)return Promise.resolve(null);state.lastCheck=now;var u=new URL(VERSION_FILE,location.href);u.searchParams.set('_',now.toString(36));return fetch(u.href,{cache:'no-store',credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
+  if(supported){navigator.serviceWorker.addEventListener('controllerchange',function(){document.documentElement.setAttribute('data-pwa-controller','updated');});window.addEventListener('load',function(){state.register().catch(function(){});},{once:true});}else document.documentElement.setAttribute('data-offline-capability','unavailable');
 })();
 </script>
 <script>/* mobile-view: force a mobile render width on tablets / when chosen, before paint */(function(){try{var vp=document.querySelector('meta[name="viewport"]');if(!vp)return;var s=null;try{s=localStorage.getItem('mv-mobileview');}catch(e){}var on;if(s==='1')on=true;else if(s==='0')on=false;else{var coarse=window.matchMedia&&window.matchMedia('(pointer: coarse)').matches;on=!!coarse&&Math.min(screen.width,screen.height)>=700;}if(on){var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100);vp.setAttribute('content','initial-scale='+sc+', viewport-fit=cover');}document.documentElement.setAttribute('data-mobileview',on?'on':'off');}catch(e){}})();</script>
-<title>Guide to Ventilation — Public edition 1.2 · Build v1.10.107</title>
+<title>Guide to Ventilation — Public edition 1.2 · Build v1.10.109</title>
 <meta content="Physiology-first teaching reference on invasive mechanical ventilation for medical students, IM residents, hospitalists, PCCM fellows, and other healthcare trainees and practitioners. Written for the bedside." name="description"/>
 <link href="apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="manifest.webmanifest?build=1.10.107" rel="manifest"/>
+<link href="manifest.webmanifest?build=1.10.109" rel="manifest"/>
 <link href="mechanical-ventilation-teaching-reference.html" rel="canonical"/>
 <meta content="mechanical-ventilation-teaching-reference.html" name="application-start-url"/>
 <meta content="#0b1f3a" name="theme-color"/>
@@ -255,7 +137,7 @@
 <meta content="Vent Guide" name="apple-mobile-web-app-title"/>
 <meta content="Bedside Reference" name="author"/>
 <meta content="1.2" name="public-edition"/>
-<meta content="v1.10.107" name="internal-build"/>
+<meta content="v1.10.109" name="internal-build"/>
 <script id="ui-v11050-first-paint-bootstrap">
 (function(){
   var root=document.documentElement;
@@ -3454,7 +3336,7 @@ button,a,input,select,summary{scroll-margin-top:var(--scroll-pad-top,110px);}
 /* Chapter orientation */
 .chapter-orientation{display:flex;flex-wrap:wrap;gap:7px 12px;align-items:center;margin:4px 0 14px;padding:8px 10px;border-radius:7px;background:var(--bg);border:1px solid var(--rule);font-family:var(--font-sans);font-size:.69rem;color:var(--muted);}
 .chapter-orientation span{display:inline-flex;align-items:center;gap:4px}.chapter-orientation b{color:var(--ink-soft);font-weight:600}.chapter-orientation .co-evidence{margin-left:auto;color:var(--accent)}
-.chapter-route-map{display:flex;gap:6px;overflow:auto;margin:-4px 0 14px;padding:0 0 4px;scrollbar-width:thin}.chapter-route-map a{flex:none;border:1px solid var(--rule);border-radius:99px;padding:5px 9px;text-decoration:none;color:var(--ink-soft);font-family:var(--font-sans);font-size:.67rem;background:var(--surface)}.chapter-route-map a:hover{border-color:var(--accent);color:var(--accent)}
+.chapter-route-map{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;margin:-4px 0 14px;padding:1px 2px 6px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;scroll-padding-inline:2px}.chapter-route-map a{flex:0 0 auto;max-width:none;white-space:nowrap;overflow:visible;text-overflow:clip;scroll-snap-align:start;border:1px solid var(--rule);border-radius:99px;padding:6px 11px;text-decoration:none;color:var(--ink-soft);font-family:var(--font-sans);font-size:.72rem;line-height:1.35;background:var(--surface)}.chapter-route-map a:hover{border-color:var(--accent);color:var(--accent)}
 
 /* Desktop toolbar: primary actions only */
 @media (min-width:921px){.toolbar #btn-fs-down,.toolbar #btn-fs-up,.toolbar #btn-theme,.toolbar #btn-cmdk,.toolbar #btn-library,.toolbar #btn-reader,.toolbar #btn-expand-all,.toolbar #btn-print,.toolbar #btn-notes,.toolbar #btn-help{display:none!important}.toolbar{gap:8px}.desktop-tools-trigger{display:inline-flex!important}}
@@ -4496,7 +4378,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.107</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.109</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Current through Aug 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -13737,7 +13619,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li id="r256">Volpe MS, Adams AB, Amato MBP, Marini JJ. Ventilation patterns influence airway secretion movement. <em>Respir Care</em>. 2008;53(10):1287–1294. PMID: 18811989.</li>
 <li id="r257">Li J, Liu K, Lyu S, et al. Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em>. 2023;13(1):63. doi:10.1186/s13613-023-01147-4. PMID: 37428465.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.107.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.109.</p>
 </section>
 </main>
 </div>
@@ -13746,7 +13628,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
      mirroring the layout's max-width and horizontal padding. -->
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.107 · Chapters 1–43 scientifically locked · Mobile PWA polish complete · Last reviewed August 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.109 · Chapters 1–43 scientifically locked · Complete chapter-label cleanup · Last reviewed August 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -15126,11 +15008,11 @@ saveInputs();
     const ACTIVE_KEY_PREFIX  = 'mv-chip-active-';
     const EXPAND_KEY_PREFIX  = 'mv-chip-expanded-';
     function chipLabel(text) {
-      const t = text.trim().replace(/\s+/g, ' ').replace(/\s*#+\s*$/, '');
-      const dash = t.indexOf(' — '); // em-dash
-      if (dash > 0) return t.slice(0, dash).replace(/\s*#+\s*$/, '');
-      const clean = t.replace(/\s*#+\s*$/, '');
-      return clean.length > 40 ? clean.slice(0, 38).trim() + '…' : clean;
+      return String(text || '')
+        .replace(/\s+/g, ' ')
+        .replace(/^\s*\d+(?:\.\d+)*[a-z]?\s+/i, '')
+        .replace(/\s*#+\s*$/, '')
+        .trim();
     }
     function slugify(s, fallback) {
       const slug = s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30);
@@ -15442,12 +15324,14 @@ saveInputs();
         if (!target) return null;
         const h3 = target.querySelector(':scope > h3');
         if (!h3) return null;
-        const title = (h3.cloneNode(true).textContent || '')
+        const titleClone = h3.cloneNode(true);
+        titleClone.querySelectorAll('.anchor-link, .chap-print-btn, button, svg, [aria-hidden="true"]').forEach(node => node.remove());
+        const title = (titleClone.textContent || '')
           .replace(/Print this chapter/g, '')
           .replace(/^\s*\d+\s*/, '')
-          .trim()
-          .split(/\s+—\s+/)[0]
-          .slice(0, 48);
+          .replace(/\s*#+\s*$/, '')
+          .replace(/\s+/g, ' ')
+          .trim();
         return { num: n, title };
       }).filter(Boolean);
       if (!items.length) return;
@@ -15803,6 +15687,12 @@ saveInputs();
         node.parentNode.replaceChild(frag, node);
       });
     }
+    function headingLabel(h) {
+      if (!h) return '';
+      const clone = h.cloneNode(true);
+      clone.querySelectorAll('.anchor-link, .chap-print-btn, button, svg, [aria-hidden="true"]').forEach(n => n.remove());
+      return (clone.textContent || '').replace(/Print this chapter/g, '').replace(/\s*#+\s*$/, '').replace(/\s+/g, ' ').trim();
+    }
     function showXrefPreview(a, evt) {
       const chapNum = a.dataset.xrefChap;
       const subRef = a.dataset.xrefSub; // e.g. "6" for §3.6, or "2a" for §3.2a
@@ -15824,7 +15714,7 @@ saveInputs();
           if (t.indexOf(wanted) === 0 && /^[\d.]+[a-z]?\s/.test(t)) matchedH4 = h;
         });
         if (matchedH4) {
-          titleText = '§' + (matchedH4.textContent || '').trim();
+          titleText = '§' + headingLabel(matchedH4);
           // First paragraph after this h4 (inside its details block)
           const detail = matchedH4.closest('details.chap-acc');
           if (detail) {
@@ -15837,7 +15727,7 @@ saveInputs();
       // Fall back to chapter-level if no subsection match
       if (!titleText) {
         const h3 = target.querySelector(':scope > h3');
-        titleText = h3 ? (h3.textContent || '').replace(/Print this chapter/g, '').trim() : 'Section ' + chapNum;
+        titleText = h3 ? headingLabel(h3) : 'Section ' + chapNum;
         if (!snippetSource) {
           Array.from(target.children).forEach(el => {
             if (snippetSource) return;
@@ -16717,7 +16607,11 @@ saveInputs();
       pop.dataset.quote = text;
       pop.dataset.chapter = chap ? chap.id : '';
       const h3 = chap ? chap.querySelector(':scope > h3') : null;
-      pop.dataset.chaptertitle = h3 ? h3.textContent.replace(/Print this chapter/g, '').trim() : '';
+      if (h3) {
+        const hc = h3.cloneNode(true);
+        hc.querySelectorAll('.anchor-link, .chap-print-btn, button, svg, [aria-hidden="true"]').forEach(node => node.remove());
+        pop.dataset.chaptertitle = (hc.textContent || '').replace(/Print this chapter/g, '').replace(/\s*#+\s*$/, '').replace(/\s+/g, ' ').trim();
+      } else pop.dataset.chaptertitle = '';
       fab.classList.remove('show');
       ta.focus();
     });
@@ -17906,8 +17800,8 @@ saveInputs();
   }
   function chapTitle(chap) {
     var h3 = chap.querySelector(':scope > h3'); if (!h3) return chap.id || '';
-    var c = h3.cloneNode(true); c.querySelectorAll('.anchor-link').forEach(function (a) { a.remove(); });
-    return c.textContent.replace(/\s+/g, ' ').trim();
+    var c = h3.cloneNode(true); c.querySelectorAll('.anchor-link,.chap-print-btn,button,svg,[aria-hidden="true"]').forEach(function (a) { a.remove(); });
+    return (c.textContent || '').replace(/Print this chapter/g, '').replace(/\s*#+\s*$/, '').replace(/\s+/g, ' ').trim();
   }
   function getSearchIndex() {
     if (searchIndex) return searchIndex;
@@ -18735,7 +18629,8 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
 (function(){
   'use strict';
   function jump(el){ if(!el)return; if(window.softJump) window.softJump(el); else el.scrollIntoView({block:'start'}); }
-  function cleanTitle(sec){var h=sec&&sec.querySelector(':scope > h3');if(!h)return '';var c=h.cloneNode(true);c.querySelectorAll('.num,button,svg').forEach(function(x){x.remove();});return (c.textContent||'').replace(/\s+/g,' ').trim();}
+  function cleanHeadingText(h,stripNumber){if(!h)return '';var c=h.cloneNode(true);c.querySelectorAll('.anchor-link,.chap-print-btn,button,svg,[aria-hidden="true"]').forEach(function(x){x.remove();});var t=(c.textContent||'').replace(/\s+/g,' ').replace(/\s*#+\s*$/,'').trim();if(stripNumber)t=t.replace(/^\d+(?:\.\d+)*[a-z]?\s+/i,'');return t.trim();}
+  function cleanTitle(sec){var h=sec&&sec.querySelector(':scope > h3');return cleanHeadingText(h,false);}
   document.addEventListener('DOMContentLoaded',function(){
     /* Primary mobile navigation — bound here as a resilient fallback. */
     var ml=document.getElementById('mab-learn'),ms=document.getElementById('mab-search'),mb=document.getElementById('mab-bedside');
@@ -18757,7 +18652,7 @@ main table > thead > tr > th{font-size:0.71875rem;font-weight:700;letter-spacing
     /* Chapter orientation and compact subsection maps */
     var review='Jul 2026';
     document.querySelectorAll('main section.chap[id^="c"]').forEach(function(sec){if(!/^c\d+$/.test(sec.id))return;var h=sec.querySelector(':scope > h3');if(!h)return;var words=(sec.textContent||'').trim().split(/\s+/).filter(Boolean).length;var mins=Math.max(2,Math.round(words/210));var n=parseInt(sec.id.slice(1),10);var level=n<=7?'Foundation':n<=19?'Core':n<=26?'Clinical':n<=32?'Advanced':'Bedside';var evidence=(n===20||n===27||n===30)?'Guideline + trials':(n===29?'Observational + physiologic':'Evidence linked in chapter');var meta=document.createElement('div');meta.className='chapter-orientation';meta.innerHTML='<span><b>'+mins+' min</b> estimated read</span><span><b>'+level+'</b> level</span><span><b>Reviewed</b> '+review+'</span><span class="co-evidence">'+evidence+'</span>';h.insertAdjacentElement('afterend',meta);
-      var hs=[].slice.call(sec.querySelectorAll(':scope > details > summary h4[id], :scope > h4[id]')).slice(0,8);if(hs.length>2){var map=document.createElement('nav');map.className='chapter-route-map';map.setAttribute('aria-label','Chapter sections');hs.forEach(function(x){var a=document.createElement('a');a.href='#'+x.id;a.textContent=(x.textContent||'').replace(/^\d+(?:\.\d+)*[a-z]?\s*/,'').trim().slice(0,42);map.appendChild(a);});meta.insertAdjacentElement('afterend',map);}
+      var hs=[].slice.call(sec.querySelectorAll(':scope > details > summary h4[id], :scope > h4[id]'));if(hs.length>2){var map=document.createElement('nav');map.className='chapter-route-map';map.setAttribute('aria-label','Chapter sections');hs.forEach(function(x){var label=cleanHeadingText(x,true);if(!label)return;var a=document.createElement('a');a.href='#'+x.id;a.textContent=label;a.title=label;a.setAttribute('aria-label',label);map.appendChild(a);});meta.insertAdjacentElement('afterend',map);}
     });
 
     /* Desktop tools popover proxies existing controls */
@@ -20543,7 +20438,7 @@ html,body{max-width:100%;overflow-x:hidden}
   var tableExclusion='.calc,.interactive-fig,.if-controls,.if-stats,.calc-result,.snapshots,.tbl-modal-body,nav,.toc,.drugs-toolbar,.bh-stage,.bh-card';
   function tableTitle(tbl){
     var c=tbl.querySelector('caption');if(c&&c.textContent.trim())return c.textContent.replace(/\s+/g,' ').trim();
-    var sec=tbl.closest('section.chap');var h=sec&&sec.querySelector(':scope > h3');return h?h.textContent.replace(/\s+/g,' ').trim():'Guide table';
+    var sec=tbl.closest('section.chap');var h=sec&&sec.querySelector(':scope > h3');if(!h)return 'Guide table';var hc=h.cloneNode(true);hc.querySelectorAll('.anchor-link,.chap-print-btn,button,svg,[aria-hidden="true"]').forEach(function(n){n.remove();});return (hc.textContent||'').replace(/\s*#+\s*$/,'').replace(/\s+/g,' ').trim()||'Guide table';
   }
   function numericLike(text){
     text=(text||'').replace(/\s+/g,' ').trim();
@@ -20652,6 +20547,8 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 <div hidden="" id="mobile-pwa-polish-build-v110107" data-public-edition="1.2" data-internal-build="v1.10.107" data-canonical-entry="mechanical-ventilation-teaching-reference.html">MOBILE_PWA_POLISH_COMPLETE</div>
+<div hidden="" id="pwa-stability-build-v110108" data-public-edition="1.2" data-internal-build="v1.10.108" data-app-entry="ventilation-guide-app.html">PWA_STABILITY_APP_SHELL_COMPLETE</div>
+<div hidden id="complete-heading-labels-build-v110109" data-public-edition="1.2" data-internal-build="v1.10.109" data-app-entry="ventilation-guide-app.html">COMPLETE_HEADING_LABELS_COMPLETE</div>
 <div hidden="" id="finalization-phase4-build-v110106" data-public-edition="1.2" data-internal-build="v1.10.106" data-canonical-entry="mechanical-ventilation-teaching-reference.html">FINALIZATION_PHASE4_PWA_UPDATE_COMPLETE</div>
 </body>
 </html>

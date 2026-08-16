@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1f3a">
+<title>Ventilation Guide recovery</title>
+<style>
+:root{color-scheme:light dark}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#fafaf7;color:#172033;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.card{width:min(92vw,34rem);padding:1.4rem;border:1px solid #d8e0e8;border-radius:18px;background:#fff;box-shadow:0 16px 46px rgba(15,23,42,.12)}h1{margin:.1rem 0 .6rem;font-size:1.35rem}p{line-height:1.5;color:#536477}.status{margin-top:1rem;padding:.8rem 1rem;border-radius:11px;background:#edf4fb;color:#183d61;font-weight:650}@media(prefers-color-scheme:dark){body{background:#101820;color:#eef4f8}.card{background:#17232d;border-color:#344654}.card p{color:#b7c5d1}.status{background:#1d3a52;color:#e5f2fb}}
+</style>
+</head>
+<body>
+<main class="card">
+<h1>Repairing the installed Ventilation Guide</h1>
+<p>This one-time page removes the unstable prior guide worker and its stale guide caches, then opens the current guide.</p>
+<div class="status" id="status" role="status" aria-live="polite">Starting recovery…</div>
+</main>
+<script>
+(async function(){
+  var out=document.getElementById('status');
+  function say(x){out.textContent=x;}
+  try{
+    say('Removing the prior guide worker…');
+    if('serviceWorker' in navigator){
+      var regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.filter(function(r){
+        var urls=[r.active&&r.active.scriptURL,r.waiting&&r.waiting.scriptURL,r.installing&&r.installing.scriptURL].filter(Boolean);
+        return urls.some(function(u){return /\/ventilation-guide-sw(?:-[^/]+)?\.js(?:\?|$)/i.test(u);});
+      }).map(function(r){return r.unregister();}));
+    }
+    say('Clearing stale guide caches…');
+    if('caches' in window){
+      var keys=await caches.keys();
+      await Promise.all(keys.filter(function(k){return /^ventilation-guide-(?:core-)?/i.test(k);}).map(function(k){return caches.delete(k);}));
+    }
+    say('Opening the current guide…');
+    var next=new URL('ventilation-guide-app.html',location.href);
+    next.searchParams.set('recovered',Date.now().toString(36));
+    location.replace(next.href);
+  }catch(e){
+    say('Automatic recovery was interrupted. Reconnect, close this page, and open it once more.');
+  }
+})();
+</script>
+</body>
+</html>
