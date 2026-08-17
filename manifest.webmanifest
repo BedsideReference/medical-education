@@ -1,7 +1,7 @@
 {
   "name": "Guide to Ventilation — Bedside Reference",
   "short_name": "Vent Guide",
-  "description": "Physiology-first teaching reference for adult mechanical ventilation. Public edition 1.2. Mobile browsers and installed use share the same chapter-at-a-time experience.",
+  "description": "Physiology-first teaching reference for adult mechanical ventilation. Public edition 1.2. Mobile browsers and installed use share one safe-area-aware chapter-at-a-time experience.",
   "id": "./mechanical-ventilation-teaching-reference.html",
   "start_url": "./ventilation-guide-app.html",
   "scope": "./",
@@ -24,5 +24,5 @@
     }
   ],
   "prefer_related_applications": false,
-  "version": "1.2+v1.10.111"
+  "version": "1.2+v1.10.112"
 }

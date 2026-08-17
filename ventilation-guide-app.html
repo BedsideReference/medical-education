@@ -1,19 +1,19 @@
-<!-- MOBILE_SINGLE_EXPERIENCE_LOCK_v1_10_111 · 2026-08-16 · this chapter-at-a-time shell is now the sole reader-facing mobile experience in both Safari/Chrome and installed PWA use; the continuous edition is desktop-only in normal use; Chapters 1–43 science/prose/figures unchanged -->
+<!-- MOBILE_SINGLE_EXPERIENCE_LOCK_v1_10_112 · 2026-08-16 · this chapter-at-a-time shell is now the sole reader-facing mobile experience in both Safari/Chrome and installed PWA use; the continuous edition is desktop-only in normal use; Chapters 1–43 science/prose/figures unchanged -->
 <!-- PWA_NAVIGATION_TABLE_USABILITY_LOCK_v1_10_110 · 2026-08-16 · single-source history routing, cancellable chapter landings, true reading-position resume, unified overlay/focus/scroll locking, cached exact-target search, overflow-only full-table viewer, compound-figure enlargement, and mobile touch-target/landscape polish; Chapters 1–43 science, prose, equations, figures, and references unchanged -->
 <!doctype html>
-<html lang="en" data-build="v1.10.111" data-public-edition="1.2">
+<html lang="en" data-build="v1.10.112" data-public-edition="1.2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Guide to Ventilation — Mobile Guide · v1.10.111</title>
+<title>Guide to Ventilation — Mobile Guide · v1.10.112</title>
 <meta name="description" content="Chapter-at-a-time mobile edition of the Guide to Ventilation, public edition 1.2.">
 <meta name="theme-color" content="#0b1f3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vent Guide">
-<meta name="internal-build" content="v1.10.111">
-<link rel="manifest" href="manifest.webmanifest?build=1.10.111">
+<meta name="internal-build" content="v1.10.112">
+<link rel="manifest" href="manifest.webmanifest?build=1.10.112">
 <link rel="canonical" href="mechanical-ventilation-teaching-reference.html">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
@@ -3876,8 +3876,8 @@ details.chap-acc{content-visibility:visible!important;contain:none!important}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 @media print{.pwa-top,.pwa-bottom,.pwa-chapter-nav,.pwa-scrim,.pwa-overlay,.pwa-sheet-wrap,.pwa-intro{display:none!important}body.pwa-lite{padding:0!important}#main-content>section.chap.app-active{display:block!important}}
 </style>
-<style id="pwa-navigation-table-usability-v110110">
-/* Mobile-guide stability, navigation, overlays, tables, and touch usability · v1.10.111 */
+<style id="pwa-navigation-table-usability-v110112">
+/* Mobile-guide stability, navigation, overlays, tables, and touch usability · v1.10.112 */
 body.pwa-modal-open{overflow:hidden!important;overscroll-behavior:none!important}
 :where(.pwa-top button,.pwa-bottom button,.pwa-chapter-nav button,.pwa-home-card button,.pwa-tools button,.pwa-overlay button,.pwa-intro button,.pwa-table-viewer button,.pwa-figure-open,.pwa-table-open):focus-visible,
 nav.toc a:focus-visible,.app-active img[role="button"]:focus-visible,.app-active svg[role="button"]:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 72%,white 28%);outline-offset:2px}
@@ -3943,6 +3943,363 @@ body.pwa-toc-open nav.toc[aria-hidden="false"]{visibility:visible}
 
 </style>
 
+
+<style id="pwa-mobile-usability-finalization-v110112">
+/* Mobile status-bar clearance, stable app chrome, end-of-chapter navigation,
+   table-close reliability, back-to-top, and quick-calculator restoration. */
+:root{
+  --pwa-safe-top:env(safe-area-inset-top,0px);
+  --pwa-safe-right:env(safe-area-inset-right,0px);
+  --pwa-safe-bottom:env(safe-area-inset-bottom,0px);
+  --pwa-safe-left:env(safe-area-inset-left,0px);
+  --pwa-nav-core:64px;
+  --pwa-top:calc(56px + var(--pwa-safe-top));
+  --pwa-bottom:calc(var(--pwa-nav-core) + var(--pwa-safe-bottom));
+}
+html.pwa-modal-open,body.pwa-modal-open{overflow:hidden!important;overscroll-behavior:none!important}
+.pwa-top{
+  z-index:1280!important;
+  min-height:var(--pwa-top)!important;
+  padding-top:var(--pwa-safe-top)!important;
+  padding-left:max(10px,var(--pwa-safe-left))!important;
+  padding-right:max(10px,var(--pwa-safe-right))!important;
+  transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+}
+.layout>nav.toc{
+  z-index:1260!important;
+  top:var(--pwa-top)!important;
+  bottom:0!important;
+  height:calc(100dvh - var(--pwa-top))!important;
+  max-height:calc(100dvh - var(--pwa-top))!important;
+  padding:14px max(14px,var(--pwa-safe-right)) calc(24px + var(--pwa-safe-bottom)) max(14px,var(--pwa-safe-left))!important;
+  transform:translate3d(-105%,0,0)!important;
+  box-shadow:8px 0 30px rgba(15,23,42,.18)!important;
+}
+body.pwa-toc-open .layout>nav.toc{transform:translate3d(0,0,0)!important}
+.pwa-scrim{z-index:1240!important;inset:var(--pwa-top) 0 0!important}
+.pwa-toc-head{
+  position:sticky;top:-14px;z-index:4;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:-14px calc(-1 * max(14px,var(--pwa-safe-right))) 10px calc(-1 * max(14px,var(--pwa-safe-left)));
+  padding:10px max(12px,var(--pwa-safe-right)) 10px max(12px,var(--pwa-safe-left));
+  min-height:58px;background:var(--surface);border-bottom:1px solid var(--rule);
+  box-shadow:0 5px 16px rgba(15,23,42,.06);font-family:var(--font-sans)
+}
+.pwa-toc-head b{display:block;color:var(--ink);font-size:.94rem}.pwa-toc-head small{display:block;color:var(--muted);font-size:.67rem;margin-top:1px}
+.pwa-toc-head button{flex:none;width:44px;height:44px;border:1px solid var(--rule);border-radius:11px;background:var(--surface);color:var(--accent);font-size:1.35rem;touch-action:manipulation}
+.pwa-bottom{
+  position:fixed!important;top:auto!important;bottom:-1px!important;
+  height:calc(var(--pwa-bottom) + 1px)!important;
+  padding:0 max(6px,var(--pwa-safe-right)) calc(var(--pwa-safe-bottom) + 1px) max(6px,var(--pwa-safe-left))!important;
+  transform:translate3d(0,0,0)!important;backface-visibility:hidden;will-change:transform;
+  contain:layout paint style;isolation:isolate;
+}
+.pwa-bottom::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:4px;background:var(--surface);pointer-events:none}
+.pwa-float{
+  position:fixed;z-index:1210;bottom:calc(var(--pwa-bottom) + 12px);
+  min-width:50px;height:50px;padding:0 13px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--rule));border-radius:999px;
+  background:color-mix(in srgb,var(--surface) 96%,transparent);color:var(--accent);
+  box-shadow:0 8px 24px rgba(15,23,42,.16);font:800 .7rem/1 var(--font-sans);
+  display:flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation;
+  transform:translate3d(0,12px,0);opacity:0;pointer-events:none;transition:opacity .16s ease,transform .16s ease
+}
+.pwa-back-top{left:max(12px,var(--pwa-safe-left))}.pwa-calc-fab{right:max(12px,var(--pwa-safe-right));font-size:1.18rem}
+body.pwa-reading .pwa-calc-fab,body.pwa-reading .pwa-back-top.is-visible{opacity:1;pointer-events:auto;transform:translate3d(0,0,0)}
+html.pwa-modal-open .pwa-float,body.pwa-modal-open .pwa-float{opacity:0!important;pointer-events:none!important;transform:translate3d(0,12px,0)!important}
+.pwa-float svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pwa-chapter-end-nav{
+  margin:28px 0 2px;padding:13px;border:1px solid var(--rule);border-radius:15px;background:color-mix(in srgb,var(--surface) 96%,var(--accent-soft));
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;font-family:var(--font-sans)
+}
+.pwa-chapter-end-nav .pwa-end-label{grid-column:1/-1;text-align:center;color:var(--muted);font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800}
+.pwa-chapter-end-nav button{min-width:0;min-height:58px;border:1px solid var(--rule);border-radius:11px;background:var(--surface);color:var(--ink);padding:9px 10px;touch-action:manipulation;text-align:left}
+.pwa-chapter-end-nav button small{display:block;color:var(--accent);font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.pwa-chapter-end-nav button b{display:block;margin-top:3px;font-size:.75rem;line-height:1.3;overflow-wrap:anywhere}
+.pwa-chapter-end-nav button[data-dir="next"]{text-align:right}.pwa-chapter-end-nav button:disabled{opacity:.35}
+.pwa-chapter-end-nav .pwa-end-top{grid-column:1/-1;min-height:46px;text-align:center;color:var(--accent);font-weight:800}
+.pwa-table-head{
+  position:relative;z-index:8;
+  padding:9px max(12px,var(--pwa-safe-right)) 9px max(12px,var(--pwa-safe-left))!important;
+}
+#pwa-table-close{position:relative;z-index:10;width:50px!important;height:50px!important;min-width:50px;touch-action:manipulation;pointer-events:auto;box-shadow:0 2px 10px rgba(15,23,42,.08)}
+.pwa-table-actions .pwa-table-done{min-width:74px;color:var(--accent);border-color:color-mix(in srgb,var(--accent) 42%,var(--rule))}
+.pwa-table-host{scrollbar-gutter:stable;padding-right:max(12px,var(--pwa-safe-right))!important;padding-left:max(12px,var(--pwa-safe-left))!important}
+.pwa-calc-wrap{z-index:1370!important}
+.pwa-calc-sheet{
+  display:block!important;position:absolute!important;left:max(10px,var(--pwa-safe-left))!important;right:max(10px,var(--pwa-safe-right))!important;bottom:0!important;
+  width:auto!important;max-width:680px!important;max-height:calc(100dvh - var(--pwa-safe-top) - 18px)!important;margin:0 auto!important;
+  overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  border-radius:20px 20px 0 0!important;padding:17px 15px calc(18px + var(--pwa-safe-bottom))!important;
+  background:var(--surface)!important;box-shadow:0 -18px 48px rgba(15,23,42,.24)!important;z-index:2!important
+}
+.pwa-calc-sheet h4{position:sticky;top:-17px;z-index:3;margin:-17px -15px 12px!important;padding:13px 15px 10px!important;background:var(--surface);border-bottom:1px solid var(--rule)}
+.pwa-calc-sheet h4 .close{min-width:44px;min-height:44px;font-size:1.35rem;touch-action:manipulation}
+.pwa-calc-sheet .mini-calc-demo{grid-template-columns:1fr 1fr!important}.pwa-calc-sheet .mc-pbw-readout{grid-column:1/-1}
+.pwa-calc-sheet .mini-calc-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+.pwa-calc-sheet input,.pwa-calc-sheet select{min-height:44px!important;font-size:16px!important;padding:8px 9px!important}
+.pwa-calc-sheet .mini-calc-bundle{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.pwa-calc-sheet .mini-calc-out{grid-template-columns:1fr!important}
+.pwa-calc-full-link{display:block;margin-top:12px;padding:11px 12px;border:1px solid var(--rule);border-radius:10px;text-align:center;color:var(--accent);font:800 .76rem var(--font-sans);text-decoration:none;background:var(--accent-soft)}
+#book-index .bi-summary:empty::before{content:"Preparing the mobile index…";color:var(--muted)}
+@media(max-width:620px){
+  .pwa-table-actions{grid-template-columns:1fr 1fr 40px 40px!important}
+  .pwa-table-actions .pwa-table-done{grid-column:1/-1!important;min-height:44px}
+}
+@media(min-width:621px){.pwa-table-actions .pwa-table-done{order:5}}
+@media(orientation:landscape) and (max-height:520px){
+  :root{--pwa-nav-core:52px;--pwa-top:calc(48px + var(--pwa-safe-top))}
+  .pwa-float{bottom:calc(var(--pwa-bottom) + 8px);height:46px;min-width:46px}
+  .pwa-calc-sheet{max-height:calc(100dvh - var(--pwa-safe-top) - 6px)!important}
+}
+@media(prefers-reduced-motion:reduce){.pwa-float{transition:none!important}}
+</style>
+
+<script id="book-index-mobile-runtime-v110112">
+window.__vgBuildBookIndex=(function(){
+  var done=false;
+  return function(){
+    if(done)return;
+    done=true;
+    try{
+  var tools=document.getElementById('bi-tools'),
+      itemsWrap=document.getElementById('bi-tables'),
+      summary=document.getElementById('bi-summary');
+  if(!tools||!itemsWrap) return;
+  tools.textContent=''; itemsWrap.textContent='';
+
+  var idCounter=0;
+  function ensureId(el,prefix){
+    if(!el) return '';
+    if(!el.id) el.id=(prefix||'bi-item')+'-'+(++idCounter);
+    return el.id;
+  }
+  function cleanText(node){
+    if(!node) return '';
+    var clone=node.cloneNode(true);
+    Array.prototype.forEach.call(clone.querySelectorAll('.num,svg,.anchor-link,button,[aria-hidden="true"]'),function(e){e.remove();});
+    return (clone.textContent||'').trim().replace(/\s+/g,' ').replace(/\s*#+\s*$/,'');
+  }
+  function firstSentence(text,max){
+    text=(text||'').trim().replace(/\s+/g,' ');
+    if(!text) return '';
+    // A colon or dash often belongs inside a figure/table title. Only a true
+    // sentence-ending mark followed by whitespace ends the display title.
+    var m=text.match(/^(.{1,240}?[.!?](?=\s|$))/);
+    var out=m?m[1]:text;
+    max=max||170;
+    if(out.length>max) out=out.slice(0,max-1).trim()+'\u2026';
+    return out.replace(/[\s.:;\u2013\u2014-]+$/,'').trim();
+  }
+  function normalizeIndexTitle(text){
+    text=(text||'').trim().replace(/\s+/g,' ').replace(/\s*#+\s*$/,'');
+    // The type badge already says Figure/Table. Remove duplicate labels and
+    // numbering from captions, including panel suffixes such as 20.2A.
+    text=text.replace(/^(?:Figure|Fig\.?|Table|Card)\s+\d+(?:\.\d+)*(?:[A-Za-z])?(?:\s*[\u2014\u2013:.-]\s*|\s+)/i,'');
+    text=text.replace(/^Bedside workflow\s*[\u2014\u2013:.-]\s*/i,'');
+    return text.replace(/[\s.:;\u2013\u2014-]+$/,'').trim();
+  }
+  function canonicalIndexLabel(type,text){
+    var out=normalizeIndexTitle(text);
+    if(type==='Workflow'){
+      var m=out.match(/^(\d+(?:\.\d+)*(?:[a-z])?)\s+(.+)$/i);
+      if(m) out='\u00A7'+m[1]+' \u00B7 '+m[2];
+    }
+    return firstSentence(out,type==='Workflow'?190:175);
+  }
+  function isUsefulIndexTitle(text){
+    text=(text||'').trim();
+    return !!text && !/^(?:clinical|interactive)\s+figure$/i.test(text) && !/^(?:figure|tool|interactive laboratory)$/i.test(text) && !/^(?:Figure|Fig\.?)\s+\d+(?:\.\d+)*\s*[\u2014\u2013:.-]*$/i.test(text);
+  }
+  function figureTitle(fig){
+    var cap=fig.querySelector('figcaption,.cap');
+    if(cap){
+      var lead=cap.querySelector('b,strong');
+      var t=normalizeIndexTitle(cleanText(lead));
+      if(isUsefulIndexTitle(t)) return firstSentence(t,170);
+      t=normalizeIndexTitle(cleanText(cap));
+      if(isUsefulIndexTitle(t)) return firstSentence(t,170);
+    }
+    var head=fig.querySelector('.figure-ui-head b,.figure-ui-head strong,.simulator-launch h4,.c2-fig-title,.c5-lab-head strong,.c6-sim-head strong,h4');
+    var htxt=normalizeIndexTitle(cleanText(head));
+    if(isUsefulIndexTitle(htxt)) return firstSentence(htxt,170);
+    var img=fig.querySelector('img[alt]');
+    var alt=normalizeIndexTitle(img&&img.getAttribute('alt'));
+    if(isUsefulIndexTitle(alt)) return firstSentence(alt,170);
+    var tableCap=fig.querySelector('table > caption');
+    var tableTitle=normalizeIndexTitle(cleanText(tableCap));
+    if(isUsefulIndexTitle(tableTitle)) return firstSentence(tableTitle,170);
+    var details=fig.closest&&fig.closest('details.chap-acc');
+    var sectionHead=details&&details.querySelector(':scope > summary > h4');
+    var sectionTitle=normalizeIndexTitle(cleanText(sectionHead)).replace(/^\d+(?:\.\d+)*\s+/,'');
+    return isUsefulIndexTitle(sectionTitle)?firstSentence(sectionTitle,170):'Clinical figure';
+  }
+  function toolTitle(el){
+    if(el&&el.id==='calc-tools') return 'Bedside calculator';
+    if(el&&el.id==='case-lab-tool') return 'Ventilation Guide Case Lab';
+    var title=normalizeIndexTitle(el.getAttribute&&el.getAttribute('title')||'');
+    if(isUsefulIndexTitle(title)) return firstSentence(title,120);
+    var fig=el.closest&&el.closest('.figure,figure,.simulator-figure');
+    if(fig){
+      var ft=figureTitle(fig);
+      if(isUsefulIndexTitle(ft)) return ft;
+    }
+    var h=el.querySelector&&el.querySelector('h4,h5,.c5-lab-head strong,.c6-sim-head strong,.simulator-eyebrow,.c3-lab-eyebrow');
+    var ht=normalizeIndexTitle(cleanText(h));
+    if(isUsefulIndexTitle(ht)) return firstSentence(ht,120);
+    var details=el.closest&&el.closest('details.chap-acc');
+    var dh=details&&details.querySelector(':scope > summary > h4');
+    var dt=normalizeIndexTitle(cleanText(dh)).replace(/^\d+(?:\.\d+)*\s+/,'');
+    return isUsefulIndexTitle(dt)?firstSentence(dt,120):'Interactive tool';
+  }
+  function glyph(src){src=(src||'').toLowerCase();
+    if(src.indexOf('capno')>-1)return'\u2293';
+    if(src.indexOf('waveform')>-1)return'\u223F';
+    if(src.indexOf('dyssynchrony')>-1||src.indexOf('identifier')>-1)return'\u21CC';
+    if(src.indexOf('alveolar')>-1||src.indexOf('gas')>-1||src.indexOf('abg')>-1)return'\u2211';
+    if(src.indexOf('mechanic')>-1||src.indexOf('pft')>-1)return'\u2699';
+    return'\u25C6';}
+
+  function chapterInfo(sec){
+    if(!sec) return {key:'front',label:'Quick reference',sec:null};
+    var h=sec.querySelector(':scope > h3');
+    if(!h) return {key:sec.id||'front',label:'Quick reference',sec:sec};
+    var num=(h.querySelector('.num')?h.querySelector('.num').textContent:'').trim();
+    var title=cleanText(h).replace(/^\s*\d+\s*/,'').split(/\s+[\u2014\u2013]\s+/)[0].trim();
+    var label=/^\d+$/.test(num)?('Chapter '+num+' \u00B7 '+title):title;
+    return {key:sec.id||label,label:label,sec:sec,num:num};
+  }
+  function chapterFor(el){return el.closest('section.chap')||el.closest('section[id]');}
+
+  var chapterOrder=[],groups={};
+  Array.prototype.forEach.call(document.querySelectorAll('.layout > main > section.chap'),function(sec){
+    if(sec.id==='book-index'||sec.id==='bedside-now'||sec.id==='calc-tools') return;
+    var info=chapterInfo(sec);
+    if(!groups[info.key]){groups[info.key]={label:info.label,items:[]};chapterOrder.push(info.key);}
+  });
+  function addItem(el,type,text,anchor){
+    if(!el) return;
+    text=canonicalIndexLabel(type,text);
+    if(!text) return;
+    var sec=chapterFor(el), info=chapterInfo(sec), key=info.key;
+    if(!groups[key]){groups[key]={label:info.label,items:[]};chapterOrder.push(key);}
+    var target=anchor||el;
+    var id=ensureId(target,'bi-'+type.toLowerCase());
+    if(!id) return;
+    groups[key].items.push({type:type,txt:text,id:id});
+  }
+
+  // Global interactive-tool cards. Include iframe tools and div-based laboratories.
+  var toolSeen=new Set(), toolCount=0;
+  var toolCandidates=Array.prototype.slice.call(document.querySelectorAll(
+    'main iframe[data-src],main iframe[src],main .simulator-figure,main .c3-lab,main .c5-pft-lab,main .c6-mechanics-simulator,main #calc-tools'
+  ));
+  toolCandidates.forEach(function(el){
+    // Prefer the containing figure before a nested iframe/control id. This
+    // prevents the same simulator from being indexed twice under two anchors.
+    var anchor=el.closest('.figure[id],figure[id]')||el.closest('section.chap details[id]')||el.closest('.figure,figure')||el;
+    var id=ensureId(anchor,'bi-tool');
+    if(!id||toolSeen.has(id)) return;
+    toolSeen.add(id);
+    var name=toolTitle(el), desc='Interactive laboratory or bedside tool';
+    var iframe=el.matches('iframe')?el:el.querySelector('iframe');
+    if(iframe){
+      var full=normalizeIndexTitle(iframe.getAttribute('title')||'');
+      var seg=full.split(/\s+[\u2014\u2013]\s+/);
+      if(seg[0]&&isUsefulIndexTitle(seg[0])) name=seg.shift().trim();
+      if(seg.length) desc=seg.join(' \u2014 ').trim();
+    } else if(el.classList.contains('simulator-figure')||el.classList.contains('c6-mechanics-simulator')) {
+      desc='Interactive simulator';
+    }
+    var a=document.createElement('a'); a.className='bi-tool'; a.href='#'+id;
+    var mk=document.createElement('span'); mk.className='tmark'; mk.textContent=glyph(name+' '+(iframe?(iframe.getAttribute('src')||iframe.getAttribute('data-src')||''):''));
+    var bd=document.createElement('span'); bd.className='tbody';
+    var nm=document.createElement('span'); nm.className='tname'; nm.textContent=name;
+    var ds=document.createElement('span'); ds.className='tdesc'; ds.textContent=desc;
+    var go=document.createElement('span'); go.className='tgo'; go.textContent='\u2192';
+    bd.appendChild(nm);bd.appendChild(ds);a.appendChild(mk);a.appendChild(bd);a.appendChild(go);tools.appendChild(a);
+    addItem(el,'Tool',name,anchor); toolCount++;
+  });
+
+  // Every captioned table in the guide.
+  Array.prototype.forEach.call(document.querySelectorAll('.layout > main table > caption'),function(cap){
+    var table=cap.closest('table'); if(!table) return;
+    var hostFig=table.closest('.figure,figure');
+    if(hostFig){
+      var tableName=canonicalIndexLabel('Table',cleanText(cap)).toLowerCase();
+      var figureName=canonicalIndexLabel('Figure',figureTitle(hostFig)).toLowerCase();
+      if(tableName&&tableName===figureName) return;
+    }
+    addItem(table,'Table',cleanText(cap),table);
+  });
+
+  // Every substantive figure in the guide, including embedded Chapter 7 figures.
+  var figureSeen=new Set();
+  Array.prototype.forEach.call(document.querySelectorAll('.layout > main .figure,.layout > main figure'),function(fig){
+    // Interactive laboratories are indexed once as Tools. Table-only display
+    // cards are represented by their captioned table entries.
+    if(fig.matches('.simulator-figure')||fig.querySelector('iframe')) return;
+    var hasVisual=!!fig.querySelector('img,svg,[role="img"]');
+    if(fig.querySelector('table')&&!hasVisual) return;
+    var id=ensureId(fig,'bi-figure');
+    if(figureSeen.has(id)) return;
+    figureSeen.add(id);
+    addItem(fig,'Figure',figureTitle(fig),fig);
+  });
+
+  // Approved revised Chapters 1–9: index every named subsection/workflow so
+  // the refreshed chapter inventory is auditable rather than manually sampled.
+  ['c1','c2','c3','c4','c5','c6','c7','c8','c9'].forEach(function(cid){
+    var sec=document.getElementById(cid); if(!sec) return;
+    Array.prototype.forEach.call(sec.querySelectorAll('h4[id]'),function(h){
+      if(h.closest('.figure,figure')) return;
+      addItem(h,'Workflow',cleanText(h),h);
+    });
+  });
+
+  // Later chapters remain unchanged, but index explicitly named algorithms,
+  // pathways, laboratories, checklists, bundles, ladders, and decision tools.
+  var workflowRx=/(algorithm|pathway|workflow|decision|checklist|bundle|ladder|laboratory|simulator|calculator|exercise|approach|interpretation|selection|titration|troubleshoot|management|protocol)/i;
+  Array.prototype.forEach.call(document.querySelectorAll('.layout > main section.chap:not(#c1):not(#c2):not(#c3):not(#c4):not(#c5):not(#c6):not(#c7):not(#c8):not(#c9) h4[id]'),function(h){
+    var txt=cleanText(h); if(workflowRx.test(txt)) addItem(h,'Workflow',txt,h);
+  });
+
+  // Render in document chapter order with stable type labels and deduplication.
+  var indexedItemCount=0, renderedGroups=0;
+  chapterOrder.forEach(function(key){
+    var g=groups[key]; if(!g) return;
+    var seen={};
+    g.items=g.items.filter(function(it){
+      var sig=it.id+'|'+it.type+'|'+it.txt.toLowerCase();
+      if(seen[sig]) return false; seen[sig]=1; return true;
+    });
+    if(!g.items.length) return;
+    g.items.sort(function(a,b){
+      var ae=document.getElementById(a.id),be=document.getElementById(b.id);
+      if(!ae||!be) return 0;
+      var pos=ae.compareDocumentPosition(be);
+      return pos&Node.DOCUMENT_POSITION_FOLLOWING?-1:pos&Node.DOCUMENT_POSITION_PRECEDING?1:0;
+    });
+    var grp=document.createElement('div');grp.className='bi-grp';
+    var h4=document.createElement('h4');h4.textContent=g.label;grp.appendChild(h4);
+    var ul=document.createElement('ul');
+    g.items.forEach(function(it){
+      var li=document.createElement('li');
+      var a=document.createElement('a');a.href='#'+it.id;
+      var ty=document.createElement('span');ty.className='bi-type bi-type-'+it.type.toLowerCase();ty.textContent=it.type;
+      var tx=document.createElement('span');tx.className='bi-item-text';tx.textContent=it.txt;
+      a.appendChild(ty);a.appendChild(tx);li.appendChild(a);ul.appendChild(li);indexedItemCount++;
+    });
+    grp.appendChild(ul);itemsWrap.appendChild(grp);renderedGroups++;
+  });
+
+  if(summary) summary.textContent=toolCount+' interactive tools \u00B7 '+indexedItemCount+' indexed tables, figures, tools, and workflows across '+renderedGroups+' sections \u00B7 generated from the current guide';
+
+    }catch(e){done=false;console.error('[book-index-mobile]',e);}
+  };
+})();
+</script>
+
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="(function(){var o={delimiters:[{left:'$$',right:'$$',display:true},{left:'\[',right:'\]',display:true},{left:'\(',right:'\)',display:false}],throwOnError:false,strict:'ignore'};window.__vgRenderMath=function(r){try{if(r&&!r.dataset.katexRendered){renderMathInElement(r,o);r.dataset.katexRendered='1';}}catch(e){}};})();"></script>
 
@@ -3985,7 +4342,7 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.111</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.112</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Current through Aug 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -13216,13 +13573,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li id="r256">Volpe MS, Adams AB, Amato MBP, Marini JJ. Ventilation patterns influence airway secretion movement. <em>Respir Care</em>. 2008;53(10):1287–1294. PMID: 18811989.</li>
 <li id="r257">Li J, Liu K, Lyu S, et al. Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em>. 2023;13(1):63. doi:10.1186/s13613-023-01147-4. PMID: 37428465.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.111.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.112.</p>
 </section>
 </main>
 </div>
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.111 · Chapters 1–43 scientifically locked · Complete chapter-label cleanup · Last reviewed August 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.112 · Chapters 1–43 scientifically locked · Mobile UI finalization · Last reviewed August 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -13238,8 +13595,98 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <button type="button" data-pwa-action="bedside"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><span>Bedside</span></button>
 <button type="button" data-pwa-action="tools"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Tools</span></button>
 </nav>
+<button class="pwa-float pwa-back-top" id="pwa-back-top" type="button" aria-label="Back to the top of this chapter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 10 6-6 6 6M12 4v16"/></svg><span>Top</span></button>
+<button class="pwa-float pwa-calc-fab" id="pwa-calc-fab" type="button" aria-label="Open quick calculator"><span aria-hidden="true">∑</span><span style="font-size:.67rem">Calc</span></button>
+<div class="pwa-sheet-wrap pwa-calc-wrap" id="pwa-calc-wrap" aria-hidden="true"><div aria-label="Quick bedside calculator" class="mini-calc-panel pwa-calc-sheet" id="mini-calc-panel" role="dialog">
+<h4>
+<span>Quick calc</span>
+<span aria-label="Mechanical-power mode" class="mc-mode-toggle" role="group">
+<button class="mc-mode-btn active" data-mode="vc" data-tip="Volume control — MP = 0.098·RR·VT·(PIP − ½ΔP)" type="button">VC</button>
+<button class="mc-mode-btn" data-mode="pc" data-tip="Pressure control — MP = 0.098·RR·VT·(PEEP + ΔP)" type="button">PC</button>
+</span>
+<button aria-label="Close" class="close" id="mini-calc-close" type="button">×</button>
+</h4>
+<div class="mini-calc-demo">
+<label>Sex
+      <select id="mc-sex">
+<option value="m">M</option>
+<option value="f">F</option>
+</select>
+</label>
+<label>Height (in)<input id="mc-ht" max="84" min="48" placeholder="69" step="1" type="number"/></label>
+<label class="mc-pbw-readout">PBW <span id="mc-pbw">—</span></label>
+</div>
+<div class="mini-calc-grid">
+<label>VT (mL)<input id="mc-vt" max="1500" min="100" placeholder="450" step="10" type="number"/></label>
+<label>RR<input id="mc-rr" max="60" min="4" placeholder="20" step="1" type="number"/></label>
+<label>PIP<input id="mc-pip" max="80" min="0" placeholder="32" step="1" type="number"/></label>
+<label>P<sub>plat</sub><input id="mc-pplat" max="60" min="0" placeholder="24" step="1" type="number"/></label>
+<label>PEEP<input id="mc-peep" max="30" min="0" placeholder="8" step="1" type="number"/></label>
+<label>Flow (L/min)<input id="mc-flow" max="200" min="0" placeholder="60" step="1" type="number"/></label>
+<label>FiO₂<input id="mc-fio2" max="1" min="0.21" placeholder="0.4" step="0.05" type="number"/></label>
+<label>PaO₂<input id="mc-pao2" max="600" min="20" placeholder="80" step="1" type="number"/></label>
+</div>
+<div aria-label="Calculated respiratory exposure values" class="mini-calc-bundle" id="mc-bundle">
+<span class="mc-bundle-lbl">Calculated exposures</span>
+<span class="mc-bundle-item" data-tip="Tidal volume indexed to PBW; interpret within the syndrome-specific lung-protection strategy" id="mc-b-vt">VT/kg</span>
+<span class="mc-bundle-item" data-tip="Plateau pressure requires a valid end-inspiratory occlusion and appropriate effort/leak conditions" id="mc-b-pplat">P<sub>plat</sub></span>
+<span class="mc-bundle-item" data-tip="Respiratory-system driving pressure is an exposure/prognostic signal when passive static measurements are valid—not a universal cutoff" id="mc-b-dp">ΔP</span>
+<span class="mc-bundle-item" data-tip="Mechanical power is mode/model dependent; use the correct equation and interpret as an exposure estimate rather than a universal threshold" id="mc-b-mp">MP</span>
+</div>
+<div class="mini-calc-out">
+<div class="mc-row" id="mc-row-vtpbw">
+<span class="mc-lbl" data-tip="VT divided by predicted body weight">VT/PBW</span>
+<span class="mc-val" id="mc-vtpbw">—</span>
+<span class="mc-target">syndrome context</span>
+</div>
+<div class="mc-row">
+<span class="mc-lbl" data-tip="VT × RR — minute ventilation">VE</span>
+<span class="mc-val" id="mc-ve">—</span>
+<span class="mc-target">trend</span>
+</div>
+<div class="mc-row" id="mc-row-dp">
+<span class="mc-lbl" data-tip="Pplat − PEEP">ΔP</span>
+<span class="mc-val" id="mc-dp">—</span>
+<span class="mc-target">exposure trend</span>
+</div>
+<div class="mc-row">
+<span class="mc-lbl" data-tip="VT / ΔP — static compliance">C<sub>stat</sub></span>
+<span class="mc-val" id="mc-cstat">—</span>
+<span class="mc-target">trend</span>
+</div>
+<div class="mc-row">
+<span class="mc-lbl" data-tip="(PIP − Pplat) / V̇ — airway resistance">R<sub>aw</sub></span>
+<span class="mc-val" id="mc-raw">—</span>
+<span class="mc-target">flow dependent</span>
+</div>
+<div class="mc-row">
+<span class="mc-lbl" data-tip="Raw × Cstat — expiratory time constant">τ</span>
+<span class="mc-val" id="mc-tau">—</span>
+<span class="mc-target">model only</span>
+</div>
+<div class="mc-row" id="mc-row-mp">
+<span class="mc-lbl" data-tip="0.098 × RR × VT × (PIP − ½ΔP) — Becker formula (VC)" id="mc-mp-lbl">MP</span>
+<span class="mc-val" id="mc-mp">—</span>
+<span class="mc-target">model dependent</span>
+</div>
+<div class="mc-row mc-row-wide">
+<span class="mc-lbl" data-tip="PaO₂ / FiO₂ — oxygenation ratio; ARDS classification requires full syndrome context">P/F</span>
+<span class="mc-val" id="mc-pf">—</span>
+<span class="mc-target" id="mc-pf-bin">—</span>
+</div>
+<div class="mc-row" id="mc-row-rsbi">
+<span class="mc-lbl" data-tip="RR / VT(L) — Yang-Tobin rapid-shallow breathing index">RSBI</span>
+<span class="mc-val" id="mc-rsbi">—</span>
+<span class="mc-target">not an SBT gate</span>
+</div>
+</div>
+<div class="mini-calc-actions">
+<button class="mc-copy-btn" id="mc-copy" title="Copy a one-line snapshot to clipboard" type="button"><svg aria-hidden="true" fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" style="vertical-align:-0.12em;margin-right:.3em" viewbox="0 0 24 24" width="1em"><rect height="11" rx="2" width="11" x="9" y="9"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>Copy snapshot</button>
+<span aria-live="polite" class="mc-copy-confirm" id="mc-copy-confirm"></span>
+</div>
+<a class="pwa-calc-full-link" href="#calc-tools">Open full bedside calculator →</a></div></div>
 <div class="pwa-overlay" id="pwa-search" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Search the guide"><div class="pwa-overlay-head"><button id="pwa-search-close" type="button" aria-label="Close search">‹</button><input id="pwa-search-input" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search chapters and content…"></div><div class="pwa-search-meta" id="pwa-search-meta"></div><div class="pwa-search-results" id="pwa-search-results"></div></div>
-<div class="pwa-sheet-wrap" id="pwa-tools-wrap" aria-hidden="true"><section class="pwa-tools" role="dialog" aria-modal="true" aria-label="Display tools"><h2>Display tools</h2><div class="pwa-tools-grid"><button id="pwa-font-down" type="button">Smaller text</button><button id="pwa-font-up" type="button">Larger text</button><button id="pwa-theme-light" type="button">Light theme</button><button id="pwa-theme-dark" type="button">Dark theme</button><button id="pwa-tools-close" class="wide" type="button">Close</button></div></section></div>
+<div class="pwa-sheet-wrap" id="pwa-tools-wrap" aria-hidden="true"><section class="pwa-tools" role="dialog" aria-modal="true" aria-label="Guide tools"><h2>Tools</h2><div class="pwa-tools-grid"><button id="pwa-tools-calc" type="button">Quick calculator</button><button id="pwa-tools-index" type="button">Tools &amp; tables index</button><button id="pwa-font-down" type="button">Smaller text</button><button id="pwa-font-up" type="button">Larger text</button><button id="pwa-theme-light" type="button">Light theme</button><button id="pwa-theme-dark" type="button">Dark theme</button><button id="pwa-tools-close" class="wide" type="button">Close</button></div></section></div>
 <div class="pwa-intro" id="pwa-intro" aria-hidden="true"><section class="pwa-intro-card"><h2>How the mobile guide works</h2><p>On mobile, the guide keeps one chapter active at a time so chapter jumps stay fast and your reading position remains stable. Continue returns to your last position; Contents and Search jump directly to chapters or subsections. Wide tables offer full-screen Overview and Read views.</p><button id="pwa-intro-got" type="button">Got it</button></section></div>
 <div class="pwa-lightbox" id="pwa-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded figure"><button id="pwa-lightbox-close" type="button" aria-label="Close expanded figure">×</button><div class="pwa-lightbox-host" id="pwa-lightbox-host"></div></div>
 <div class="pwa-table-viewer" id="pwa-table-viewer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwa-table-title">
@@ -13251,6 +13698,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
       <button id="pwa-table-read" type="button" aria-pressed="false">Read</button>
       <button class="pwa-table-zoom" id="pwa-table-zoom-out" type="button" aria-label="Decrease table text size">A−</button>
       <button class="pwa-table-zoom" id="pwa-table-zoom-in" type="button" aria-label="Increase table text size">A+</button>
+      <button class="pwa-table-done" id="pwa-table-done" type="button">Done</button>
     </div>
   </header>
   <div class="pwa-table-host" id="pwa-table-host"></div>
@@ -13548,7 +13996,7 @@ const w=[];if(qS&&(Math.abs(ratio-lln)<.03||Math.abs(fvcZ+1.645)<.3))w.push('One
 })();
 </script>
 
-<script id="pwa-lite-runtime-v110111">
+<script id="pwa-lite-runtime-v110112">
 (function(){
 'use strict';
 var doc=document,root=doc.documentElement,body=doc.body,main=doc.getElementById('main-content');
@@ -13563,11 +14011,12 @@ var search=doc.getElementById('pwa-search'),searchInput=doc.getElementById('pwa-
 var tools=doc.getElementById('pwa-tools-wrap'),lightbox=doc.getElementById('pwa-lightbox'),lightboxHost=doc.getElementById('pwa-lightbox-host'),tip=doc.getElementById('pwa-tip');
 var simOverlay=doc.getElementById('pwa-sim-overlay'),simHost=doc.getElementById('pwa-sim-host'),simClose=doc.getElementById('pwa-sim-close'),simState=null;
 var tableViewer=doc.getElementById('pwa-table-viewer'),tableHost=doc.getElementById('pwa-table-host'),tableTitle=doc.getElementById('pwa-table-title');
-var tableOverview=doc.getElementById('pwa-table-overview'),tableRead=doc.getElementById('pwa-table-read'),tableZoomOut=doc.getElementById('pwa-table-zoom-out'),tableZoomIn=doc.getElementById('pwa-table-zoom-in'),tableClose=doc.getElementById('pwa-table-close');
+var tableOverview=doc.getElementById('pwa-table-overview'),tableRead=doc.getElementById('pwa-table-read'),tableZoomOut=doc.getElementById('pwa-table-zoom-out'),tableZoomIn=doc.getElementById('pwa-table-zoom-in'),tableClose=doc.getElementById('pwa-table-close'),tableDone=doc.getElementById('pwa-table-done');
 var resumeCard=doc.getElementById('pwa-resume-card'),continueButton=doc.getElementById('pwa-continue');
+var backTop=doc.getElementById('pwa-back-top'),calcFab=doc.getElementById('pwa-calc-fab'),calcWrap=doc.getElementById('pwa-calc-wrap'),calcPanel=doc.getElementById('mini-calc-panel'),calcClose=doc.getElementById('mini-calc-close'),tocClose=null;
 var searchIndex=null,searchBuildPromise=null,searchTimer=0,searchRequest=0;
 var navSerial=0,landRaf1=0,landRaf2=0,routeRaf=0;
-var progressTimer=0,tableState=null,resizeRaf=0;
+var progressTimer=0,tableState=null,resizeRaf=0,backTopRaf=0;
 var supportsHistory=!!(window.history&&history.pushState&&history.replaceState);
 var PROGRESS_KEY='vg-app-progress-v2';
 
@@ -13578,15 +14027,15 @@ function cleanTitle(sec){if(!sec)return'Guide';var exact=sec.querySelector(':sco
 function sectionOf(el){return el&&el.closest&&el.closest('section.chap[id]');}
 function openAncestors(el){try{var d=el&&el.closest&&el.closest('details');while(d){d.open=true;d=d.parentElement&&d.parentElement.closest('details');}}catch(_){}}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function stickyOffset(){return 72;}
+function stickyOffset(){var bar=doc.querySelector('.pwa-top');return Math.ceil((bar&&bar.getBoundingClientRect().height)||56)+10;}
 function cancelLanding(){navSerial++;if(landRaf1)cancelAnimationFrame(landRaf1);if(landRaf2)cancelAnimationFrame(landRaf2);landRaf1=landRaf2=0;return navSerial;}
 function scheduleLand(target,serial,options){if(!target||serial!==navSerial)return;options=options||{};landRaf1=requestAnimationFrame(function(){landRaf2=requestAnimationFrame(function(){if(serial!==navSerial||!target.isConnected)return;var top;if(Number.isFinite(options.sectionOffset)){var sec=options.section||sectionOf(target)||target;top=sec.getBoundingClientRect().top+(window.pageYOffset||0)-stickyOffset()+Math.max(0,options.sectionOffset);}else{top=target.getBoundingClientRect().top+(window.pageYOffset||0)-stickyOffset();}window.scrollTo({top:Math.max(0,top),left:0,behavior:'auto'});landRaf1=landRaf2=0;});});}
 
 var overlayManager=(function(){
   var current=null,savedY=0,locked=false;
   function focusables(container){if(!container)return[];return[].slice.call(container.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])')).filter(function(el){var r=el.getBoundingClientRect();return !el.hidden&&r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';});}
-  function lock(){if(locked)return;locked=true;savedY=window.scrollY||window.pageYOffset||0;body.classList.add('pwa-modal-open');body.style.position='fixed';body.style.top=(-savedY)+'px';body.style.left='0';body.style.right='0';body.style.width='100%';}
-  function unlock(){if(!locked)return;locked=false;var y=savedY;body.classList.remove('pwa-modal-open');body.style.position='';body.style.top='';body.style.left='';body.style.right='';body.style.width='';window.scrollTo(0,y);}
+  function lock(){if(locked)return;locked=true;savedY=window.scrollY||window.pageYOffset||0;root.classList.add('pwa-modal-open');body.classList.add('pwa-modal-open');root.style.overflow='hidden';body.style.overflow='hidden';}
+  function unlock(){if(!locked)return;locked=false;var y=savedY;root.classList.remove('pwa-modal-open');body.classList.remove('pwa-modal-open');root.style.overflow='';body.style.overflow='';requestAnimationFrame(function(){window.scrollTo(0,y);});}
   function closeInternal(restoreFocus,keepLock){if(!current)return;var c=current;current=null;try{if(c.onClose)c.onClose();}catch(_){}if(c.container)c.container.setAttribute('aria-hidden','true');if(!keepLock)unlock();if(restoreFocus!==false&&c.opener&&c.opener.isConnected){requestAnimationFrame(function(){try{c.opener.focus({preventScroll:true});}catch(_){try{c.opener.focus();}catch(__){}}});}}
   function open(key,container,opener,opts){opts=opts||{};if(current&&current.key===key)return;if(current)closeInternal(false,true);else lock();current={key:key,container:container,opener:opener||doc.activeElement,onClose:opts.onClose||null};if(container)container.setAttribute('aria-hidden','false');try{if(opts.onOpen)opts.onOpen();}catch(_){}requestAnimationFrame(function(){if(!current||current.key!==key)return;var focusTarget=typeof opts.focus==='function'?opts.focus():opts.focus;var list=focusables(container);var el=focusTarget&&focusTarget.isConnected?focusTarget:list[0]||container;if(el){try{el.focus({preventScroll:true});}catch(_){try{el.focus();}catch(__){}}}});}
   function close(key,restoreFocus){if(!current)return;if(key&&current.key!==key)return;closeInternal(restoreFocus,false);}
@@ -13605,6 +14054,19 @@ function saveProgressNow(){clearTimeout(progressTimer);progressTimer=0;if(!activ
 function queueProgressSave(){if(!active||!numbered(active)||overlayManager.isOpen())return;clearTimeout(progressTimer);progressTimer=setTimeout(saveProgressNow,240);}
 function updateContinue(){var p=readProgress();if(!continueButton||!resumeCard)return;if(!p){resumeCard.hidden=true;continueButton.dataset.id='';continueButton.textContent='Continue';return;}var sec=doc.getElementById(p.chapter),n=numbered(sec);resumeCard.hidden=false;continueButton.dataset.id=sec.id;continueButton.textContent='Continue · Chapter '+n;var span=resumeCard.querySelector('span');if(span)span.textContent='Return to Chapter '+n+' at your last reading position.';}
 
+
+function ensureTocHeader(){if(!toc||toc.querySelector('.pwa-toc-head'))return;var head=doc.createElement('div');head.className='pwa-toc-head';var tx=doc.createElement('div');tx.innerHTML='<b>Contents</b><small>43 chapters · reference workspaces</small>';var close=doc.createElement('button');close.type='button';close.setAttribute('aria-label','Close contents');close.textContent='×';close.addEventListener('click',function(){overlayManager.close('toc',true);});head.appendChild(tx);head.appendChild(close);toc.insertBefore(head,toc.firstChild);tocClose=close;}
+function chapterTopY(){var target=chapterNav&&!chapterNav.hidden?chapterNav:active;if(!target)return 0;return Math.max(0,target.getBoundingClientRect().top+(window.pageYOffset||0)-stickyOffset()+2);}
+function scrollChapterTop(smooth){cancelLanding();window.scrollTo({top:chapterTopY(),left:0,behavior:(smooth&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches))?'smooth':'auto'});}
+function updateBackTop(){backTopRaf=0;if(!backTop)return;var show=false;if(active&&numbered(active)&&!overlayManager.isOpen()){var secTop=active.getBoundingClientRect().top+(window.pageYOffset||0);show=(window.pageYOffset||0)>secTop+520;}backTop.classList.toggle('is-visible',show);}
+function queueBackTopUpdate(){if(backTopRaf)return;backTopRaf=requestAnimationFrame(updateBackTop);}
+function ensureChapterEndNav(sec){var n=numbered(sec);if(!n||sec.querySelector(':scope > .pwa-chapter-end-nav'))return;var nav=doc.createElement('nav');nav.className='pwa-chapter-end-nav';nav.setAttribute('aria-label','End of Chapter '+n+' navigation');var label=doc.createElement('div');label.className='pwa-end-label';label.textContent='End of Chapter '+n;nav.appendChild(label);function add(dir,dest){var b=doc.createElement('button');b.type='button';b.dataset.dir=dir;var target=doc.getElementById('c'+dest);if(!target){b.disabled=true;b.innerHTML='<small>'+dir+'</small><b>No adjacent chapter</b>';}else{b.innerHTML='<small>'+(dir==='prev'?'← Previous':'Next →')+'</small><b>'+dest+' · '+esc(cleanTitle(target))+'</b>';b.setAttribute('aria-label',(dir==='prev'?'Previous':'Next')+' chapter: '+cleanTitle(target));b.addEventListener('click',function(){activate(target,target,'push');});}nav.appendChild(b);}add('prev',n-1);add('next',n+1);var top=doc.createElement('button');top.type='button';top.className='pwa-end-top';top.innerHTML='↑ Back to the top of Chapter '+n;top.addEventListener('click',function(){scrollChapterTop(true);});nav.appendChild(top);sec.appendChild(nav);}
+function openCalculator(e){if(!calcWrap||!calcPanel)return;var opener=(e&&e.currentTarget&&e.currentTarget.id==='pwa-tools-calc')?calcFab:(e&&e.currentTarget)||calcFab;overlayManager.open('calculator',calcWrap,opener,{onOpen:function(){calcWrap.classList.add('show');calcPanel.classList.add('show');calcFab&&calcFab.classList.add('active');},onClose:function(){calcWrap.classList.remove('show');calcPanel.classList.remove('show');calcFab&&calcFab.classList.remove('active');},focus:doc.getElementById('mc-vt')||calcClose});}
+function initMiniCalculator(){if(!calcPanel||calcPanel.dataset.pwaCalcReady==='1')return;calcPanel.dataset.pwaCalcReady='1';var key='mv-mc-v2',fields=['mc-sex','mc-ht','mc-vt','mc-rr','mc-pip','mc-pplat','mc-peep','mc-flow','mc-fio2','mc-pao2'];function num(id){var el=doc.getElementById(id),v=el?parseFloat(el.value):NaN;return isFinite(v)?v:NaN;}function fmt(v,dp,unit){return isFinite(v)?v.toFixed(dp==null?1:dp)+(unit||''):'—';}function mode(){var a=calcPanel.querySelector('.mc-mode-btn.active');return a?a.dataset.mode:'vc';}function calc(){var sex=(doc.getElementById('mc-sex')||{}).value||'m',ht=num('mc-ht'),vt=num('mc-vt'),rr=num('mc-rr'),pip=num('mc-pip'),pplat=num('mc-pplat'),peep=num('mc-peep'),flow=num('mc-flow'),fio2=num('mc-fio2'),pao2=num('mc-pao2');var pbw=isFinite(ht)?((sex==='f'?45.5:50)+2.3*(ht-60)):NaN,dp=(isFinite(pplat)&&isFinite(peep))?pplat-peep:NaN,cstat=(isFinite(vt)&&isFinite(dp)&&dp>0)?vt/dp:NaN,flowLps=(isFinite(flow)&&flow>0)?flow/60:NaN,raw=(isFinite(pip)&&isFinite(pplat)&&isFinite(flowLps))?(pip-pplat)/flowLps:NaN,tau=(isFinite(raw)&&isFinite(cstat))?raw*(cstat/1000):NaN,mp=NaN;if(isFinite(rr)&&isFinite(vt)&&isFinite(dp)){mp=mode()==='pc'&&isFinite(peep)?0.098*rr*(vt/1000)*(peep+dp):(mode()==='vc'&&isFinite(pip)?0.098*rr*(vt/1000)*(pip-.5*dp):NaN);}var vtpbw=(isFinite(vt)&&isFinite(pbw)&&pbw>0)?vt/pbw:NaN,ve=(isFinite(vt)&&isFinite(rr))?vt*rr/1000:NaN,pf=(isFinite(pao2)&&isFinite(fio2)&&fio2>0)?pao2/fio2:NaN,rsbi=(isFinite(rr)&&isFinite(vt)&&vt>0)?rr/(vt/1000):NaN;var vals={'mc-pbw':fmt(pbw,0,' kg'),'mc-vtpbw':fmt(vtpbw,1,' mL/kg'),'mc-ve':fmt(ve,1,' L/min'),'mc-dp':fmt(dp,1,' cmH₂O'),'mc-cstat':fmt(cstat,1,' mL/cmH₂O'),'mc-raw':fmt(raw,1,' cmH₂O·s/L'),'mc-tau':fmt(tau,2,' s'),'mc-mp':fmt(mp,1,' J/min'),'mc-pf':fmt(pf,0,''),'mc-rsbi':fmt(rsbi,0,'')};Object.keys(vals).forEach(function(id){var el=doc.getElementById(id);if(el)el.textContent=vals[id];});var bin=doc.getElementById('mc-pf-bin');if(bin)bin.textContent=isFinite(pf)?'context':'—';try{var snap={mode:mode()};fields.forEach(function(id){var el=doc.getElementById(id);if(el)snap[id]=el.value;});localStorage.setItem(key,JSON.stringify(snap));}catch(_){}}
+function restore(){try{var raw=localStorage.getItem(key);if(!raw)return;var s=JSON.parse(raw);fields.forEach(function(id){var el=doc.getElementById(id);if(el&&s[id]!=null)el.value=s[id];});if(s.mode)calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.mode===s.mode);});}catch(_){}}
+function copy(){var pairs=[['VT','mc-vt'],['RR','mc-rr'],['PIP','mc-pip'],['Pplat','mc-pplat'],['PEEP','mc-peep'],['FiO₂','mc-fio2'],['PaO₂','mc-pao2']],parts=[];pairs.forEach(function(p){var v=num(p[1]);if(isFinite(v))parts.push(p[0]+' '+v);});var text=parts.join(', ')+(mode()==='pc'?' [PC]':'');var ok=function(){var c=doc.getElementById('mc-copy-confirm');if(c){c.textContent='✓ copied';setTimeout(function(){c.textContent='';},1400);}};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(ok,function(){});else{var ta=doc.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';body.appendChild(ta);ta.select();try{doc.execCommand('copy');ok();}catch(_){}ta.remove();}}
+fields.forEach(function(id){var el=doc.getElementById(id);if(el){el.addEventListener('input',calc);el.addEventListener('change',calc);}});calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(b){b.addEventListener('click',function(){calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');calc();});});var cp=doc.getElementById('mc-copy');if(cp)cp.addEventListener('click',copy);calcPanel.querySelectorAll('[data-tip]').forEach(function(el){if(el.dataset.tip)el.title=el.dataset.tip;});restore();calc();}
+
 function refreshTableButtons(sec){if(!sec)return;sec.querySelectorAll('.pwa-table-tools-inline').forEach(function(tool){var table=tool._pwaTable;if(!table||!table.isConnected){tool.remove();return;}var scroller=table.closest('.table-scroll,.tbl-pos')||table;var over=(scroller.scrollWidth>scroller.clientWidth+8)||(table.scrollWidth>table.clientWidth+8);tool.hidden=!over;});}
 function tableLabel(table){var cap=table.querySelector('caption');if(cap&&normalizeText(cap.textContent))return normalizeText(cap.textContent);var details=table.closest('details');if(details){var sum=details.querySelector(':scope > summary');var st=cleanNodeText(sum);if(st)return st;}var prev=table.previousElementSibling;while(prev&&prev.tagName&&!/^H[3-6]$/.test(prev.tagName))prev=prev.previousElementSibling;if(prev){var pt=cleanNodeText(prev);if(pt)return pt;}var sec=sectionOf(table);return (sec?cleanTitle(sec):'Guide')+' — full table';}
 function cloneClean(node){var clone=node.cloneNode(true);clone.removeAttribute&&clone.removeAttribute('id');clone.querySelectorAll&&clone.querySelectorAll('[id],.pwa-figure-open,.pwa-table-tools-inline,script').forEach(function(n){if(n.matches&&n.matches('.pwa-figure-open,.pwa-table-tools-inline,script'))n.remove();else n.removeAttribute('id');});return clone;}
@@ -13618,10 +14080,10 @@ function enhanceFigures(sec){sec.querySelectorAll('img').forEach(function(img){i
 sec.querySelectorAll('.figure > svg').forEach(function(svg){if(svg.dataset.pwaZoom)return;svg.dataset.pwaZoom='1';svg.tabIndex=0;svg.setAttribute('role','button');svg.setAttribute('aria-label','Open enlarged figure');function open(e){if(e.type==='keydown'&&e.key!=='Enter'&&e.key!==' ')return;e.preventDefault();openLightbox(svg,svg,false);}svg.addEventListener('click',open);svg.addEventListener('keydown',open);});
 sec.querySelectorAll('.figure').forEach(function(fig){if(fig.dataset.pwaCompoundReady==='1'||!staticFigure(fig))return;var direct=fig.querySelector(':scope > img,:scope > svg');if(direct)return;fig.dataset.pwaCompoundReady='1';var btn=doc.createElement('button');btn.type='button';btn.className='pwa-figure-open';btn.innerHTML='<span aria-hidden="true">⤢</span><span class="pwa-figure-open-text">View full figure</span>';var cap=fig.querySelector('.cap,figcaption');btn.setAttribute('aria-label','View full figure'+(cap?': '+cleanNodeText(cap):''));btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();openLightbox(fig,btn,true);});fig.appendChild(btn);});}
 
-function enhance(sec){if(!sec)return;if(sec.classList.contains('collapsed'))sec.classList.remove('collapsed');if(sec.dataset.pwaEnhanced!=='1'){sec.dataset.pwaEnhanced='1';sec.querySelectorAll('iframe').forEach(function(f){f.loading='lazy';if(!f.getAttribute('src')&&f.dataset.src)f.setAttribute('src',f.dataset.src);});sec.querySelectorAll('abbr[data-tip]').forEach(function(a){var d=(a.getAttribute('data-tip')||'').trim();if(d){a.title=d;a.tabIndex=0;}});enhanceFigures(sec);enhanceTables(sec);if(window.__vgRenderMath)window.__vgRenderMath(sec);}else{refreshTableButtons(sec);}}
+function enhance(sec){if(!sec)return;if(sec.id==='book-index'&&window.__vgBuildBookIndex)window.__vgBuildBookIndex();if(sec.classList.contains('collapsed'))sec.classList.remove('collapsed');if(numbered(sec))ensureChapterEndNav(sec);if(sec.dataset.pwaEnhanced!=='1'){sec.dataset.pwaEnhanced='1';sec.querySelectorAll('iframe').forEach(function(f){f.loading='lazy';if(!f.getAttribute('src')&&f.dataset.src)f.setAttribute('src',f.dataset.src);});sec.querySelectorAll('abbr[data-tip]').forEach(function(a){var d=(a.getAttribute('data-tip')||'').trim();if(d){a.title=d;a.tabIndex=0;}});enhanceFigures(sec);enhanceTables(sec);if(window.__vgRenderMath)window.__vgRenderMath(sec);}else{refreshTableButtons(sec);}}
 
-function activate(sec,target,mode,options){if(!sec)return;options=options||{};if(active&&active!==sec)saveProgressNow();clearTimeout(progressTimer);var serial=cancelLanding();sections.forEach(function(s){s.classList.toggle('app-active',s===sec);});active=sec;activeTarget=target||sec;body.classList.add('pwa-reading');if(sec.classList.contains('collapsed'))sec.classList.remove('collapsed');openAncestors(activeTarget);updateNav(sec,activeTarget);overlayManager.closeAll(false);enhance(sec);setHash((activeTarget.id||sec.id),mode||'push');try{localStorage.setItem('vg-app-last',sec.id);}catch(_){}if(Number.isFinite(options.restoreOffset)){scheduleLand(sec,serial,{section:sec,sectionOffset:options.restoreOffset});}else{scheduleLand(activeTarget===sec&&numbered(sec)?chapterNav:activeTarget,serial);}}
-function home(mode,target){if(active)saveProgressNow();clearTimeout(progressTimer);var serial=cancelLanding();sections.forEach(function(s){s.classList.remove('app-active');});active=null;activeTarget=null;body.classList.remove('pwa-reading');chapterNav.hidden=true;topTitle.textContent='Guide to Ventilation';topMeta.textContent='Public edition 1.2';syncToc(null,null);overlayManager.closeAll(false);setHash('',mode||'push');requestAnimationFrame(function(){if(serial!==navSerial)return;if(target)scheduleLand(target,serial);else window.scrollTo({top:0,left:0,behavior:'auto'});});updateContinue();}
+function activate(sec,target,mode,options){if(!sec)return;options=options||{};if(active&&active!==sec)saveProgressNow();clearTimeout(progressTimer);var serial=cancelLanding();sections.forEach(function(s){s.classList.toggle('app-active',s===sec);});active=sec;activeTarget=target||sec;body.classList.add('pwa-reading');if(sec.classList.contains('collapsed'))sec.classList.remove('collapsed');openAncestors(activeTarget);updateNav(sec,activeTarget);overlayManager.closeAll(false);enhance(sec);setHash((activeTarget.id||sec.id),mode||'push');requestAnimationFrame(updateBackTop);try{localStorage.setItem('vg-app-last',sec.id);}catch(_){}if(Number.isFinite(options.restoreOffset)){scheduleLand(sec,serial,{section:sec,sectionOffset:options.restoreOffset});}else{scheduleLand(activeTarget===sec&&numbered(sec)?chapterNav:activeTarget,serial);}}
+function home(mode,target){if(active)saveProgressNow();clearTimeout(progressTimer);var serial=cancelLanding();sections.forEach(function(s){s.classList.remove('app-active');});active=null;activeTarget=null;body.classList.remove('pwa-reading');chapterNav.hidden=true;topTitle.textContent='Guide to Ventilation';topMeta.textContent='Public edition 1.2';syncToc(null,null);overlayManager.closeAll(false);setHash('',mode||'push');if(backTop)backTop.classList.remove('is-visible');requestAnimationFrame(function(){if(serial!==navSerial)return;if(target)scheduleLand(target,serial);else window.scrollTo({top:0,left:0,behavior:'auto'});});updateContinue();}
 function targetFromPart(part){var n=part&&part.nextElementSibling;while(n){if(n.matches&&n.matches('section.chap[id^="c"]'))return n;if(n.matches&&n.matches('.part'))break;n=n.nextElementSibling;}return null;}
 function goToTarget(target,mode,options){if(!target)return;var sec=sectionOf(target);if(sec){activate(sec,target,mode,options);return;}if(target.classList&&target.classList.contains('part')){var first=targetFromPart(target);if(first)activate(first,first,mode,options);return;}home(mode,target);}
 function fromHash(mode){var id=(location.hash||'').replace(/^#/,'');if(!id){home('none');return;}var t=doc.getElementById(decodeURIComponent(id));if(t)goToTarget(t,mode||'none');else home('none');}
@@ -13633,7 +14095,7 @@ function openToc(e){if(overlayManager.isOpen('toc')){overlayManager.close('toc',
 function openSearch(e){saveProgressNow();var opener=e&&e.currentTarget||doc.activeElement;overlayManager.open('search',search,opener,{onOpen:function(){search.classList.add('show');prepareSearchIndex();},onClose:function(){search.classList.remove('show');},focus:searchInput});}
 function openTools(e){saveProgressNow();var opener=e&&e.currentTarget||doc.activeElement;overlayManager.open('tools',tools,opener,{onOpen:function(){tools.classList.add('show');},onClose:function(){tools.classList.remove('show');},focus:doc.getElementById('pwa-font-down')});}
 function ensureRuntimeId(el,sec,index){if(el.id)return el.id;var id=sec.id+'-pwa-search-'+index;var n=1;while(doc.getElementById(id))id=sec.id+'-pwa-search-'+index+'-'+(++n);el.id=id;return id;}
-function makeSearchEntry(sec){var text=normalizeText(sec.textContent),targets=[],nodes=[].slice.call(sec.querySelectorAll('h4,h5,h6,details.chap-acc'));nodes.forEach(function(node,i){var target=node.matches('details')?(node.querySelector(':scope > summary h4,:scope > summary h5,:scope > summary')||node):node;var tx=normalizeText(node.textContent);if(!tx)return;ensureRuntimeId(target,sec,i+1);targets.push({el:target,text:tx,lower:tx.toLowerCase(),title:cleanNodeText(target)||cleanTitle(sec)});});return{sec:sec,title:cleanTitle(sec),text:text,lower:text.toLowerCase(),targets:targets};}
+function makeSearchEntry(sec){var sc=sec.cloneNode(true);sc.querySelectorAll('.pwa-chapter-end-nav,.pwa-table-tools-inline,.pwa-figure-open').forEach(function(n){n.remove();});var text=normalizeText(sc.textContent),targets=[],nodes=[].slice.call(sec.querySelectorAll('h4,h5,h6,details.chap-acc'));nodes.forEach(function(node,i){var target=node.matches('details')?(node.querySelector(':scope > summary h4,:scope > summary h5,:scope > summary')||node):node;var tx=normalizeText(node.textContent);if(!tx)return;ensureRuntimeId(target,sec,i+1);targets.push({el:target,text:tx,lower:tx.toLowerCase(),title:cleanNodeText(target)||cleanTitle(sec)});});return{sec:sec,title:cleanTitle(sec),text:text,lower:text.toLowerCase(),targets:targets};}
 function prepareSearchIndex(){if(searchIndex)return Promise.resolve(searchIndex);if(searchBuildPromise)return searchBuildPromise;searchBuildPromise=new Promise(function(resolve){var out=[],i=0;function step(deadline){var count=0;while(i<sections.length&&(count<3||deadline&&deadline.timeRemaining&&deadline.timeRemaining()>4)){out.push(makeSearchEntry(sections[i++]));count++;}if(i<sections.length){if('requestIdleCallback'in window)requestIdleCallback(step,{timeout:80});else setTimeout(step,0);}else{searchIndex=out;resolve(out);}}if('requestIdleCallback'in window)requestIdleCallback(step,{timeout:80});else setTimeout(step,0);});return searchBuildPromise;}
 function renderSearch(q){q=(q||'').trim();var request=++searchRequest;if(q.length<2){searchMeta.textContent='';searchResults.innerHTML='<div class="pwa-result"><b>Search the guide</b><span>Type at least two characters. The search index is prepared once and reused, keeping repeated searches smooth.</span></div>';return;}searchMeta.textContent='Searching…';prepareSearchIndex().then(function(index){if(request!==searchRequest)return;var lo=q.toLowerCase(),hits=[];index.some(function(e){var k=e.lower.indexOf(lo);if(k<0)return false;var target=e.sec,segment=e.text,segLower=e.lower,segTitle=e.title;for(var i=0;i<e.targets.length;i++){var t=e.targets[i],tk=t.lower.indexOf(lo);if(tk>=0){target=t.el;segment=t.text;segLower=t.lower;segTitle=e.title+' · '+t.title;k=tk;break;}}var st=Math.max(0,k-42),en=Math.min(segment.length,k+q.length+88);hits.push({entry:e,target:target,title:segTitle,snip:(st?'…':'')+segment.slice(st,en)+(en<segment.length?'…':'')});return hits.length>=36;});searchMeta.textContent=hits.length+(hits.length===1?' result':' results');searchResults.innerHTML='';hits.forEach(function(h){var b=doc.createElement('button');b.type='button';b.className='pwa-result';b.innerHTML='<b>'+esc(h.title)+'</b><span>'+esc(h.snip)+'</span>';b.addEventListener('click',function(){activate(h.entry.sec,h.target,'push');});searchResults.appendChild(b);});if(!hits.length)searchResults.innerHTML='<div class="pwa-result"><b>No matches</b><span>Try a broader physiologic term or chapter title.</span></div>';});}
 
@@ -13646,24 +14108,24 @@ function restorePrefs(){var th='system',fs=100;try{th=localStorage.getItem('mv-t
 
 // Route every internal link through one navigation transaction.
 doc.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;var href=a.getAttribute('href')||'';if(href==='#'||href===''){e.preventDefault();home('push');return;}var t=doc.getElementById(decodeURIComponent(href.slice(1)));if(!t)return;e.preventDefault();goToTarget(t,'push');});
-menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-controls','guide-contents');menuButton.addEventListener('click',openToc);doc.getElementById('pwa-home-top').addEventListener('click',function(){home('push');});scrim.addEventListener('click',function(){overlayManager.close('toc',true);});
+ensureTocHeader();menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-controls','guide-contents');menuButton.addEventListener('click',openToc);doc.getElementById('pwa-home-top').addEventListener('click',function(){home('push');});scrim.addEventListener('click',function(){overlayManager.close('toc',true);});
 doc.querySelectorAll('[data-pwa-action="contents"]').forEach(function(b){b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','guide-contents');b.addEventListener('click',openToc);});
 doc.querySelectorAll('[data-pwa-action="search"]').forEach(function(b){b.addEventListener('click',openSearch);});doc.querySelectorAll('[data-pwa-action="home"]').forEach(function(b){b.addEventListener('click',function(){home('push');});});doc.querySelectorAll('[data-pwa-action="bedside"]').forEach(function(b){b.addEventListener('click',function(){var t=doc.getElementById('bedside-now');activate(t,t,'push');});});doc.querySelectorAll('[data-pwa-action="tools"]').forEach(function(b){b.addEventListener('click',openTools);});
 doc.getElementById('pwa-start').addEventListener('click',function(){var s=doc.getElementById('c1');activate(s,s,'push');});continueButton.addEventListener('click',resumeProgress);
-prev.addEventListener('click',function(){var s=doc.getElementById(prev.dataset.id);activate(s,s,'push');});next.addEventListener('click',function(){var s=doc.getElementById(next.dataset.id);activate(s,s,'push');});
+prev.addEventListener('click',function(){var s=doc.getElementById(prev.dataset.id);activate(s,s,'push');});next.addEventListener('click',function(){var s=doc.getElementById(next.dataset.id);activate(s,s,'push');});if(backTop)backTop.addEventListener('click',function(){scrollChapterTop(true);});if(calcFab)calcFab.addEventListener('click',openCalculator);if(calcClose)calcClose.addEventListener('click',function(){overlayManager.close('calculator',true);});if(calcWrap)calcWrap.addEventListener('click',function(e){if(e.target===calcWrap)overlayManager.close('calculator',true);});
 searchInput.addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(function(){renderSearch(searchInput.value);},150);});doc.getElementById('pwa-search-close').addEventListener('click',function(){overlayManager.close('search',true);});
-doc.getElementById('pwa-tools-close').addEventListener('click',function(){overlayManager.close('tools',true);});tools.addEventListener('click',function(e){if(e.target===tools)overlayManager.close('tools',true);});doc.getElementById('pwa-theme-light').addEventListener('click',function(){applyTheme('light');});doc.getElementById('pwa-theme-dark').addEventListener('click',function(){applyTheme('dark');});doc.getElementById('pwa-font-down').addEventListener('click',function(){fontStep(-10);});doc.getElementById('pwa-font-up').addEventListener('click',function(){fontStep(10);});var legacyFull=doc.getElementById('pwa-open-full');if(legacyFull)legacyFull.remove();
+doc.getElementById('pwa-tools-close').addEventListener('click',function(){overlayManager.close('tools',true);});tools.addEventListener('click',function(e){if(e.target===tools)overlayManager.close('tools',true);});doc.getElementById('pwa-tools-calc').addEventListener('click',openCalculator);doc.getElementById('pwa-tools-index').addEventListener('click',function(){var t=doc.getElementById('book-index');activate(t,t,'push');});doc.getElementById('pwa-theme-light').addEventListener('click',function(){applyTheme('light');});doc.getElementById('pwa-theme-dark').addEventListener('click',function(){applyTheme('dark');});doc.getElementById('pwa-font-down').addEventListener('click',function(){fontStep(-10);});doc.getElementById('pwa-font-up').addEventListener('click',function(){fontStep(10);});var legacyFull=doc.getElementById('pwa-open-full');if(legacyFull)legacyFull.remove();
 doc.addEventListener('click',function(e){var open=e.target.closest&&e.target.closest('[data-sim-open]');if(open){e.preventDefault();openSimulator(open);return;}var reset=e.target.closest&&e.target.closest('[data-sim-reset]');if(reset){e.preventDefault();resetSimulator(reset);return;}var ch=e.target.closest&&e.target.closest('[data-sim-challenge]');if(ch){var frame=doc.getElementById(ch.dataset.simChallenge),fig=frame&&frame.closest('.simulator-figure');if(fig){var box=fig.querySelector('.sim-challenge-active');if(box){box.hidden=false;box.innerHTML='<strong>Challenge:</strong> '+ch.dataset.challenge;}var ob=fig.querySelector('[data-sim-open]');if(ob)openSimulator(ob);}return;}});
 simClose.addEventListener('click',function(){closeSimulator(true);});simOverlay.addEventListener('click',function(e){if(e.target===simOverlay)closeSimulator(true);});
 doc.getElementById('pwa-lightbox-close').addEventListener('click',function(){overlayManager.close('lightbox',true);});lightbox.addEventListener('click',function(e){if(e.target===lightbox)overlayManager.close('lightbox',true);});
-if(tableViewer){tableClose.addEventListener('click',function(){overlayManager.close('table',true);});tableViewer.addEventListener('click',function(e){if(e.target===tableViewer)overlayManager.close('table',true);});tableOverview.addEventListener('click',function(){if(!tableState)return;tableState.mode='overview';renderTableViewer();});tableRead.addEventListener('click',function(){if(!tableState)return;tableState.mode='read';renderTableViewer();});tableZoomOut.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.max(75,tableState.textScale-10);renderTableViewer();});tableZoomIn.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.min(160,tableState.textScale+10);renderTableViewer();});}
+if(tableViewer){var closeTable=function(e){if(e){if(e.cancelable)e.preventDefault();e.stopPropagation();}overlayManager.close('table',true);};tableClose.addEventListener('click',closeTable);if(tableDone)tableDone.addEventListener('click',closeTable);tableViewer.addEventListener('click',function(e){if(e.target===tableViewer)overlayManager.close('table',true);});tableOverview.addEventListener('click',function(){if(!tableState)return;tableState.mode='overview';renderTableViewer();});tableRead.addEventListener('click',function(){if(!tableState)return;tableState.mode='read';renderTableViewer();});tableZoomOut.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.max(75,tableState.textScale-10);renderTableViewer();});tableZoomIn.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.min(160,tableState.textScale+10);renderTableViewer();});}
 body.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('abbr[data-tip]');if(!a)return;var d=a.getAttribute('data-tip');if(!d)return;var r=a.getBoundingClientRect();tip.textContent=d;tip.classList.add('show');var tw=tip.getBoundingClientRect().width;tip.style.left=Math.max(8,Math.min(innerWidth-tw-8,r.left))+'px';tip.style.top=Math.min(innerHeight-80,r.bottom+8)+'px';setTimeout(function(){tip.classList.remove('show');},2600);},true);
 doc.addEventListener('keydown',overlayManager.keydown);
 window.addEventListener('popstate',scheduleHistoryRoute);if(!supportsHistory)window.addEventListener('hashchange',scheduleHistoryRoute);
-window.addEventListener('scroll',queueProgressSave,{passive:true});window.addEventListener('pagehide',saveProgressNow);doc.addEventListener('visibilitychange',function(){if(doc.visibilityState==='hidden')saveProgressNow();});
-window.addEventListener('resize',function(){if(resizeRaf)cancelAnimationFrame(resizeRaf);resizeRaf=requestAnimationFrame(function(){resizeRaf=0;refreshTableButtons(active);if(tableState&&tableState.mode==='overview')renderTableViewer();});},{passive:true});
+window.addEventListener('scroll',function(){queueProgressSave();queueBackTopUpdate();},{passive:true});window.addEventListener('pagehide',saveProgressNow);doc.addEventListener('visibilitychange',function(){if(doc.visibilityState==='hidden')saveProgressNow();});
+window.addEventListener('resize',function(){if(resizeRaf)cancelAnimationFrame(resizeRaf);resizeRaf=requestAnimationFrame(function(){resizeRaf=0;refreshTableButtons(active);if(tableState&&tableState.mode==='overview')renderTableViewer();updateBackTop();});},{passive:true});
 
-restorePrefs();updateContinue();
+initMiniCalculator();restorePrefs();updateContinue();updateBackTop();
 if(location.hash)fromHash('none');else home('none');
 
 // One quiet registration. The worker never reloads or navigates an open app.
@@ -13677,5 +14139,5 @@ var seen=false;try{seen=localStorage.getItem('mv-seen-intro')==='1';}catch(_){}i
 </script>
 
 
-<div hidden id="pwa-mobile-single-experience-complete-v110111" data-build="v1.10.111">MOBILE_SINGLE_EXPERIENCE_COMPLETE</div>
+<div hidden id="pwa-mobile-usability-complete-v110112" data-build="v1.10.112">MOBILE_USABILITY_FINALIZATION_COMPLETE</div>
 </body></html>

@@ -1,10 +1,10 @@
 {
-  "name": "Guide to Ventilation \u2014 Bedside Reference",
+  "name": "Guide to Ventilation — Bedside Reference",
   "publicEdition": "1.2",
-  "build": "v1.10.111",
+  "build": "v1.10.112",
   "canonical": "mechanical-ventilation-teaching-reference.html",
   "appEntry": "ventilation-guide-app.html",
   "serviceWorker": "ventilation-guide-sw.js",
-  "cache": "ventilation-guide-core-v1.10.111",
-  "released": "2026-08-16"
+  "cache": "ventilation-guide-core-v1.10.112",
+  "released": "2026-08-17"
 }
