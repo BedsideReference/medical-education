@@ -1,17 +1,18 @@
+<!-- PWA_NAVIGATION_TABLE_USABILITY_LOCK_v1_10_110 · 2026-08-16 · single-source history routing, cancellable chapter landings, true reading-position resume, unified overlay/focus/scroll locking, cached exact-target search, overflow-only full-table viewer, compound-figure enlargement, and mobile touch-target/landscape polish; Chapters 1–43 science, prose, equations, figures, and references unchanged -->
 <!doctype html>
-<html lang="en" data-build="v1.10.109" data-public-edition="1.2">
+<html lang="en" data-build="v1.10.110" data-public-edition="1.2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Guide to Ventilation — Installed App · v1.10.109</title>
+<title>Guide to Ventilation — Installed App · v1.10.110</title>
 <meta name="description" content="Chapter-at-a-time installed app for the Guide to Ventilation, public edition 1.2.">
 <meta name="theme-color" content="#0b1f3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vent Guide">
-<meta name="internal-build" content="v1.10.109">
-<link rel="manifest" href="manifest.webmanifest?build=1.10.109">
+<meta name="internal-build" content="v1.10.110">
+<link rel="manifest" href="manifest.webmanifest?build=1.10.110">
 <link rel="canonical" href="mechanical-ventilation-teaching-reference.html">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
@@ -3874,6 +3875,72 @@ details.chap-acc{content-visibility:visible!important;contain:none!important}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 @media print{.pwa-top,.pwa-bottom,.pwa-chapter-nav,.pwa-scrim,.pwa-overlay,.pwa-sheet-wrap,.pwa-intro{display:none!important}body.pwa-lite{padding:0!important}#main-content>section.chap.app-active{display:block!important}}
 </style>
+<style id="pwa-navigation-table-usability-v110110">
+/* Installed-app stability, navigation, overlays, tables, and mobile usability · v1.10.110 */
+body.pwa-modal-open{overflow:hidden!important;overscroll-behavior:none!important}
+:where(.pwa-top button,.pwa-bottom button,.pwa-chapter-nav button,.pwa-home-card button,.pwa-tools button,.pwa-overlay button,.pwa-intro button,.pwa-table-viewer button,.pwa-figure-open,.pwa-table-open):focus-visible,
+nav.toc a:focus-visible,.app-active img[role="button"]:focus-visible,.app-active svg[role="button"]:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 72%,white 28%);outline-offset:2px}
+nav.toc a.pwa-active{background:var(--accent-soft)!important;color:var(--accent)!important;font-weight:750!important;box-shadow:inset 3px 0 0 var(--accent)}
+nav.toc[aria-hidden="true"]{visibility:hidden}
+body.pwa-toc-open nav.toc[aria-hidden="false"]{visibility:visible}
+.pwa-home-card[hidden]{display:none!important}
+.pwa-home-panel{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pwa-home-card{min-width:0}.pwa-home-card span{min-height:3.5em}.pwa-home-card button{min-height:46px}
+.pwa-chapter-nav-mid b{white-space:normal;overflow:visible;text-overflow:clip;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;line-height:1.25;max-height:2.5em}
+.pwa-chapter-nav-mid small{margin-bottom:2px}
+
+/* Explicit full-table control appears only when the inline table overflows. */
+.pwa-table-tools-inline{display:flex;justify-content:flex-end;margin:-4px 0 13px;font-family:var(--font-sans)}
+.pwa-table-tools-inline[hidden]{display:none!important}
+.pwa-table-open,.pwa-figure-open{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 12px;border:1px solid color-mix(in srgb,var(--accent) 45%,var(--rule));border-radius:10px;background:var(--surface);color:var(--accent);font:750 .74rem/1.2 var(--font-sans);cursor:pointer;touch-action:manipulation;box-shadow:0 1px 0 rgba(15,23,42,.03)}
+.pwa-table-open:active,.pwa-figure-open:active{background:var(--accent-soft)}
+.figure>.pwa-figure-open{position:absolute;z-index:5;top:10px;right:10px;background:color-mix(in srgb,var(--surface) 94%,transparent);box-shadow:0 5px 16px rgba(15,23,42,.12)}
+.pwa-lightbox-host .pwa-figure-open{display:none!important}
+
+/* Full-screen table viewer: Overview fits every column; Read preserves comfortable text. */
+.pwa-table-viewer{position:fixed;z-index:1360;inset:0;display:none;flex-direction:column;background:var(--bg);color:var(--ink);padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);font-family:var(--font-sans)}
+.pwa-table-viewer.show{display:flex}
+.pwa-table-head{flex:none;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:9px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--rule);background:var(--surface);box-shadow:0 2px 14px rgba(15,23,42,.06)}
+.pwa-table-head>button{width:44px;height:44px;border:1px solid var(--rule);border-radius:11px;background:var(--surface);color:var(--accent);font-size:1.25rem}
+.pwa-table-heading{min-width:0}.pwa-table-heading small{display:block;color:var(--muted);font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800}.pwa-table-heading b{display:block;color:var(--ink);font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pwa-table-actions{display:flex;gap:6px;align-items:center}.pwa-table-actions button{min-height:40px;padding:0 10px;border:1px solid var(--rule);border-radius:9px;background:var(--surface);color:var(--ink-soft);font:750 .7rem var(--font-sans)}.pwa-table-actions button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}.pwa-table-actions .pwa-table-zoom{width:40px;padding:0;font-size:1rem}
+.pwa-table-host{flex:1;min-height:0;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pwa-table-host table{display:table!important;border-collapse:separate!important;border-spacing:0!important;margin:0!important;background:var(--surface)!important;white-space:normal!important;table-layout:auto!important}
+.pwa-table-host th,.pwa-table-host td{white-space:normal!important;min-width:7.5em;vertical-align:top}
+.pwa-table-overview-outer{position:relative;margin:0 auto;overflow:visible}.pwa-table-overview-frame{position:absolute;top:0;left:0;transform-origin:top left}.pwa-table-overview-frame table{box-shadow:0 8px 28px rgba(15,23,42,.12)}
+.pwa-table-read-wrap{height:100%;overflow:auto;border:1px solid var(--rule);border-radius:12px;background:var(--surface);-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pwa-table-read-wrap table{min-width:max-content!important}.pwa-table-read-wrap thead th{position:sticky!important;top:0!important;z-index:4!important;background:var(--surface)!important;box-shadow:0 1px 0 var(--rule)}
+.pwa-table-read-wrap th:first-child,.pwa-table-read-wrap td:first-child{position:sticky!important;left:0!important;z-index:3!important;background:var(--surface)!important;box-shadow:1px 0 0 var(--rule)}
+.pwa-table-read-wrap thead th:first-child{z-index:5!important}
+
+/* Compound HTML/CSS figures can now be enlarged without moving the live figure. */
+.pwa-lightbox-host{width:100%;height:100%;max-width:none!important;max-height:none!important;padding:54px 4px 8px;overflow:auto!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pwa-lightbox-host>.pwa-expanded-compound{width:980px!important;max-width:none!important;margin:0 auto!important;background:var(--surface)!important;color:var(--ink)!important;border-radius:12px!important;padding:14px!important;box-shadow:0 16px 46px rgba(0,0,0,.25)}
+.pwa-lightbox-host>.pwa-expanded-compound .pfh-grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))!important}.pwa-lightbox-host>.pwa-expanded-compound .pfh-grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))!important}.pwa-lightbox-host>.pwa-expanded-compound .pfh-grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))!important}.pwa-lightbox-host>.pwa-expanded-compound .pfh-grid.cols-5{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+.pwa-lightbox-host>.pwa-expanded-compound .failure-grid,.pwa-lightbox-host>.pwa-expanded-compound .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.pwa-lightbox-host>.pwa-expanded-compound img,.pwa-lightbox-host>.pwa-expanded-compound svg{max-width:100%!important;height:auto!important}
+
+/* Coarse-pointer affordances: enlarge hit areas without forcing visual bulk. */
+@media(pointer:coarse){
+  .app-active button,.app-active [role="button"],.app-active summary{min-height:44px;touch-action:manipulation}
+  .app-active input[type="range"]{min-height:44px;touch-action:pan-x}
+  .app-active input[type="checkbox"],.app-active input[type="radio"]{min-width:22px;min-height:22px}
+  .app-active label:has(input[type="checkbox"]),.app-active label:has(input[type="radio"]){min-height:44px;display:flex;align-items:center}
+}
+@media(max-width:620px){
+  .pwa-home-panel{grid-template-columns:1fr}.pwa-home-card span{min-height:0}
+  .pwa-table-head{grid-template-columns:44px minmax(0,1fr)}.pwa-table-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 40px 40px}.pwa-table-actions button{min-height:42px}
+  .pwa-table-host{padding:8px}
+  .pwa-figure-open-text{display:none}.figure>.pwa-figure-open{width:44px;padding:0}
+}
+@media(orientation:landscape) and (max-height:520px){
+  :root{--pwa-top:calc(48px + env(safe-area-inset-top,0px));--pwa-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
+  .pwa-chapter-nav{padding:6px;margin-bottom:8px}.pwa-chapter-nav-mid small{display:none}.pwa-chapter-nav-mid b{-webkit-line-clamp:1;line-clamp:1;max-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pwa-bottom button{gap:2px}.pwa-bottom button svg{width:18px;height:18px}
+}
+@media(max-width:360px){.pwa-shell{padding-left:9px;padding-right:9px}.pwa-top{grid-template-columns:42px minmax(0,1fr) 42px;padding-left:7px;padding-right:7px}.pwa-chapter-nav{grid-template-columns:42px minmax(0,1fr) 42px;padding:7px}.pwa-bottom button{font-size:.6rem}}
+@media(prefers-reduced-motion:reduce){.layout>nav.toc,.pwa-scrim{transition:none!important}}
+
+</style>
 
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="(function(){var o={delimiters:[{left:'$$',right:'$$',display:true},{left:'\[',right:'\]',display:true},{left:'\(',right:'\)',display:false}],throwOnError:false,strict:'ignore'};window.__vgRenderMath=function(r){try{if(r&&!r.dataset.katexRendered){renderMathInElement(r,o);r.dataset.katexRendered='1';}}catch(e){}};})();"></script>
@@ -3917,7 +3984,7 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.109</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.110</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Current through Aug 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -3984,7 +4051,7 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
 </div>
 </div>
 </section>
-<nav aria-label="Contents" class="toc" id="guide-contents">
+<nav aria-label="Contents" aria-hidden="true" class="toc" id="guide-contents" tabindex="-1">
 <a class="part-link" href="#cheatsheet"><h4>★ Bedside cheat sheet</h4></a>
 <a class="part-link" href="#book-index"><h4>◆ Index of tools &amp; tables</h4></a>
 <a class="part-link" href="#bedside-now"><h4><svg aria-hidden="true" fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" style="vertical-align:-0.12em;margin-right:.3em" viewbox="0 0 24 24" width="1em"><path d="M3 12h3.5l2.2-6.5 4 13 2.3-6.5H21"></path></svg>Bedside-Now</h4></a>
@@ -4073,7 +4140,7 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
 <div class="pwa-home-panel">
   <section class="pwa-home-hero"><small>Installed edition · public edition 1.2</small><h1>Guide to Ventilation</h1><p>Fast chapter switching without rendering the entire book at once. Open Contents to jump anywhere, or resume where you left off.</p></section>
   <div class="pwa-home-card"><b>Read the guide</b><span>Open one chapter at a time for a stable installed-app experience.</span><button id="pwa-start" type="button">Start with Chapter 1</button></div>
-  <div class="pwa-home-card"><b>Resume</b><span>Return to the last chapter opened in this installed app.</span><button id="pwa-continue" type="button">Continue</button></div>
+  <div class="pwa-home-card" id="pwa-resume-card" hidden><b>Resume</b><span>Return to your last reading position.</span><button id="pwa-continue" type="button">Continue</button></div>
   <div class="pwa-home-card"><b>Bedside workspace</b><span>Open the consolidated bedside decision support without loading the whole book.</span><button data-pwa-action="bedside" type="button">Open Bedside-Now</button></div>
 </div>
 <nav class="pwa-chapter-nav" id="pwa-chapter-nav" aria-label="Chapter navigation" hidden>
@@ -13148,13 +13215,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li id="r256">Volpe MS, Adams AB, Amato MBP, Marini JJ. Ventilation patterns influence airway secretion movement. <em>Respir Care</em>. 2008;53(10):1287–1294. PMID: 18811989.</li>
 <li id="r257">Li J, Liu K, Lyu S, et al. Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em>. 2023;13(1):63. doi:10.1186/s13613-023-01147-4. PMID: 37428465.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.109.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.110.</p>
 </section>
 </main>
 </div>
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.109 · Chapters 1–43 scientifically locked · Complete chapter-label cleanup · Last reviewed August 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.110 · Chapters 1–43 scientifically locked · Complete chapter-label cleanup · Last reviewed August 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -13170,11 +13237,24 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <button type="button" data-pwa-action="bedside"><svg viewBox="0 0 24 24"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg><span>Bedside</span></button>
 <button type="button" data-pwa-action="tools"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span>Tools</span></button>
 </nav>
-<div class="pwa-overlay" id="pwa-search" role="dialog" aria-modal="true" aria-label="Search the guide"><div class="pwa-overlay-head"><button id="pwa-search-close" type="button" aria-label="Close search">‹</button><input id="pwa-search-input" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search chapters and content…"></div><div class="pwa-search-meta" id="pwa-search-meta"></div><div class="pwa-search-results" id="pwa-search-results"></div></div>
-<div class="pwa-sheet-wrap" id="pwa-tools-wrap"><section class="pwa-tools" role="dialog" aria-modal="true" aria-label="Display tools"><h2>Display &amp; app tools</h2><div class="pwa-tools-grid"><button id="pwa-font-down" type="button">Smaller text</button><button id="pwa-font-up" type="button">Larger text</button><button id="pwa-theme-light" type="button">Light theme</button><button id="pwa-theme-dark" type="button">Dark theme</button><button id="pwa-open-full" class="wide" type="button">Open continuous browser edition</button><button id="pwa-tools-close" class="wide" type="button">Close</button></div></section></div>
-<div class="pwa-intro" id="pwa-intro" aria-hidden="true"><section class="pwa-intro-card"><h2>How the installed guide works</h2><p>The home-screen app opens one chapter at a time. Use Contents or Search to move anywhere; Previous and Next keep you oriented. The continuous edition remains available in a normal browser.</p><button id="pwa-intro-got" type="button">Got it</button></section></div>
-<div class="pwa-lightbox" id="pwa-lightbox" role="dialog" aria-modal="true" aria-label="Expanded figure"><button id="pwa-lightbox-close" type="button" aria-label="Close expanded figure">×</button><div class="pwa-lightbox-host" id="pwa-lightbox-host"></div></div>
-<div class="pwa-sim-overlay" id="pwa-sim-overlay" role="dialog" aria-modal="true" aria-label="Expanded interactive laboratory"><button class="pwa-sim-close" id="pwa-sim-close" type="button" aria-label="Close interactive laboratory">×</button><div class="pwa-sim-host" id="pwa-sim-host"></div></div>
+<div class="pwa-overlay" id="pwa-search" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Search the guide"><div class="pwa-overlay-head"><button id="pwa-search-close" type="button" aria-label="Close search">‹</button><input id="pwa-search-input" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search chapters and content…"></div><div class="pwa-search-meta" id="pwa-search-meta"></div><div class="pwa-search-results" id="pwa-search-results"></div></div>
+<div class="pwa-sheet-wrap" id="pwa-tools-wrap" aria-hidden="true"><section class="pwa-tools" role="dialog" aria-modal="true" aria-label="Display tools"><h2>Display &amp; app tools</h2><div class="pwa-tools-grid"><button id="pwa-font-down" type="button">Smaller text</button><button id="pwa-font-up" type="button">Larger text</button><button id="pwa-theme-light" type="button">Light theme</button><button id="pwa-theme-dark" type="button">Dark theme</button><button id="pwa-open-full" class="wide" type="button">Open continuous browser edition</button><button id="pwa-tools-close" class="wide" type="button">Close</button></div></section></div>
+<div class="pwa-intro" id="pwa-intro" aria-hidden="true"><section class="pwa-intro-card"><h2>How the installed guide works</h2><p>The home-screen app opens one chapter at a time. Continue returns to your last reading position; Contents and Search jump directly to chapters or subsections. Wide tables offer a full-screen Overview and Read view. The continuous edition remains available in a normal browser.</p><button id="pwa-intro-got" type="button">Got it</button></section></div>
+<div class="pwa-lightbox" id="pwa-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded figure"><button id="pwa-lightbox-close" type="button" aria-label="Close expanded figure">×</button><div class="pwa-lightbox-host" id="pwa-lightbox-host"></div></div>
+<div class="pwa-table-viewer" id="pwa-table-viewer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwa-table-title">
+  <header class="pwa-table-head">
+    <button id="pwa-table-close" type="button" aria-label="Close full table">×</button>
+    <div class="pwa-table-heading"><small>Full table</small><b id="pwa-table-title">Table</b></div>
+    <div class="pwa-table-actions" aria-label="Table viewing controls">
+      <button id="pwa-table-overview" type="button" aria-pressed="true">Overview</button>
+      <button id="pwa-table-read" type="button" aria-pressed="false">Read</button>
+      <button class="pwa-table-zoom" id="pwa-table-zoom-out" type="button" aria-label="Decrease table text size">A−</button>
+      <button class="pwa-table-zoom" id="pwa-table-zoom-in" type="button" aria-label="Increase table text size">A+</button>
+    </div>
+  </header>
+  <div class="pwa-table-host" id="pwa-table-host"></div>
+</div>
+<div class="pwa-sim-overlay" id="pwa-sim-overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded interactive laboratory"><button class="pwa-sim-close" id="pwa-sim-close" type="button" aria-label="Close interactive laboratory">×</button><div class="pwa-sim-host" id="pwa-sim-host"></div></div>
 <div class="pwa-tip" id="pwa-tip" role="status"></div>
 
 <script id="c3-revision-js">
@@ -13467,7 +13547,7 @@ const w=[];if(qS&&(Math.abs(ratio-lln)<.03||Math.abs(fvcZ+1.645)<.3))w.push('One
 })();
 </script>
 
-<script id="pwa-lite-runtime-v110109">
+<script id="pwa-lite-runtime-v110110">
 (function(){
 'use strict';
 var doc=document,root=doc.documentElement,body=doc.body,main=doc.getElementById('main-content');
@@ -13477,60 +13557,110 @@ var active=null,activeTarget=null;
 var topTitle=doc.getElementById('pwa-top-title'),topMeta=doc.getElementById('pwa-top-meta');
 var chapterNav=doc.getElementById('pwa-chapter-nav'),chapterLabel=doc.getElementById('pwa-chapter-label'),chapterTitle=doc.getElementById('pwa-chapter-title');
 var prev=doc.getElementById('pwa-prev'),next=doc.getElementById('pwa-next');
-var toc=doc.getElementById('guide-contents'),scrim=doc.getElementById('pwa-scrim');
+var toc=doc.getElementById('guide-contents'),menuButton=doc.getElementById('pwa-menu'),scrim=doc.getElementById('pwa-scrim');
 var search=doc.getElementById('pwa-search'),searchInput=doc.getElementById('pwa-search-input'),searchResults=doc.getElementById('pwa-search-results'),searchMeta=doc.getElementById('pwa-search-meta');
 var tools=doc.getElementById('pwa-tools-wrap'),lightbox=doc.getElementById('pwa-lightbox'),lightboxHost=doc.getElementById('pwa-lightbox-host'),tip=doc.getElementById('pwa-tip');
 var simOverlay=doc.getElementById('pwa-sim-overlay'),simHost=doc.getElementById('pwa-sim-host'),simClose=doc.getElementById('pwa-sim-close'),simState=null;
-var searchIndex=null,searchTimer=0;
+var tableViewer=doc.getElementById('pwa-table-viewer'),tableHost=doc.getElementById('pwa-table-host'),tableTitle=doc.getElementById('pwa-table-title');
+var tableOverview=doc.getElementById('pwa-table-overview'),tableRead=doc.getElementById('pwa-table-read'),tableZoomOut=doc.getElementById('pwa-table-zoom-out'),tableZoomIn=doc.getElementById('pwa-table-zoom-in'),tableClose=doc.getElementById('pwa-table-close');
+var resumeCard=doc.getElementById('pwa-resume-card'),continueButton=doc.getElementById('pwa-continue');
+var searchIndex=null,searchBuildPromise=null,searchTimer=0,searchRequest=0;
+var navSerial=0,landRaf1=0,landRaf2=0,routeRaf=0;
+var progressTimer=0,tableState=null,resizeRaf=0;
+var supportsHistory=!!(window.history&&history.pushState&&history.replaceState);
+var PROGRESS_KEY='vg-app-progress-v2';
+
 function numbered(sec){var m=sec&&/^c([1-9]|[1-3]\d|4[0-3])$/.exec(sec.id||'');return m?parseInt(m[1],10):0;}
-function cleanTitle(sec){var h=sec&&sec.querySelector(':scope > h3');if(!h)return sec?sec.id:'Guide';var c=h.cloneNode(true);c.querySelectorAll('.num,button,svg,.anchor-link,[aria-hidden="true"]').forEach(function(n){n.remove();});return (c.textContent||'').replace(/Print this chapter/g,'').replace(/\s*#+\s*$/,'').replace(/\s+/g,' ').trim();}
+function normalizeText(value){return (value||'').replace(/\s*#+\s*$/,'').replace(/\s+/g,' ').trim();}
+function cleanNodeText(node){if(!node)return'';var c=node.cloneNode(true);c.querySelectorAll&&c.querySelectorAll('.num,button,svg,.anchor-link,[aria-hidden="true"],.pwa-figure-open,.pwa-table-tools-inline').forEach(function(n){n.remove();});return normalizeText(c.textContent||'');}
+function cleanTitle(sec){if(!sec)return'Guide';var exact=sec.querySelector(':scope > h3 .pwa-chapter-heading-text');if(exact)return cleanNodeText(exact);return cleanNodeText(sec.querySelector(':scope > h3'))||sec.id;}
 function sectionOf(el){return el&&el.closest&&el.closest('section.chap[id]');}
 function openAncestors(el){try{var d=el&&el.closest&&el.closest('details');while(d){d.open=true;d=d.parentElement&&d.parentElement.closest('details');}}catch(_){}}
-function closePanels(){body.classList.remove('pwa-toc-open');if(search)search.classList.remove('show');if(tools)tools.classList.remove('show');body.style.overflow='';}
-function setHash(id,mode){var hash=id?'#'+id:'';try{if(mode==='replace')history.replaceState(null,'',location.pathname+location.search+hash);else if(mode!=='none')history.pushState(null,'',location.pathname+location.search+hash);}catch(_){if(id)location.hash=id;}}
-function land(target){requestAnimationFrame(function(){requestAnimationFrame(function(){var y=(target.getBoundingClientRect().top+(window.pageYOffset||0))-72;window.scrollTo(0,Math.max(0,y));});});}
-function enhance(sec){
-  if(!sec||sec.dataset.pwaEnhanced==='1')return;sec.dataset.pwaEnhanced='1';
-  sec.classList.remove('collapsed');
-  sec.querySelectorAll('img').forEach(function(img){img.loading='lazy';img.decoding='async';if(!img.dataset.pwaZoom){img.dataset.pwaZoom='1';img.addEventListener('click',function(e){if(e.target.closest('a,button'))return;openLightbox(img);});}});
-  sec.querySelectorAll('.figure > svg').forEach(function(svg){if(svg.dataset.pwaZoom)return;svg.dataset.pwaZoom='1';svg.addEventListener('click',function(){openLightbox(svg);});});
-  sec.querySelectorAll('iframe').forEach(function(f){f.loading='lazy';if(!f.getAttribute('src')&&f.dataset.src)f.setAttribute('src',f.dataset.src);});
-  sec.querySelectorAll('abbr[data-tip]').forEach(function(a){var d=(a.getAttribute('data-tip')||'').trim();if(d){a.title=d;a.tabIndex=0;}});
-  if(window.__vgRenderMath)window.__vgRenderMath(sec);
-}
-function updateNav(sec){var n=numbered(sec),t=cleanTitle(sec);topTitle.textContent=n?'Chapter '+n:t;topMeta.textContent=n?'Guide to Ventilation':'Reference workspace';if(n){chapterNav.hidden=false;chapterLabel.textContent='Chapter '+n+' of 43';chapterTitle.textContent=t;prev.disabled=n===1;next.disabled=n===43;prev.dataset.id='c'+Math.max(1,n-1);next.dataset.id='c'+Math.min(43,n+1);}else{chapterNav.hidden=true;}}
-function activate(sec,target,mode){if(!sec)return;sections.forEach(function(s){s.classList.toggle('app-active',s===sec);});active=sec;activeTarget=target||sec;body.classList.add('pwa-reading');sec.classList.remove('collapsed');openAncestors(activeTarget);updateNav(sec);closePanels();enhance(sec);setHash((activeTarget.id||sec.id),mode||'push');try{localStorage.setItem('vg-app-last',sec.id);}catch(_){}land(activeTarget===sec&&numbered(sec)?chapterNav:activeTarget);}
-function home(mode,target){sections.forEach(function(s){s.classList.remove('app-active');});active=null;activeTarget=null;body.classList.remove('pwa-reading');chapterNav.hidden=true;topTitle.textContent='Guide to Ventilation';topMeta.textContent='Public edition 1.2';closePanels();setHash('',mode||'push');requestAnimationFrame(function(){if(target)land(target);else window.scrollTo(0,0);});updateContinue();}
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function stickyOffset(){return 72;}
+function cancelLanding(){navSerial++;if(landRaf1)cancelAnimationFrame(landRaf1);if(landRaf2)cancelAnimationFrame(landRaf2);landRaf1=landRaf2=0;return navSerial;}
+function scheduleLand(target,serial,options){if(!target||serial!==navSerial)return;options=options||{};landRaf1=requestAnimationFrame(function(){landRaf2=requestAnimationFrame(function(){if(serial!==navSerial||!target.isConnected)return;var top;if(Number.isFinite(options.sectionOffset)){var sec=options.section||sectionOf(target)||target;top=sec.getBoundingClientRect().top+(window.pageYOffset||0)-stickyOffset()+Math.max(0,options.sectionOffset);}else{top=target.getBoundingClientRect().top+(window.pageYOffset||0)-stickyOffset();}window.scrollTo({top:Math.max(0,top),left:0,behavior:'auto'});landRaf1=landRaf2=0;});});}
+
+var overlayManager=(function(){
+  var current=null,savedY=0,locked=false;
+  function focusables(container){if(!container)return[];return[].slice.call(container.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,[tabindex]:not([tabindex="-1"])')).filter(function(el){var r=el.getBoundingClientRect();return !el.hidden&&r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';});}
+  function lock(){if(locked)return;locked=true;savedY=window.scrollY||window.pageYOffset||0;body.classList.add('pwa-modal-open');body.style.position='fixed';body.style.top=(-savedY)+'px';body.style.left='0';body.style.right='0';body.style.width='100%';}
+  function unlock(){if(!locked)return;locked=false;var y=savedY;body.classList.remove('pwa-modal-open');body.style.position='';body.style.top='';body.style.left='';body.style.right='';body.style.width='';window.scrollTo(0,y);}
+  function closeInternal(restoreFocus,keepLock){if(!current)return;var c=current;current=null;try{if(c.onClose)c.onClose();}catch(_){}if(c.container)c.container.setAttribute('aria-hidden','true');if(!keepLock)unlock();if(restoreFocus!==false&&c.opener&&c.opener.isConnected){requestAnimationFrame(function(){try{c.opener.focus({preventScroll:true});}catch(_){try{c.opener.focus();}catch(__){}}});}}
+  function open(key,container,opener,opts){opts=opts||{};if(current&&current.key===key)return;if(current)closeInternal(false,true);else lock();current={key:key,container:container,opener:opener||doc.activeElement,onClose:opts.onClose||null};if(container)container.setAttribute('aria-hidden','false');try{if(opts.onOpen)opts.onOpen();}catch(_){}requestAnimationFrame(function(){if(!current||current.key!==key)return;var focusTarget=typeof opts.focus==='function'?opts.focus():opts.focus;var list=focusables(container);var el=focusTarget&&focusTarget.isConnected?focusTarget:list[0]||container;if(el){try{el.focus({preventScroll:true});}catch(_){try{el.focus();}catch(__){}}}});}
+  function close(key,restoreFocus){if(!current)return;if(key&&current.key!==key)return;closeInternal(restoreFocus,false);}
+  function closeAll(restoreFocus){closeInternal(restoreFocus,false);}
+  function keydown(e){if(!current)return;if(e.key==='Escape'){e.preventDefault();close(null,true);return;}if(e.key!=='Tab')return;var list=focusables(current.container);if(!list.length){e.preventDefault();return;}var first=list[0],last=list[list.length-1];if(e.shiftKey&&doc.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&doc.activeElement===last){e.preventDefault();first.focus();}}
+  return{open:open,close:close,closeAll:closeAll,keydown:keydown,current:function(){return current;},isOpen:function(key){return !!current&&(!key||current.key===key);}};
+})();
+
+function setHash(id,mode){var hash=id?'#'+id:'';var url=location.pathname+location.search+hash;try{if(mode==='replace')history.replaceState({ventGuide:true,target:id||''},'',url);else if(mode!=='none')history.pushState({ventGuide:true,target:id||''},'',url);}catch(_){if(id)location.hash=id;}}
+function tocLinkFor(sec,target){var wanted=(target&&target.id)||(sec&&sec.id)||'';var links=[].slice.call(toc.querySelectorAll('a[href^="#"]'));var exact=links.find(function(a){return decodeURIComponent((a.getAttribute('href')||'').slice(1))===wanted;});if(exact)return exact;var sid=sec&&sec.id;return links.find(function(a){return decodeURIComponent((a.getAttribute('href')||'').slice(1))===sid;})||null;}
+function syncToc(sec,target){toc.querySelectorAll('a.pwa-active,[aria-current]').forEach(function(a){a.classList.remove('pwa-active');a.removeAttribute('aria-current');});var link=tocLinkFor(sec,target);if(link){link.classList.add('pwa-active');link.setAttribute('aria-current','location');}return link;}
+function updateNav(sec,target){var n=numbered(sec),t=cleanTitle(sec);topTitle.textContent=n?t:(t||'Guide to Ventilation');topMeta.textContent=n?'Chapter '+n+' of 43':'Reference workspace';if(n){chapterNav.hidden=false;chapterLabel.textContent=n+' of 43';chapterTitle.textContent=t;chapterNav.setAttribute('aria-label','Chapter '+n+' of 43: '+t);prev.disabled=n===1;next.disabled=n===43;prev.dataset.id='c'+Math.max(1,n-1);next.dataset.id='c'+Math.min(43,n+1);}else{chapterNav.hidden=true;}syncToc(sec,target);}
+
+function readProgress(){try{var raw=localStorage.getItem(PROGRESS_KEY);if(!raw){var old=localStorage.getItem('vg-app-last');if(old&&doc.getElementById(old))return{chapter:old,offset:0,updated:0};return null;}var p=JSON.parse(raw);if(!p||!doc.getElementById(p.chapter)||!numbered(doc.getElementById(p.chapter)))return null;p.offset=Math.max(0,Number(p.offset)||0);return p;}catch(_){return null;}}
+function saveProgressNow(){clearTimeout(progressTimer);progressTimer=0;if(!active||!numbered(active)||overlayManager.isOpen())return;var secTop=active.getBoundingClientRect().top+(window.pageYOffset||0);var offset=Math.max(0,(window.pageYOffset||0)-secTop+stickyOffset());var p={chapter:active.id,offset:Math.round(offset),target:(activeTarget&&activeTarget.id)||active.id,updated:Date.now()};try{localStorage.setItem(PROGRESS_KEY,JSON.stringify(p));localStorage.setItem('vg-app-last',active.id);}catch(_){}updateContinue();}
+function queueProgressSave(){if(!active||!numbered(active)||overlayManager.isOpen())return;clearTimeout(progressTimer);progressTimer=setTimeout(saveProgressNow,240);}
+function updateContinue(){var p=readProgress();if(!continueButton||!resumeCard)return;if(!p){resumeCard.hidden=true;continueButton.dataset.id='';continueButton.textContent='Continue';return;}var sec=doc.getElementById(p.chapter),n=numbered(sec);resumeCard.hidden=false;continueButton.dataset.id=sec.id;continueButton.textContent='Continue · Chapter '+n;var span=resumeCard.querySelector('span');if(span)span.textContent='Return to Chapter '+n+' at your last reading position.';}
+
+function refreshTableButtons(sec){if(!sec)return;sec.querySelectorAll('.pwa-table-tools-inline').forEach(function(tool){var table=tool._pwaTable;if(!table||!table.isConnected){tool.remove();return;}var scroller=table.closest('.table-scroll,.tbl-pos')||table;var over=(scroller.scrollWidth>scroller.clientWidth+8)||(table.scrollWidth>table.clientWidth+8);tool.hidden=!over;});}
+function tableLabel(table){var cap=table.querySelector('caption');if(cap&&normalizeText(cap.textContent))return normalizeText(cap.textContent);var details=table.closest('details');if(details){var sum=details.querySelector(':scope > summary');var st=cleanNodeText(sum);if(st)return st;}var prev=table.previousElementSibling;while(prev&&prev.tagName&&!/^H[3-6]$/.test(prev.tagName))prev=prev.previousElementSibling;if(prev){var pt=cleanNodeText(prev);if(pt)return pt;}var sec=sectionOf(table);return (sec?cleanTitle(sec):'Guide')+' — full table';}
+function cloneClean(node){var clone=node.cloneNode(true);clone.removeAttribute&&clone.removeAttribute('id');clone.querySelectorAll&&clone.querySelectorAll('[id],.pwa-figure-open,.pwa-table-tools-inline,script').forEach(function(n){if(n.matches&&n.matches('.pwa-figure-open,.pwa-table-tools-inline,script'))n.remove();else n.removeAttribute('id');});return clone;}
+function renderTableViewer(){if(!tableState||!tableHost)return;var source=tableState.source,clone=cloneClean(source);clone.classList.add('pwa-table-clone');clone.style.fontSize=(tableState.textScale/100)+'em';tableHost.innerHTML='';tableViewer.dataset.mode=tableState.mode;tableOverview.setAttribute('aria-pressed',tableState.mode==='overview'?'true':'false');tableRead.setAttribute('aria-pressed',tableState.mode==='read'?'true':'false');if(tableState.mode==='overview'){var outer=doc.createElement('div'),frame=doc.createElement('div');outer.className='pwa-table-overview-outer';frame.className='pwa-table-overview-frame';var natural=Math.max(source.scrollWidth,source.getBoundingClientRect().width,320);clone.style.width=natural+'px';clone.style.maxWidth='none';frame.appendChild(clone);outer.appendChild(frame);tableHost.appendChild(outer);requestAnimationFrame(function(){if(!tableState||tableState.mode!=='overview')return;var available=Math.max(260,tableHost.clientWidth-4),w=Math.max(natural,clone.scrollWidth),scale=Math.min(1,available/w);frame.style.width=w+'px';frame.style.transform='scale('+scale+')';outer.style.width=Math.ceil(w*scale)+'px';outer.style.height=Math.ceil(frame.scrollHeight*scale)+'px';});}else{var read=doc.createElement('div');read.className='pwa-table-read-wrap';clone.style.width=Math.max(source.scrollWidth,760)+'px';clone.style.maxWidth='none';read.appendChild(clone);tableHost.appendChild(read);}}
+function openTableViewer(table,opener){if(!tableViewer||!table)return;tableState={source:table,mode:'overview',textScale:100};tableTitle.textContent=tableLabel(table);overlayManager.open('table',tableViewer,opener,{onOpen:function(){tableViewer.classList.add('show');renderTableViewer();},onClose:function(){tableViewer.classList.remove('show');tableHost.innerHTML='';tableState=null;},focus:tableClose});}
+function enhanceTables(sec){sec.querySelectorAll('table').forEach(function(table){if(table.dataset.pwaTableReady==='1')return;if(table.closest('.calc,.simulator-figure,.vg-lab-house,.vg-pft-house,.pwa-table-viewer')||table.matches('.calc-mini-tbl,.ladder-tbl,.snap-table'))return;if(table.querySelector('input,select,textarea,button'))return;table.dataset.pwaTableReady='1';var tool=doc.createElement('div');tool.className='pwa-table-tools-inline';tool.hidden=true;tool._pwaTable=table;var btn=doc.createElement('button');btn.type='button';btn.className='pwa-table-open';btn.innerHTML='<span aria-hidden="true">⤢</span> View full table';btn.setAttribute('aria-label','View full table: '+tableLabel(table));btn.addEventListener('click',function(e){e.preventDefault();openTableViewer(table,btn);});tool.appendChild(btn);var wrapper=table.closest('.table-scroll,.tbl-pos');(wrapper||table).insertAdjacentElement('afterend',tool);});requestAnimationFrame(function(){refreshTableButtons(sec);});}
+
+function staticFigure(fig){if(!fig||fig.closest('.pwa-lightbox-host'))return false;if(fig.classList.contains('simulator-figure')||fig.querySelector('input,select,textarea,button,iframe,canvas,video,audio,[contenteditable="true"],[data-sim-open],.vg-lab-house,.vg-pft-house'))return false;return true;}
+function openLightbox(node,opener,compound){if(!lightboxHost||!node)return;var clone=cloneClean(node);if(compound)clone.classList.add('pwa-expanded-compound');lightboxHost.innerHTML='';lightboxHost.appendChild(clone);overlayManager.open('lightbox',lightbox,opener,{onOpen:function(){lightbox.classList.add('show');},onClose:function(){lightbox.classList.remove('show');lightboxHost.innerHTML='';},focus:doc.getElementById('pwa-lightbox-close')});}
+function enhanceFigures(sec){sec.querySelectorAll('img').forEach(function(img){img.loading='lazy';img.decoding='async';if(!img.dataset.pwaZoom){img.dataset.pwaZoom='1';img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','Open enlarged figure');function open(e){if(e.type==='keydown'&&e.key!=='Enter'&&e.key!==' ')return;if(e.target.closest&&e.target.closest('a,button'))return;e.preventDefault();openLightbox(img,img,false);}img.addEventListener('click',open);img.addEventListener('keydown',open);}});
+sec.querySelectorAll('.figure > svg').forEach(function(svg){if(svg.dataset.pwaZoom)return;svg.dataset.pwaZoom='1';svg.tabIndex=0;svg.setAttribute('role','button');svg.setAttribute('aria-label','Open enlarged figure');function open(e){if(e.type==='keydown'&&e.key!=='Enter'&&e.key!==' ')return;e.preventDefault();openLightbox(svg,svg,false);}svg.addEventListener('click',open);svg.addEventListener('keydown',open);});
+sec.querySelectorAll('.figure').forEach(function(fig){if(fig.dataset.pwaCompoundReady==='1'||!staticFigure(fig))return;var direct=fig.querySelector(':scope > img,:scope > svg');if(direct)return;fig.dataset.pwaCompoundReady='1';var btn=doc.createElement('button');btn.type='button';btn.className='pwa-figure-open';btn.innerHTML='<span aria-hidden="true">⤢</span><span class="pwa-figure-open-text">View full figure</span>';var cap=fig.querySelector('.cap,figcaption');btn.setAttribute('aria-label','View full figure'+(cap?': '+cleanNodeText(cap):''));btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();openLightbox(fig,btn,true);});fig.appendChild(btn);});}
+
+function enhance(sec){if(!sec)return;if(sec.classList.contains('collapsed'))sec.classList.remove('collapsed');if(sec.dataset.pwaEnhanced!=='1'){sec.dataset.pwaEnhanced='1';sec.querySelectorAll('iframe').forEach(function(f){f.loading='lazy';if(!f.getAttribute('src')&&f.dataset.src)f.setAttribute('src',f.dataset.src);});sec.querySelectorAll('abbr[data-tip]').forEach(function(a){var d=(a.getAttribute('data-tip')||'').trim();if(d){a.title=d;a.tabIndex=0;}});enhanceFigures(sec);enhanceTables(sec);if(window.__vgRenderMath)window.__vgRenderMath(sec);}else{refreshTableButtons(sec);}}
+
+function activate(sec,target,mode,options){if(!sec)return;options=options||{};if(active&&active!==sec)saveProgressNow();clearTimeout(progressTimer);var serial=cancelLanding();sections.forEach(function(s){s.classList.toggle('app-active',s===sec);});active=sec;activeTarget=target||sec;body.classList.add('pwa-reading');if(sec.classList.contains('collapsed'))sec.classList.remove('collapsed');openAncestors(activeTarget);updateNav(sec,activeTarget);overlayManager.closeAll(false);enhance(sec);setHash((activeTarget.id||sec.id),mode||'push');try{localStorage.setItem('vg-app-last',sec.id);}catch(_){}if(Number.isFinite(options.restoreOffset)){scheduleLand(sec,serial,{section:sec,sectionOffset:options.restoreOffset});}else{scheduleLand(activeTarget===sec&&numbered(sec)?chapterNav:activeTarget,serial);}}
+function home(mode,target){if(active)saveProgressNow();clearTimeout(progressTimer);var serial=cancelLanding();sections.forEach(function(s){s.classList.remove('app-active');});active=null;activeTarget=null;body.classList.remove('pwa-reading');chapterNav.hidden=true;topTitle.textContent='Guide to Ventilation';topMeta.textContent='Public edition 1.2';syncToc(null,null);overlayManager.closeAll(false);setHash('',mode||'push');requestAnimationFrame(function(){if(serial!==navSerial)return;if(target)scheduleLand(target,serial);else window.scrollTo({top:0,left:0,behavior:'auto'});});updateContinue();}
 function targetFromPart(part){var n=part&&part.nextElementSibling;while(n){if(n.matches&&n.matches('section.chap[id^="c"]'))return n;if(n.matches&&n.matches('.part'))break;n=n.nextElementSibling;}return null;}
-function goToTarget(target,mode){if(!target)return;var sec=sectionOf(target);if(sec){activate(sec,target,mode);return;}if(target.classList&&target.classList.contains('part')){var first=targetFromPart(target);if(first)activate(first,first,mode);return;}home(mode,target);}
-function fromHash(mode){var id=(location.hash||'').replace(/^#/,'');if(!id){home('none');return;}var t=doc.getElementById(id);if(t)goToTarget(t,mode||'none');else home('none');}
-function updateContinue(){var id='c1';try{id=localStorage.getItem('vg-app-last')||'c1';}catch(_){}var sec=doc.getElementById(id)||doc.getElementById('c1');var b=doc.getElementById('pwa-continue');if(b){var n=numbered(sec);b.dataset.id=sec.id;b.textContent=(id==='c1'?'Start':'Continue')+' · '+(n?'Chapter '+n:cleanTitle(sec));}}
-function openToc(){closePanels();body.classList.add('pwa-toc-open');var first=toc&&toc.querySelector('a[href]');if(first)setTimeout(function(){first.focus();},30);}
-function openSearch(){closePanels();search.classList.add('show');body.style.overflow='hidden';searchInput.value='';renderSearch('');setTimeout(function(){searchInput.focus();},40);}
-function buildIndex(){if(searchIndex)return searchIndex;searchIndex=sections.map(function(sec){return{sec:sec,title:cleanTitle(sec)};});return searchIndex;}
-function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
-function renderSearch(q){q=(q||'').trim();if(q.length<2){searchMeta.textContent='';searchResults.innerHTML='<div class="pwa-result"><b>Search the guide</b><span>Type at least two characters. Chapter text is scanned only while you search, keeping the installed app light.</span></div>';return;}var lo=q.toLowerCase(),hits=[];buildIndex().some(function(e){var text=(e.sec.textContent||'').replace(/\s+/g,' ').trim(),lower=text.toLowerCase(),k=lower.indexOf(lo);if(k<0)return false;var target=e.sec,details=e.sec.querySelectorAll(':scope > details.chap-acc');for(var i=0;i<details.length;i++){var tx=(details[i].textContent||'').toLowerCase();if(tx.indexOf(lo)>=0){target=details[i].querySelector('summary h4,summary h5,h4,h5')||details[i];break;}}var st=Math.max(0,k-42),en=Math.min(text.length,k+q.length+88);hits.push({entry:e,target:target,snip:(st?'…':'')+text.slice(st,en)+(en<text.length?'…':'')});return hits.length>=36;});searchMeta.textContent=hits.length+(hits.length===1?' result':' results');searchResults.innerHTML='';hits.forEach(function(h){var b=doc.createElement('button');b.type='button';b.className='pwa-result';b.innerHTML='<b>'+esc(h.entry.title)+'</b><span>'+esc(h.snip)+'</span>';b.addEventListener('click',function(){search.classList.remove('show');body.style.overflow='';activate(h.entry.sec,h.target,'push');});searchResults.appendChild(b);});if(!hits.length)searchResults.innerHTML='<div class="pwa-result"><b>No matches</b><span>Try a broader physiologic term or chapter title.</span></div>'; }
-function openLightbox(node){lightboxHost.innerHTML='';var clone=node.cloneNode(true);clone.removeAttribute('id');clone.querySelectorAll&&clone.querySelectorAll('[id]').forEach(function(n){n.removeAttribute('id');});lightboxHost.appendChild(clone);lightbox.classList.add('show');body.style.overflow='hidden';}
-function closeLightbox(){lightbox.classList.remove('show');lightboxHost.innerHTML='';body.style.overflow='';}
-function openSimulator(btn){var target=doc.getElementById(btn&&btn.dataset&&btn.dataset.simOpen||'');var fig=target&&target.closest&&target.closest('.simulator-figure');if(!fig||!simOverlay)return;if(simState)closeSimulator();var ph=doc.createElement('span');ph.className='pwa-sim-placeholder';fig.parentNode.insertBefore(ph,fig);simHost.appendChild(fig);simState={fig:fig,placeholder:ph,button:btn};btn.setAttribute('aria-pressed','true');simOverlay.classList.add('show');body.style.overflow='hidden';simHost.scrollTop=0;}
-function closeSimulator(){if(!simState)return;var st=simState;simState=null;if(st.placeholder&&st.placeholder.parentNode){st.placeholder.parentNode.insertBefore(st.fig,st.placeholder);st.placeholder.remove();}if(st.button)st.button.setAttribute('aria-pressed','false');simOverlay.classList.remove('show');body.style.overflow='';}
+function goToTarget(target,mode,options){if(!target)return;var sec=sectionOf(target);if(sec){activate(sec,target,mode,options);return;}if(target.classList&&target.classList.contains('part')){var first=targetFromPart(target);if(first)activate(first,first,mode,options);return;}home(mode,target);}
+function fromHash(mode){var id=(location.hash||'').replace(/^#/,'');if(!id){home('none');return;}var t=doc.getElementById(decodeURIComponent(id));if(t)goToTarget(t,mode||'none');else home('none');}
+function scheduleHistoryRoute(){if(routeRaf)cancelAnimationFrame(routeRaf);routeRaf=requestAnimationFrame(function(){routeRaf=0;fromHash('none');});}
+function resumeProgress(){var p=readProgress();if(!p){var first=doc.getElementById('c1');activate(first,first,'push');return;}var sec=doc.getElementById(p.chapter)||doc.getElementById('c1');activate(sec,sec,'push',{restoreOffset:p.offset});}
+
+function currentTocFocus(){var link=toc.querySelector('a.pwa-active')||tocLinkFor(active,activeTarget)||toc.querySelector('a[href]');if(link){requestAnimationFrame(function(){var top=link.offsetTop-toc.clientHeight/2+link.offsetHeight/2;toc.scrollTop=Math.max(0,top);});}return link;}
+function openToc(e){if(overlayManager.isOpen('toc')){overlayManager.close('toc',true);return;}saveProgressNow();var opener=e&&e.currentTarget||doc.activeElement;overlayManager.open('toc',toc,opener,{onOpen:function(){body.classList.add('pwa-toc-open');menuButton.setAttribute('aria-expanded','true');doc.querySelectorAll('[data-pwa-action="contents"]').forEach(function(b){b.setAttribute('aria-expanded','true');});},onClose:function(){body.classList.remove('pwa-toc-open');menuButton.setAttribute('aria-expanded','false');doc.querySelectorAll('[data-pwa-action="contents"]').forEach(function(b){b.setAttribute('aria-expanded','false');});},focus:currentTocFocus});}
+function openSearch(e){saveProgressNow();var opener=e&&e.currentTarget||doc.activeElement;overlayManager.open('search',search,opener,{onOpen:function(){search.classList.add('show');prepareSearchIndex();},onClose:function(){search.classList.remove('show');},focus:searchInput});}
+function openTools(e){saveProgressNow();var opener=e&&e.currentTarget||doc.activeElement;overlayManager.open('tools',tools,opener,{onOpen:function(){tools.classList.add('show');},onClose:function(){tools.classList.remove('show');},focus:doc.getElementById('pwa-font-down')});}
+function ensureRuntimeId(el,sec,index){if(el.id)return el.id;var id=sec.id+'-pwa-search-'+index;var n=1;while(doc.getElementById(id))id=sec.id+'-pwa-search-'+index+'-'+(++n);el.id=id;return id;}
+function makeSearchEntry(sec){var text=normalizeText(sec.textContent),targets=[],nodes=[].slice.call(sec.querySelectorAll('h4,h5,h6,details.chap-acc'));nodes.forEach(function(node,i){var target=node.matches('details')?(node.querySelector(':scope > summary h4,:scope > summary h5,:scope > summary')||node):node;var tx=normalizeText(node.textContent);if(!tx)return;ensureRuntimeId(target,sec,i+1);targets.push({el:target,text:tx,lower:tx.toLowerCase(),title:cleanNodeText(target)||cleanTitle(sec)});});return{sec:sec,title:cleanTitle(sec),text:text,lower:text.toLowerCase(),targets:targets};}
+function prepareSearchIndex(){if(searchIndex)return Promise.resolve(searchIndex);if(searchBuildPromise)return searchBuildPromise;searchBuildPromise=new Promise(function(resolve){var out=[],i=0;function step(deadline){var count=0;while(i<sections.length&&(count<3||deadline&&deadline.timeRemaining&&deadline.timeRemaining()>4)){out.push(makeSearchEntry(sections[i++]));count++;}if(i<sections.length){if('requestIdleCallback'in window)requestIdleCallback(step,{timeout:80});else setTimeout(step,0);}else{searchIndex=out;resolve(out);}}if('requestIdleCallback'in window)requestIdleCallback(step,{timeout:80});else setTimeout(step,0);});return searchBuildPromise;}
+function renderSearch(q){q=(q||'').trim();var request=++searchRequest;if(q.length<2){searchMeta.textContent='';searchResults.innerHTML='<div class="pwa-result"><b>Search the guide</b><span>Type at least two characters. The search index is prepared once and reused, keeping repeated searches smooth.</span></div>';return;}searchMeta.textContent='Searching…';prepareSearchIndex().then(function(index){if(request!==searchRequest)return;var lo=q.toLowerCase(),hits=[];index.some(function(e){var k=e.lower.indexOf(lo);if(k<0)return false;var target=e.sec,segment=e.text,segLower=e.lower,segTitle=e.title;for(var i=0;i<e.targets.length;i++){var t=e.targets[i],tk=t.lower.indexOf(lo);if(tk>=0){target=t.el;segment=t.text;segLower=t.lower;segTitle=e.title+' · '+t.title;k=tk;break;}}var st=Math.max(0,k-42),en=Math.min(segment.length,k+q.length+88);hits.push({entry:e,target:target,title:segTitle,snip:(st?'…':'')+segment.slice(st,en)+(en<segment.length?'…':'')});return hits.length>=36;});searchMeta.textContent=hits.length+(hits.length===1?' result':' results');searchResults.innerHTML='';hits.forEach(function(h){var b=doc.createElement('button');b.type='button';b.className='pwa-result';b.innerHTML='<b>'+esc(h.title)+'</b><span>'+esc(h.snip)+'</span>';b.addEventListener('click',function(){activate(h.entry.sec,h.target,'push');});searchResults.appendChild(b);});if(!hits.length)searchResults.innerHTML='<div class="pwa-result"><b>No matches</b><span>Try a broader physiologic term or chapter title.</span></div>';});}
+
+function openSimulator(btn){var target=doc.getElementById(btn&&btn.dataset&&btn.dataset.simOpen||'');var fig=target&&target.closest&&target.closest('.simulator-figure');if(!fig||!simOverlay)return;if(simState)closeSimulator(false);var ph=doc.createElement('span');ph.className='pwa-sim-placeholder';fig.parentNode.insertBefore(ph,fig);simHost.appendChild(fig);simState={fig:fig,placeholder:ph,button:btn};btn.setAttribute('aria-pressed','true');overlayManager.open('simulator',simOverlay,btn,{onOpen:function(){simOverlay.classList.add('show');simHost.scrollTop=0;},onClose:function(){if(!simState)return;var st=simState;simState=null;if(st.placeholder&&st.placeholder.parentNode){st.placeholder.parentNode.insertBefore(st.fig,st.placeholder);st.placeholder.remove();}if(st.button)st.button.setAttribute('aria-pressed','false');simOverlay.classList.remove('show');},focus:simClose});}
+function closeSimulator(restore){overlayManager.close('simulator',restore!==false);}
 function resetSimulator(btn){var target=doc.getElementById(btn&&btn.dataset&&btn.dataset.simReset||'');if(!target)return;try{if(target.tagName==='IFRAME'){var sd=target.getAttribute('srcdoc');if(sd!==null){target.setAttribute('srcdoc',sd);}else{var u=target.dataset.src||target.getAttribute('src');if(u){target.setAttribute('src','about:blank');setTimeout(function(){target.setAttribute('src',u);},0);}else if(target.contentWindow)target.contentWindow.location.reload();}}else target.dispatchEvent(new CustomEvent('vent-guide-reset',{bubbles:true}));}catch(_){}}
-function applyTheme(mode){try{localStorage.setItem('mv-theme',mode);}catch(_){}if(mode==='system'){var dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;root.setAttribute('data-theme',dark?'dark':'light');}else root.setAttribute('data-theme',mode);}
-function fontStep(delta){var v=100;try{v=parseInt(localStorage.getItem('vg-app-font')||'100',10);}catch(_){}v=Math.max(80,Math.min(135,v+delta));root.style.fontSize=(16*v/100)+'px';try{localStorage.setItem('vg-app-font',String(v));}catch(_){}}
+function applyTheme(mode){try{localStorage.setItem('mv-theme',mode);}catch(_){}if(mode==='system'){var dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;root.setAttribute('data-theme',dark?'dark':'light');}else root.setAttribute('data-theme',mode);requestAnimationFrame(function(){refreshTableButtons(active);if(tableState&&tableState.mode==='overview')renderTableViewer();});}
+function fontStep(delta){var v=100;try{v=parseInt(localStorage.getItem('vg-app-font')||'100',10);}catch(_){}v=Math.max(80,Math.min(135,v+delta));root.style.fontSize=(16*v/100)+'px';try{localStorage.setItem('vg-app-font',String(v));}catch(_){}requestAnimationFrame(function(){refreshTableButtons(active);if(tableState)renderTableViewer();});}
 function restorePrefs(){var th='system',fs=100;try{th=localStorage.getItem('mv-theme')||'system';fs=parseInt(localStorage.getItem('vg-app-font')||'100',10);}catch(_){}applyTheme(th);root.style.fontSize=(16*fs/100)+'px';}
 
+// Route every internal link through one navigation transaction.
 doc.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;var href=a.getAttribute('href')||'';if(href==='#'||href===''){e.preventDefault();home('push');return;}var t=doc.getElementById(decodeURIComponent(href.slice(1)));if(!t)return;e.preventDefault();goToTarget(t,'push');});
-doc.getElementById('pwa-menu').addEventListener('click',openToc);doc.getElementById('pwa-home-top').addEventListener('click',function(){home('push');});scrim.addEventListener('click',closePanels);
-doc.querySelectorAll('[data-pwa-action="contents"]').forEach(function(b){b.addEventListener('click',openToc);});doc.querySelectorAll('[data-pwa-action="search"]').forEach(function(b){b.addEventListener('click',openSearch);});doc.querySelectorAll('[data-pwa-action="home"]').forEach(function(b){b.addEventListener('click',function(){home('push');});});doc.querySelectorAll('[data-pwa-action="bedside"]').forEach(function(b){b.addEventListener('click',function(){var t=doc.getElementById('bedside-now');activate(t,t,'push');});});doc.querySelectorAll('[data-pwa-action="tools"]').forEach(function(b){b.addEventListener('click',function(){closePanels();tools.classList.add('show');});});
-doc.getElementById('pwa-start').addEventListener('click',function(){var s=doc.getElementById('c1');activate(s,s,'push');});doc.getElementById('pwa-continue').addEventListener('click',function(e){var s=doc.getElementById(e.currentTarget.dataset.id||'c1');activate(s,s,'push');});
+menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-controls','guide-contents');menuButton.addEventListener('click',openToc);doc.getElementById('pwa-home-top').addEventListener('click',function(){home('push');});scrim.addEventListener('click',function(){overlayManager.close('toc',true);});
+doc.querySelectorAll('[data-pwa-action="contents"]').forEach(function(b){b.setAttribute('aria-expanded','false');b.setAttribute('aria-controls','guide-contents');b.addEventListener('click',openToc);});
+doc.querySelectorAll('[data-pwa-action="search"]').forEach(function(b){b.addEventListener('click',openSearch);});doc.querySelectorAll('[data-pwa-action="home"]').forEach(function(b){b.addEventListener('click',function(){home('push');});});doc.querySelectorAll('[data-pwa-action="bedside"]').forEach(function(b){b.addEventListener('click',function(){var t=doc.getElementById('bedside-now');activate(t,t,'push');});});doc.querySelectorAll('[data-pwa-action="tools"]').forEach(function(b){b.addEventListener('click',openTools);});
+doc.getElementById('pwa-start').addEventListener('click',function(){var s=doc.getElementById('c1');activate(s,s,'push');});continueButton.addEventListener('click',resumeProgress);
 prev.addEventListener('click',function(){var s=doc.getElementById(prev.dataset.id);activate(s,s,'push');});next.addEventListener('click',function(){var s=doc.getElementById(next.dataset.id);activate(s,s,'push');});
-searchInput.addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(function(){renderSearch(searchInput.value);},180);});doc.getElementById('pwa-search-close').addEventListener('click',function(){search.classList.remove('show');body.style.overflow='';});
-doc.getElementById('pwa-tools-close').addEventListener('click',function(){tools.classList.remove('show');});tools.addEventListener('click',function(e){if(e.target===tools)tools.classList.remove('show');});doc.getElementById('pwa-theme-light').addEventListener('click',function(){applyTheme('light');});doc.getElementById('pwa-theme-dark').addEventListener('click',function(){applyTheme('dark');});doc.getElementById('pwa-font-down').addEventListener('click',function(){fontStep(-10);});doc.getElementById('pwa-font-up').addEventListener('click',function(){fontStep(10);});doc.getElementById('pwa-open-full').addEventListener('click',function(){var u=new URL('mechanical-ventilation-teaching-reference.html',location.href);u.searchParams.set('full','1');var a=doc.createElement('a');a.href=u.href;a.target='_blank';a.rel='noopener';doc.body.appendChild(a);a.click();a.remove();});
+searchInput.addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(function(){renderSearch(searchInput.value);},150);});doc.getElementById('pwa-search-close').addEventListener('click',function(){overlayManager.close('search',true);});
+doc.getElementById('pwa-tools-close').addEventListener('click',function(){overlayManager.close('tools',true);});tools.addEventListener('click',function(e){if(e.target===tools)overlayManager.close('tools',true);});doc.getElementById('pwa-theme-light').addEventListener('click',function(){applyTheme('light');});doc.getElementById('pwa-theme-dark').addEventListener('click',function(){applyTheme('dark');});doc.getElementById('pwa-font-down').addEventListener('click',function(){fontStep(-10);});doc.getElementById('pwa-font-up').addEventListener('click',function(){fontStep(10);});doc.getElementById('pwa-open-full').addEventListener('click',function(){var u=new URL('mechanical-ventilation-teaching-reference.html',location.href);u.searchParams.set('full','1');var a=doc.createElement('a');a.href=u.href;a.target='_blank';a.rel='noopener';doc.body.appendChild(a);a.click();a.remove();});
 doc.addEventListener('click',function(e){var open=e.target.closest&&e.target.closest('[data-sim-open]');if(open){e.preventDefault();openSimulator(open);return;}var reset=e.target.closest&&e.target.closest('[data-sim-reset]');if(reset){e.preventDefault();resetSimulator(reset);return;}var ch=e.target.closest&&e.target.closest('[data-sim-challenge]');if(ch){var frame=doc.getElementById(ch.dataset.simChallenge),fig=frame&&frame.closest('.simulator-figure');if(fig){var box=fig.querySelector('.sim-challenge-active');if(box){box.hidden=false;box.innerHTML='<strong>Challenge:</strong> '+ch.dataset.challenge;}var ob=fig.querySelector('[data-sim-open]');if(ob)openSimulator(ob);}return;}});
-simClose.addEventListener('click',closeSimulator);simOverlay.addEventListener('click',function(e){if(e.target===simOverlay)closeSimulator();});
-doc.getElementById('pwa-lightbox-close').addEventListener('click',closeLightbox);lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeLightbox();});
+simClose.addEventListener('click',function(){closeSimulator(true);});simOverlay.addEventListener('click',function(e){if(e.target===simOverlay)closeSimulator(true);});
+doc.getElementById('pwa-lightbox-close').addEventListener('click',function(){overlayManager.close('lightbox',true);});lightbox.addEventListener('click',function(e){if(e.target===lightbox)overlayManager.close('lightbox',true);});
+if(tableViewer){tableClose.addEventListener('click',function(){overlayManager.close('table',true);});tableViewer.addEventListener('click',function(e){if(e.target===tableViewer)overlayManager.close('table',true);});tableOverview.addEventListener('click',function(){if(!tableState)return;tableState.mode='overview';renderTableViewer();});tableRead.addEventListener('click',function(){if(!tableState)return;tableState.mode='read';renderTableViewer();});tableZoomOut.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.max(75,tableState.textScale-10);renderTableViewer();});tableZoomIn.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.min(160,tableState.textScale+10);renderTableViewer();});}
 body.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('abbr[data-tip]');if(!a)return;var d=a.getAttribute('data-tip');if(!d)return;var r=a.getBoundingClientRect();tip.textContent=d;tip.classList.add('show');var tw=tip.getBoundingClientRect().width;tip.style.left=Math.max(8,Math.min(innerWidth-tw-8,r.left))+'px';tip.style.top=Math.min(innerHeight-80,r.bottom+8)+'px';setTimeout(function(){tip.classList.remove('show');},2600);},true);
-window.addEventListener('popstate',function(){fromHash('none');});window.addEventListener('hashchange',function(){fromHash('none');});doc.addEventListener('keydown',function(e){if(e.key==='Escape'){closePanels();closeLightbox();closeSimulator();}});
+doc.addEventListener('keydown',overlayManager.keydown);
+window.addEventListener('popstate',scheduleHistoryRoute);if(!supportsHistory)window.addEventListener('hashchange',scheduleHistoryRoute);
+window.addEventListener('scroll',queueProgressSave,{passive:true});window.addEventListener('pagehide',saveProgressNow);doc.addEventListener('visibilitychange',function(){if(doc.visibilityState==='hidden')saveProgressNow();});
+window.addEventListener('resize',function(){if(resizeRaf)cancelAnimationFrame(resizeRaf);resizeRaf=requestAnimationFrame(function(){resizeRaf=0;refreshTableButtons(active);if(tableState&&tableState.mode==='overview')renderTableViewer();});},{passive:true});
 
 restorePrefs();updateContinue();
 if(location.hash)fromHash('none');else home('none');
@@ -13539,11 +13669,12 @@ if(location.hash)fromHash('none');else home('none');
 var localhost=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname||'');
 if('serviceWorker' in navigator&&(location.protocol==='https:'||(location.protocol==='http:'&&localhost))){window.addEventListener('load',function(){navigator.serviceWorker.register('ventilation-guide-sw.js',{scope:'./',updateViaCache:'none'}).catch(function(){});},{once:true});}
 
-// First-run guide: same persistence key as the prior mobile interface.
-var seen=false;try{seen=localStorage.getItem('mv-seen-intro')==='1';}catch(_){}if(!seen){var intro=doc.getElementById('pwa-intro'),got=doc.getElementById('pwa-intro-got'),done=false;function dismiss(e){if(e&&e.cancelable)e.preventDefault();if(done)return;done=true;try{localStorage.setItem('mv-seen-intro','1');}catch(_){}intro.classList.remove('show');intro.setAttribute('aria-hidden','true');}got.addEventListener('click',dismiss);got.addEventListener('touchend',dismiss,{passive:false});setTimeout(function(){if(!done){intro.classList.add('show');intro.setAttribute('aria-hidden','false');}},360);}
+// First-run guide uses the same persistent key as the earlier mobile interface.
+var seen=false;try{seen=localStorage.getItem('mv-seen-intro')==='1';}catch(_){}if(!seen){var intro=doc.getElementById('pwa-intro'),got=doc.getElementById('pwa-intro-got'),done=false;function dismiss(e){if(e&&e.cancelable)e.preventDefault();if(done)return;done=true;try{localStorage.setItem('mv-seen-intro','1');}catch(_){}overlayManager.close('intro',false);}got.addEventListener('click',dismiss);got.addEventListener('touchend',dismiss,{passive:false});setTimeout(function(){if(!done){overlayManager.open('intro',intro,got,{onOpen:function(){intro.classList.add('show');intro.setAttribute('aria-hidden','false');},onClose:function(){intro.classList.remove('show');intro.setAttribute('aria-hidden','true');},focus:got});}},300);}
 })();
+
 </script>
 
 
-<div hidden id="pwa-lite-complete-heading-labels-v110109" data-build="v1.10.109">COMPLETE_HEADING_LABELS_COMPLETE</div>
+<div hidden id="pwa-navigation-table-usability-complete-v110110" data-build="v1.10.110">NAVIGATION_TABLE_USABILITY_COMPLETE</div>
 </body></html>
