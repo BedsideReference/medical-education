@@ -3,7 +3,7 @@
 <!-- MOBILE_SINGLE_EXPERIENCE_LOCK_v1_10_112 · 2026-08-16 · this chapter-at-a-time shell is now the sole reader-facing mobile experience in both Safari/Chrome and installed PWA use; the continuous edition is desktop-only in normal use; Chapters 1–43 science/prose/figures unchanged -->
 <!-- PWA_NAVIGATION_TABLE_USABILITY_LOCK_v1_10_110 · 2026-08-16 · single-source history routing, cancellable chapter landings, true reading-position resume, unified overlay/focus/scroll locking, cached exact-target search, overflow-only full-table viewer, compound-figure enlargement, and mobile touch-target/landscape polish; Chapters 1–43 science, prose, equations, figures, and references unchanged -->
 <!doctype html>
-<html lang="en" data-build="v1.10.113" data-public-edition="1.2">
+<html lang="en" data-build="v1.10.114" data-public-edition="1.2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -31,15 +31,15 @@
   }catch(_){}
 })();
 </script>
-<title>Guide to Ventilation — Mobile Guide · v1.10.113</title>
+<title>Guide to Ventilation — Mobile Guide · v1.10.114</title>
 <meta name="description" content="Chapter-at-a-time mobile edition of the Guide to Ventilation, public edition 1.2.">
 <meta name="theme-color" content="#0b1f3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vent Guide">
-<meta name="internal-build" content="v1.10.113">
-<link rel="manifest" href="manifest.webmanifest?build=1.10.113">
+<meta name="internal-build" content="v1.10.114">
+<link rel="manifest" href="manifest.webmanifest?build=1.10.114">
 <link rel="canonical" href="mechanical-ventilation-teaching-reference.html">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
@@ -3210,7 +3210,7 @@ button,a,input,select,summary{scroll-margin-top:var(--scroll-pad-top,110px);}
 /* Chapter orientation */
 .chapter-orientation{display:flex;flex-wrap:wrap;gap:7px 12px;align-items:center;margin:4px 0 14px;padding:8px 10px;border-radius:7px;background:var(--bg);border:1px solid var(--rule);font-family:var(--font-sans);font-size:.69rem;color:var(--muted);}
 .chapter-orientation span{display:inline-flex;align-items:center;gap:4px}.chapter-orientation b{color:var(--ink-soft);font-weight:600}.chapter-orientation .co-evidence{margin-left:auto;color:var(--accent)}
-.chapter-route-map{display:flex;gap:6px;overflow:auto;margin:-4px 0 14px;padding:0 0 4px;scrollbar-width:thin}.chapter-route-map a{flex:none;border:1px solid var(--rule);border-radius:99px;padding:5px 9px;text-decoration:none;color:var(--ink-soft);font-family:var(--font-sans);font-size:.67rem;background:var(--surface)}.chapter-route-map a:hover{border-color:var(--accent);color:var(--accent)}
+.chapter-route-map{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;margin:-4px 0 14px;padding:0 0 4px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}.chapter-route-map a{flex:0 0 auto;max-width:min(82vw,34rem);white-space:normal;overflow-wrap:anywhere;word-break:normal;border:1px solid var(--rule);border-radius:22px;padding:5px 9px;text-decoration:none;color:var(--ink-soft);font-family:var(--font-sans);font-size:.67rem;line-height:1.35;background:var(--surface)}.chapter-route-map a:hover{border-color:var(--accent);color:var(--accent)}
 
 /* Desktop toolbar: primary actions only */
 @media (min-width:921px){.toolbar #btn-fs-down,.toolbar #btn-fs-up,.toolbar #btn-theme,.toolbar #btn-cmdk,.toolbar #btn-library,.toolbar #btn-reader,.toolbar #btn-expand-all,.toolbar #btn-print,.toolbar #btn-notes,.toolbar #btn-help{display:none!important}.toolbar{gap:8px}.desktop-tools-trigger{display:inline-flex!important}}
@@ -3903,7 +3903,7 @@ details.chap-acc{content-visibility:visible!important;contain:none!important}
 @media print{.pwa-top,.pwa-bottom,.pwa-chapter-nav,.pwa-scrim,.pwa-overlay,.pwa-sheet-wrap,.pwa-intro{display:none!important}body.pwa-lite{padding:0!important}#main-content>section.chap.app-active{display:block!important}}
 </style>
 <style id="pwa-navigation-table-usability-v110112">
-/* Mobile-guide stability, navigation, overlays, tables, and touch usability · v1.10.113 */
+/* Mobile-guide stability, navigation, overlays, tables, and touch usability · v1.10.114 */
 body.pwa-modal-open{overflow:hidden!important;overscroll-behavior:none!important}
 :where(.pwa-top button,.pwa-bottom button,.pwa-chapter-nav button,.pwa-home-card button,.pwa-tools button,.pwa-overlay button,.pwa-intro button,.pwa-table-viewer button,.pwa-figure-open,.pwa-table-open):focus-visible,
 nav.toc a:focus-visible,.app-active img[role="button"]:focus-visible,.app-active svg[role="button"]:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 72%,white 28%);outline-offset:2px}
@@ -3913,7 +3913,7 @@ body.pwa-toc-open nav.toc[aria-hidden="false"]{visibility:visible}
 .pwa-home-card[hidden]{display:none!important}
 .pwa-home-panel{grid-template-columns:repeat(3,minmax(0,1fr))}
 .pwa-home-card{min-width:0}.pwa-home-card span{min-height:3.5em}.pwa-home-card button{min-height:46px}
-.pwa-chapter-nav-mid b{white-space:normal;overflow:visible;text-overflow:clip;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;line-height:1.25;max-height:2.5em}
+.pwa-chapter-nav-mid b{white-space:normal;overflow:visible;text-overflow:clip;display:block;line-height:1.25;max-height:none;overflow-wrap:anywhere;word-break:normal;hyphens:auto}
 .pwa-chapter-nav-mid small{margin-bottom:2px}
 
 /* Explicit full-table control appears only when the inline table overflows. */
@@ -3962,7 +3962,7 @@ body.pwa-toc-open nav.toc[aria-hidden="false"]{visibility:visible}
 }
 @media(orientation:landscape) and (max-height:520px){
   :root{--pwa-top:calc(48px + env(safe-area-inset-top,0px));--pwa-bottom:calc(52px + env(safe-area-inset-bottom,0px))}
-  .pwa-chapter-nav{padding:6px;margin-bottom:8px}.pwa-chapter-nav-mid small{display:none}.pwa-chapter-nav-mid b{-webkit-line-clamp:1;line-clamp:1;max-height:1.3em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pwa-bottom button{gap:2px}.pwa-bottom button svg{width:18px;height:18px}
+  .pwa-chapter-nav{padding:6px;margin-bottom:8px}.pwa-chapter-nav-mid small{display:none}.pwa-chapter-nav-mid b{max-height:none;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}.pwa-bottom button{gap:2px}.pwa-bottom button svg{width:18px;height:18px}
 }
 @media(max-width:360px){.pwa-shell{padding-left:9px;padding-right:9px}.pwa-top{grid-template-columns:42px minmax(0,1fr) 42px;padding-left:7px;padding-right:7px}.pwa-chapter-nav{grid-template-columns:42px minmax(0,1fr) 42px;padding:7px}.pwa-bottom button{font-size:.6rem}}
 @media(prefers-reduced-motion:reduce){.layout>nav.toc,.pwa-scrim{transition:none!important}}
@@ -4041,7 +4041,7 @@ html.pwa-modal-open .pwa-float,body.pwa-modal-open .pwa-float{opacity:0!importan
 .pwa-chapter-end-nav .pwa-end-label{grid-column:1/-1;text-align:center;color:var(--muted);font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800}
 .pwa-chapter-end-nav button{min-width:0;min-height:58px;border:1px solid var(--rule);border-radius:11px;background:var(--surface);color:var(--ink);padding:9px 10px;touch-action:manipulation;text-align:left}
 .pwa-chapter-end-nav button small{display:block;color:var(--accent);font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
-.pwa-chapter-end-nav button b{display:block;margin-top:3px;font-size:.75rem;line-height:1.3;overflow-wrap:anywhere}
+.pwa-chapter-end-nav button b{display:block;margin-top:3px;font-size:.75rem;line-height:1.3;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;word-break:normal;hyphens:auto}
 .pwa-chapter-end-nav button[data-dir="next"]{text-align:right}.pwa-chapter-end-nav button:disabled{opacity:.35}
 .pwa-chapter-end-nav .pwa-end-top{grid-column:1/-1;min-height:46px;text-align:center;color:var(--accent);font-weight:800}
 .pwa-table-head{
@@ -4472,7 +4472,7 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.113</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.114</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Current through Aug 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -13703,13 +13703,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li id="r256">Volpe MS, Adams AB, Amato MBP, Marini JJ. Ventilation patterns influence airway secretion movement. <em>Respir Care</em>. 2008;53(10):1287–1294. PMID: 18811989.</li>
 <li id="r257">Li J, Liu K, Lyu S, et al. Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em>. 2023;13(1):63. doi:10.1186/s13613-023-01147-4. PMID: 37428465.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.113.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.114.</p>
 </section>
 </main>
 </div>
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.113 · Chapters 1–43 scientifically locked · Mobile UI finalization · Last reviewed August 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.114 · Chapters 1–43 scientifically locked · Mobile UI finalization · Last reviewed August 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -14132,7 +14132,7 @@ const w=[];if(qS&&(Math.abs(ratio-lln)<.03||Math.abs(fvcZ+1.645)<.3))w.push('One
 })();
 </script>
 
-<script id="pwa-lite-runtime-v110113">
+<script id="pwa-lite-runtime-v110114">
 (function(){
 'use strict';
 var doc=document,root=doc.documentElement,body=doc.body,main=doc.getElementById('main-content');
@@ -14278,5 +14278,5 @@ var seen=false;try{seen=localStorage.getItem('mv-seen-intro')==='1';}catch(_){}i
 </script>
 
 
-<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.113">IMAGE_VIEWER_AND_DEVICE_ROUTING_COMPLETE</div>
+<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.114">IMAGE_VIEWER_AND_DEVICE_ROUTING_COMPLETE</div>
 </body></html>
