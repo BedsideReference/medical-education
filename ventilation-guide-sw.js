@@ -1,13 +1,13 @@
-/* Guide to Ventilation · device-aware installed-app service worker · internal build v1.10.115 */
+/* Guide to Ventilation · device-aware installed-app service worker · internal build v1.10.117 */
 'use strict';
-const BUILD='v1.10.115';
+const BUILD='v1.10.117';
 const CACHE_NAME=`ventilation-guide-core-${BUILD}`;
 const CACHE_PREFIXES=['ventilation-guide-','ventilation-guide-core-'];
 const SCOPE_URL=new URL(self.registration.scope);
 const APP_URL=new URL('ventilation-guide-app.html',SCOPE_URL).href;
 const CANONICAL_URL=new URL('mechanical-ventilation-teaching-reference.html',SCOPE_URL).href;
 const VERSION_URL=new URL('ventilation-guide-version.json',SCOPE_URL).href;
-const SMALL_CORE=['ventilation-guide-version.json','manifest.webmanifest','apple-touch-icon.png','icon-192.png','icon-512.png','favicon-32.png','og-card.png'].map(x=>new URL(x,SCOPE_URL).href);
+const SMALL_CORE=['ventilation-guide-version.json','manifest.webmanifest','apple-touch-icon-v1-10-115.png','icon-192-v1-10-115.png','icon-512-v1-10-115.png','favicon-32-v1-10-115.png','og-card.png'].map(x=>new URL(x,SCOPE_URL).href);
 function cacheable(r){return !!r&&(r.ok||r.type==='opaque');}
 function fileOf(u){return (u.pathname.split('/').pop()||'').toLowerCase();}
 function legacyEntry(u){const f=fileOf(u);return /^ventilation_guide_master_.*\.html$/i.test(f)||/^ventilation_guide_chapter_6_revised_.*\.html$/i.test(f);}
