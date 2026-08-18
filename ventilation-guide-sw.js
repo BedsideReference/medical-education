@@ -1,6 +1,6 @@
-/* Guide to Ventilation · device-aware installed-app service worker · internal build v1.10.117 */
+/* Guide to Ventilation · device-aware installed-app service worker · internal build v1.10.118 */
 'use strict';
-const BUILD='v1.10.117';
+const BUILD='v1.10.118';
 const CACHE_NAME=`ventilation-guide-core-${BUILD}`;
 const CACHE_PREFIXES=['ventilation-guide-','ventilation-guide-core-'];
 const SCOPE_URL=new URL(self.registration.scope);
