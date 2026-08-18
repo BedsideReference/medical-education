@@ -1,19 +1,45 @@
+<!-- DEVICE_ROUTING_LOCK_v1_10_113 · 2026-08-17 · mobile/tablet shell selection now uses device identity rather than viewport width or coarse pointer; desktop and laptop browsers, including narrow windows and touch-enabled laptops, remain in the continuous edition; stale desktop app-shell launches migrate back to the canonical guide -->
+<!-- IMAGE_VIEWER_EXIT_RELIABILITY_LOCK_v1_10_113 · 2026-08-17 · rebuilt the mobile expanded-figure viewer with a dedicated safe-area-aware header outside the scroll surface, a persistent Done control, protected touch handling, and scroll-position preservation; Chapters 1–43 content unchanged -->
 <!-- MOBILE_SINGLE_EXPERIENCE_LOCK_v1_10_112 · 2026-08-16 · this chapter-at-a-time shell is now the sole reader-facing mobile experience in both Safari/Chrome and installed PWA use; the continuous edition is desktop-only in normal use; Chapters 1–43 science/prose/figures unchanged -->
 <!-- PWA_NAVIGATION_TABLE_USABILITY_LOCK_v1_10_110 · 2026-08-16 · single-source history routing, cancellable chapter landings, true reading-position resume, unified overlay/focus/scroll locking, cached exact-target search, overflow-only full-table viewer, compound-figure enlargement, and mobile touch-target/landscape polish; Chapters 1–43 science, prose, equations, figures, and references unchanged -->
 <!doctype html>
-<html lang="en" data-build="v1.10.112" data-public-edition="1.2">
+<html lang="en" data-build="v1.10.113" data-public-edition="1.2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Guide to Ventilation — Mobile Guide · v1.10.112</title>
+<script id="pwa-device-routing-guard-v110113">
+(function(){
+  try{
+    if(!/^https?:$/.test(location.protocol))return;
+    var p=new URLSearchParams(location.search||'');
+    if(p.get('mobile')==='1')return;
+    function isVentGuideMobileDevice(){
+      var ua=(navigator.userAgent||'');
+      var uad=navigator.userAgentData;
+      if(uad&&uad.mobile===true)return true;
+      if(/Android|iPhone|iPod|iPad|IEMobile|Windows Phone|webOS|BlackBerry|Opera Mini|Mobile|Silk|Kindle/i.test(ua))return true;
+      /* iPadOS can identify itself as Macintosh while retaining multi-touch. */
+      if((/Macintosh/i.test(ua)||navigator.platform==='MacIntel')&&(navigator.maxTouchPoints||0)>1)return true;
+      return false;
+    }
+    if(isVentGuideMobileDevice())return;
+    var target=new URL('mechanical-ventilation-teaching-reference.html',location.href);
+    target.search=location.search;
+    target.searchParams.delete('mobile');
+    target.hash=location.hash;
+    if(target.href!==location.href)location.replace(target.href);
+  }catch(_){}
+})();
+</script>
+<title>Guide to Ventilation — Mobile Guide · v1.10.113</title>
 <meta name="description" content="Chapter-at-a-time mobile edition of the Guide to Ventilation, public edition 1.2.">
 <meta name="theme-color" content="#0b1f3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vent Guide">
-<meta name="internal-build" content="v1.10.112">
-<link rel="manifest" href="manifest.webmanifest?build=1.10.112">
+<meta name="internal-build" content="v1.10.113">
+<link rel="manifest" href="manifest.webmanifest?build=1.10.113">
 <link rel="canonical" href="mechanical-ventilation-teaching-reference.html">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
@@ -3877,7 +3903,7 @@ details.chap-acc{content-visibility:visible!important;contain:none!important}
 @media print{.pwa-top,.pwa-bottom,.pwa-chapter-nav,.pwa-scrim,.pwa-overlay,.pwa-sheet-wrap,.pwa-intro{display:none!important}body.pwa-lite{padding:0!important}#main-content>section.chap.app-active{display:block!important}}
 </style>
 <style id="pwa-navigation-table-usability-v110112">
-/* Mobile-guide stability, navigation, overlays, tables, and touch usability · v1.10.112 */
+/* Mobile-guide stability, navigation, overlays, tables, and touch usability · v1.10.113 */
 body.pwa-modal-open{overflow:hidden!important;overscroll-behavior:none!important}
 :where(.pwa-top button,.pwa-bottom button,.pwa-chapter-nav button,.pwa-home-card button,.pwa-tools button,.pwa-overlay button,.pwa-intro button,.pwa-table-viewer button,.pwa-figure-open,.pwa-table-open):focus-visible,
 nav.toc a:focus-visible,.app-active img[role="button"]:focus-visible,.app-active svg[role="button"]:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 72%,white 28%);outline-offset:2px}
@@ -4316,6 +4342,110 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
   min-width:0;overflow-wrap:anywhere;word-break:normal;
 }
 </style>
+
+<style id="pwa-image-viewer-exit-reliability-v110113">
+/* Expanded figures use a dedicated, non-scrolling control rail. The close
+   target no longer shares the image scroll surface or its overlay scrollbar. */
+.pwa-lightbox{
+  padding:0!important;
+  display:none;
+  flex-direction:column;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  overflow:hidden;
+  height:100dvh;
+  min-height:100dvh;
+}
+.pwa-lightbox.show{display:flex!important}
+.pwa-lightbox-head{
+  position:relative;
+  z-index:3;
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  align-items:center;
+  min-height:calc(58px + env(safe-area-inset-top,0px));
+  padding:calc(8px + env(safe-area-inset-top,0px)) calc(10px + env(safe-area-inset-right,0px)) 8px calc(12px + env(safe-area-inset-left,0px));
+  background:rgba(8,18,33,.98);
+  border-bottom:1px solid rgba(255,255,255,.16);
+  box-shadow:0 5px 18px rgba(0,0,0,.28);
+  font-family:var(--font-sans);
+}
+.pwa-lightbox-heading{min-width:0;color:#fff}
+.pwa-lightbox-heading small{
+  display:block;
+  margin:0 0 2px;
+  color:rgba(255,255,255,.68);
+  font-size:.62rem;
+  line-height:1.2;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.pwa-lightbox-heading b{
+  display:block;
+  min-width:0;
+  color:#fff;
+  font-size:.86rem;
+  line-height:1.25;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.pwa-lightbox #pwa-lightbox-close{
+  position:static!important;
+  inset:auto!important;
+  z-index:4;
+  width:auto!important;
+  min-width:82px;
+  height:48px!important;
+  margin:0;
+  padding:0 14px!important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border:1px solid rgba(255,255,255,.88)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#102c4b!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.22);
+  font:800 .78rem/1 var(--font-sans)!important;
+  cursor:pointer;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+.pwa-lightbox #pwa-lightbox-close span[aria-hidden="true"]{font-size:1.22rem;line-height:1}
+.pwa-lightbox #pwa-lightbox-close:active{transform:translateY(1px);background:#eaf2fa!important}
+.pwa-lightbox #pwa-lightbox-close:focus-visible{outline:3px solid #8bc5ff;outline-offset:2px}
+.pwa-lightbox-host{
+  position:relative;
+  z-index:1;
+  flex:1 1 auto;
+  min-height:0;
+  width:100%!important;
+  height:auto!important;
+  max-width:none!important;
+  max-height:none!important;
+  overflow:auto!important;
+  padding:10px calc(10px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) calc(10px + env(safe-area-inset-left,0px))!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  touch-action:pan-x pan-y pinch-zoom;
+}
+@media(max-width:360px){
+  .pwa-lightbox-head{gap:8px;padding-left:9px;padding-right:8px}
+  .pwa-lightbox #pwa-lightbox-close{min-width:76px;padding:0 11px!important}
+}
+@media(orientation:landscape) and (max-height:520px){
+  .pwa-lightbox-head{min-height:calc(50px + env(safe-area-inset-top,0px));padding-top:calc(4px + env(safe-area-inset-top,0px));padding-bottom:4px}
+  .pwa-lightbox #pwa-lightbox-close{height:42px!important}
+  .pwa-lightbox-host{padding-top:6px!important}
+}
+</style>
 </head>
 <body class="pwa-lite">
 
@@ -4342,7 +4472,7 @@ body.pwa-lite #main-content > section.chap > h3 > .pwa-chapter-heading-text{
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.112</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.113</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Current through Aug 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -13573,13 +13703,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li id="r256">Volpe MS, Adams AB, Amato MBP, Marini JJ. Ventilation patterns influence airway secretion movement. <em>Respir Care</em>. 2008;53(10):1287–1294. PMID: 18811989.</li>
 <li id="r257">Li J, Liu K, Lyu S, et al. Aerosol therapy in adult critically ill patients: a consensus statement regarding aerosol administration strategies during various modes of respiratory support. <em>Ann Intensive Care</em>. 2023;13(1):63. doi:10.1186/s13613-023-01147-4. PMID: 37428465.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.112.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are preserved in build v1.10.113.</p>
 </section>
 </main>
 </div>
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.112 · Chapters 1–43 scientifically locked · Mobile UI finalization · Last reviewed August 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.113 · Chapters 1–43 scientifically locked · Mobile UI finalization · Last reviewed August 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -13688,7 +13818,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <div class="pwa-overlay" id="pwa-search" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Search the guide"><div class="pwa-overlay-head"><button id="pwa-search-close" type="button" aria-label="Close search">‹</button><input id="pwa-search-input" type="search" inputmode="search" enterkeyhint="search" autocomplete="off" placeholder="Search chapters and content…"></div><div class="pwa-search-meta" id="pwa-search-meta"></div><div class="pwa-search-results" id="pwa-search-results"></div></div>
 <div class="pwa-sheet-wrap" id="pwa-tools-wrap" aria-hidden="true"><section class="pwa-tools" role="dialog" aria-modal="true" aria-label="Guide tools"><h2>Tools</h2><div class="pwa-tools-grid"><button id="pwa-tools-calc" type="button">Quick calculator</button><button id="pwa-tools-index" type="button">Tools &amp; tables index</button><button id="pwa-font-down" type="button">Smaller text</button><button id="pwa-font-up" type="button">Larger text</button><button id="pwa-theme-light" type="button">Light theme</button><button id="pwa-theme-dark" type="button">Dark theme</button><button id="pwa-tools-close" class="wide" type="button">Close</button></div></section></div>
 <div class="pwa-intro" id="pwa-intro" aria-hidden="true"><section class="pwa-intro-card"><h2>How the mobile guide works</h2><p>On mobile, the guide keeps one chapter active at a time so chapter jumps stay fast and your reading position remains stable. Continue returns to your last position; Contents and Search jump directly to chapters or subsections. Wide tables offer full-screen Overview and Read views.</p><button id="pwa-intro-got" type="button">Got it</button></section></div>
-<div class="pwa-lightbox" id="pwa-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Expanded figure"><button id="pwa-lightbox-close" type="button" aria-label="Close expanded figure">×</button><div class="pwa-lightbox-host" id="pwa-lightbox-host"></div></div>
+<div class="pwa-lightbox" id="pwa-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwa-lightbox-title">
+  <header class="pwa-lightbox-head">
+    <div class="pwa-lightbox-heading"><small>Expanded figure</small><b id="pwa-lightbox-title">Full-screen figure</b></div>
+    <button class="pwa-lightbox-close" id="pwa-lightbox-close" type="button" aria-label="Done viewing expanded figure"><span aria-hidden="true">×</span><span>Done</span></button>
+  </header>
+  <div class="pwa-lightbox-host" id="pwa-lightbox-host" tabindex="0"></div>
+</div>
 <div class="pwa-table-viewer" id="pwa-table-viewer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwa-table-title">
   <header class="pwa-table-head">
     <button id="pwa-table-close" type="button" aria-label="Close full table">×</button>
@@ -13996,7 +14132,7 @@ const w=[];if(qS&&(Math.abs(ratio-lln)<.03||Math.abs(fvcZ+1.645)<.3))w.push('One
 })();
 </script>
 
-<script id="pwa-lite-runtime-v110112">
+<script id="pwa-lite-runtime-v110113">
 (function(){
 'use strict';
 var doc=document,root=doc.documentElement,body=doc.body,main=doc.getElementById('main-content');
@@ -14008,7 +14144,7 @@ var chapterNav=doc.getElementById('pwa-chapter-nav'),chapterLabel=doc.getElement
 var prev=doc.getElementById('pwa-prev'),next=doc.getElementById('pwa-next');
 var toc=doc.getElementById('guide-contents'),menuButton=doc.getElementById('pwa-menu'),scrim=doc.getElementById('pwa-scrim');
 var search=doc.getElementById('pwa-search'),searchInput=doc.getElementById('pwa-search-input'),searchResults=doc.getElementById('pwa-search-results'),searchMeta=doc.getElementById('pwa-search-meta');
-var tools=doc.getElementById('pwa-tools-wrap'),lightbox=doc.getElementById('pwa-lightbox'),lightboxHost=doc.getElementById('pwa-lightbox-host'),tip=doc.getElementById('pwa-tip');
+var tools=doc.getElementById('pwa-tools-wrap'),lightbox=doc.getElementById('pwa-lightbox'),lightboxHost=doc.getElementById('pwa-lightbox-host'),lightboxClose=doc.getElementById('pwa-lightbox-close'),lightboxTitle=doc.getElementById('pwa-lightbox-title'),tip=doc.getElementById('pwa-tip');
 var simOverlay=doc.getElementById('pwa-sim-overlay'),simHost=doc.getElementById('pwa-sim-host'),simClose=doc.getElementById('pwa-sim-close'),simState=null;
 var tableViewer=doc.getElementById('pwa-table-viewer'),tableHost=doc.getElementById('pwa-table-host'),tableTitle=doc.getElementById('pwa-table-title');
 var tableOverview=doc.getElementById('pwa-table-overview'),tableRead=doc.getElementById('pwa-table-read'),tableZoomOut=doc.getElementById('pwa-table-zoom-out'),tableZoomIn=doc.getElementById('pwa-table-zoom-in'),tableClose=doc.getElementById('pwa-table-close'),tableDone=doc.getElementById('pwa-table-done');
@@ -14016,7 +14152,7 @@ var resumeCard=doc.getElementById('pwa-resume-card'),continueButton=doc.getEleme
 var backTop=doc.getElementById('pwa-back-top'),calcFab=doc.getElementById('pwa-calc-fab'),calcWrap=doc.getElementById('pwa-calc-wrap'),calcPanel=doc.getElementById('mini-calc-panel'),calcClose=doc.getElementById('mini-calc-close'),tocClose=null;
 var searchIndex=null,searchBuildPromise=null,searchTimer=0,searchRequest=0;
 var navSerial=0,landRaf1=0,landRaf2=0,routeRaf=0;
-var progressTimer=0,tableState=null,resizeRaf=0,backTopRaf=0;
+var progressTimer=0,tableState=null,resizeRaf=0,backTopRaf=0,lightboxSourceY=0;
 var supportsHistory=!!(window.history&&history.pushState&&history.replaceState);
 var PROGRESS_KEY='vg-app-progress-v2';
 
@@ -14075,7 +14211,8 @@ function openTableViewer(table,opener){if(!tableViewer||!table)return;tableState
 function enhanceTables(sec){sec.querySelectorAll('table').forEach(function(table){if(table.dataset.pwaTableReady==='1')return;if(table.closest('.calc,.simulator-figure,.vg-lab-house,.vg-pft-house,.pwa-table-viewer')||table.matches('.calc-mini-tbl,.ladder-tbl,.snap-table'))return;if(table.querySelector('input,select,textarea,button'))return;table.dataset.pwaTableReady='1';var tool=doc.createElement('div');tool.className='pwa-table-tools-inline';tool.hidden=true;tool._pwaTable=table;var btn=doc.createElement('button');btn.type='button';btn.className='pwa-table-open';btn.innerHTML='<span aria-hidden="true">⤢</span> View full table';btn.setAttribute('aria-label','View full table: '+tableLabel(table));btn.addEventListener('click',function(e){e.preventDefault();openTableViewer(table,btn);});tool.appendChild(btn);var wrapper=table.closest('.table-scroll,.tbl-pos');(wrapper||table).insertAdjacentElement('afterend',tool);});requestAnimationFrame(function(){refreshTableButtons(sec);});}
 
 function staticFigure(fig){if(!fig||fig.closest('.pwa-lightbox-host'))return false;if(fig.classList.contains('simulator-figure')||fig.querySelector('input,select,textarea,button,iframe,canvas,video,audio,[contenteditable="true"],[data-sim-open],.vg-lab-house,.vg-pft-house'))return false;return true;}
-function openLightbox(node,opener,compound){if(!lightboxHost||!node)return;var clone=cloneClean(node);if(compound)clone.classList.add('pwa-expanded-compound');lightboxHost.innerHTML='';lightboxHost.appendChild(clone);overlayManager.open('lightbox',lightbox,opener,{onOpen:function(){lightbox.classList.add('show');},onClose:function(){lightbox.classList.remove('show');lightboxHost.innerHTML='';},focus:doc.getElementById('pwa-lightbox-close')});}
+function lightboxLabel(node){var fig=node&&node.closest&&node.closest('.figure'),cap=fig&&fig.querySelector('.cap,figcaption'),label=cap?cleanNodeText(cap):'';if(!label&&fig)label=cleanNodeText(fig.querySelector('.figure-ui-title,.ftitle,h4,h5'));return label||'Full-screen figure';}
+function openLightbox(node,opener,compound){if(!lightboxHost||!node)return;lightboxSourceY=window.scrollY||window.pageYOffset||0;var clone=cloneClean(node);if(compound)clone.classList.add('pwa-expanded-compound');lightboxHost.innerHTML='';lightboxHost.appendChild(clone);if(lightboxTitle)lightboxTitle.textContent=lightboxLabel(node);overlayManager.open('lightbox',lightbox,opener,{onOpen:function(){lightbox.classList.add('show');requestAnimationFrame(function(){try{lightboxHost.scrollTo({top:0,left:0,behavior:'auto'});}catch(_){lightboxHost.scrollTop=0;lightboxHost.scrollLeft=0;}});},onClose:function(){lightbox.classList.remove('show');lightboxHost.innerHTML='';if(lightboxTitle)lightboxTitle.textContent='Full-screen figure';},focus:lightboxClose});}
 function enhanceFigures(sec){sec.querySelectorAll('img').forEach(function(img){img.loading='lazy';img.decoding='async';if(!img.dataset.pwaZoom){img.dataset.pwaZoom='1';img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','Open enlarged figure');function open(e){if(e.type==='keydown'&&e.key!=='Enter'&&e.key!==' ')return;if(e.target.closest&&e.target.closest('a,button'))return;e.preventDefault();openLightbox(img,img,false);}img.addEventListener('click',open);img.addEventListener('keydown',open);}});
 sec.querySelectorAll('.figure > svg').forEach(function(svg){if(svg.dataset.pwaZoom)return;svg.dataset.pwaZoom='1';svg.tabIndex=0;svg.setAttribute('role','button');svg.setAttribute('aria-label','Open enlarged figure');function open(e){if(e.type==='keydown'&&e.key!=='Enter'&&e.key!==' ')return;e.preventDefault();openLightbox(svg,svg,false);}svg.addEventListener('click',open);svg.addEventListener('keydown',open);});
 sec.querySelectorAll('.figure').forEach(function(fig){if(fig.dataset.pwaCompoundReady==='1'||!staticFigure(fig))return;var direct=fig.querySelector(':scope > img,:scope > svg');if(direct)return;fig.dataset.pwaCompoundReady='1';var btn=doc.createElement('button');btn.type='button';btn.className='pwa-figure-open';btn.innerHTML='<span aria-hidden="true">⤢</span><span class="pwa-figure-open-text">View full figure</span>';var cap=fig.querySelector('.cap,figcaption');btn.setAttribute('aria-label','View full figure'+(cap?': '+cleanNodeText(cap):''));btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();openLightbox(fig,btn,true);});fig.appendChild(btn);});}
@@ -14117,7 +14254,9 @@ searchInput.addEventListener('input',function(){clearTimeout(searchTimer);search
 doc.getElementById('pwa-tools-close').addEventListener('click',function(){overlayManager.close('tools',true);});tools.addEventListener('click',function(e){if(e.target===tools)overlayManager.close('tools',true);});doc.getElementById('pwa-tools-calc').addEventListener('click',openCalculator);doc.getElementById('pwa-tools-index').addEventListener('click',function(){var t=doc.getElementById('book-index');activate(t,t,'push');});doc.getElementById('pwa-theme-light').addEventListener('click',function(){applyTheme('light');});doc.getElementById('pwa-theme-dark').addEventListener('click',function(){applyTheme('dark');});doc.getElementById('pwa-font-down').addEventListener('click',function(){fontStep(-10);});doc.getElementById('pwa-font-up').addEventListener('click',function(){fontStep(10);});var legacyFull=doc.getElementById('pwa-open-full');if(legacyFull)legacyFull.remove();
 doc.addEventListener('click',function(e){var open=e.target.closest&&e.target.closest('[data-sim-open]');if(open){e.preventDefault();openSimulator(open);return;}var reset=e.target.closest&&e.target.closest('[data-sim-reset]');if(reset){e.preventDefault();resetSimulator(reset);return;}var ch=e.target.closest&&e.target.closest('[data-sim-challenge]');if(ch){var frame=doc.getElementById(ch.dataset.simChallenge),fig=frame&&frame.closest('.simulator-figure');if(fig){var box=fig.querySelector('.sim-challenge-active');if(box){box.hidden=false;box.innerHTML='<strong>Challenge:</strong> '+ch.dataset.challenge;}var ob=fig.querySelector('[data-sim-open]');if(ob)openSimulator(ob);}return;}});
 simClose.addEventListener('click',function(){closeSimulator(true);});simOverlay.addEventListener('click',function(e){if(e.target===simOverlay)closeSimulator(true);});
-doc.getElementById('pwa-lightbox-close').addEventListener('click',function(){overlayManager.close('lightbox',true);});lightbox.addEventListener('click',function(e){if(e.target===lightbox)overlayManager.close('lightbox',true);});
+var lightboxCloseBusy=false;function closeExpandedFigure(e){if(e){if(e.cancelable)e.preventDefault();e.stopPropagation();}if(lightboxCloseBusy)return;lightboxCloseBusy=true;var y=lightboxSourceY;overlayManager.close('lightbox',true);requestAnimationFrame(function(){requestAnimationFrame(function(){window.scrollTo(0,y);});});setTimeout(function(){window.scrollTo(0,y);lightboxCloseBusy=false;},120);}
+if(lightboxClose){lightboxClose.addEventListener('click',closeExpandedFigure);lightboxClose.addEventListener('touchend',closeExpandedFigure,{passive:false});}
+lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeExpandedFigure(e);});
 if(tableViewer){var closeTable=function(e){if(e){if(e.cancelable)e.preventDefault();e.stopPropagation();}overlayManager.close('table',true);};tableClose.addEventListener('click',closeTable);if(tableDone)tableDone.addEventListener('click',closeTable);tableViewer.addEventListener('click',function(e){if(e.target===tableViewer)overlayManager.close('table',true);});tableOverview.addEventListener('click',function(){if(!tableState)return;tableState.mode='overview';renderTableViewer();});tableRead.addEventListener('click',function(){if(!tableState)return;tableState.mode='read';renderTableViewer();});tableZoomOut.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.max(75,tableState.textScale-10);renderTableViewer();});tableZoomIn.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.min(160,tableState.textScale+10);renderTableViewer();});}
 body.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('abbr[data-tip]');if(!a)return;var d=a.getAttribute('data-tip');if(!d)return;var r=a.getBoundingClientRect();tip.textContent=d;tip.classList.add('show');var tw=tip.getBoundingClientRect().width;tip.style.left=Math.max(8,Math.min(innerWidth-tw-8,r.left))+'px';tip.style.top=Math.min(innerHeight-80,r.bottom+8)+'px';setTimeout(function(){tip.classList.remove('show');},2600);},true);
 doc.addEventListener('keydown',overlayManager.keydown);
@@ -14139,5 +14278,5 @@ var seen=false;try{seen=localStorage.getItem('mv-seen-intro')==='1';}catch(_){}i
 </script>
 
 
-<div hidden id="pwa-mobile-usability-complete-v110112" data-build="v1.10.112">MOBILE_USABILITY_FINALIZATION_COMPLETE</div>
+<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.113">IMAGE_VIEWER_AND_DEVICE_ROUTING_COMPLETE</div>
 </body></html>
