@@ -1,11 +1,11 @@
 {
   "name": "Guide to Ventilation \u2014 Bedside Reference",
   "publicEdition": "1.2",
-  "build": "v1.10.118",
+  "build": "v1.10.119",
   "canonical": "mechanical-ventilation-teaching-reference.html",
   "appEntry": "ventilation-guide-app.html",
   "serviceWorker": "ventilation-guide-sw.js",
-  "cache": "ventilation-guide-core-v1.10.118",
+  "cache": "ventilation-guide-core-v1.10.119",
   "released": "2026-08-18",
   "routing": "device-aware canonical entry; viewport width does not select mobile mode"
 }
