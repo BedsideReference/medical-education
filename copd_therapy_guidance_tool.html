@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>COPD Therapy Guidance Tool | Bedside Reference</title>
+<style>
+  :root {
+    --bg: #08111c;
+    --bg-2: #0d1826;
+    --panel: #111f2f;
+    --panel-2: #16283b;
+    --line: #2b4056;
+    --text: #f4f7fb;
+    --muted: #aebdca;
+    --yellow: #f4bf24;
+    --yellow-2: #ffd86b;
+    --red: #e85a5a;
+    --green: #3fc48d;
+    --blue: #59a7ff;
+    --purple: #ab8cff;
+    --shadow: 0 18px 55px rgba(0,0,0,.34);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 85% 0%, rgba(89,167,255,.10), transparent 32%),
+      radial-gradient(circle at 0% 100%, rgba(244,191,36,.08), transparent 30%),
+      var(--bg);
+    color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  button, input, select { font: inherit; }
+  button { color: inherit; }
+  .app-shell { max-width: 1600px; margin: 0 auto; padding: 18px; }
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(13,24,38,.92);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 10px;
+    z-index: 20;
+    backdrop-filter: blur(14px);
+  }
+  .brand { display: flex; gap: 14px; align-items: center; min-width: 0; }
+  .brand-mark {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: grid; place-items: center;
+    background: var(--yellow); color: #101722;
+    font-weight: 950; letter-spacing: -.06em; font-size: 19px;
+    box-shadow: 0 8px 25px rgba(244,191,36,.22);
+  }
+  .brand h1 { margin: 0; font-size: clamp(18px, 2vw, 28px); letter-spacing: -.03em; }
+  .brand p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+  .top-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .btn {
+    border: 1px solid var(--line);
+    background: #142235;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 750;
+    transition: .18s ease;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: #55718e; }
+  .btn.primary { background: var(--yellow); color: #111722; border-color: var(--yellow); }
+  .btn.danger { background: rgba(232,90,90,.12); color: #ffb0b0; border-color: rgba(232,90,90,.45); }
+  .btn.ghost { background: transparent; }
+
+  .mode-strip {
+    margin: 16px 0;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(13,24,38,.78);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .mode-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: 12px;
+    padding: 13px 16px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .mode-btn strong { display: block; color: inherit; font-size: 15px; }
+  .mode-btn span { font-size: 12px; }
+  .mode-btn.active { background: var(--panel-2); border-color: var(--yellow); color: var(--text); }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: minmax(360px, .78fr) minmax(560px, 1.62fr);
+    gap: 16px;
+    align-items: start;
+  }
+  .panel {
+    border: 1px solid var(--line);
+    background: rgba(17,31,47,.93);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 17px 18px 14px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,.025), transparent);
+  }
+  .eyebrow { color: var(--yellow); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .13em; }
+  .panel-head h2 { margin: 5px 0 0; font-size: 19px; letter-spacing: -.02em; }
+  .panel-body { padding: 16px 18px 19px; }
+  .section-title { margin: 18px 0 9px; font-size: 12px; color: var(--yellow-2); text-transform: uppercase; letter-spacing: .11em; font-weight: 900; }
+  .section-title:first-child { margin-top: 0; }
+
+  .case-select-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  select, input[type="number"] {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: #0d1928;
+    color: var(--text);
+    padding: 10px 11px;
+    outline: none;
+  }
+  select:focus, input:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(244,191,36,.10); }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { min-width: 0; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { display: block; color: var(--muted); font-size: 12px; margin: 0 0 6px; font-weight: 700; }
+  .input-suffix { position: relative; }
+  .input-suffix span { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #7990a6; font-size: 11px; pointer-events: none; }
+  .input-suffix input { padding-right: 54px; }
+
+  .toggle-list { display: grid; gap: 8px; }
+  .toggle {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 11px;
+    border: 1px solid var(--line);
+    background: #0e1a29;
+    border-radius: 11px;
+  }
+  .toggle span { font-size: 12px; line-height: 1.25; color: #d8e2eb; }
+  .switch { position: relative; width: 42px; height: 24px; flex: 0 0 auto; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #30445a; border-radius: 99px; cursor: pointer; transition: .2s; }
+  .slider:before { content: ""; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; border-radius: 50%; background: white; transition: .2s; }
+  .switch input:checked + .slider { background: var(--yellow); }
+  .switch input:checked + .slider:before { transform: translateX(18px); background: #142033; }
+
+  .case-summary {
+    margin-top: 12px; padding: 12px 13px; border-radius: 12px;
+    background: rgba(89,167,255,.08); border: 1px solid rgba(89,167,255,.24);
+    color: #d7e8fb; font-size: 12px; line-height: 1.5;
+  }
+
+  .choice-group { display: grid; gap: 9px; }
+  .therapy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .therapy-card {
+    border: 1px solid var(--line);
+    background: #0e1a29;
+    border-radius: 13px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: left;
+    min-height: 84px;
+    transition: .17s ease;
+    position: relative;
+  }
+  .therapy-card:hover { border-color: #607c98; transform: translateY(-1px); }
+  .therapy-card.selected { border-color: var(--yellow); background: rgba(244,191,36,.09); box-shadow: inset 0 0 0 1px rgba(244,191,36,.22); }
+  .therapy-card.selected:after { content: "✓"; position: absolute; right: 10px; top: 8px; color: var(--yellow); font-weight: 1000; }
+  .therapy-card strong { display: block; font-size: 13px; margin-right: 22px; }
+  .therapy-card small { display: block; margin-top: 5px; color: var(--muted); line-height: 1.25; font-size: 11px; }
+  .therapy-card .tag { display: inline-flex; margin-top: 8px; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; color: var(--yellow-2); font-weight: 900; }
+  .therapy-card.disabled { opacity: .45; cursor: not-allowed; }
+
+  .checks { display: grid; gap: 8px; }
+  .check-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    border: 1px solid var(--line); border-radius: 11px; padding: 10px;
+    background: #0e1a29; cursor: pointer;
+  }
+  .check-row input { margin-top: 2px; accent-color: var(--yellow); }
+  .check-row div strong { display: block; font-size: 12px; }
+  .check-row div span { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; line-height: 1.3; }
+
+  .submit-wrap { margin-top: 16px; display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+  .submit-btn {
+    border: none; border-radius: 13px; background: var(--yellow); color: #101722;
+    padding: 14px 16px; font-weight: 950; cursor: pointer; letter-spacing: .01em;
+    box-shadow: 0 10px 25px rgba(244,191,36,.15);
+  }
+  .submit-btn:hover { filter: brightness(1.05); }
+
+  .empty-state { padding: 28px 10px; text-align: center; color: var(--muted); }
+  .empty-icon { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 12px; display: grid; place-items: center; border: 1px solid var(--line); font-size: 24px; }
+  .empty-state h3 { color: var(--text); margin: 0 0 7px; font-size: 16px; }
+  .empty-state p { margin: 0; font-size: 12px; line-height: 1.5; }
+
+  .score-block { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: center; }
+  .score-ring {
+    width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center;
+    background: conic-gradient(var(--yellow) var(--score-angle, 0deg), #263b50 0);
+    position: relative;
+  }
+  .score-ring:before { content:""; position:absolute; inset:8px; border-radius:50%; background:#101d2c; }
+  .score-ring div { position: relative; text-align: center; }
+  .score-ring strong { display: block; font-size: 25px; line-height: 1; }
+  .score-ring span { font-size: 10px; color: var(--muted); }
+  .score-copy h3 { margin: 0 0 5px; font-size: 18px; }
+  .score-copy p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+  .result-card { margin-top: 12px; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; }
+  .result-title { padding: 9px 11px; font-size: 11px; text-transform: uppercase; letter-spacing: .09em; font-weight: 900; border-bottom: 1px solid var(--line); }
+  .result-body { padding: 11px 12px; font-size: 12px; line-height: 1.5; color: #dce6ef; }
+  .result-card.good { border-color: rgba(63,196,141,.36); }
+  .result-card.good .result-title { color: #8ce3ba; background: rgba(63,196,141,.08); }
+  .result-card.warn { border-color: rgba(244,191,36,.36); }
+  .result-card.warn .result-title { color: var(--yellow-2); background: rgba(244,191,36,.08); }
+  .result-card.bad { border-color: rgba(232,90,90,.38); }
+  .result-card.bad .result-title { color: #ffadad; background: rgba(232,90,90,.08); }
+  .result-card.info { border-color: rgba(89,167,255,.35); }
+  .result-card.info .result-title { color: #a7d0ff; background: rgba(89,167,255,.08); }
+  .result-body ul { margin: 5px 0 0; padding-left: 18px; }
+  .result-body li { margin: 3px 0; }
+
+  .decision-trail { display: grid; gap: 7px; margin-top: 8px; }
+  .trail-step { display: grid; grid-template-columns: 24px 1fr; gap: 9px; align-items: start; }
+  .trail-num { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #263b50; color: var(--muted); font-size: 10px; font-weight: 900; }
+  .trail-step.active .trail-num { background: var(--yellow); color: #111722; }
+  .trail-copy strong { display:block; font-size: 12px; }
+  .trail-copy span { display:block; color:var(--muted); font-size:11px; line-height:1.35; margin-top:1px; }
+
+  .score-breakdown { display: grid; gap: 6px; }
+  .score-line { display: grid; grid-template-columns: 1fr auto; gap: 8px; font-size: 11px; padding: 7px 0; border-bottom: 1px dashed #294056; }
+  .score-line:last-child { border-bottom: 0; }
+  .score-line span:first-child { color: #d8e3ec; }
+  .score-line b { color: var(--yellow-2); }
+
+  .pill-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .pill { padding:5px 8px; border-radius:999px; font-size:10px; font-weight:800; border:1px solid var(--line); color:#dbe6ef; background:#132235; }
+  .pill.yellow { border-color:rgba(244,191,36,.45); color:var(--yellow-2); }
+  .pill.red { border-color:rgba(232,90,90,.45); color:#ffb0b0; }
+  .pill.green { border-color:rgba(63,196,141,.45); color:#8ce3ba; }
+
+
+  .guidance-panel { min-height: 620px; }
+  .guidance-toolbar {
+    display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+    padding-bottom: 14px; margin-bottom: 2px; border-bottom: 1px solid var(--line);
+  }
+  .guidance-hero {
+    margin-top: 14px; padding: 18px; border: 1px solid rgba(244,191,36,.48);
+    border-radius: 16px; background: linear-gradient(135deg, rgba(244,191,36,.13), rgba(89,167,255,.06));
+  }
+  .guidance-hero .kicker { color: var(--yellow-2); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+  .guidance-hero h3 { margin: 6px 0 7px; font-size: clamp(21px, 3vw, 31px); letter-spacing: -.035em; line-height: 1.1; }
+  .guidance-hero p { margin: 0; color: #d5e0e9; font-size: 12px; line-height: 1.55; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-top: 12px; }
+  .summary-stat { border: 1px solid var(--line); background: #0e1a29; border-radius: 12px; padding: 10px 11px; }
+  .summary-stat span { display: block; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; font-weight: 850; }
+  .summary-stat strong { display: block; margin-top: 5px; font-size: 13px; line-height: 1.25; }
+  .guidance-section-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .priority-list { display: grid; gap: 8px; }
+  .priority-item { display: grid; grid-template-columns: 28px 1fr; gap: 9px; align-items: start; padding: 9px 0; border-bottom: 1px dashed #294056; }
+  .priority-item:last-child { border-bottom: 0; }
+  .priority-icon { width: 28px; height: 28px; border-radius: 9px; display: grid; place-items: center; background: #22384d; color: var(--yellow-2); font-weight: 950; font-size: 12px; }
+  .priority-item strong { display: block; font-size: 12px; }
+  .priority-item span { display: block; color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 2px; }
+  .status-line { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 11px; margin-right: auto; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(63,196,141,.10); }
+  .copy-confirm { color: #8ce3ba; font-size: 11px; min-width: 82px; text-align: right; }
+  @media (max-width: 900px) {
+    .summary-grid, .guidance-section-grid { grid-template-columns: 1fr; }
+  }
+
+  .footer {
+    margin: 18px 0 4px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: center;
+    color: #8296a9;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .footer a { color: var(--yellow-2); text-decoration: none; }
+  .disclaimer { border-left: 3px solid var(--yellow); padding-left: 10px; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 1180px) {
+    .workspace { grid-template-columns: minmax(330px, .85fr) minmax(480px, 1.4fr); }
+  }
+  @media (max-width: 760px) {
+    .app-shell { padding: 10px; }
+    .topbar { position: static; align-items: flex-start; flex-direction: column; }
+    .top-actions { width:100%; justify-content:stretch; }
+    .top-actions .btn { flex:1; }
+    .mode-strip { grid-template-columns:1fr; }
+    .workspace { grid-template-columns:1fr; }
+
+    .therapy-grid, .field-grid { grid-template-columns:1fr; }
+    .field.full { grid-column:auto; }
+    .score-block { grid-template-columns:78px 1fr; }
+    .score-ring { width:78px; height:78px; }
+    .footer { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">BR</div>
+      <div>
+        <h1>COPD Therapy Guidance Tool</h1>
+        <p>Patient-specific maintenance therapy guidance • GOLD 2026 framework</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn ghost" id="randomCaseBtn">Another example</button>
+      <button class="btn danger" id="resetBtn">Reset</button>
+    </div>
+  </header>
+
+  <nav class="mode-strip" aria-label="Therapy guidance pathway">
+    <button class="mode-btn active" data-mode="initial">
+      <strong>1. Starting therapy</strong>
+      <span>Treatment-naïve COPD: identify the GOLD group and receive a starting-regimen recommendation.</span>
+    </button>
+    <button class="mode-btn" data-mode="followup">
+      <strong>2. Adjusting therapy</strong>
+      <span>Guidance for persistent dyspnea, exacerbations, ICS decisions, and phenotype-directed add-ons.</span>
+    </button>
+  </nav>
+
+  <main class="workspace">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="eyebrow">Patient profile</div>
+        <h2>Enter the clinical variables</h2>
+      </div>
+      <div class="panel-body">
+        <div class="section-title">Example patient</div>
+        <div class="case-select-row">
+          <select id="caseSelect" aria-label="Preset case"></select>
+          <button class="btn" id="loadCaseBtn">Load</button>
+        </div>
+        <div class="case-summary" id="caseSummary">Load an example patient or enter custom values below.</div>
+
+        <div class="section-title">Symptoms and exacerbations</div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="cat">CAAT/CAT score</label>
+            <input id="cat" type="number" min="0" max="40" value="7" />
+          </div>
+          <div class="field">
+            <label for="mmrc">mMRC grade</label>
+            <select id="mmrc">
+              <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="moderateExac">Moderate exacerbations</label>
+            <input id="moderateExac" type="number" min="0" max="10" value="0" />
+          </div>
+          <div class="field">
+            <label for="severeExac">Severe exacerbations</label>
+            <input id="severeExac" type="number" min="0" max="10" value="0" />
+          </div>
+          <div class="field full">
+            <label for="eos">Blood eosinophils</label>
+            <div class="input-suffix"><input id="eos" type="number" min="0" max="2000" value="80" /><span>cells/µL</span></div>
+          </div>
+        </div>
+
+        <div id="followupFields" class="hidden">
+          <div class="section-title">Current treatment and treatment target</div>
+          <div class="field-grid">
+            <div class="field full">
+              <label for="currentRegimen">Current maintenance regimen</label>
+              <select id="currentRegimen">
+                <option value="LABA">LABA</option>
+                <option value="LAMA">LAMA</option>
+                <option value="LABA_LAMA">LABA + LAMA</option>
+                <option value="LABA_ICS">LABA + ICS</option>
+                <option value="TRIPLE">LABA + LAMA + ICS</option>
+              </select>
+            </div>
+          </div>
+          <div class="toggle-list" style="margin-top:10px">
+            <label class="toggle"><span>Persistent dyspnea despite therapy</span><span class="switch"><input id="persistentDyspnea" type="checkbox"><span class="slider"></span></span></label>
+            <label class="toggle"><span>Previous positive response to LABA + ICS</span><span class="switch"><input id="priorLabaIcsResponse" type="checkbox"><span class="slider"></span></span></label>
+          </div>
+        </div>
+
+        <div class="section-title">Clinical modifiers</div>
+        <div class="toggle-list">
+          <label class="toggle"><span>Current or historical asthma</span><span class="switch"><input id="asthma" type="checkbox"><span class="slider"></span></span></label>
+          <label class="toggle"><span>Recurrent pneumonia</span><span class="switch"><input id="pneumonia" type="checkbox"><span class="slider"></span></span></label>
+          <label class="toggle"><span>History of mycobacterial infection</span><span class="switch"><input id="mycobacterial" type="checkbox"><span class="slider"></span></span></label>
+          <label class="toggle"><span>Chronic bronchitis phenotype</span><span class="switch"><input id="chronicBronchitis" type="checkbox"><span class="slider"></span></span></label>
+        </div>
+
+        <div id="advancedFields" class="hidden">
+          <div class="section-title">Advanced therapy variables</div>
+          <div class="field-grid">
+            <div class="field">
+              <label for="fev1">Post-BD FEV₁</label>
+              <div class="input-suffix"><input id="fev1" type="number" min="5" max="120" value="55" /><span>% pred</span></div>
+            </div>
+            <div class="field">
+              <label for="smoking">Smoking status</label>
+              <select id="smoking"><option value="current">Current</option><option value="former">Former</option><option value="never">Never</option></select>
+            </div>
+          </div>
+          <div class="toggle-list" style="margin-top:10px">
+            <label class="toggle"><span>QT prolongation / major interaction risk</span><span class="switch"><input id="qtRisk" type="checkbox"><span class="slider"></span></span></label>
+            <label class="toggle"><span>Baseline hearing impairment</span><span class="switch"><input id="hearingRisk" type="checkbox"><span class="slider"></span></span></label>
+            <label class="toggle"><span>Low weight or significant depression history</span><span class="switch"><input id="roflumilastRisk" type="checkbox"><span class="slider"></span></span></label>
+          </div>
+        </div>
+
+        <div id="qualityFields" class="hidden">
+          <div class="section-title">Potential barriers to treatment response</div>
+          <div class="toggle-list">
+            <label class="toggle"><span>Possible adherence or access concern</span><span class="switch"><input id="adherenceConcern" type="checkbox"><span class="slider"></span></span></label>
+            <label class="toggle"><span>Possible inhaler-technique or device concern</span><span class="switch"><input id="techniqueConcern" type="checkbox"><span class="slider"></span></span></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel guidance-panel">
+      <div class="panel-head">
+        <div class="eyebrow">Treatment guidance</div>
+        <h2>Recommended clinical approach</h2>
+      </div>
+      <div class="panel-body">
+        <div class="guidance-toolbar">
+          <div class="status-line"><span class="status-dot"></span><span>Guidance updates when patient variables change</span></div>
+          <span class="copy-confirm" id="copyConfirm"></span>
+          <button class="btn" id="copySummaryBtn">Copy summary</button>
+          <button class="btn primary" id="generateBtn">Update guidance</button>
+        </div>
+        <div id="feedbackBody">
+          <div class="empty-state">
+            <div class="empty-icon">↗</div>
+            <h3>Enter a patient profile</h3>
+            <p>The tool will provide a recommended regimen, alternatives, clinical rationale, ICS benefit–risk signals, and follow-up priorities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="disclaimer"><strong>Educational use only.</strong> This guidance tool presents a simplified COPD maintenance-treatment framework. It does not replace clinician judgment, local formulary review, prescribing information, or individualized patient care.</div>
+    <div>Framework: <a href="https://goldcopd.org/2026-gold-report-and-pocket-guide/" target="_blank" rel="noopener">GOLD 2026 Report & Pocket Guide</a></div>
+  </footer>
+</div>
+
+<script>
+const cases = [
+  {
+    id:'a-minimal', mode:'initial', name:'Initial 1 — Low symptoms, no exacerbations',
+    summary:'A treatment-naïve patient with infrequent symptoms and no moderate or severe exacerbations in the previous year.',
+    cat:6, mmrc:1, moderateExac:0, severeExac:0, eos:70, asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false
+  },
+  {
+    id:'b-symptomatic', mode:'initial', name:'Initial 2 — Symptomatic, no exacerbations',
+    summary:'A treatment-naïve patient with substantial daily symptom burden but no moderate or severe exacerbations in the previous year.',
+    cat:18, mmrc:2, moderateExac:0, severeExac:0, eos:120, asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false
+  },
+  {
+    id:'e-low-eos', mode:'initial', name:'Initial 3 — One exacerbation, low eosinophils',
+    summary:'A treatment-naïve patient with one moderate exacerbation and a low eosinophil count.',
+    cat:15, mmrc:2, moderateExac:1, severeExac:0, eos:60, asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:true
+  },
+  {
+    id:'e-high-eos', mode:'initial', name:'Initial 4 — One exacerbation, eosinophils 420',
+    summary:'A treatment-naïve patient with one moderate exacerbation and blood eosinophils of 420 cells/µL.',
+    cat:14, mmrc:2, moderateExac:1, severeExac:0, eos:420, asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false
+  },
+  {
+    id:'asthma-override', mode:'initial', name:'Initial 5 — COPD with concomitant asthma',
+    summary:'A treatment-naïve patient with COPD and a clear history of asthma. The COPD-only pathway is overridden by the need for ICS-containing therapy.',
+    cat:13, mmrc:2, moderateExac:0, severeExac:0, eos:360, asthma:true, pneumonia:false, mycobacterial:false, chronicBronchitis:false
+  },
+  {
+    id:'dyspnea-lama', mode:'followup', name:'Follow-up 1 — Dyspnea on LAMA',
+    summary:'Persistent dyspnea while taking LAMA monotherapy, without a new moderate or severe exacerbation.',
+    cat:19, mmrc:3, moderateExac:0, severeExac:0, eos:90, currentRegimen:'LAMA', persistentDyspnea:true, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false, fev1:58, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'exac-dual-220', mode:'followup', name:'Follow-up 2 — Exacerbation on LABA + LAMA, eos 220',
+    summary:'One moderate exacerbation despite LABA + LAMA, with blood eosinophils of 220 cells/µL.',
+    cat:16, mmrc:2, moderateExac:1, severeExac:0, eos:220, currentRegimen:'LABA_LAMA', persistentDyspnea:false, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false, fev1:61, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'exac-dual-low-eos', mode:'followup', name:'Follow-up 3 — Exacerbation on dual therapy, eos 45',
+    summary:'Continued exacerbations on LABA + LAMA, eosinophils below 100, chronic bronchitis, FEV₁ 42%, and former smoking.',
+    cat:20, mmrc:2, moderateExac:2, severeExac:0, eos:45, currentRegimen:'LABA_LAMA', persistentDyspnea:false, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:true, fev1:42, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'triple-biologic', mode:'followup', name:'Follow-up 4 — Exacerbations despite triple therapy',
+    summary:'Two moderate exacerbations on triple therapy with eosinophils 380, chronic bronchitis, and FEV₁ 48%.',
+    cat:21, mmrc:3, moderateExac:2, severeExac:0, eos:380, currentRegimen:'TRIPLE', persistentDyspnea:false, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:true, fev1:48, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'laba-ics-controlled', mode:'followup', name:'Follow-up 5 — Controlled on LABA + ICS',
+    summary:'No current exacerbations, low symptom burden, and a documented previous favorable response to LABA + ICS.',
+    cat:7, mmrc:1, moderateExac:0, severeExac:0, eos:180, currentRegimen:'LABA_ICS', persistentDyspnea:false, priorLabaIcsResponse:true,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false, fev1:65, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'laba-ics-exac-low', mode:'followup', name:'Follow-up 6 — Exacerbation on LABA + ICS, eos 55',
+    summary:'A current moderate exacerbation while taking LABA + ICS, with eosinophils below 100 cells/µL.',
+    cat:15, mmrc:2, moderateExac:1, severeExac:0, eos:55, currentRegimen:'LABA_ICS', persistentDyspnea:false, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false, fev1:59, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'pneumonia-triple', mode:'followup', name:'Follow-up 7 — Recurrent pneumonia on triple therapy',
+    summary:'Recurrent pneumonia while receiving triple therapy, no current exacerbations, eosinophils 70, and no asthma history.',
+    cat:9, mmrc:1, moderateExac:0, severeExac:0, eos:70, currentRegimen:'TRIPLE', persistentDyspnea:false, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:true, mycobacterial:false, chronicBronchitis:false, fev1:63, smoking:'former', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:false, techniqueConcern:false
+  },
+  {
+    id:'technique-first', mode:'followup', name:'Follow-up 8 — Apparent failure with poor technique',
+    summary:'Persistent dyspnea on LABA + LAMA, but the patient demonstrates incorrect inhaler technique and inconsistent use.',
+    cat:20, mmrc:3, moderateExac:0, severeExac:0, eos:110, currentRegimen:'LABA_LAMA', persistentDyspnea:true, priorLabaIcsResponse:false,
+    asthma:false, pneumonia:false, mycobacterial:false, chronicBronchitis:false, fev1:57, smoking:'current', qtRisk:false, hearingRisk:false, roflumilastRisk:false, adherenceConcern:true, techniqueConcern:true
+  }
+];
+
+const baseOptions = [
+  {id:'CONTINUE', name:'Continue current treatment', desc:'No pharmacologic change; continue monitoring and reassessment.', modes:['followup']},
+  {id:'BRONCHODILATOR', name:'Single bronchodilator', desc:'A short- or long-acting bronchodilator selected for the individual patient.', modes:['initial']},
+  {id:'LABA', name:'LABA', desc:'Long-acting beta₂-agonist monotherapy.', modes:['initial','followup']},
+  {id:'LAMA', name:'LAMA', desc:'Long-acting muscarinic antagonist monotherapy.', modes:['initial','followup']},
+  {id:'LABA_LAMA', name:'LABA + LAMA', desc:'Dual long-acting bronchodilation.', modes:['initial','followup']},
+  {id:'LABA_ICS', name:'LABA + ICS', desc:'Dual bronchodilator–corticosteroid regimen; generally not the preferred COPD pathway.', modes:['initial','followup']},
+  {id:'TRIPLE', name:'LABA + LAMA + ICS', desc:'Triple inhaled maintenance therapy.', modes:['initial','followup']},
+  {id:'ASTHMA_ICS', name:'Asthma-directed ICS regimen', desc:'Use an ICS-containing regimen because concomitant asthma overrides the COPD-only pathway.', modes:['initial','followup']}
+];
+
+const addOnOptions = [
+  {id:'NONE', name:'No add-on', desc:'Use the selected maintenance regimen alone.'},
+  {id:'ENSIFENTRINE', name:'Add ensifentrine', desc:'Consider for persistent dyspnea despite optimized long-acting inhaled therapy.'},
+  {id:'ROFLUMILAST', name:'Add roflumilast', desc:'Consider with FEV₁ <50%, chronic bronchitis, and continued exacerbations.'},
+  {id:'AZITHRO', name:'Add azithromycin', desc:'Consider for continued exacerbations, preferably in former smokers.'},
+  {id:'DUPILUMAB', name:'Add dupilumab', desc:'Specialist-level biologic option for selected eosinophilic COPD with chronic bronchitis.'},
+  {id:'MEPOLIZUMAB', name:'Add mepolizumab', desc:'Specialist-level biologic option for selected eosinophilic COPD.'}
+];
+
+let state = { mode:'initial', lastGuidanceText:'' };
+
+const $ = id => document.getElementById(id);
+const bool = id => $(id).checked;
+const num = id => Number($(id).value || 0);
+
+function populateCases() {
+  $('caseSelect').innerHTML = '';
+  const filtered = cases.filter(c => c.mode === state.mode);
+  filtered.forEach(c => {
+    const option = document.createElement('option');
+    option.value = c.id;
+    option.textContent = c.name.replace(/^Initial \d+ — /, '').replace(/^Follow-up \d+ — /, '');
+    $('caseSelect').appendChild(option);
+  });
+  if (filtered.length) loadCase(filtered[0].id);
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  $('followupFields').classList.toggle('hidden', mode !== 'followup');
+  $('advancedFields').classList.toggle('hidden', mode !== 'followup');
+  $('qualityFields').classList.toggle('hidden', mode !== 'followup');
+  populateCases();
+}
+
+function loadCase(id) {
+  const c = cases.find(x => x.id === id);
+  if (!c) return;
+  if (c.mode !== state.mode) {
+    state.mode = c.mode;
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === c.mode));
+    $('followupFields').classList.toggle('hidden', c.mode !== 'followup');
+    $('advancedFields').classList.toggle('hidden', c.mode !== 'followup');
+    $('qualityFields').classList.toggle('hidden', c.mode !== 'followup');
+  }
+  $('caseSelect').value = c.id;
+  ['cat','mmrc','moderateExac','severeExac','eos','currentRegimen','fev1','smoking'].forEach(f => {
+    if (c[f] !== undefined && $(f)) $(f).value = c[f];
+  });
+  ['asthma','pneumonia','mycobacterial','chronicBronchitis','persistentDyspnea','priorLabaIcsResponse','qtRisk','hearingRisk','roflumilastRisk','adherenceConcern','techniqueConcern'].forEach(f => {
+    if ($(f)) $(f).checked = !!c[f];
+  });
+  $('caseSummary').textContent = c.summary;
+  generateGuidance();
+}
+
+function readPatient() {
+  return {
+    mode: state.mode,
+    cat:num('cat'), mmrc:num('mmrc'), moderate:num('moderateExac'), severe:num('severeExac'), eos:num('eos'),
+    current: state.mode==='followup' ? $('currentRegimen').value : 'NONE',
+    dyspnea: state.mode==='followup' ? bool('persistentDyspnea') : false,
+    priorLabaIcsResponse: state.mode==='followup' ? bool('priorLabaIcsResponse') : false,
+    asthma:bool('asthma'), pneumonia:bool('pneumonia'), mycobacterial:bool('mycobacterial'), chronicBronchitis:bool('chronicBronchitis'),
+    fev1: state.mode==='followup' ? num('fev1') : null,
+    smoking: state.mode==='followup' ? $('smoking').value : null,
+    qtRisk: state.mode==='followup' ? bool('qtRisk') : false,
+    hearingRisk: state.mode==='followup' ? bool('hearingRisk') : false,
+    roflumilastRisk: state.mode==='followup' ? bool('roflumilastRisk') : false,
+    adherenceConcern: state.mode==='followup' ? bool('adherenceConcern') : false,
+    techniqueConcern: state.mode==='followup' ? bool('techniqueConcern') : false
+  };
+}
+
+function initialRecommendation(p) {
+  const exac = p.moderate + p.severe;
+  const highSymptoms = p.cat >= 10 || p.mmrc >= 2;
+  const group = exac >= 1 ? 'E' : (highSymptoms ? 'B' : 'A');
+  let preferred=[], acceptable=[], avoid=['LABA_ICS'], rationale=[], trail=[];
+
+  trail.push({t:'Treatment status',d:'The patient is not yet receiving maintenance pharmacological treatment.'});
+  trail.push({t:'Exacerbation history',d: exac>=1 ? `${exac} moderate or severe event(s) places the patient in Group E.` : 'No moderate or severe exacerbations were entered for the previous year.'});
+  trail.push({t:'Symptom burden',d:`CAAT/CAT ${p.cat}; mMRC ${p.mmrc}${exac===0 ? ` supports Group ${group}.` : ' is considered after Group E is established by exacerbation history.'}`});
+
+  if (p.asthma) {
+    preferred=['ASTHMA_ICS']; acceptable=['TRIPLE']; avoid=[];
+    rationale.push('Concomitant asthma requires an ICS-containing regimen; manage the asthma component according to asthma guidance.');
+    if (group==='E' || highSymptoms) rationale.push('Triple therapy can provide the required ICS while also supplying dual bronchodilation when clinically needed.');
+    trail.push({t:'Asthma override',d:'An ICS-containing regimen is required; LABA should not be used without ICS for the asthma component.'});
+  } else if (group==='A') {
+    preferred=['BRONCHODILATOR']; acceptable=['LABA','LAMA'];
+    rationale.push('For Group A, use a bronchodilator chosen according to symptom pattern, demonstrated benefit, preference, and device suitability.');
+  } else if (group==='B') {
+    preferred=['LABA_LAMA'];
+    rationale.push('For Group B, LABA + LAMA is the preferred initial regimen because symptom burden is high without a qualifying exacerbation history.');
+  } else {
+    preferred=['LABA_LAMA'];
+    rationale.push('For Group E, LABA + LAMA is the preferred initial foundation.');
+    if (p.eos >= 300) {
+      acceptable.push('TRIPLE');
+      rationale.push(`Eosinophils are ${p.eos} cells/µL, so initial triple therapy may also be considered.`);
+    } else {
+      rationale.push(`Eosinophils are ${p.eos} cells/µL; routine initial triple therapy is not favored in the absence of asthma.`);
+    }
+  }
+  return {group, preferred, acceptable, avoid, rationale, trail, target: group==='A'?'Lower symptom burden':group==='B'?'Higher symptom burden':'Exacerbation prevention'};
+}
+
+function followupRecommendation(p) {
+  const exac = p.moderate + p.severe;
+  const hasExac = exac >= 1;
+  const highSymptoms = p.cat >= 10 || p.mmrc >= 2;
+  let preferredBase=[], acceptableBase=[], preferredAdd=['NONE'], acceptableAdd=[], avoidBase=[], rationale=[], trail=[], pathway='Stable / controlled';
+
+  trail.push({t:'Current therapy',d:labels([p.current])});
+  trail.push({t:'Reassess before escalation',d:'Confirm adherence, inhaler technique, device fit, nonpharmacologic care, and competing causes of symptoms.'});
+
+  if (p.asthma) {
+    pathway = hasExac ? 'Exacerbation pathway with asthma' : 'Asthma override';
+    preferredBase=['TRIPLE']; acceptableBase=['ASTHMA_ICS']; avoidBase=['LABA','LAMA','LABA_LAMA'];
+    rationale.push('Concomitant asthma requires ICS-containing therapy; do not withdraw ICS solely because of the COPD pathway.');
+    trail.push({t:'Asthma override',d:'ICS remains required.'});
+  } else if (p.current === 'LABA_ICS') {
+    pathway = 'LABA + ICS special pathway';
+    trail.push({t:'Special branch',d:'Patients already taking LABA + ICS follow a dedicated reassessment pathway.'});
+    if (hasExac) {
+      if (p.eos >= 100) {
+        preferredBase=['TRIPLE'];
+        rationale.push(`Exacerbations with eosinophils ${p.eos} cells/µL support escalation to LABA + LAMA + ICS.`);
+      } else {
+        preferredBase=['LABA_LAMA']; avoidBase=['LABA_ICS','TRIPLE'];
+        rationale.push('Exacerbations with eosinophils below 100 favor changing to LABA + LAMA rather than increasing ICS exposure.');
+      }
+    } else if (p.priorLabaIcsResponse) {
+      if (highSymptoms) {
+        preferredBase=['TRIPLE']; acceptableBase=['LABA_ICS'];
+        rationale.push('With a previous favorable LABA + ICS response but persistent symptom burden, consider adding LAMA to form triple therapy.');
+      } else {
+        preferredBase=['CONTINUE','LABA_ICS'];
+        rationale.push('With no current exacerbations, low symptom burden, and a previous favorable response, continuing LABA + ICS is reasonable.');
+      }
+    } else {
+      preferredBase=['LABA_LAMA']; acceptableBase=['CONTINUE'];
+      rationale.push('Without a relevant exacerbation history or documented favorable response, consider changing LABA + ICS to LABA + LAMA.');
+    }
+  } else if (!hasExac && !p.dyspnea) {
+    preferredBase=['CONTINUE',p.current];
+    rationale.push('No entered symptom or exacerbation signal currently requires pharmacologic escalation; continue treatment with routine reassessment.');
+  } else if (p.dyspnea && !hasExac) {
+    pathway='Persistent dyspnea';
+    trail.push({t:'Dominant treatable trait',d:'Persistent dyspnea without a current moderate or severe exacerbation.'});
+    if (p.current==='LABA' || p.current==='LAMA') {
+      preferredBase=['LABA_LAMA'];
+      rationale.push('Persistent dyspnea on one long-acting bronchodilator supports escalation to LABA + LAMA.');
+    } else {
+      preferredBase=[p.current,'CONTINUE']; acceptableAdd=['ENSIFENTRINE'];
+      rationale.push('For dyspnea despite dual bronchodilation or triple therapy, reassess the device and molecules, intensify nonpharmacologic care, evaluate competing causes, and consider ensifentrine when appropriate.');
+    }
+  } else if (hasExac) {
+    pathway='Exacerbation pathway';
+    trail.push({t:'Dominant treatable trait',d:`${exac} moderate or severe exacerbation(s) occurred while receiving maintenance therapy.`});
+    if (p.current==='LABA' || p.current==='LAMA') {
+      if (p.eos >= 300) {
+        preferredBase=['TRIPLE'];
+        rationale.push(`On a single long-acting bronchodilator with eosinophils ${p.eos}, escalate to triple therapy.`);
+      } else {
+        preferredBase=['LABA_LAMA'];
+        rationale.push('On a single long-acting bronchodilator with eosinophils below 300, escalate to LABA + LAMA.');
+      }
+    } else if (p.current==='LABA_LAMA') {
+      if (p.eos >= 100) {
+        preferredBase=['TRIPLE'];
+        rationale.push(`Exacerbations on LABA + LAMA with eosinophils ${p.eos} support escalation to LABA + LAMA + ICS.`);
+      } else {
+        preferredBase=['LABA_LAMA','CONTINUE']; avoidBase=['TRIPLE'];
+        rationale.push('Eosinophils below 100 predict relatively little exacerbation-prevention benefit from adding ICS; assess non-ICS add-on options when eligible.');
+        if (p.fev1 < 50 && p.chronicBronchitis) acceptableAdd.push('ROFLUMILAST');
+        acceptableAdd.push('AZITHRO');
+      }
+    } else if (p.current==='TRIPLE') {
+      preferredBase=['TRIPLE','CONTINUE']; preferredAdd=[];
+      rationale.push('For continued exacerbations despite triple therapy, use phenotype-directed add-on treatment rather than adding another inhaled maintenance class.');
+      if (p.fev1 < 50 && p.chronicBronchitis) preferredAdd.push('ROFLUMILAST');
+      if (p.smoking === 'former') preferredAdd.push('AZITHRO'); else acceptableAdd.push('AZITHRO');
+      const highBurden = p.moderate >= 2 || p.severe >= 1;
+      if (highBurden && p.eos >= 300) {
+        if (p.chronicBronchitis) preferredAdd.push('DUPILUMAB');
+        preferredAdd.push('MEPOLIZUMAB');
+      }
+      if (!preferredAdd.length) preferredAdd=['NONE'];
+    }
+  }
+
+  if (p.pneumonia || p.mycobacterial) {
+    rationale.push('Recurrent pneumonia or previous mycobacterial infection increases concern about ongoing ICS exposure; reassess the expected benefit–risk balance.');
+    if (!p.asthma && !hasExac && p.current==='TRIPLE') {
+      preferredBase=['LABA_LAMA']; acceptableBase=['CONTINUE'];
+      rationale.push('With no current exacerbation signal and low eosinophils, supervised ICS de-escalation to LABA + LAMA may be considered.');
+    }
+  }
+  if (p.eos >= 300 && p.current==='TRIPLE' && (p.pneumonia || p.mycobacterial)) {
+    rationale.push('ICS withdrawal at eosinophils ≥300 is more likely to be followed by exacerbations, so any de-escalation requires caution.');
+  }
+  if (p.adherenceConcern || p.techniqueConcern) {
+    rationale.unshift('A potentially correctable adherence, access, inhaler-technique, or device problem is present. Address it before labeling the regimen ineffective.');
+  }
+
+  return {
+    pathway,
+    preferredBase:[...new Set(preferredBase)], acceptableBase:[...new Set(acceptableBase)],
+    preferredAdd:[...new Set(preferredAdd)], acceptableAdd:[...new Set(acceptableAdd)],
+    avoidBase:[...new Set(avoidBase)], rationale, trail
+  };
+}
+
+function icsAssessment(p) {
+  const strong=[], favor=[], against=[];
+  if (p.severe>=1) strong.push('Hospitalization for a COPD exacerbation');
+  if (p.moderate>=2) strong.push('At least 2 moderate exacerbations');
+  if (p.eos>=300) strong.push(`Eosinophils ${p.eos} cells/µL`);
+  if (p.asthma) strong.push('Current or historical asthma');
+  if (p.moderate===1 && p.severe===0) favor.push('1 moderate exacerbation');
+  if (p.eos>=100 && p.eos<300) favor.push(`Eosinophils ${p.eos} cells/µL`);
+  if (p.pneumonia) against.push('Repeated pneumonia events');
+  if (p.eos<100) against.push(`Eosinophils ${p.eos} cells/µL`);
+  if (p.mycobacterial) against.push('History of mycobacterial infection');
+  return {strong, favor, against};
+}
+
+function labels(ids, type='base') {
+  const source=type==='base'?baseOptions:addOnOptions;
+  return ids.map(id=>source.find(o=>o.id===id)?.name || id).join(' or ');
+}
+
+function makePills(items, cls) {
+  return items.length
+    ? `<div class="pill-row">${items.map(x=>`<span class="pill ${cls}">${x}</span>`).join('')}</div>`
+    : '<div class="pill-row"><span class="pill">None identified</span></div>';
+}
+
+function priorityItem(icon, title, detail) {
+  return `<div class="priority-item"><div class="priority-icon">${icon}</div><div><strong>${title}</strong><span>${detail}</span></div></div>`;
+}
+
+function buildSafetyNotes(p, rec) {
+  const notes=[];
+  const allAddOns=[...(rec.preferredAdd||[]), ...(rec.acceptableAdd||[])];
+  if (allAddOns.includes('ROFLUMILAST')) {
+    notes.push(p.roflumilastRisk
+      ? 'Roflumilast may be poorly suited because low weight or a significant depression history was entered; review risks carefully.'
+      : 'Before roflumilast, review weight, psychiatric history, tolerability, contraindications, and prescribing information.');
+  }
+  if (allAddOns.includes('AZITHRO')) {
+    if (p.smoking !== 'former') notes.push('The expected benefit of chronic azithromycin is less favorable in current smokers than in former smokers.');
+    if (p.qtRisk) notes.push('QT prolongation or an important interaction risk was entered; chronic azithromycin requires additional review.');
+    if (p.hearingRisk) notes.push('Baseline hearing impairment was entered; assess hearing-related risk before chronic azithromycin.');
+    if (!p.qtRisk && !p.hearingRisk) notes.push('Before chronic azithromycin, assess QT risk, interactions, hearing, mycobacterial considerations, and antimicrobial-resistance implications.');
+  }
+  if (allAddOns.some(x=>['DUPILUMAB','MEPOLIZUMAB'].includes(x))) notes.push('Biologic therapy is a specialist-level option after confirmation of eligibility, phenotype, optimized inhaled therapy, and persistent exacerbation burden.');
+  if (p.asthma) notes.push('Because asthma is present, maintain an ICS-containing regimen and avoid LABA monotherapy for the asthma component.');
+  if ((p.pneumonia || p.mycobacterial) && p.eos>=300) notes.push('There are competing ICS signals: infection-related risk is present, but eosinophils ≥300 increase the risk of exacerbation after ICS withdrawal.');
+  return notes;
+}
+
+function buildPriorities(p) {
+  const priorities=[];
+  if (p.mode==='followup') {
+    priorities.push(['1','Verify the basics','Observe inhaler use, confirm device suitability, review adherence, access, and affordability before escalating.']);
+    if (p.techniqueConcern) priorities.push(['!','Correct the inhaler problem','A technique or device concern was entered and should be corrected before judging pharmacologic failure.']);
+    if (p.adherenceConcern) priorities.push(['!','Address adherence or access','A possible adherence or access barrier was entered and may explain the apparent lack of response.']);
+    if (p.dyspnea) priorities.push(['2','Evaluate competing causes of dyspnea','Consider cardiac disease, deconditioning, anemia, obesity, dysfunctional breathing, and other contributors.']);
+  } else {
+    priorities.push(['1','Match the device to the patient','Choose a device the patient can use reliably and reassess technique after initiation.']);
+  }
+  priorities.push(['3','Optimize nonpharmacologic care','Include smoking treatment when applicable, vaccination, physical activity or pulmonary rehabilitation, and comorbidity management.']);
+  priorities.push(['4','Plan reassessment','Recheck symptoms, exacerbations, adherence, technique, adverse effects, and treatment goals after implementation.']);
+  return priorities;
+}
+
+function generateGuidance() {
+  const p=readPatient();
+  const rec=p.mode==='initial'?initialRecommendation(p):followupRecommendation(p);
+  const ics=icsAssessment(p);
+  const pathwayName=p.mode==='initial'?`GOLD Group ${rec.group}`:rec.pathway;
+  const preferredBase=p.mode==='initial'?rec.preferred:rec.preferredBase;
+  const acceptableBase=p.mode==='initial'?rec.acceptable:rec.acceptableBase;
+  const avoidBase=p.mode==='initial'?rec.avoid:rec.avoidBase;
+  const preferredAdd=p.mode==='followup'?(rec.preferredAdd||[]).filter(x=>x!=='NONE'):[];
+  const acceptableAdd=p.mode==='followup'?(rec.acceptableAdd||[]).filter(x=>x!=='NONE'):[];
+  const mainRecommendation=labels(preferredBase);
+  const safety=buildSafetyNotes(p,rec);
+  const priorities=buildPriorities(p);
+  const exacerbations=p.moderate+p.severe;
+
+  const addOnText = p.mode==='followup'
+    ? (preferredAdd.length
+        ? `<strong>Preferred phenotype-directed add-on:</strong> ${labels(preferredAdd,'add')}${acceptableAdd.length?`<br><strong>Other eligible option:</strong> ${labels(acceptableAdd,'add')}`:''}`
+        : acceptableAdd.length
+          ? `<strong>Potential add-on when appropriate:</strong> ${labels(acceptableAdd,'add')}`
+          : '<strong>Add-on therapy:</strong> No phenotype-directed add-on is indicated from the entered variables.')
+    : '';
+
+  const trail=[...rec.trail,{t:'Recommended approach',d:`${mainRecommendation}${preferredAdd.length?`; add ${labels(preferredAdd,'add')}`:''}`}];
+  const altHtml=acceptableBase.length?`<br><strong>Reasonable alternative:</strong> ${labels(acceptableBase)}`:'';
+  const avoidHtml=avoidBase.length?`<br><strong>Generally avoid or deprioritize:</strong> ${labels(avoidBase)}`:'';
+
+  $('feedbackBody').innerHTML=`
+    <div class="guidance-hero">
+      <div class="kicker">Primary recommendation</div>
+      <h3>${mainRecommendation}</h3>
+      <p>${p.mode==='initial'?'Starting-treatment guidance':'Follow-up treatment guidance'} for the entered patient profile. ${acceptableBase.length?'An alternative is listed below when clinical circumstances favor it.':'The entered data point to a clear preferred pathway.'}</p>
+      <div class="summary-grid">
+        <div class="summary-stat"><span>Pathway</span><strong>${pathwayName}</strong></div>
+        <div class="summary-stat"><span>Symptoms</span><strong>CAT ${p.cat} • mMRC ${p.mmrc}</strong></div>
+        <div class="summary-stat"><span>Exacerbations / eos</span><strong>${exacerbations} event(s) • ${p.eos} cells/µL</strong></div>
+      </div>
+    </div>
+
+    <div class="result-card good"><div class="result-title">Recommended treatment approach</div><div class="result-body"><strong>Preferred maintenance regimen:</strong> ${mainRecommendation}${altHtml}${avoidHtml}${addOnText?`<br><br>${addOnText}`:''}</div></div>
+    <div class="result-card info"><div class="result-title">Why this pathway fits</div><div class="result-body"><ul>${rec.rationale.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>
+
+    <div class="guidance-section-grid">
+      <div class="result-card warn" style="margin-top:0"><div class="result-title">ICS benefit–risk signals</div><div class="result-body"><strong>Strongly favors use</strong>${makePills(ics.strong,'green')}<br><strong>Favors use</strong>${makePills(ics.favor,'yellow')}<br><strong>Argues against use</strong>${makePills(ics.against,'red')}</div></div>
+      <div class="result-card info" style="margin-top:0"><div class="result-title">Clinical priorities</div><div class="result-body"><div class="priority-list">${priorities.map(x=>priorityItem(...x)).join('')}</div></div></div>
+    </div>
+
+    ${safety.length?`<div class="result-card bad"><div class="result-title">Safety and eligibility considerations</div><div class="result-body"><ul>${safety.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`:''}
+    <div class="result-card info"><div class="result-title">How the recommendation was reached</div><div class="result-body"><div class="decision-trail">${trail.map((x,i)=>`<div class="trail-step active"><div class="trail-num">${i+1}</div><div class="trail-copy"><strong>${x.t}</strong><span>${x.d}</span></div></div>`).join('')}</div></div></div>
+  `;
+
+  state.lastGuidanceText = [
+    'COPD THERAPY GUIDANCE',
+    `Pathway: ${pathwayName}`,
+    `Preferred maintenance regimen: ${mainRecommendation}`,
+    acceptableBase.length?`Reasonable alternative: ${labels(acceptableBase)}`:'',
+    preferredAdd.length?`Preferred add-on: ${labels(preferredAdd,'add')}`:'',
+    !preferredAdd.length && acceptableAdd.length?`Potential add-on: ${labels(acceptableAdd,'add')}`:'',
+    '',
+    'Rationale:',
+    ...rec.rationale.map(x=>`- ${x}`),
+    '',
+    'Clinical priorities:',
+    ...priorities.map(x=>`- ${x[1]}: ${x[2]}`),
+    ...(safety.length?['','Safety and eligibility considerations:',...safety.map(x=>`- ${x}`)]:[]),
+    '',
+    'Educational guidance only; individualize care and verify current prescribing information and local requirements.'
+  ].filter(Boolean).join('\n');
+}
+
+async function copySummary() {
+  if (!state.lastGuidanceText) generateGuidance();
+  const confirm=$('copyConfirm');
+  try {
+    await navigator.clipboard.writeText(state.lastGuidanceText);
+    confirm.textContent='Copied';
+  } catch (error) {
+    const area=document.createElement('textarea');
+    area.value=state.lastGuidanceText;
+    document.body.appendChild(area); area.select(); document.execCommand('copy'); area.remove();
+    confirm.textContent='Copied';
+  }
+  setTimeout(()=>confirm.textContent='',1600);
+}
+
+function randomCase(){
+  const list=cases.filter(c=>c.mode===state.mode);
+  loadCase(list[Math.floor(Math.random()*list.length)].id);
+}
+
+function resetAll(){ setMode('initial'); }
+
+document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+$('loadCaseBtn').onclick=()=>loadCase($('caseSelect').value);
+$('randomCaseBtn').onclick=randomCase;
+$('resetBtn').onclick=resetAll;
+$('generateBtn').onclick=generateGuidance;
+$('copySummaryBtn').onclick=copySummary;
+
+['cat','mmrc','moderateExac','severeExac','eos','currentRegimen','fev1','smoking','persistentDyspnea','priorLabaIcsResponse','asthma','pneumonia','mycobacterial','chronicBronchitis','qtRisk','hearingRisk','roflumilastRisk','adherenceConcern','techniqueConcern'].forEach(id=>{
+  const el=$(id);
+  if(el) el.addEventListener('change',()=>{
+    $('caseSummary').textContent='Custom patient values are active. Guidance below reflects the current entries.';
+    generateGuidance();
+  });
+});
+
+setMode('initial');
+</script>
+</body>
+</html>
