@@ -1,11 +1,11 @@
 {
   "name": "Guide to Ventilation \u2014 Bedside Reference",
   "publicEdition": "1.2",
-  "build": "v1.10.124",
+  "build": "v1.10.125",
   "canonical": "mechanical-ventilation-teaching-reference.html",
   "appEntry": "ventilation-guide-app.html",
   "serviceWorker": "ventilation-guide-sw.js",
-  "cache": "ventilation-guide-core-v1.10.124",
+  "cache": "ventilation-guide-core-v1.10.125",
   "released": "2026-09-01",
-  "routing": "phone-only chapter shell; tablets use the continuous desktop edition; viewport width does not select device class"
+  "routing": "phone-only chapter shell; tablets use the desktop interface with one active book Part at a time; viewport width does not select device class"
 }
