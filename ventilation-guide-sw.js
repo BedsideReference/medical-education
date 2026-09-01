@@ -1,6 +1,6 @@
-/* Guide to Ventilation · phone-only app-shell service worker · internal build v1.10.123 */
+/* Guide to Ventilation · phone-only app-shell service worker · internal build v1.10.124 */
 'use strict';
-const BUILD='v1.10.123';
+const BUILD='v1.10.124';
 const CACHE_NAME=`ventilation-guide-core-${BUILD}`;
 const CACHE_PREFIXES=['ventilation-guide-','ventilation-guide-core-'];
 const SCOPE_URL=new URL(self.registration.scope);
