@@ -1,4 +1,4 @@
-<!-- Ventilation Guide recovery · current build v1.10.115 -->
+<!-- Ventilation Guide recovery · current build v1.10.123 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -35,7 +35,9 @@
       await Promise.all(keys.filter(function(k){return /^ventilation-guide-(?:core-)?/i.test(k);}).map(function(k){return caches.delete(k);}));
     }
     say('Opening the current guide…');
-    var next=new URL('ventilation-guide-app.html',location.href);
+    var ua=navigator.userAgent||'',uad=navigator.userAgentData;
+    var phone=(uad&&uad.mobile===true)||/iPhone|iPod|IEMobile|Windows Phone|webOS|BlackBerry|Opera Mini/i.test(ua)||(/Android/i.test(ua)&&/Mobile/i.test(ua));
+    var next=new URL(phone?'ventilation-guide-app.html':'mechanical-ventilation-teaching-reference.html',location.href);
     next.searchParams.set('recovered',Date.now().toString(36));
     location.replace(next.href);
   }catch(e){
