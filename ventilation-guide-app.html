@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="v1.10.133" data-public-edition="1.2">
+<html lang="en" data-build="v1.10.134" data-public-edition="1.2">
 <head>
 <meta charset="utf-8">
 <!-- MOBILE_TABLET_PERFORMANCE_LOCK_v1_10_127 · 2026-09-03 · externalized duplicate figure payloads, streamed and revalidated navigation without blocking cache writes, deferred inactive equations/tools/frames, and scoped tablet enhancement work to the active Part; clinical content and figure bytes preserved -->
@@ -16,7 +16,7 @@
 <script id="offline-sw-bootstrap-v110112">
 (function(){
   'use strict';
-  var BUILD='v1.10.133',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
+  var BUILD='v1.10.134',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
   var APP_FILE='ventilation-guide-app.html',CANONICAL_FILE='mechanical-ventilation-teaching-reference.html';
   var OFFLINE_DEPENDENCIES=["https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_AMS-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-BoldItalic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-BoldItalic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Script-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size1-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size2-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size3-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size4-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Typewriter-Regular.woff2", "fonts/source-code-pro-latin-400-normal.woff2", "fonts/source-code-pro-latin-600-normal.woff2", "fonts/source-code-pro-latin-ext-400-normal.woff2", "fonts/source-code-pro-latin-ext-600-normal.woff2", "fonts/source-sans-3-greek-400-normal.woff2", "fonts/source-sans-3-greek-600-normal.woff2", "fonts/source-sans-3-greek-700-normal.woff2", "fonts/source-sans-3-latin-400-normal.woff2", "fonts/source-sans-3-latin-600-normal.woff2", "fonts/source-sans-3-latin-700-normal.woff2", "fonts/source-sans-3-latin-ext-400-normal.woff2", "fonts/source-sans-3-latin-ext-600-normal.woff2", "fonts/source-sans-3-latin-ext-700-normal.woff2", "fonts/source-serif-4-greek-400-italic.woff2", "fonts/source-serif-4-greek-400-normal.woff2", "fonts/source-serif-4-greek-600-normal.woff2", "fonts/source-serif-4-greek-700-normal.woff2", "fonts/source-serif-4-latin-400-italic.woff2", "fonts/source-serif-4-latin-400-normal.woff2", "fonts/source-serif-4-latin-600-normal.woff2", "fonts/source-serif-4-latin-700-normal.woff2", "fonts/source-serif-4-latin-ext-400-italic.woff2", "fonts/source-serif-4-latin-ext-400-normal.woff2", "fonts/source-serif-4-latin-ext-600-normal.woff2", "fonts/source-serif-4-latin-ext-700-normal.woff2", "ventilation_guide_CASE_LAB_v1_0.html", "apple-touch-icon-v1-10-115.png", "icon-192-v1-10-115.png", "icon-512-v1-10-115.png", "favicon-32-v1-10-115.png", "og-card.png"];
   var localhost=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname||'');
@@ -41,7 +41,11 @@
     var urls=[];
     [CANONICAL_FILE,APP_FILE,VERSION_FILE,'manifest.webmanifest'].concat(OFFLINE_DEPENDENCIES).forEach(function(raw){addUrl(urls,raw,'asset');});
     document.querySelectorAll('link[rel="stylesheet"][href],link[rel="icon"][href],link[rel="apple-touch-icon"][href],script[src],img[src],source[src],img[data-src],source[data-src]').forEach(function(el){addUrl(urls,el.getAttribute('href')||el.getAttribute('data-src')||el.getAttribute('src'),'asset');});
-    document.querySelectorAll('iframe[src],iframe[data-src]').forEach(function(el){addUrl(urls,el.getAttribute('data-src')||el.getAttribute('src'),'simulator');});
+    document.querySelectorAll('iframe[src],iframe[data-src]').forEach(function(el){
+      var mode=el.getAttribute('data-offline-mode')||'online-only';
+      if(mode==='online-only'){state.externalSimulators++;return;}
+      addUrl(urls,el.getAttribute('data-src')||el.getAttribute('src'),'simulator');
+    });
     return Array.from(new Set(urls));
   };
   // Optional typography/icons never invalidate the readable book or equations.
@@ -178,19 +182,33 @@
   }catch(_){}
 })();
 </script>
-<title>Guide to Ventilation — Phone Guide · v1.10.133</title>
+<title>Guide to Ventilation — Phone Guide · v1.10.134</title>
 <meta name="description" content="Chapter-at-a-time mobile edition of the Guide to Ventilation, public edition 1.2.">
 <meta name="theme-color" content="#0b1f3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vent Guide">
-<meta name="internal-build" content="v1.10.133">
-<link rel="manifest" href="manifest.webmanifest?build=1.10.133">
+<meta name="internal-build" content="v1.10.134">
+<link rel="manifest" href="manifest.webmanifest?build=1.10.134">
 <link rel="canonical" href="mechanical-ventilation-teaching-reference.html">
 <link rel="apple-touch-icon" href="apple-touch-icon-v1-10-115.png">
 <link rel="icon" href="icon-192-v1-10-115.png" sizes="192x192" type="image/png">
 <link rel="icon" href="favicon-32-v1-10-115.png" sizes="32x32" type="image/png">
+<script id="v134-katex-config">
+(function (root) {
+  'use strict';
+  if (!root) return;
+  var local = new URL('vendor/katex/0.16.11/dist/', document.baseURI).href;
+  var pinned = 'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/';
+  root.__VENT_GUIDE_KATEX_BASES = [local, pinned];
+  root.__VENT_GUIDE_KATEX_VERSION = '0.16.11';
+  /* Set this to true only when the complete vendor directory is deployed. */
+  if (typeof root.__VENT_GUIDE_KATEX_LOCAL_AVAILABLE !== 'boolean') {
+    root.__VENT_GUIDE_KATEX_LOCAL_AVAILABLE = false;
+  }
+})(typeof window !== 'undefined' ? window : null);
+</script>
 <script id="mobile-tablet-performance-bootstrap-v110127">
 (function(){
   'use strict';
@@ -226,14 +244,27 @@
     mathAssets[id]=pending.catch(function(error){delete mathAssets[id];throw error;});
     return mathAssets[id];
   }
+  function ensureMathFrom(base){
+    var css=mathAsset('vg-katex-css-v110127',base+'katex.min.css',true);
+    var js=window.katex?Promise.resolve():mathAsset('vg-katex-js',base+'katex.min.js',false);
+    function settle(promise){return promise.then(function(){return null;},function(error){return error;})}
+    /* Let both parallel requests settle before changing bases. Otherwise a slow
+       failed local request can occupy an asset id while the CDN retry begins. */
+    return Promise.all([settle(css),settle(js)]).then(function(errors){
+      if(errors[0]||errors[1])throw errors[0]||errors[1];
+      return typeof window.renderMathInElement==='function'?null:mathAsset('vg-katex-render-js',base+'contrib/auto-render.min.js',false);
+    });
+  }
   function ensureMath(){
     if(mathPromise)return mathPromise;
-    var base='https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/';
-    var js=window.katex?Promise.resolve():mathAsset('vg-katex-js',base+'katex.min.js',false);
-    mathPromise=Promise.all([
-      mathAsset('vg-katex-css-v110127',base+'katex.min.css',true),
-      js.then(function(){return typeof window.renderMathInElement==='function'?null:mathAsset('vg-katex-render-js',base+'contrib/auto-render.min.js',false)})
-    ]).catch(function(error){mathPromise=null;throw error;});
+    var bases=Array.isArray(window.__VENT_GUIDE_KATEX_BASES)&&window.__VENT_GUIDE_KATEX_BASES.length
+      ?window.__VENT_GUIDE_KATEX_BASES.slice()
+      :['https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/'];
+    function attempt(index){
+      if(index>=bases.length)return Promise.reject(new Error('Equation resources could not be loaded.'));
+      return ensureMathFrom(bases[index]).catch(function(){return attempt(index+1)});
+    }
+    mathPromise=attempt(0).catch(function(error){mathPromise=null;throw error;});
     return mathPromise;
   }
   function mathError(scope){
@@ -4938,6 +4969,224 @@ body.pwa-lite.reader-mode .layout > nav.toc { display: block !important; }
 
 .reader-controls .reader-notes {min-height:44px;padding:8px 14px;border:1px solid var(--rule);border-radius:9px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;}
 </style>
+<style id="v134-adult-scope-css">
+/* v1.10.134 adult-scope banner; namespace prevents collision with v133. */
+.v134-scope-banner{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:13px;align-items:start;
+  margin:14px 0 18px;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 32%,var(--ui-line));
+  border-left:5px solid var(--accent);border-radius:12px;background:color-mix(in srgb,var(--accent-soft) 72%,var(--ui-card));
+  color:var(--ink);box-shadow:0 4px 16px rgba(15,23,42,.04);font-family:var(--font-sans);
+}
+.v134-scope-mark{display:grid;place-items:center;min-width:38px;height:28px;padding:0 7px;border-radius:999px;background:var(--accent);color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.04em;line-height:1}
+.v134-scope-banner strong{display:block;margin:1px 0 4px;font-size:.88rem;letter-spacing:.01em}
+.v134-scope-banner p{margin:0;color:var(--ink-soft);font-size:.76rem;line-height:1.55}
+@media(max-width:600px){.v134-scope-banner{margin:10px 0 14px;padding:12px 13px;gap:10px}.v134-scope-mark{min-width:34px}.v134-scope-banner p{font-size:.73rem}}
+@media print{.v134-scope-banner{break-inside:avoid;box-shadow:none;background:#fff}}
+</style>
+<style id="v134-breath-timing-css">
+.v134-timing{margin:24px 0;padding:18px;border:1px solid var(--ui-line);border-radius:14px;background:var(--ui-card);font-family:var(--font-sans)}
+.v134-timing-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:15px}
+.v134-timing-head h4{margin:2px 0 5px;font-size:1.05rem;color:var(--ink)}
+.v134-timing-head p{margin:0;color:var(--muted);font-size:.78rem;line-height:1.5}
+.v134-eyebrow{display:block;color:var(--accent);font-size:.65rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.v134-badge{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:4px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.63rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.v134-timing-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.v134-timing-card{min-width:0;padding:15px;border:1px solid var(--ui-line);border-radius:12px;background:var(--ui-card-2)}
+.v134-card-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:13px;color:var(--muted);font-size:.67rem}
+.v134-card-title>div{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:.82rem}
+.v134-mode{display:inline-flex;padding:4px 7px;border-radius:6px;background:var(--accent);color:#fff;font-size:.62rem;font-weight:850;letter-spacing:.06em}
+.v134-mode-pc{background:#0f766e}
+.v134-mode-aprv{background:#73563b}
+.v134-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v134-input-grid label{display:grid;gap:5px;color:var(--ink-soft);font-size:.7rem;font-weight:700}
+.v134-input-grid label>span{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.68rem;font-weight:500}
+.v134-input-grid input{min-width:0;width:100%;height:38px;padding:7px 9px;border:1px solid var(--ui-line);border-radius:8px;background:var(--ui-card);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.v134-input-grid input:focus{outline:2px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:1px}
+.v134-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.v134-actions button{min-height:36px;padding:7px 10px;border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:#fff;font:700 .69rem var(--font-sans);cursor:pointer}
+.v134-actions .v134-secondary{background:var(--ui-card);color:var(--accent)}
+.v134-actions .v134-link-button{border-color:transparent;background:transparent;color:var(--muted)}
+.v134-input-note{margin:9px 0 0;color:var(--muted);font-size:.65rem;line-height:1.45}
+.v134-result{min-height:92px;margin-top:12px;padding:11px;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-card)}
+.v134-result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.v134-result-grid div{padding:8px;border-radius:8px;background:var(--ui-card-2)}
+.v134-result-grid span{display:block;color:var(--muted);font-size:.61rem;font-weight:750;text-transform:uppercase;letter-spacing:.05em}
+.v134-result-grid strong{display:block;margin-top:3px;color:var(--ink);font-size:.91rem;font-variant-numeric:tabular-nums}
+.v134-empty,.v134-error{margin:0;color:var(--muted);font-size:.7rem;line-height:1.5}
+.v134-error{color:var(--danger);font-weight:700}
+.v134-limit{margin-top:10px;border-top:1px solid var(--ui-line);padding-top:9px}
+.v134-limit summary{color:var(--ink-soft);font-size:.69rem;font-weight:750;cursor:pointer}
+.v134-limit p,.v134-expert-note p{margin:7px 0 0;color:var(--muted);font-size:.67rem;line-height:1.52}
+.v134-expert-note{margin-top:10px;padding:10px;border-left:3px solid #a16207;background:color-mix(in srgb,#f59e0b 9%,var(--ui-card));border-radius:0 8px 8px 0}
+.v134-badge-expert{background:color-mix(in srgb,#f59e0b 18%,var(--ui-card));color:#92400e}
+.v134-context-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:.66rem}
+.v134-context-links a{color:var(--accent)}
+@media(max-width:900px){.v134-timing-grid{grid-template-columns:1fr}.v134-timing{padding:14px}.v134-timing-head{display:grid}.v134-timing-head>.v134-badge{order:-1}}
+@media(max-width:520px){.v134-input-grid,.v134-result-grid{grid-template-columns:1fr}.v134-card-title{display:grid}}
+@media print{.v134-actions{display:none}.v134-timing,.v134-timing-card{box-shadow:none;break-inside:avoid}.v134-limit[open] p{display:block}}
+</style>
+<style id="v134-response-log-css">
+.v134-response-log{margin:24px 0;border:1px solid var(--ui-line);border-radius:14px;background:var(--ui-card);overflow:hidden;font-family:var(--font-sans)}
+.v134-log-head{display:flex;justify-content:space-between;gap:18px;padding:18px 20px;background:var(--ui-card-2);border-bottom:1px solid var(--ui-line)}.v134-log-head h4{margin:2px 0 5px;color:var(--ink);font-size:1.05rem}.v134-log-head p{max-width:760px;margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}.v134-log-kicker{color:var(--accent);font-size:.63rem;font-weight:850;letter-spacing:.11em;text-transform:uppercase}.v134-log-badge{align-self:flex-start;padding:4px 8px;border-radius:999px;background:var(--danger-soft);color:var(--danger);font-size:.62rem;font-weight:850;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.v134-privacy{margin:16px 20px 0;padding:12px 14px;border:1px solid color-mix(in srgb,var(--danger) 32%,var(--ui-line));border-left:4px solid var(--danger);border-radius:9px;background:color-mix(in srgb,var(--danger-soft) 65%,var(--ui-card))}.v134-privacy strong{display:block;color:var(--danger);font-size:.76rem}.v134-privacy p{margin:4px 0 0;color:var(--ink-soft);font-size:.67rem;line-height:1.5}
+.v134-response-log form{padding:16px 20px}.v134-response-log fieldset{min-width:0;margin:0;padding:13px;border:1px solid var(--ui-line);border-radius:10px}.v134-response-log legend{padding:0 6px;color:var(--ink);font-size:.71rem;font-weight:800}.v134-response-log label{display:grid;gap:5px;color:var(--ink-soft);font-size:.66rem;font-weight:750}.v134-response-log input,.v134-response-log select,.v134-response-log textarea{width:100%;min-width:0;padding:8px 9px;border:1px solid var(--ui-line);border-radius:8px;background:var(--ui-card);color:var(--ink);font:500 .7rem var(--font-sans)}.v134-response-log input,.v134-response-log select{height:38px}.v134-response-log textarea{resize:vertical;line-height:1.4}.v134-response-log input:focus,.v134-response-log select:focus,.v134-response-log textarea:focus{outline:2px solid color-mix(in srgb,var(--accent) 42%,transparent);outline-offset:1px}.v134-required{color:var(--danger);font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.v134-change-plan{display:grid;grid-template-columns:1.25fr .8fr 1.25fr;gap:10px}.v134-before-after{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}.v134-state legend span{display:inline-flex;margin-right:4px;padding:3px 7px;border-radius:6px;background:var(--accent);color:#fff}.v134-after legend span{background:#0f766e}.v134-log-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.v134-assessment{display:grid;grid-template-columns:.8fr 1.5fr;gap:10px;margin-top:12px!important}
+.v134-privacy-confirm{display:flex!important;align-items:flex-start;gap:8px;margin:13px 1px 0;color:var(--ink)!important}.v134-privacy-confirm input{width:18px!important;height:18px!important;flex:0 0 auto;margin:0}.v134-log-actions,.v134-export-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.v134-log-actions button,.v134-export-actions button,.v134-delete-entry{min-height:35px;padding:7px 10px;border:1px solid var(--accent);border-radius:8px;background:var(--accent);color:#fff;font:750 .67rem var(--font-sans);cursor:pointer}.v134-log-actions .v134-log-secondary,.v134-export-actions button{background:var(--ui-card);color:var(--accent)}.v134-export-actions .v134-erase,.v134-delete-entry{border-color:color-mix(in srgb,var(--danger) 45%,var(--ui-line));background:var(--ui-card);color:var(--danger)}.v134-log-status{min-height:1em;margin:8px 0 0;color:var(--muted);font-size:.67rem}.v134-log-status[data-state="error"]{color:var(--danger);font-weight:750}
+.v134-saved{padding:16px 20px 18px;border-top:1px solid var(--ui-line);background:var(--ui-card-2)}.v134-saved-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.v134-saved-head h5{margin:0 0 3px;color:var(--ink);font-size:.83rem}.v134-saved-head span{color:var(--muted);font-size:.64rem}.v134-export-actions{margin:0}.v134-log-empty{margin:13px 0 0;color:var(--muted);font-size:.7rem}.v134-entry{margin-top:10px;border:1px solid var(--ui-line);border-radius:9px;background:var(--ui-card);overflow:hidden}.v134-entry summary{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;cursor:pointer}.v134-entry summary strong{color:var(--ink);font-size:.7rem}.v134-entry summary span{color:var(--muted);font-size:.64rem}.v134-entry-body{padding:0 12px 12px}.v134-entry-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:9px}.v134-entry-meta div{padding:8px;background:var(--ui-card-2);border-radius:7px}.v134-entry-meta span{display:block;color:var(--muted);font-size:.58rem;text-transform:uppercase;letter-spacing:.04em}.v134-entry-meta p{margin:3px 0 0;color:var(--ink-soft);font-size:.65rem;line-height:1.4}.v134-entry-table-wrap{overflow-x:auto}.v134-entry table{width:100%;border-collapse:collapse;font-size:.63rem}.v134-entry th,.v134-entry td{padding:6px;border:1px solid var(--ui-line);text-align:left}.v134-entry th{background:var(--ui-card-2);color:var(--ink-soft)}.v134-entry td{color:var(--ink);font-variant-numeric:tabular-nums}.v134-delete-entry{margin-top:9px}
+.v134-log-limit{margin:0;padding:12px 20px 16px;border-top:1px solid var(--ui-line);color:var(--muted);font-size:.66rem;line-height:1.5}.v134-log-limit strong{color:var(--ink-soft)}.v134-log-limit a{color:var(--accent)}
+@media(max-width:980px){.v134-change-plan{grid-template-columns:1fr}.v134-before-after{grid-template-columns:1fr}.v134-log-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.v134-assessment{grid-template-columns:1fr}}
+@media(max-width:700px){.v134-log-head,.v134-saved-head{display:grid}.v134-response-log form,.v134-saved{padding-left:14px;padding-right:14px}.v134-privacy{margin-left:14px;margin-right:14px}.v134-log-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v134-export-actions{margin-top:5px}.v134-entry-meta{grid-template-columns:1fr}}
+@media(max-width:420px){.v134-log-grid{grid-template-columns:1fr}}
+@media print{.v134-response-log{display:none!important}}
+</style>
+<style id="v134-circuit-sensor-css">
+.v134-circuit-map{--v134-insp:#2563eb;--v134-exp:#0f766e;--v134-device:#6d28d9;margin:20px 0;overflow:hidden}
+.v134-circuit-head{display:flex;justify-content:space-between;gap:18px;padding:20px 20px 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent-soft) 75%,var(--ui-card)),var(--ui-card));border-bottom:1px solid var(--ui-line);font-family:var(--font-sans)}
+.v134-circuit-head h4{margin:3px 0 6px;color:var(--ink);font-size:1.08rem}.v134-circuit-head p{max-width:760px;margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}
+.v134-circuit-kicker{color:var(--accent);font-size:.63rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase}
+.v134-circuit-badges{display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:flex-end;gap:6px}.v134-circuit-badges span,.v134-guidance-badge,.v134-device-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:var(--ui-card);border:1px solid var(--ui-line);color:var(--ink-soft);font-size:.61rem;font-weight:800;letter-spacing:.03em;white-space:nowrap}
+.v134-circuit-path{display:grid;grid-template-columns:repeat(13,minmax(20px,auto));align-items:stretch;gap:5px;padding:38px 16px 18px;position:relative;background:var(--ui-card);font-family:var(--font-sans)}
+.v134-path-label{position:absolute;top:14px;left:20px;color:var(--v134-insp);font-size:.65rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.v134-node{position:relative;display:flex;min-width:105px;flex-direction:column;gap:4px;padding:12px 10px;border:1px solid var(--ui-line);border-top:4px solid var(--v134-insp);border-radius:10px;background:var(--ui-card-2)}
+.v134-node strong{padding-left:22px;color:var(--ink);font-size:.7rem;line-height:1.25}.v134-node small{color:var(--ink-soft);font-size:.61rem;line-height:1.35}.v134-node em{margin-top:auto;padding-top:7px;border-top:1px solid var(--ui-line);color:var(--muted);font-size:.58rem;line-height:1.4;font-style:normal}
+.v134-node-num{position:absolute;top:9px;left:9px;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--v134-insp);color:#fff;font-size:.57rem;font-weight:850}
+.v134-node-device{border-top-color:var(--v134-device)}.v134-node-device .v134-node-num{background:var(--v134-device)}.v134-node-focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 24%,transparent)}.v134-node-patient{border-top-color:#a16207}.v134-node-patient .v134-node-num{background:#a16207}
+.v134-arrow{display:grid;place-items:center;min-width:16px;color:var(--v134-insp);font-size:1rem;font-weight:900}.v134-return{grid-column:13;display:grid;place-items:center;color:var(--v134-exp);font-size:.62rem;font-weight:800;text-align:center}
+.v134-exp-row{grid-column:1/-1;display:flex;flex-direction:row-reverse;align-items:stretch;justify-content:flex-start;gap:7px;margin-top:8px;padding-top:19px;border-top:1px dashed color-mix(in srgb,var(--v134-exp) 45%,var(--ui-line));position:relative}.v134-exp-row:before{content:'Expiratory path ←';position:absolute;left:4px;top:2px;color:var(--v134-exp);font-size:.61rem;font-weight:850;letter-spacing:.07em;text-transform:uppercase}.v134-exp-row .v134-node{max-width:250px;border-top-color:var(--v134-exp)}.v134-exp-row .v134-node-num{background:var(--v134-exp)}.v134-arrow-left{color:var(--v134-exp);font-size:.72rem}
+.v134-measurement-panel{padding:16px 20px 20px;background:var(--ui-card-2);border-top:1px solid var(--ui-line);font-family:var(--font-sans)}
+.v134-panel-title{display:flex;align-items:center;gap:9px;margin-bottom:10px}.v134-panel-title h5{margin:0;color:var(--ink);font-size:.82rem}.v134-guidance-badge{border-color:color-mix(in srgb,#f59e0b 36%,var(--ui-line));background:color-mix(in srgb,#f59e0b 10%,var(--ui-card));color:#92400e}.v134-device-badge{margin-right:5px;padding:2px 6px;color:var(--accent)}
+.v134-measurement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.v134-measurement-grid article{padding:11px 12px;border:1px solid var(--ui-line);border-radius:9px;background:var(--ui-card)}.v134-measurement-grid strong{font-size:.7rem;color:var(--ink)}.v134-measurement-grid p{margin:4px 0 0;color:var(--muted);font-size:.65rem;line-height:1.5}
+.v134-circuit-links{display:flex;flex-wrap:wrap;gap:8px;padding:11px 18px;border-top:1px solid var(--ui-line);font:600 .65rem var(--font-sans)}.v134-circuit-links strong{color:var(--ink-soft)}.v134-circuit-links a{color:var(--accent)}
+.v134-circuit-map figcaption{padding:12px 18px 15px;border-top:1px solid var(--ui-line);color:var(--muted);font:400 .7rem/1.55 var(--font-sans)}.v134-circuit-map figcaption strong{color:var(--ink)}
+@media(max-width:1100px){.v134-circuit-path{display:flex;flex-direction:column;padding:38px 16px 18px}.v134-node{min-width:0}.v134-circuit-path>.v134-arrow{min-height:21px;transform:rotate(90deg)}.v134-return{min-height:34px}.v134-exp-row{display:flex}.v134-exp-row .v134-node{max-width:none;flex:1}.v134-exp-row .v134-arrow{transform:none}}
+@media(max-width:700px){.v134-circuit-head{display:grid;padding:17px 15px}.v134-circuit-badges{justify-content:flex-start}.v134-circuit-path{padding:38px 14px 15px}.v134-return{min-height:30px}.v134-exp-row{flex-direction:column}.v134-exp-row .v134-arrow{transform:rotate(-90deg)}.v134-measurement-panel{padding:14px}.v134-measurement-grid{grid-template-columns:1fr}.v134-panel-title{align-items:flex-start;flex-direction:column}}
+@media print{.v134-circuit-map{break-inside:avoid}.v134-circuit-head,.v134-circuit-path,.v134-measurement-panel{background:#fff!important}.v134-node,.v134-measurement-grid article{break-inside:avoid}}
+</style>
+<style id="v134-accessibility-css">
+/* Ventilation Guide v1.10.134 — accessibility presentation overrides. */
+
+/* v1.10.133 hides the bypass link for every coarse pointer, which also hides
+ * it from iPad users with a hardware keyboard and from touch VoiceOver order.
+ * The authored transform still keeps it off-canvas until focused. */
+@media (max-width: 920px), (pointer: coarse) {
+  .skip-link { display: block !important; }
+}
+
+.bn-filter-chip[role="button"] { cursor: pointer; }
+.bn-filter-chip[role="button"]:focus-visible,
+nav.toc a.part-link[aria-expanded]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 72%, #fff 28%) !important;
+  outline-offset: 3px !important;
+}
+
+@media (pointer: coarse) {
+  .bn-filter-chip[role="button"] { min-height: 44px; }
+}
+</style>
+<style id="v134-tech-css">
+#vg-tech-dialog {
+  width: min(94vw, 46rem);
+  max-height: min(88vh, 52rem);
+  padding: 0;
+  border: 1px solid var(--rule, #d8e0e8);
+  border-radius: 18px;
+  background: var(--surface, #fff);
+  color: var(--ink, #172033);
+  box-shadow: 0 24px 72px rgba(15, 23, 42, .24);
+}
+#vg-tech-dialog::backdrop { background: rgba(8, 18, 31, .52); }
+.vg-tech-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--rule, #d8e0e8);
+  background: var(--surface, #fff);
+}
+.vg-tech-head h2 { margin: 0; font: 700 1.15rem/1.25 var(--font-sans, system-ui); }
+.vg-tech-head button,
+.vg-tech-actions button,
+.vg-clinical-session-note button,
+#vg-update-banner button,
+[data-vg-tech-open] { min-height: 44px; font: inherit; cursor: pointer; }
+.vg-tech-body { padding: 1rem 1.1rem max(1.1rem, env(safe-area-inset-bottom)); overflow: auto; }
+.vg-tech-body section { padding: .9rem 0; border-bottom: 1px solid var(--rule, #d8e0e8); }
+.vg-tech-body section:last-of-type { border-bottom: 0; }
+.vg-tech-body h3 { margin: 0 0 .45rem; font-size: 1rem; }
+.vg-tech-body p { margin: .45rem 0; line-height: 1.48; }
+.vg-tech-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .75rem; }
+.vg-tech-actions button,
+.vg-clinical-session-note button {
+  padding: .58rem .78rem;
+  border: 1px solid var(--accent, #2f5f91);
+  border-radius: 9px;
+  color: var(--accent, #2f5f91);
+  background: var(--surface, #fff);
+}
+.vg-tech-actions .vg-danger { border-color: #a23b45; color: #8b2631; }
+#vg-tech-live { min-height: 1.4em; font-weight: 650; color: var(--accent, #2f5f91); }
+#vg-tech-live[data-error="true"] { color: #9c2f3c; }
+.vg-clinical-session-note {
+  margin: .8rem 0;
+  padding: .75rem .85rem;
+  border: 1px solid color-mix(in srgb, var(--warn, #a66a13) 42%, var(--rule, #d8e0e8));
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--warn, #a66a13) 8%, var(--surface, #fff));
+}
+.vg-clinical-session-note p { margin: 0 0 .55rem; line-height: 1.42; }
+.vg-notes-privacy {
+  margin: .65rem 1rem;
+  padding: .62rem .75rem;
+  border-left: 4px solid var(--warn, #a66a13);
+  background: color-mix(in srgb, var(--warn, #a66a13) 8%, var(--surface, #fff));
+  line-height: 1.4;
+}
+.vg-online-required {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: .2rem .5rem;
+  border: 1px solid color-mix(in srgb, var(--warn, #a66a13) 45%, var(--rule, #d8e0e8));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--warn, #a66a13) 9%, var(--surface, #fff));
+  color: var(--ink, #172033);
+  font-size: .78rem;
+  font-weight: 700;
+}
+#vg-update-banner {
+  position: fixed;
+  z-index: 1200;
+  top: max(calc(var(--scroll-pad-top, 64px) + 8px), env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  right: max(12px, env(safe-area-inset-right));
+  width: min(44rem, calc(100vw - 24px));
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .72rem .8rem;
+  border: 1px solid color-mix(in srgb, var(--accent, #2f5f91) 48%, var(--rule, #d8e0e8));
+  border-radius: 12px;
+  background: var(--surface, #fff);
+  color: var(--ink, #172033);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, .2);
+}
+#vg-update-banner[hidden] { display: none; }
+#vg-update-message { flex: 1; line-height: 1.35; }
+#vg-update-banner button { padding: .45rem .65rem; border: 1px solid var(--accent, #2f5f91); border-radius: 8px; background: var(--surface, #fff); color: var(--accent, #2f5f91); }
+@media (max-width: 620px) {
+  #vg-update-banner { align-items: stretch; flex-wrap: wrap; }
+  #vg-update-message { flex-basis: 100%; }
+  .vg-tech-actions { display: grid; grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #vg-tech-dialog, #vg-update-banner { scroll-behavior: auto !important; }
+}
+</style>
 </head>
 <body class="pwa-lite">
 
@@ -4964,7 +5213,7 @@ body.pwa-lite.reader-mode .layout > nav.toc { display: block !important; }
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.133</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.134</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Selected evidence updated Sep 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -4978,6 +5227,15 @@ body.pwa-lite.reader-mode .layout > nav.toc { display: block !important; }
 <p>Provided “as is,” without warranty of any kind, express or implied. <em>Bedside Reference</em> accepts no liability for outcomes arising from use of this material. By continuing, you acknowledge these terms.</p>
 </aside>
 </header>
+<!-- v1.10.134 modular fragment: insert immediately after </header> for .hero. -->
+<aside class="v134-scope-banner" data-v134-component="adult-scope" role="note" aria-labelledby="v134-scope-title">
+  <div class="v134-scope-mark" aria-hidden="true">ADULT</div>
+  <div>
+    <strong id="v134-scope-title">Adult critical-care scope</strong>
+    <p>This guide addresses respiratory support and mechanical ventilation in adults. Pediatric and neonatal physiology, device ranges, tube and circuit sizing, medication dosing, and protocols are outside its scope. Use age-specific references, the device instructions, local protocols, and bedside assessment. This is an educational reference—not a patient-specific order set.</p>
+  </div>
+</aside>
+
 <section aria-label="Choose how to use the guide" class="front-matter">
 <div class="experience-hub" id="how-to-read">
 <div class="experience-head">
@@ -5893,7 +6151,7 @@ body.pwa-lite.reader-mode .layout > nav.toc { display: block !important; }
 </thead>
 <tbody id="snap-body"></tbody>
 </table>
-<div class="snap-empty" id="snap-empty">No snapshots saved. Useful for tracking PEEP titration, SBT, or prone effects. Persist in this browser only.</div>
+<div class="snap-empty" id="snap-empty">No snapshots saved. Useful for tracking PEEP titration, SBT, or prone effects. Session only; clears when this tab closes.</div>
 </div>
 <p class="calc-note">
 <strong>Interpretation boundary.</strong> These calculations are educational estimates and trend tools, not stand-alone treatment thresholds. PBW (men) = 50 + 2.3·(ht in − 60); women = 45.5 + 2.3·(ht in − 60). The age/4 + 4 A–a expression is a historical room-air heuristic. MP equations are mode/model dependent. ROX and RSBI are reassessment aids, not automatic continuation, SBT, or intubation rules. Enghoff Vd/Vt requires mixed-expired CO₂; ETCO₂ is only a surrogate. Esophageal-derived transpulmonary pressure depends on technique, position, and reference method. Time constants describe a model; compare actual expiratory flow and total PEEP rather than converting 3τ into a universal respiratory-rate ceiling.
@@ -5906,6 +6164,168 @@ body.pwa-lite.reader-mode .layout > nav.toc { display: block !important; }
 <span aria-live="polite" class="calc-copy-confirm" id="calc-copy-confirm"></span>
 </div>
 </div>
+
+<!-- v1.10.134 modular fragment: insert immediately after </header> for .hero. -->
+<aside class="v134-scope-banner" data-v134-component="adult-scope" role="note" aria-labelledby="v134-scope-tools-title">
+  <div class="v134-scope-mark" aria-hidden="true">ADULT</div>
+  <div>
+    <strong id="v134-scope-tools-title">Adult calculator and bedside-tool scope</strong>
+    <p>This guide addresses respiratory support and mechanical ventilation in adults. Pediatric and neonatal physiology, device ranges, tube and circuit sizing, medication dosing, and protocols are outside its scope. Use age-specific references, the device instructions, local protocols, and bedside assessment. This is an educational reference—not a patient-specific order set.</p>
+  </div>
+</aside>
+<!-- v1.10.134 modular fragment. Suggested insertion: #calc-tools, after ventilator inputs and before result cards. -->
+<section class="v134-timing" id="v134-breath-timing" data-v134-component="breath-timing" aria-labelledby="v134-timing-title">
+  <header class="v134-timing-head">
+    <div>
+      <span class="v134-eyebrow">Mode-aware timing model</span>
+      <h4 id="v134-timing-title">Breath timing: calculate only what the mode defines</h4>
+      <p>Use the model that matches the delivered breath. Outputs describe timing; they do not select a safe setting.</p>
+    </div>
+    <span class="v134-badge">Educational calculator</span>
+  </header>
+
+  <div class="v134-timing-grid">
+    <form class="v134-timing-card" id="v134-vc-form" novalidate>
+      <div class="v134-card-title">
+        <div><span class="v134-mode">VC</span><strong>Constant-flow volume control</strong></div>
+        <span>Passive/compatible breath model</span>
+      </div>
+      <div class="v134-input-grid">
+        <label>Tidal volume <span><input id="v134-vc-vt" name="vtMl" type="number" inputmode="decimal" min="1" step="1" placeholder="420"/> mL</span></label>
+        <label>Constant inspiratory flow <span><input id="v134-vc-flow" name="flowLMin" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="60"/> L/min</span></label>
+        <label>End-inspiratory pause <span><input id="v134-vc-pause" name="pauseSec" type="number" inputmode="decimal" min="0" step="0.05" placeholder="0.20"/> s</span></label>
+        <label>Actual total rate <span><input id="v134-vc-rate" name="totalRate" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="24"/> breaths/min</span></label>
+      </div>
+      <div class="v134-actions"><button type="submit">Calculate VC timing</button><button class="v134-secondary" data-v134-example="vc" type="button">Load illustration</button><button class="v134-link-button" data-v134-reset="vc" type="button">Clear</button></div>
+      <p class="v134-input-note">“Actual total rate” means the observed total frequency, not merely the set mandatory rate. Input controls are technical bounds, not recommended setting ranges.</p>
+      <div class="v134-result" id="v134-vc-result" role="status" aria-live="polite">
+        <p class="v134-empty">Enter four values to calculate flow time, total inspiratory time, expiratory time, and I:E.</p>
+      </div>
+      <details class="v134-limit">
+        <summary>Where this equation does not apply</summary>
+        <p>Do not use this constant-flow equation for decelerating or variable flow, pressure control, pressure support, adaptive pressure-targeted breaths, or breaths whose timing is materially altered by patient interaction. A calculated expiratory time does not establish complete exhalation: inspect the expiratory-flow waveform, total PEEP when measurable, synchrony, and hemodynamics.</p>
+      </details>
+      <nav class="v134-context-links" aria-label="Volume-control timing context"><a href="#c8-7">§8.7 Controls</a><a href="#c9-2">§9.2 Volume control</a><a href="#c17-5">§17.5 Intrinsic PEEP</a><sup class="cite"><a href="#r26" aria-label="Reference 26">26</a></sup></nav>
+    </form>
+
+    <form class="v134-timing-card" id="v134-pc-form" novalidate>
+      <div class="v134-card-title">
+        <div><span class="v134-mode v134-mode-pc">PC</span><strong>Timed pressure-controlled breath</strong></div>
+        <span>Direct inspiratory-time model</span>
+      </div>
+      <div class="v134-input-grid v134-input-grid-two">
+        <label>Set / delivered inspiratory time <span><input id="v134-pc-ti" name="inspiratoryTimeSec" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.80"/> s</span></label>
+        <label>Actual total rate <span><input id="v134-pc-rate" name="totalRate" type="number" inputmode="decimal" min="0.1" step="0.1" placeholder="24"/> breaths/min</span></label>
+      </div>
+      <div class="v134-actions"><button type="submit">Calculate timed-PC cycle</button><button class="v134-secondary" data-v134-example="pc" type="button">Load illustration</button><button class="v134-link-button" data-v134-reset="pc" type="button">Clear</button></div>
+      <p class="v134-input-note">Use the inspiratory time that actually governs the timed breath and the observed total frequency.</p>
+      <div class="v134-result" id="v134-pc-result" role="status" aria-live="polite">
+        <p class="v134-empty">Enter inspiratory time and actual total rate to calculate cycle time, expiratory time, and I:E.</p>
+      </div>
+      <details class="v134-limit">
+        <summary>Where this equation does not apply</summary>
+        <p>This direct-T<sub>I</sub> model is for time-cycled breaths whose delivered inspiratory time matches the entered value. Do not apply it to flow-cycled pressure support, irregular spontaneous breathing, or assisted breaths whose cycling or safety limits change inspiratory time. The result does not recommend T<sub>I</sub> or establish adequate exhalation.</p>
+      </details>
+      <nav class="v134-context-links" aria-label="Pressure-control timing context"><a href="#c8-7">§8.7 Controls</a><a href="#c10-2">§10.2 Pressure control</a><a href="#c17-5">§17.5 Intrinsic PEEP</a><sup class="cite"><a href="#r26" aria-label="Reference 26">26</a></sup></nav>
+    </form>
+
+    <form class="v134-timing-card" id="v134-aprv-form" novalidate>
+      <div class="v134-card-title">
+        <div><span class="v134-mode v134-mode-aprv">APRV</span><strong>Pressure-release cycle</strong></div>
+        <span>Cycle arithmetic only</span>
+      </div>
+      <div class="v134-input-grid v134-input-grid-two">
+        <label>T<sub>high</sub> <span><input id="v134-aprv-thigh" name="tHighSec" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="4.0"/> s</span></label>
+        <label>T<sub>low</sub> <span><input id="v134-aprv-tlow" name="tLowSec" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.40"/> s</span></label>
+      </div>
+      <div class="v134-actions"><button type="submit">Calculate release timing</button><button class="v134-secondary" data-v134-example="aprv" type="button">Load illustration</button><button class="v134-link-button" data-v134-reset="aprv" type="button">Clear</button></div>
+      <p class="v134-input-note">The release-cycle frequency is 60 ÷ (T<sub>high</sub> + T<sub>low</sub>). It is not the patient’s total respiratory rate.</p>
+      <div class="v134-result" id="v134-aprv-result" role="status" aria-live="polite">
+        <p class="v134-empty">Enter T<sub>high</sub> and T<sub>low</sub> to calculate cycle duration and releases per minute.</p>
+      </div>
+      <details class="v134-limit">
+        <summary>What the release frequency cannot tell you</summary>
+        <p>It does not calculate minute ventilation or predict PaCO₂. Spontaneous breaths, release tidal volume, dead space, mechanics, effort, leaks, and device implementation all matter. APRV setup methods are heterogeneous; confirm the ventilator’s definitions and the local protocol.</p>
+      </details>
+      <div class="v134-expert-note"><span class="v134-badge v134-badge-expert">Expert guidance</span><p>Time-controlled adaptive-ventilation adjustment frameworks are expert/protocol guidance rather than a universal calculator target. This component deliberately does not recommend T<sub>low</sub>, terminal-flow ratios, pressures, or release volumes.<sup class="cite"><a href="#r258">258</a></sup><sup class="cite"><a href="#r259">259</a></sup></p></div>
+      <nav class="v134-context-links" aria-label="APRV context"><a href="#c12-2">§12.2 APRV</a><sup class="cite"><a href="#r112" aria-label="Reference 112">112</a></sup></nav>
+    </form>
+  </div>
+</section>
+<!-- v1.10.134 modular fragment. Suggested insertion: #calc-tools after the existing snapshot block. -->
+<section class="v134-response-log" id="v134-ventilator-response-log" data-v134-component="response-log" aria-labelledby="v134-log-title">
+  <header class="v134-log-head">
+    <div><span class="v134-log-kicker">Local learning tool</span><h4 id="v134-log-title">Before / after a ventilator change</h4><p>Record an objective, the paired observations, and whether the expected response occurred. Change one interpretable variable when clinically feasible; reassess the whole patient.</p></div>
+    <span class="v134-log-badge">Session only · not a clinical record</span>
+  </header>
+
+  <div class="v134-privacy" role="note" aria-labelledby="v134-privacy-title">
+    <strong id="v134-privacy-title">Privacy: do not enter patient identifiers</strong>
+    <p>Do not enter names, initials, medical-record numbers, dates of birth, room numbers, exact encounter dates, or other identifying details. Entries remain only in this tab's browser session and are normally removed when the tab or window closes; this page does not encrypt them, sync them, or place them in the medical record. Reloading the tab may retain them during the same session. Exported files persist separately and inherit the same privacy risk.</p>
+  </div>
+
+  <form id="v134-response-form" novalidate>
+    <fieldset class="v134-change-plan">
+      <legend>Change and objective</legend>
+      <label>Ventilator change tested <span class="v134-required">required</span><input name="change" maxlength="160" required placeholder="Example: increased constant inspiratory flow (no identifiers)"/></label>
+      <label>Primary objective<select name="objective"><option value="">Choose one</option><option>Improve oxygenation</option><option>Improve ventilation / pH</option><option>Reduce excessive pressure exposure</option><option>Improve expiratory time</option><option>Improve synchrony / comfort</option><option>Assess readiness / support need</option><option>Other stated physiologic objective</option></select></label>
+      <label>Expected response<input name="expected" maxlength="160" placeholder="Specific observable response; no identifiers"/></label>
+    </fieldset>
+
+    <div class="v134-before-after">
+      <fieldset class="v134-state v134-before"><legend><span>Before</span> Record immediately relevant observations</legend>
+        <div class="v134-log-grid">
+          <label>Mode<select name="before_mode"><option value="">—</option><option>VC</option><option>PC</option><option>PSV</option><option>CPAP</option><option>APRV</option><option>NIV</option><option>Other / device-specific</option></select></label>
+          <label>FiO₂ <input name="before_fio2" type="number" inputmode="decimal" min="0.21" max="1" step="0.01" placeholder="decimal"/></label>
+          <label>Set PEEP <input name="before_peep" type="number" inputmode="decimal" step="0.5" placeholder="cmH₂O"/></label>
+          <label>Total PEEP <input name="before_totalPeep" type="number" inputmode="decimal" step="0.5" placeholder="cmH₂O"/></label>
+          <label>Exhaled V<sub>T</sub> <input name="before_vtMl" type="number" inputmode="decimal" step="1" placeholder="mL"/></label>
+          <label>Total RR <input name="before_rr" type="number" inputmode="decimal" step="0.1" placeholder="/min"/></label>
+          <label>P<sub>plat</sub> <input name="before_pplat" type="number" inputmode="decimal" step="0.5" placeholder="cmH₂O"/></label>
+          <label>SpO₂ <input name="before_spo2" type="number" inputmode="decimal" step="0.1" placeholder="%"/></label>
+          <label>PaO₂ <input name="before_pao2" type="number" inputmode="decimal" step="0.1" placeholder="mmHg"/></label>
+          <label>pH <input name="before_ph" type="number" inputmode="decimal" step="0.01" placeholder="optional"/></label>
+          <label>PaCO₂ <input name="before_paco2" type="number" inputmode="decimal" step="0.1" placeholder="mmHg"/></label>
+          <label>MAP <input name="before_map" type="number" inputmode="decimal" step="0.1" placeholder="mmHg"/></label>
+          <label>Interaction<select name="before_interaction"><option value="">Not recorded</option><option>Passive / controlled</option><option>Comfortable / synchronous</option><option>Visible effort</option><option>Possible dyssynchrony</option><option>Cannot determine</option></select></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="v134-state v134-after"><legend><span>After</span> Use a clinically appropriate reassessment interval</legend>
+        <div class="v134-log-grid">
+          <label>Mode<select name="after_mode"><option value="">—</option><option>VC</option><option>PC</option><option>PSV</option><option>CPAP</option><option>APRV</option><option>NIV</option><option>Other / device-specific</option></select></label>
+          <label>FiO₂ <input name="after_fio2" type="number" inputmode="decimal" min="0.21" max="1" step="0.01" placeholder="decimal"/></label>
+          <label>Set PEEP <input name="after_peep" type="number" inputmode="decimal" step="0.5" placeholder="cmH₂O"/></label>
+          <label>Total PEEP <input name="after_totalPeep" type="number" inputmode="decimal" step="0.5" placeholder="cmH₂O"/></label>
+          <label>Exhaled V<sub>T</sub> <input name="after_vtMl" type="number" inputmode="decimal" step="1" placeholder="mL"/></label>
+          <label>Total RR <input name="after_rr" type="number" inputmode="decimal" step="0.1" placeholder="/min"/></label>
+          <label>P<sub>plat</sub> <input name="after_pplat" type="number" inputmode="decimal" step="0.5" placeholder="cmH₂O"/></label>
+          <label>SpO₂ <input name="after_spo2" type="number" inputmode="decimal" step="0.1" placeholder="%"/></label>
+          <label>PaO₂ <input name="after_pao2" type="number" inputmode="decimal" step="0.1" placeholder="mmHg"/></label>
+          <label>pH <input name="after_ph" type="number" inputmode="decimal" step="0.01" placeholder="optional"/></label>
+          <label>PaCO₂ <input name="after_paco2" type="number" inputmode="decimal" step="0.1" placeholder="mmHg"/></label>
+          <label>MAP <input name="after_map" type="number" inputmode="decimal" step="0.1" placeholder="mmHg"/></label>
+          <label>Interaction<select name="after_interaction"><option value="">Not recorded</option><option>Passive / controlled</option><option>Comfortable / synchronous</option><option>Visible effort</option><option>Possible dyssynchrony</option><option>Cannot determine</option></select></label>
+        </div>
+      </fieldset>
+    </div>
+
+    <fieldset class="v134-assessment"><legend>Interpret the response</legend>
+      <label>Observed response<select name="response"><option value="">Choose one</option><option>Expected response observed</option><option>Partial / mixed response</option><option>No meaningful change observed</option><option>Unexpected or adverse response</option><option>Cannot interpret measurement</option></select></label>
+      <label>Response / trade-off note<textarea name="note" maxlength="280" rows="3" placeholder="Physiologic response only—no patient identifiers"></textarea></label>
+    </fieldset>
+
+    <label class="v134-privacy-confirm"><input id="v134-no-identifiers" type="checkbox" required/> I confirm that this entry contains no patient identifiers.</label>
+    <div class="v134-log-actions"><button type="submit">Save for this session</button><button type="reset" class="v134-log-secondary">Clear form</button></div>
+    <p class="v134-log-status" id="v134-log-status" role="status" aria-live="polite"></p>
+  </form>
+
+  <section class="v134-saved" aria-labelledby="v134-saved-title">
+    <div class="v134-saved-head"><div><h5 id="v134-saved-title">Saved comparisons</h5><span id="v134-saved-count">0 saved · maximum 25</span></div><div class="v134-export-actions"><button type="button" id="v134-export-json">Export JSON</button><button type="button" id="v134-export-csv">Export CSV</button><button type="button" class="v134-erase" id="v134-erase-all">Erase all</button></div></div>
+    <div id="v134-saved-list"><p class="v134-log-empty">No comparisons saved in this tab's session.</p></div>
+  </section>
+  <p class="v134-log-limit"><strong>Interpretation boundary:</strong> Measurements must be technically valid and compared in clinical context. A single before/after observation cannot establish causality. Reassess pressures, volumes, waveforms, gas exchange, hemodynamics, effort, comfort, and trajectory as relevant. See <a href="#c8-7">§8.7</a>, <a href="#c13-4">§13.4</a>, and the patient–ventilator assessment guidance.<sup class="cite"><a href="#r100">100</a></sup></p>
+</section>
 </section>
 <!-- =========================== PART I =========================== -->
 <div class="part" id="part1"><div class="pno">Part I</div><h2>Foundations</h2><p class="sum">Build the conceptual base: who needs ventilation and why; the respiratory physiology that ventilator settings interact with — gas-exchange essentials, hypoxemia, and CO₂ transport with the control of breathing; then the bedside PFTs that map onto every chronic-vent patient and the lung mechanics that govern every alveolus.</p></div>
@@ -6815,7 +7235,7 @@ calc();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
 <details class="chap-acc" data-acc-id="c4-h4-7" open=""><summary><h4 id="c4-7">4.7 Interactive ABG laboratory</h4></summary>
 <div class="figure simulator-figure" data-simulator="abg-sim-iframe" id="ch4-abg-simulator">
 <div class="simulator-launch"><div><span class="simulator-eyebrow">Interactive laboratory</span><strong><abbr data-tip="Arterial blood gas">ABG</abbr> interpretation laboratory</strong><p>Validate values, identify the primary process, test compensation, calculate the albumin-corrected anion gap, analyze mixed disorders, and recognize physiologically dangerous states.</p><details class="sim-assumptions"><summary>Model assumptions &amp; limitations</summary><p>Compensation equations, albumin correction, and delta analysis are bedside approximations. Interpret them with timing, renal function, laboratory method/reference intervals, albumin, chloride, and the clinical trajectory. The external live simulator remains intentionally unversioned in this build.</p></details></div><div class="simulator-launch-actions"><button class="sim-open" data-sim-open="abg-sim-iframe" type="button">Open full screen</button><a class="sim-standalone-link" href="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html" rel="noopener" target="_blank">Open standalone ↗</a></div></div>
-<iframe id="abg-sim-iframe" loading="lazy"  style="width:100%;height:1500px;border:0;display:block" title="ABG acid-base simulator" data-src="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html"></iframe>
+<iframe data-offline-mode="online-only" id="abg-sim-iframe" loading="lazy"  style="width:100%;height:1500px;border:0;display:block" title="ABG acid-base simulator" data-src="https://bedsidereference.github.io/medical-education/abg-acid-base-simulator.html"></iframe>
 <div class="cap"><b>Figure 4.6 — ABG acid–base simulator.</b> The live external tool is retained. Chapter 4’s governing equations and interpretation rules are covered by a separate deterministic scientific-regression contract so the physiology can be checked independently of the remote interface.</div>
 </div>
 </details>
@@ -8242,6 +8662,54 @@ The ventilator can only display pressure at the airway opening, but the respirat
 </tbody>
 </table>
 <div class="note"><strong>Two habits</strong>Read controls by physiology rather than brand name, and change one variable with a stated objective. After every change, verify tidal volume, total rate, pressure, flow, expiration, gas exchange, hemodynamics, and patient comfort.</div>
+<!-- v1.10.134 NEW figure; does not replace any approved figure. Suggested insertion: end of §8.7, with backlinks from §14.4 and §43.2. -->
+<figure class="figure v134-circuit-map" id="fig-8-2-circuit-sensor-map" data-v134-component="circuit-sensor-map" data-artifact-kind="Figure" data-artifact-use="Conceptual anatomy map" data-artifact-section="Chapter 8 · §8.7" aria-labelledby="v134-circuit-title" aria-describedby="v134-circuit-caption">
+  <header class="v134-circuit-head">
+    <div>
+      <span class="v134-circuit-kicker">New conceptual figure · not a brand layout</span>
+      <h4 id="v134-circuit-title">Where the ventilator measures—and what lies between</h4>
+      <p>Trace pressure, flow, volume, conditioning, resistance, dead space, and leak from the ventilator to the respiratory system and back.</p>
+    </div>
+    <div class="v134-circuit-badges" aria-label="Figure status"><span>Adult circuit</span><span>Device-dependent details</span></div>
+  </header>
+
+  <div class="v134-circuit-path" role="img" aria-label="Conceptual dual-limb ventilator circuit. Gas travels from ventilator inspiratory sensors through an inspiratory limb and conditioning equipment to a Y-piece, optional proximal sensor and patient-end components, then through an endotracheal tube to the respiratory system. Exhaled gas returns through the expiratory limb, filter, expiratory flow sensor and valve. Sensor locations and compensation algorithms vary by ventilator and circuit configuration.">
+    <div class="v134-path-label v134-insp-label">Inspiratory path →</div>
+    <div class="v134-node v134-node-device"><span class="v134-node-num">1</span><strong>Ventilator</strong><small>Controller, internal pressure/flow sensing, valves</small><em>What is measured internally depends on the device.</em></div>
+    <div class="v134-arrow" aria-hidden="true">→</div>
+    <div class="v134-node"><span class="v134-node-num">2</span><strong>Inspiratory limb</strong><small>Tubing + circuit volume</small><em>Compliance stores compressed gas as pressure rises.</em></div>
+    <div class="v134-arrow" aria-hidden="true">→</div>
+    <div class="v134-node"><span class="v134-node-num">3</span><strong>Gas conditioning</strong><small>Heated humidifier in limb <b>or</b> HME near patient</small><em>Configuration changes resistance, water handling, and dead space.</em></div>
+    <div class="v134-arrow" aria-hidden="true">→</div>
+    <div class="v134-node v134-node-focus"><span class="v134-node-num">4</span><strong>Y-piece / proximal site</strong><small>Optional proximal flow/pressure sensor</small><em>A closer sampling site is still not an alveolar measurement.</em></div>
+    <div class="v134-arrow" aria-hidden="true">→</div>
+    <div class="v134-node"><span class="v134-node-num">5</span><strong>Patient-end stack</strong><small>Adapters, capnometer, suction connector, HME/filter when used</small><em>Added components may add resistance and apparatus dead space.</em></div>
+    <div class="v134-arrow" aria-hidden="true">→</div>
+    <div class="v134-node"><span class="v134-node-num">6</span><strong>ETT + cuff</strong><small>Tube resistance; cuff and airway leak paths</small><em>Pressure falls across resistance while gas is flowing.</em></div>
+    <div class="v134-arrow" aria-hidden="true">→</div>
+    <div class="v134-node v134-node-patient"><span class="v134-node-num">7</span><strong>Respiratory system</strong><small>Airways, lung, chest wall, effort</small><em>Regional alveolar behavior is not directly displayed.</em></div>
+    <div class="v134-return" aria-hidden="true">↓ exhaled gas</div>
+    <div class="v134-exp-row">
+      <div class="v134-node"><span class="v134-node-num">8</span><strong>Expiratory limb</strong><small>Water, secretions, kinks, filters</small><em>Obstruction can change expiratory pressure and flow.</em></div>
+      <div class="v134-arrow v134-arrow-left" aria-hidden="true">←</div>
+      <div class="v134-node v134-node-device"><span class="v134-node-num">9</span><strong>Expiratory module</strong><small>Filter, flow sensor, expiratory valve</small><em>Exhaled volume and leak estimates depend on this signal and the device algorithm.</em></div>
+      <div class="v134-arrow v134-arrow-left" aria-hidden="true">← ventilator return</div>
+    </div>
+  </div>
+
+  <section class="v134-measurement-panel" aria-labelledby="v134-measurement-title">
+    <div class="v134-panel-title"><span class="v134-guidance-badge">Expert interpretation</span><h5 id="v134-measurement-title">Read a displayed value with its measurement chain</h5></div>
+    <div class="v134-measurement-grid">
+      <article><strong>Pressure</strong><p>During flow, pressure at an internal or proximal sensor can differ from tracheal and alveolar pressure because of circuit, filter, and ETT resistance. At a valid no-flow hold, resistive pressure loss should fall, but effort, leak, closure, and regional heterogeneity still limit interpretation.</p></article>
+      <article><strong>Volume</strong><p>Inspired and expired tidal volumes may differ because of leak, circuit compliance/gas compression, measurement location, humidity or temperature correction, and the ventilator’s compensation method. A displayed mismatch is a clue—not proof of one leak source.</p></article>
+      <article><strong>Resistance + dead space</strong><p>Water, secretions, kinks, a loaded filter, and added connectors can increase resistance. Components between the Y-piece and airway add apparatus dead space; their proportional effect grows as tidal volume falls.</p></article>
+      <article><strong>After a circuit change</strong><p><span class="v134-device-badge">Device-dependent</span> Confirm the configured circuit and humidification setup, run the manufacturer-required circuit/sensor checks, then recheck delivered/exhaled volume, pressure, alarms, capnography, and the patient. Follow the device instructions and local policy.</p></article>
+    </div>
+  </section>
+
+  <nav class="v134-circuit-links" aria-label="Circuit map context"><strong>Use with:</strong><a href="#c4-1">§4.1 Dead space</a><a href="#c6">Ch 6 Mechanics</a><a href="#c14-4">§14.4 Volume display</a><a href="#c34-7">§34.7 Humidification</a><a href="#c39">Ch 39 Aerosol delivery</a><a href="#c43-2">§43.2 Circuit configuration</a></nav>
+  <figcaption id="v134-circuit-caption"><strong>Figure 8.2.</strong> Conceptual adult dual-limb circuit and sensor map. Single-limb, turbine, transport, and noninvasive circuits may be arranged differently. Exact sensor locations, corrections, compensation, tests, and displayed labels vary by manufacturer and configuration; consult the device instructions. Core interpretation: a screen value is the output of a measurement site plus the circuit and its compensation—not a direct view of every alveolus.<sup class="cite"><a href="#r26">26</a></sup><sup class="cite"><a href="#r100">100</a></sup> Humidification and aerosol-component context: references <sup class="cite"><a href="#r209">209</a></sup><sup class="cite"><a href="#r257">257</a></sup>.</figcaption>
+</figure>
 </details>
 <details class="chap-acc" data-acc-id="c8-h4-8" open="">
 <summary><h4 id="c8-8">8.8 Choosing a ventilator mode by clinical objective</h4></summary>
@@ -8974,7 +9442,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
       </a>
 </div>
 <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#0a0e1a;">
-<iframe allow="clipboard-write" data-src="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" id="vent-sim-iframe" loading="lazy" style="width:100%; height:3060px; border:0; display:block;" title="Ventilator waveform simulator — pressure, flow, and volume traces driven by the equation of motion"></iframe>
+<iframe data-offline-mode="online-only" allow="clipboard-write" data-src="https://bedsidereference.github.io/medical-education/mechanical-ventilation-waveform-simulator.html" id="vent-sim-iframe" loading="lazy" style="width:100%; height:3060px; border:0; display:block;" title="Ventilator waveform simulator — pressure, flow, and volume traces driven by the equation of motion"></iframe>
 </div>
 <script type="application/x-vent-guide-lazy" data-section="c14">
       (function(){
@@ -9209,7 +9677,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
       </a>
 </div>
 <div style="position:relative; width:100%; border:1px solid #d6d3c7; border-radius:4px; overflow:hidden; background:#0a0e1a;">
-<iframe data-src="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html" id="capno-sim-iframe" loading="lazy" style="width:100%; height:1200px; border:0; display:block;" title="Capnography waveform library — eleven patterns, four phases, A–E points and α/β angles, with parametric physiology controls and a study-breath mode"></iframe>
+<iframe data-offline-mode="online-only" data-src="https://bedsidereference.github.io/medical-education/mechanical-ventilation-capnography-simulator.html" id="capno-sim-iframe" loading="lazy" style="width:100%; height:1200px; border:0; display:block;" title="Capnography waveform library — eleven patterns, four phases, A–E points and α/β angles, with parametric physiology controls and a study-breath mode"></iframe>
 </div>
 <script type="application/x-vent-guide-lazy" data-section="c14">
       (function(){
@@ -9878,7 +10346,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
       </a>
 </div>
 <div style="position:relative; width:100%; border:1px solid var(--rule); border-radius:4px; overflow:hidden; background:var(--surface);">
-<iframe data-src="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html" id="dys-explorer-iframe" loading="lazy" scrolling="auto" style="width:100%; height:560px; border:0; display:block;" title="Patient–ventilator dyssynchrony explorer — live waveforms for the eight common patterns"></iframe>
+<iframe data-offline-mode="online-only" data-src="https://bedsidereference.github.io/medical-education/dyssynchrony_identifier_v10.html" id="dys-explorer-iframe" loading="lazy" scrolling="auto" style="width:100%; height:560px; border:0; display:block;" title="Patient–ventilator dyssynchrony explorer — live waveforms for the eight common patterns"></iframe>
 </div>
 <script type="application/x-vent-guide-lazy" data-section="c18">
       (function(){
@@ -14072,7 +14540,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <!-- APPROVED_CASE_LAB_v1_0 · integrated outside numbered chapter sequence -->
 <div class="figure simulator-figure case-lab-docked" data-simulator="case-lab-iframe" id="case-lab-tool">
 <div class="simulator-launch"><div><span class="sim-kicker">Interactive synthesis</span><h4>Case Lab</h4><p>Five mechanism-first cases connect lung mechanics, gas exchange, circulation, neuromuscular failure, and liberation without creating a second set of disease algorithms.</p><details class="sim-assumptions"><summary>Design assumptions &amp; limitations</summary><p>No scoring and no magic-number decision commands. Each case asks what changed, what mechanism explains it, what intervention tests that hypothesis, and what must be reassessed. Disease-specific recommendations remain owned by their numbered chapters.</p></details></div><div class="simulator-launch-actions"><button class="sim-open" data-sim-open="case-lab-iframe" type="button">Open full screen</button><a class="sim-standalone-link" href="ventilation_guide_CASE_LAB_v1_0.html" rel="noopener" target="_blank">Open standalone ↗</a></div></div>
-<iframe id="case-lab-iframe" loading="lazy"  style="width:100%;height:1500px;border:0;display:block" title="Ventilation Guide Case Lab" data-src="ventilation_guide_CASE_LAB_v1_0.html"></iframe>
+<iframe data-offline-mode="full" id="case-lab-iframe" loading="lazy"  style="width:100%;height:1500px;border:0;display:block" title="Ventilation Guide Case Lab" data-src="ventilation_guide_CASE_LAB_v1_0.html"></iframe>
 </div>
 <!-- =========================== APPENDIX =========================== -->
 <div class="part" id="appendix"><div class="pno">Appendix</div><h2>Equations, medications, abbreviations, references</h2><p class="sum">Quick-reference materials synchronized to the locked chapters: mechanism-first reference cards, equations with interpretation boundaries, a ventilation-relevant medication map, alarm localization, the abbreviations glossary, and citations.</p></div>
@@ -14571,13 +15039,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li value="302" id="r302">Grooms D. Double triggering: diagnosis, differentiation, and resolution. Hamilton Medical. July 8, 2019. <a href="https://www.hamilton-medical.com/en_US/Resource-center/Article-page~knowledge-base~f0c47c50-ceb4-4c6d-93f4-3989c9824fdd~Double-triggering---Diagnosis--differentiation--and-resolution~.html" target="_blank" rel="noopener noreferrer">Manufacturer educational resource</a>. Accessed September 5, 2026.</li>
 <li value="303" id="r303">Jagannathan N, Aziz MF. Difficult Airway Society 2025 guidelines for tracheal intubation: thoughtful preparation for success and systematic management of failure. <em>Br J Anaesth</em>. 2026;136(1):9–11. <a href="https://doi.org/10.1016/j.bja.2025.11.003" target="_blank" rel="noopener noreferrer">doi:10.1016/j.bja.2025.11.003</a>. PMID: 41339170.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are synchronized in build v1.10.133.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are synchronized in build v1.10.134.</p>
 </section>
 </main>
 </div>
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.133 · Chapters 1–43 · Evidence and reader update · Updated September 5, 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.134 · Chapters 1–43 · Evidence and reader update · Updated September 5, 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -15050,8 +15518,8 @@ function updateBackTop(){backTopRaf=0;if(!backTop)return;var show=false;if(activ
 function queueBackTopUpdate(){if(backTopRaf)return;backTopRaf=requestAnimationFrame(updateBackTop);}
 function ensureChapterEndNav(sec){var n=numbered(sec);if(!n||sec.querySelector(':scope > .pwa-chapter-end-nav'))return;var nav=doc.createElement('nav');nav.className='pwa-chapter-end-nav';nav.setAttribute('aria-label','End of Chapter '+n+' navigation');var label=doc.createElement('div');label.className='pwa-end-label';label.textContent='End of Chapter '+n;nav.appendChild(label);function add(dir,dest){var b=doc.createElement('button');b.type='button';b.dataset.dir=dir;var target=doc.getElementById('c'+dest);if(!target){b.disabled=true;b.innerHTML='<small>'+dir+'</small><b>No adjacent chapter</b>';}else{b.innerHTML='<small>'+(dir==='prev'?'← Previous':'Next →')+'</small><b>'+dest+' · '+esc(cleanTitle(target))+'</b>';b.setAttribute('aria-label',(dir==='prev'?'Previous':'Next')+' chapter: '+cleanTitle(target));b.addEventListener('click',function(){activate(target,target,'push');});}nav.appendChild(b);}add('prev',n-1);add('next',n+1);var top=doc.createElement('button');top.type='button';top.className='pwa-end-top';top.innerHTML='↑ Back to the top of Chapter '+n;top.addEventListener('click',function(){scrollChapterTop(true);});nav.appendChild(top);sec.appendChild(nav);}
 function openCalculator(e){if(!calcWrap||!calcPanel)return;initMiniCalculator();var opener=(e&&e.currentTarget&&e.currentTarget.id==='pwa-tools-calc')?calcFab:(e&&e.currentTarget)||calcFab;overlayManager.open('calculator',calcWrap,opener,{onOpen:function(){calcWrap.classList.add('show');calcPanel.classList.add('show');calcFab&&calcFab.classList.add('active');},onClose:function(){calcWrap.classList.remove('show');calcPanel.classList.remove('show');calcFab&&calcFab.classList.remove('active');},focus:doc.getElementById('mc-vt')||calcClose});}
-function initMiniCalculator(){if(!calcPanel||calcPanel.dataset.pwaCalcReady==='1')return;calcPanel.dataset.pwaCalcReady='1';var key='mv-mc-v3',fields=['mc-sex','mc-ht','mc-vt','mc-rr','mc-pip','mc-p1','mc-pplat','mc-peep','mc-flow','mc-fio2','mc-pao2'];function num(id){var el=doc.getElementById(id),v=el?parseFloat(el.value):NaN;return isFinite(v)?v:NaN;}function fmt(v,dp,unit){return isFinite(v)?v.toFixed(dp==null?1:dp)+(unit||''):'—';}function mode(){var a=calcPanel.querySelector('.mc-mode-btn.active');return a?a.dataset.mode:'vc';}function calc(){var sex=(doc.getElementById('mc-sex')||{}).value||'m',ht=num('mc-ht'),vt=num('mc-vt'),rr=num('mc-rr'),pip=num('mc-pip'),p1=num('mc-p1'),pplat=num('mc-pplat'),peep=num('mc-peep'),flow=num('mc-flow'),fio2=num('mc-fio2'),pao2=num('mc-pao2');var pbw=isFinite(ht)?((sex==='f'?45.5:50)+2.3*(ht-60)):NaN,dp=(isFinite(pplat)&&isFinite(peep))?pplat-peep:NaN,cstat=(isFinite(vt)&&isFinite(dp)&&dp>0)?vt/dp:NaN,flowLps=(isFinite(flow)&&flow>0)?flow/60:NaN,raw=(isFinite(pip)&&isFinite(p1)&&isFinite(pplat)&&isFinite(flowLps)&&pip>=p1&&p1>=pplat)?(pip-p1)/flowLps:NaN,tau=(isFinite(raw)&&isFinite(cstat))?raw*(cstat/1000):NaN,mp=NaN;if(isFinite(rr)&&isFinite(vt)&&isFinite(dp)){mp=mode()==='pc'&&isFinite(peep)?0.098*rr*(vt/1000)*(peep+dp):(mode()==='vc'&&isFinite(pip)?0.098*rr*(vt/1000)*(pip-.5*dp):NaN);}var vtpbw=(isFinite(vt)&&isFinite(pbw)&&pbw>0)?vt/pbw:NaN,ve=(isFinite(vt)&&isFinite(rr))?vt*rr/1000:NaN,pf=(isFinite(pao2)&&isFinite(fio2)&&fio2>0)?pao2/fio2:NaN,rsbi=(isFinite(rr)&&isFinite(vt)&&vt>0)?rr/(vt/1000):NaN;var vals={'mc-pbw':fmt(pbw,0,' kg'),'mc-vtpbw':fmt(vtpbw,1,' mL/kg'),'mc-ve':fmt(ve,1,' L/min'),'mc-dp':fmt(dp,1,' cmH₂O'),'mc-cstat':fmt(cstat,1,' mL/cmH₂O'),'mc-raw':fmt(raw,1,' cmH₂O·s/L'),'mc-tau':fmt(tau,2,' s'),'mc-mp':fmt(mp,1,' J/min'),'mc-pf':fmt(pf,0,''),'mc-rsbi':fmt(rsbi,0,'')};Object.keys(vals).forEach(function(id){var el=doc.getElementById(id);if(el)el.textContent=vals[id];});var bin=doc.getElementById('mc-pf-bin');if(bin)bin.textContent=isFinite(pf)?'context':'—';try{var snap={mode:mode()};fields.forEach(function(id){var el=doc.getElementById(id);if(el)snap[id]=el.value;});localStorage.setItem(key,JSON.stringify(snap));}catch(_){}}
-function restore(){try{var raw=localStorage.getItem(key);if(!raw)return;var s=JSON.parse(raw);fields.forEach(function(id){var el=doc.getElementById(id);if(el&&s[id]!=null)el.value=s[id];});if(s.mode)calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.mode===s.mode);});}catch(_){}}
+function initMiniCalculator(){if(!calcPanel||calcPanel.dataset.pwaCalcReady==='1')return;calcPanel.dataset.pwaCalcReady='1';var key='mv-mc-v3',fields=['mc-sex','mc-ht','mc-vt','mc-rr','mc-pip','mc-p1','mc-pplat','mc-peep','mc-flow','mc-fio2','mc-pao2'];function num(id){var el=doc.getElementById(id),v=el?parseFloat(el.value):NaN;return isFinite(v)?v:NaN;}function fmt(v,dp,unit){return isFinite(v)?v.toFixed(dp==null?1:dp)+(unit||''):'—';}function mode(){var a=calcPanel.querySelector('.mc-mode-btn.active');return a?a.dataset.mode:'vc';}function calc(){var sex=(doc.getElementById('mc-sex')||{}).value||'m',ht=num('mc-ht'),vt=num('mc-vt'),rr=num('mc-rr'),pip=num('mc-pip'),p1=num('mc-p1'),pplat=num('mc-pplat'),peep=num('mc-peep'),flow=num('mc-flow'),fio2=num('mc-fio2'),pao2=num('mc-pao2');var pbw=isFinite(ht)?((sex==='f'?45.5:50)+2.3*(ht-60)):NaN,dp=(isFinite(pplat)&&isFinite(peep))?pplat-peep:NaN,cstat=(isFinite(vt)&&isFinite(dp)&&dp>0)?vt/dp:NaN,flowLps=(isFinite(flow)&&flow>0)?flow/60:NaN,raw=(isFinite(pip)&&isFinite(p1)&&isFinite(pplat)&&isFinite(flowLps)&&pip>=p1&&p1>=pplat)?(pip-p1)/flowLps:NaN,tau=(isFinite(raw)&&isFinite(cstat))?raw*(cstat/1000):NaN,mp=NaN;if(isFinite(rr)&&isFinite(vt)&&isFinite(dp)){mp=mode()==='pc'&&isFinite(peep)?0.098*rr*(vt/1000)*(peep+dp):(mode()==='vc'&&isFinite(pip)?0.098*rr*(vt/1000)*(pip-.5*dp):NaN);}var vtpbw=(isFinite(vt)&&isFinite(pbw)&&pbw>0)?vt/pbw:NaN,ve=(isFinite(vt)&&isFinite(rr))?vt*rr/1000:NaN,pf=(isFinite(pao2)&&isFinite(fio2)&&fio2>0)?pao2/fio2:NaN,rsbi=(isFinite(rr)&&isFinite(vt)&&vt>0)?rr/(vt/1000):NaN;var vals={'mc-pbw':fmt(pbw,0,' kg'),'mc-vtpbw':fmt(vtpbw,1,' mL/kg'),'mc-ve':fmt(ve,1,' L/min'),'mc-dp':fmt(dp,1,' cmH₂O'),'mc-cstat':fmt(cstat,1,' mL/cmH₂O'),'mc-raw':fmt(raw,1,' cmH₂O·s/L'),'mc-tau':fmt(tau,2,' s'),'mc-mp':fmt(mp,1,' J/min'),'mc-pf':fmt(pf,0,''),'mc-rsbi':fmt(rsbi,0,'')};Object.keys(vals).forEach(function(id){var el=doc.getElementById(id);if(el)el.textContent=vals[id];});var bin=doc.getElementById('mc-pf-bin');if(bin)bin.textContent=isFinite(pf)?'context':'—';try{var snap={mode:mode()};fields.forEach(function(id){var el=doc.getElementById(id);if(el)snap[id]=el.value;});sessionStorage.setItem(key,JSON.stringify(snap));}catch(_){}}
+function restore(){try{var raw=sessionStorage.getItem(key);if(!raw)return;var s=JSON.parse(raw);fields.forEach(function(id){var el=doc.getElementById(id);if(el&&s[id]!=null)el.value=s[id];});if(s.mode)calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.mode===s.mode);});}catch(_){}}
 function copy(){var pairs=[['VT','mc-vt'],['RR','mc-rr'],['PIP','mc-pip'],['P1','mc-p1'],['late Pplat','mc-pplat'],['PEEP','mc-peep'],['FiO₂','mc-fio2'],['PaO₂','mc-pao2']],parts=[];pairs.forEach(function(p){var v=num(p[1]);if(isFinite(v))parts.push(p[0]+' '+v);});var text=parts.join(', ')+(mode()==='pc'?' [PC]':'');var ok=function(){var c=doc.getElementById('mc-copy-confirm');if(c){c.textContent='✓ copied';setTimeout(function(){c.textContent='';},1400);}};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(ok,function(){});else{var ta=doc.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';body.appendChild(ta);ta.select();try{doc.execCommand('copy');ok();}catch(_){}ta.remove();}}
 fields.forEach(function(id){var el=doc.getElementById(id);if(el){el.addEventListener('input',calc);el.addEventListener('change',calc);}});calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(b){b.addEventListener('click',function(){calcPanel.querySelectorAll('.mc-mode-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');calc();});});var cp=doc.getElementById('mc-copy');if(cp)cp.addEventListener('click',copy);calcPanel.querySelectorAll('[data-tip]').forEach(function(el){if(el.dataset.tip)el.title=el.dataset.tip;});restore();calc();}
 
@@ -15241,9 +15709,9 @@ html[data-theme="dark"] .pwa-lightbox-host svg{background:#f3f5f7;filter:brightn
   document.addEventListener('vent-theme-change',syncAll);
 })();
 </script>
-<div hidden id="dual-theme-content-build-v110116" data-public-edition="1.2" data-internal-build="v1.10.133">DUAL_THEME_CONTENT_COMPLETE</div>
+<div hidden id="dual-theme-content-build-v110116" data-public-edition="1.2" data-internal-build="v1.10.134">DUAL_THEME_CONTENT_COMPLETE</div>
 
-<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.133">TABLET_DESKTOP_ROUTING_COMPLETE</div>
+<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.134">TABLET_DESKTOP_ROUTING_COMPLETE</div>
 
 <script id="phone-full-calculator-runtime" type="application/x-vent-guide-lazy" data-section="calc-tools">
 (function(){
@@ -15546,18 +16014,18 @@ saveInputs();
         try {
           const snap = {};
           inputIds.forEach(id => { const el = $(id); if (el) snap[id] = el.value; });
-          localStorage.setItem(STORAGE_INPUTS, JSON.stringify(snap));
-          localStorage.setItem(STORAGE_MODE, cwMode);
+          sessionStorage.setItem(STORAGE_INPUTS, JSON.stringify(snap));
+          sessionStorage.setItem(STORAGE_MODE, cwMode);
         } catch (e) {}
       }
       function restoreInputs() {
         try {
-          const raw = localStorage.getItem(STORAGE_INPUTS);
+          const raw = sessionStorage.getItem(STORAGE_INPUTS);
           if (raw) {
             const snap = JSON.parse(raw);
             inputIds.forEach(id => { const el = $(id); if (el && snap[id] != null) el.value = snap[id]; });
           }
-          const m = localStorage.getItem(STORAGE_MODE);
+          const m = sessionStorage.getItem(STORAGE_MODE);
           if (m === 'VC' || m === 'PC') {
             cwMode = m;
             document.querySelectorAll('.mp-mode-btn').forEach(b => {
@@ -15569,8 +16037,8 @@ saveInputs();
         } catch (e) {}
       }
 
-      function readSnaps() { try { return JSON.parse(localStorage.getItem(STORAGE_SNAPSHOTS)) || []; } catch(e){return [];} }
-      function writeSnaps(arr) { try { localStorage.setItem(STORAGE_SNAPSHOTS, JSON.stringify(arr.slice(0, MAX_SNAPSHOTS))); } catch(e){} }
+      function readSnaps() { try { return JSON.parse(sessionStorage.getItem(STORAGE_SNAPSHOTS)) || []; } catch(e){return [];} }
+      function writeSnaps(arr) { try { sessionStorage.setItem(STORAGE_SNAPSHOTS, JSON.stringify(arr.slice(0, MAX_SNAPSHOTS))); } catch(e){} }
       function curMetrics() {
         return {
           vtkg: parseFloat($('r-vtpbw').textContent),
@@ -15688,6 +16156,9 @@ saveInputs();
         try { document.execCommand('copy'); ok(); } catch(e){}
         document.body.removeChild(ta);
       }
+
+      // Keep the visible snapshot list synchronized with New patient.
+      document.addEventListener('vent-guide-clinical-session-cleared', () => { writeSnaps([]); renderSnaps(); });
 
       // ----- INIT -----
       restoreInputs();
@@ -16408,5 +16879,1283 @@ saveInputs();
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 
+</script>
+<script id="v134-breath-timing-js">
+(function(root){
+  'use strict';
+
+  function finiteNumber(value){
+    var number = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(number) ? number : null;
+  }
+
+  function vcTiming(input){
+    var vtMl = finiteNumber(input && input.vtMl);
+    var flowLMin = finiteNumber(input && input.flowLMin);
+    var pauseSec = finiteNumber(input && input.pauseSec);
+    var totalRate = finiteNumber(input && input.totalRate);
+    var errors = [];
+    if (!(vtMl > 0)) errors.push('Enter a tidal volume greater than zero.');
+    if (!(flowLMin > 0)) errors.push('Enter a constant inspiratory flow greater than zero.');
+    if (!(pauseSec >= 0)) errors.push('Enter a pause of zero or greater.');
+    if (!(totalRate > 0)) errors.push('Enter an actual total rate greater than zero.');
+    if (errors.length) return {ok:false, errors:errors};
+    var flowTimeSec = (vtMl / 1000) / (flowLMin / 60);
+    var inspiratoryTimeSec = flowTimeSec + pauseSec;
+    var cycleTimeSec = 60 / totalRate;
+    var expiratoryTimeSec = cycleTimeSec - inspiratoryTimeSec;
+    if (!(expiratoryTimeSec > 0)) {
+      return {ok:false, errors:['The entered inspiratory time is greater than or equal to the total cycle time. Recheck delivered flow, pause, tidal volume, and observed total rate.'], flowTimeSec:flowTimeSec, inspiratoryTimeSec:inspiratoryTimeSec, cycleTimeSec:cycleTimeSec};
+    }
+    return {
+      ok:true,
+      flowTimeSec:flowTimeSec,
+      inspiratoryTimeSec:inspiratoryTimeSec,
+      cycleTimeSec:cycleTimeSec,
+      expiratoryTimeSec:expiratoryTimeSec,
+      expiratoryToInspiratoryRatio:expiratoryTimeSec / inspiratoryTimeSec,
+      inspiratoryDutyPercent:(inspiratoryTimeSec / cycleTimeSec) * 100
+    };
+  }
+
+  function aprvTiming(input){
+    var tHighSec = finiteNumber(input && input.tHighSec);
+    var tLowSec = finiteNumber(input && input.tLowSec);
+    var errors = [];
+    if (!(tHighSec > 0)) errors.push('Enter T-high greater than zero.');
+    if (!(tLowSec > 0)) errors.push('Enter T-low greater than zero.');
+    if (errors.length) return {ok:false, errors:errors};
+    var cycleTimeSec = tHighSec + tLowSec;
+    return {
+      ok:true,
+      cycleTimeSec:cycleTimeSec,
+      releasesPerMin:60 / cycleTimeSec,
+      highTimePercent:(tHighSec / cycleTimeSec) * 100,
+      releaseTimePercent:(tLowSec / cycleTimeSec) * 100
+    };
+  }
+
+  function timedPressureTiming(input){
+    var inspiratoryTimeSec = finiteNumber(input && input.inspiratoryTimeSec);
+    var totalRate = finiteNumber(input && input.totalRate);
+    var errors = [];
+    if (!(inspiratoryTimeSec > 0)) errors.push('Enter an inspiratory time greater than zero.');
+    if (!(totalRate > 0)) errors.push('Enter an actual total rate greater than zero.');
+    if (errors.length) return {ok:false, errors:errors};
+    var cycleTimeSec = 60 / totalRate;
+    var expiratoryTimeSec = cycleTimeSec - inspiratoryTimeSec;
+    if (!(expiratoryTimeSec > 0)) return {ok:false, errors:['The entered inspiratory time is greater than or equal to the total cycle time. Recheck delivered inspiratory time and observed total rate.'], inspiratoryTimeSec:inspiratoryTimeSec, cycleTimeSec:cycleTimeSec};
+    return {ok:true,inspiratoryTimeSec:inspiratoryTimeSec,cycleTimeSec:cycleTimeSec,expiratoryTimeSec:expiratoryTimeSec,expiratoryToInspiratoryRatio:expiratoryTimeSec/inspiratoryTimeSec,inspiratoryDutyPercent:(inspiratoryTimeSec/cycleTimeSec)*100};
+  }
+
+  function fixed(value, digits){ return Number(value).toFixed(digits); }
+  function resultGrid(items){
+    return '<div class="v134-result-grid">' + items.map(function(item){
+      return '<div><span>' + item[0] + '</span><strong>' + item[1] + '</strong></div>';
+    }).join('') + '</div>';
+  }
+  function showError(target, errors){ target.innerHTML = '<p class="v134-error">' + errors.join(' ') + '</p>'; }
+  function values(form){
+    var data = {};
+    Array.prototype.forEach.call(form.elements, function(el){ if (el.name) data[el.name] = el.value; });
+    return data;
+  }
+
+  function init(doc){
+    doc = doc || (root && root.document);
+    if (!doc) return;
+    var shell = doc.querySelector('[data-v134-component="breath-timing"]');
+    if (!shell || shell.dataset.v134Ready === '1') return;
+    shell.dataset.v134Ready = '1';
+    var vcForm = shell.querySelector('#v134-vc-form');
+    var pcForm = shell.querySelector('#v134-pc-form');
+    var aprvForm = shell.querySelector('#v134-aprv-form');
+    var vcResult = shell.querySelector('#v134-vc-result');
+    var pcResult = shell.querySelector('#v134-pc-result');
+    var aprvResult = shell.querySelector('#v134-aprv-result');
+
+    vcForm.addEventListener('submit', function(event){
+      event.preventDefault();
+      var result = vcTiming(values(vcForm));
+      if (!result.ok) { showError(vcResult, result.errors); return; }
+      vcResult.innerHTML = resultGrid([
+        ['Flow time', fixed(result.flowTimeSec,2) + ' s'],
+        ['Total inspiratory time', fixed(result.inspiratoryTimeSec,2) + ' s'],
+        ['Available expiratory time', fixed(result.expiratoryTimeSec,2) + ' s'],
+        ['I:E', '1 : ' + fixed(result.expiratoryToInspiratoryRatio,2)],
+        ['Cycle time', fixed(result.cycleTimeSec,2) + ' s'],
+        ['Inspiratory duty cycle', fixed(result.inspiratoryDutyPercent,1) + '%']
+      ]);
+    });
+    pcForm.addEventListener('submit', function(event){
+      event.preventDefault();
+      var result = timedPressureTiming(values(pcForm));
+      if (!result.ok) { showError(pcResult, result.errors); return; }
+      pcResult.innerHTML = resultGrid([
+        ['Inspiratory time', fixed(result.inspiratoryTimeSec,2) + ' s'],
+        ['Available expiratory time', fixed(result.expiratoryTimeSec,2) + ' s'],
+        ['I:E', '1 : ' + fixed(result.expiratoryToInspiratoryRatio,2)],
+        ['Cycle time', fixed(result.cycleTimeSec,2) + ' s'],
+        ['Inspiratory duty cycle', fixed(result.inspiratoryDutyPercent,1) + '%']
+      ]);
+    });
+    aprvForm.addEventListener('submit', function(event){
+      event.preventDefault();
+      var result = aprvTiming(values(aprvForm));
+      if (!result.ok) { showError(aprvResult, result.errors); return; }
+      aprvResult.innerHTML = resultGrid([
+        ['Release-cycle duration', fixed(result.cycleTimeSec,2) + ' s'],
+        ['Releases per minute', fixed(result.releasesPerMin,2)],
+        ['Time at P-high', fixed(result.highTimePercent,1) + '% of cycle'],
+        ['Time in release', fixed(result.releaseTimePercent,1) + '% of cycle']
+      ]);
+    });
+    shell.addEventListener('click', function(event){
+      var example = event.target.closest('[data-v134-example]');
+      var reset = event.target.closest('[data-v134-reset]');
+      if (example && example.dataset.v134Example === 'vc') {
+        vcForm.elements.vtMl.value = '420'; vcForm.elements.flowLMin.value = '60'; vcForm.elements.pauseSec.value = '0.20'; vcForm.elements.totalRate.value = '24';
+        vcForm.dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));
+      } else if (example && example.dataset.v134Example === 'pc') {
+        pcForm.elements.inspiratoryTimeSec.value = '0.80'; pcForm.elements.totalRate.value = '24';
+        pcForm.dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));
+      } else if (example && example.dataset.v134Example === 'aprv') {
+        aprvForm.elements.tHighSec.value = '4.0'; aprvForm.elements.tLowSec.value = '0.40';
+        aprvForm.dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));
+      } else if (reset && reset.dataset.v134Reset === 'vc') {
+        vcForm.reset(); vcResult.innerHTML = '<p class="v134-empty">Enter four values to calculate flow time, total inspiratory time, expiratory time, and I:E.</p>';
+      } else if (reset && reset.dataset.v134Reset === 'pc') {
+        pcForm.reset(); pcResult.innerHTML = '<p class="v134-empty">Enter inspiratory time and actual total rate to calculate cycle time, expiratory time, and I:E.</p>';
+      } else if (reset && reset.dataset.v134Reset === 'aprv') {
+        aprvForm.reset(); aprvResult.innerHTML = '<p class="v134-empty">Enter T<sub>high</sub> and T<sub>low</sub> to calculate cycle duration and releases per minute.</p>';
+      }
+    });
+  }
+
+  root.VentGuideV134Timing = {vc:vcTiming, timedPressure:timedPressureTiming, aprv:aprvTiming, init:init};
+  if (root.document) {
+    if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', function(){ init(root.document); });
+    else init(root.document);
+  }
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script id="v134-response-log-js">
+(function(root){
+  'use strict';
+  var STORAGE_KEY = 'mv-response-log-v1';
+  var LIMIT = 25;
+  var metricFields = ['mode','fio2','peep','totalPeep','vtMl','rr','pplat','spo2','pao2','ph','paco2','map','interaction'];
+  var labels = {mode:'Mode',fio2:'FiO₂',peep:'Set PEEP',totalPeep:'Total PEEP',vtMl:'Exhaled VT (mL)',rr:'Total RR',pplat:'Pplat',spo2:'SpO₂',pao2:'PaO₂',ph:'pH',paco2:'PaCO₂',map:'MAP',interaction:'Interaction'};
+
+  function clean(value, limit){ return String(value == null ? '' : value).replace(/[\u0000-\u001f\u007f]/g,' ').replace(/\s+/g,' ').trim().slice(0, limit || 280); }
+  function makeId(){ return root.crypto && typeof root.crypto.randomUUID === 'function' ? root.crypto.randomUUID() : 'v134-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10); }
+  function sanitizeState(state){
+    var out = {};
+    metricFields.forEach(function(key){ out[key] = clean(state && state[key], 80); });
+    return out;
+  }
+  function sanitizeRecord(record){
+    return {
+      id:clean(record && record.id,80) || makeId(),
+      sequence:Number.isInteger(record && record.sequence) && record.sequence > 0 ? record.sequence : 1,
+      change:clean(record && record.change,160), objective:clean(record && record.objective,100), expected:clean(record && record.expected,160),
+      before:sanitizeState(record && record.before), after:sanitizeState(record && record.after),
+      response:clean(record && record.response,100), note:clean(record && record.note,280)
+    };
+  }
+  function storageRead(storage){
+    try { var parsed = JSON.parse(storage.getItem(STORAGE_KEY) || '[]'); return Array.isArray(parsed) ? parsed.map(sanitizeRecord).slice(0,LIMIT) : []; }
+    catch(error){ return []; }
+  }
+  function storageWrite(storage, records){ storage.setItem(STORAGE_KEY, JSON.stringify(records.slice(0,LIMIT))); }
+  function csvCell(value){ var text=String(value == null ? '' : value); return /[",\r\n]/.test(text) ? '"'+text.replace(/"/g,'""')+'"' : text; }
+  function toCsv(records){
+    var heads=['sequence','change','objective','expected'];
+    ['before','after'].forEach(function(side){ metricFields.forEach(function(field){ heads.push(side+'_'+field); }); });
+    heads.push('response','note');
+    var rows=[heads];
+    records.map(sanitizeRecord).forEach(function(record){
+      var row=[record.sequence,record.change,record.objective,record.expected];
+      ['before','after'].forEach(function(side){ metricFields.forEach(function(field){ row.push(record[side][field]); }); });
+      row.push(record.response,record.note); rows.push(row);
+    });
+    return rows.map(function(row){return row.map(csvCell).join(',');}).join('\r\n');
+  }
+  function toJson(records){ return JSON.stringify({format:'vent-guide-response-log',schema:1,privacy:'No patient identifiers permitted',exportedAt:new Date().toISOString(),records:records.map(sanitizeRecord)},null,2); }
+  function escapeHtml(value){ return String(value == null ? '' : value).replace(/[&<>"']/g,function(char){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char];}); }
+  function formRecord(form, sequence){
+    var data = new FormData(form), before={}, after={};
+    metricFields.forEach(function(field){ before[field]=data.get('before_'+field); after[field]=data.get('after_'+field); });
+    return sanitizeRecord({sequence:sequence,change:data.get('change'),objective:data.get('objective'),expected:data.get('expected'),before:before,after:after,response:data.get('response'),note:data.get('note')});
+  }
+  function download(doc, content, mime, filename){
+    var url = root.URL.createObjectURL(new Blob([content],{type:mime}));
+    var link=doc.createElement('a'); link.href=url; link.download=filename; doc.body.appendChild(link); link.click(); link.remove();
+    root.setTimeout(function(){root.URL.revokeObjectURL(url);},0);
+  }
+  function display(value){ return clean(value,280) || '—'; }
+  function render(records, list, count){
+    count.textContent = records.length + ' saved · maximum ' + LIMIT;
+    if (!records.length){ list.innerHTML='<p class="v134-log-empty">No comparisons saved in this tab\'s session.</p>'; return; }
+    list.innerHTML=records.map(function(record,index){
+      var rows=metricFields.map(function(field){return '<tr><th scope="row">'+escapeHtml(labels[field])+'</th><td>'+escapeHtml(display(record.before[field]))+'</td><td>'+escapeHtml(display(record.after[field]))+'</td></tr>';}).join('');
+      return '<details class="v134-entry"><summary><strong>Comparison '+escapeHtml(record.sequence)+': '+escapeHtml(record.change)+'</strong><span>'+escapeHtml(record.response || 'Response not classified')+'</span></summary><div class="v134-entry-body"><div class="v134-entry-meta"><div><span>Objective</span><p>'+escapeHtml(display(record.objective))+'</p></div><div><span>Expected response</span><p>'+escapeHtml(display(record.expected))+'</p></div><div><span>Observed / trade-off note</span><p>'+escapeHtml(display(record.note))+'</p></div></div><div class="v134-entry-table-wrap"><table><caption class="sr-only">Before and after values for comparison '+escapeHtml(record.sequence)+'</caption><thead><tr><th scope="col">Observation</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody>'+rows+'</tbody></table></div><button class="v134-delete-entry" type="button" data-v134-delete="'+escapeHtml(record.id)+'">Delete this comparison</button></div></details>';
+    }).join('');
+  }
+  function init(doc){
+    doc=doc||(root&&root.document); if(!doc)return;
+    var shell=doc.querySelector('[data-v134-component="response-log"]'); if(!shell||shell.dataset.v134Ready==='1')return; shell.dataset.v134Ready='1';
+    var form=shell.querySelector('#v134-response-form'), list=shell.querySelector('#v134-saved-list'), count=shell.querySelector('#v134-saved-count'), status=shell.querySelector('#v134-log-status'), confirmBox=shell.querySelector('#v134-no-identifiers');
+    var storageAvailable=true, records=[];
+    try { records=storageRead(root.sessionStorage); } catch(error){ storageAvailable=false; }
+    render(records,list,count);
+    function announce(message,error){status.textContent=message;status.dataset.state=error?'error':'ok';}
+    function persist(){ if(!storageAvailable)return false; try{storageWrite(root.sessionStorage,records);return true;}catch(error){storageAvailable=false;return false;} }
+    form.addEventListener('submit',function(event){
+      event.preventDefault();
+      if(!clean(form.elements.change.value,160)){announce('Describe the ventilator change before saving.',true);form.elements.change.focus();return;}
+      if(!confirmBox.checked){announce('Confirm that the entry contains no patient identifiers before saving.',true);confirmBox.focus();return;}
+      var next=records.reduce(function(max,r){return Math.max(max,Number(r.sequence)||0);},0)+1;
+      records.unshift(formRecord(form,next)); records=records.slice(0,LIMIT);
+      var saved=persist(); render(records,list,count); form.reset();
+      announce(saved?'Comparison saved only for this tab\'s browser session.':'Session storage is unavailable; the comparison will last only until this page is closed.',!saved);
+    });
+    form.addEventListener('reset',function(){root.setTimeout(function(){announce('Form cleared. Nothing was saved.',false);},0);});
+    list.addEventListener('click',function(event){var button=event.target.closest('[data-v134-delete]');if(!button)return;records=records.filter(function(r){return r.id!==button.dataset.v134Delete;});persist();render(records,list,count);announce('Comparison deleted.',false);});
+    shell.querySelector('#v134-export-json').addEventListener('click',function(){if(!records.length){announce('There are no saved comparisons to export.',true);return;}download(doc,toJson(records),'application/json','ventilator-response-log.json');announce('JSON export created. Protect the exported file.',false);});
+    shell.querySelector('#v134-export-csv').addEventListener('click',function(){if(!records.length){announce('There are no saved comparisons to export.',true);return;}download(doc,toCsv(records),'text/csv;charset=utf-8','ventilator-response-log.csv');announce('CSV export created. Protect the exported file.',false);});
+    shell.querySelector('#v134-erase-all').addEventListener('click',function(){if(!records.length){announce('There are no saved comparisons to erase.',false);return;}if(!root.confirm('Erase all ventilator-change comparisons saved in this tab\'s session?'))return;records=[];if(storageAvailable){try{root.sessionStorage.removeItem(STORAGE_KEY);}catch(error){storageAvailable=false;}}render(records,list,count);announce('All session comparisons erased.',false);});
+  }
+  root.VentGuideV134ResponseLog={STORAGE_KEY:STORAGE_KEY,LIMIT:LIMIT,sanitizeRecord:sanitizeRecord,toCsv:toCsv,toJson:toJson,storageRead:storageRead,storageWrite:storageWrite,init:init};
+  if(root.document){if(root.document.readyState==='loading')root.document.addEventListener('DOMContentLoaded',function(){init(root.document);});else init(root.document);}
+})(typeof window!=='undefined'?window:globalThis);
+</script>
+<script id="v134-accessibility">
+/*
+ * Ventilation Guide v1.10.134 accessibility enhancement layer.
+ *
+ * Integration contract:
+ *   - Load after the v1.10.133 document scripts (defer is fine).
+ *   - This file does not replace or re-render Cmd-K results.
+ *   - Re-running start()/init() is safe; listeners and generated IDs are
+ *     installed only once.
+ */
+(function (root, factory) {
+  'use strict';
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory;
+    return;
+  }
+  var api = factory(root);
+  root.VentGuideAccessibilityV134 = api;
+  api.start();
+})(typeof window !== 'undefined' ? window : this, function createAccessibilityEnhancer(win) {
+  'use strict';
+
+  var doc = win && win.document;
+  var initialized = false;
+  var startQueued = false;
+  var observer = null;
+  var lastActivator = null;
+  var tocInstructionId = 'vg-toc-part-instructions-v134';
+  var tocStorageKey = 'mv-toc-parts-collapsed-session-v2';
+  var focusableSelector = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'summary',
+    '[contenteditable="true"]',
+    '[tabindex]:not([tabindex="-1"])'
+  ].join(',');
+
+  var overlayDescriptors = [
+    {
+      key: 'table-viewer',
+      id: 'tbl-modal',
+      open: function (node) { return node.classList.contains('show'); },
+      initial: function () { return doc.getElementById('tbl-modal-close'); },
+      opener: function () { return doc.querySelector('.tbl-expand[aria-expanded="true"]'); },
+      label: function (node) {
+        if (doc.getElementById('tbl-modal-title')) node.setAttribute('aria-labelledby', 'tbl-modal-title');
+      }
+    },
+    {
+      key: 'tools',
+      id: 'desktop-tools-popover',
+      open: function (node) { return !node.hidden; },
+      initial: function (node) { return node.querySelector('button:not([disabled])'); },
+      opener: function () { return doc.getElementById('btn-tools-menu'); }
+    },
+    {
+      key: 'library',
+      id: 'lib-overlay',
+      open: function (node) { return node.classList.contains('show'); },
+      initial: function () {
+        return doc.getElementById('library-v2-search-input') || doc.getElementById('lib-modal-close');
+      },
+      opener: function () { return doc.getElementById('btn-library'); },
+      label: function (node) {
+        var title = node.querySelector('.lib-modal-title');
+        if (!title) return;
+        if (!title.id) title.id = 'lib-modal-title-v134';
+        node.setAttribute('aria-labelledby', title.id);
+      }
+    },
+    {
+      key: 'lightbox',
+      id: 'lightbox',
+      open: function (node) { return node.classList.contains('show'); },
+      initial: function () { return doc.getElementById('lb-close'); },
+      opener: function () {
+        return doc.querySelector('.figure-expand-icon[aria-expanded="true"], .tbl-expand[aria-expanded="true"]');
+      }
+    },
+    {
+      key: 'cmdk',
+      id: 'cmdk-overlay',
+      open: function (node) { return node.classList.contains('show'); },
+      initial: function () { return doc.getElementById('cmdk-input'); },
+      opener: function () { return doc.getElementById('btn-cmdk'); }
+    }
+  ];
+  var overlayState = Object.create(null);
+
+  function isConnected(node) {
+    if (!node) return false;
+    if (typeof node.isConnected === 'boolean') return node.isConnected;
+    return !!(doc && doc.documentElement && doc.documentElement.contains(node));
+  }
+
+  function isHidden(node, boundary) {
+    for (var p = node; p && p !== boundary; p = p.parentElement) {
+      if (p.hidden || p.getAttribute('aria-hidden') === 'true') return true;
+      if (win.getComputedStyle) {
+        try {
+          var style = win.getComputedStyle(p);
+          if (style.display === 'none' || style.visibility === 'hidden') return true;
+        } catch (e) {}
+      }
+    }
+    return !!(node && (node.hidden || node.disabled || node.getAttribute('aria-hidden') === 'true'));
+  }
+
+  function focusNode(node) {
+    if (!node || !isConnected(node) || typeof node.focus !== 'function') return false;
+    if (isHidden(node, doc.documentElement)) return false;
+    var hadTabindex = node.hasAttribute && node.hasAttribute('tabindex');
+    var naturallyFocusable = node.matches && node.matches(focusableSelector);
+    if (!naturallyFocusable && !hadTabindex && node.setAttribute) {
+      node.setAttribute('tabindex', '-1');
+      node.setAttribute('data-vg-a11y-temp-tabindex', 'true');
+      if (node.addEventListener) {
+        node.addEventListener('blur', function removeTemporaryTabindex() {
+          if (node.getAttribute('data-vg-a11y-temp-tabindex') === 'true') {
+            node.removeAttribute('tabindex');
+            node.removeAttribute('data-vg-a11y-temp-tabindex');
+          }
+        }, { once: true });
+      }
+    }
+    try { node.focus({ preventScroll: true }); }
+    catch (e) { try { node.focus(); } catch (_) { return false; } }
+    return !doc.activeElement || doc.activeElement === node;
+  }
+
+  function destinationFocusNode(target) {
+    if (!target || !target.querySelector) return target;
+    if (target.matches && target.matches('h1,h2,h3,h4,h5,h6,main,[role="main"]')) return target;
+    return target.querySelector(':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6') || target;
+  }
+
+  function focusDestination(target) {
+    return focusNode(destinationFocusNode(target));
+  }
+
+  function isPhoneShell() {
+    return !!(doc && doc.body && (doc.body.classList.contains('pwa-lite') || win.__ventPhone));
+  }
+
+  function schedulePhoneAnchorFocus(target) {
+    // The phone router changes the active chapter synchronously and schedules
+    // its landing work afterward. Queue from the captured click so the legacy
+    // document handler can call goToTarget()/activate() first; focusing with
+    // preventScroll then leaves its landing calculation untouched.
+    var afterLegacyRoute = function () {
+      if (!isPhoneShell()) return;
+      if (win.requestAnimationFrame) win.requestAnimationFrame(function () { focusDestination(target); });
+      else focusDestination(target);
+    };
+    if (win.setTimeout) win.setTimeout(afterLegacyRoute, 0);
+    else afterLegacyRoute();
+  }
+
+  function capturePhoneAnchorTarget(event) {
+    if (!isPhoneShell() || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    var anchor = event.target && event.target.closest ? event.target.closest('a[href^="#"]') : null;
+    if (!anchor || anchor.hasAttribute('download') || anchor.getAttribute('target') === '_blank') return;
+    var href = anchor.getAttribute('href') || '';
+    if (href.length < 2) return;
+    var id;
+    try { id = decodeURIComponent(href.slice(1)); } catch (e) { id = href.slice(1); }
+    var target = doc.getElementById(id);
+    if (target) schedulePhoneAnchorFocus(target);
+    // Deliberately do not preventDefault/stopPropagation: v1.10.133's phone
+    // router remains the sole owner of navigation and history.
+  }
+
+  function wrapSoftJump() {
+    var current = win.softJump;
+    if (typeof current !== 'function' || current.__vgA11yFocusV134) return;
+    function accessibleSoftJump(target) {
+      var result = current.apply(this, arguments);
+      focusDestination(target);
+      return result;
+    }
+    accessibleSoftJump.__vgA11yFocusV134 = true;
+    accessibleSoftJump.__vgA11yOriginal = current;
+    win.softJump = accessibleSoftJump;
+  }
+
+  function ensureTocInstructions() {
+    var instruction = doc.getElementById(tocInstructionId);
+    if (instruction) return instruction;
+    instruction = doc.createElement('span');
+    instruction.id = tocInstructionId;
+    instruction.className = 'vg-a11y-visually-hidden';
+    instruction.textContent = 'Press Enter to open this Part. Press Space to collapse or expand its chapter list.';
+    (doc.body || doc.documentElement).appendChild(instruction);
+    return instruction;
+  }
+
+  function persistTocState() {
+    var collapsed = Array.prototype.map.call(
+      doc.querySelectorAll('nav.toc a.part-link.collapsed'),
+      function (link) { return link.getAttribute('href'); }
+    );
+    try { win.sessionStorage.setItem(tocStorageKey, JSON.stringify(collapsed)); } catch (e) {}
+    var all = Array.prototype.slice.call(doc.querySelectorAll('nav.toc a.part-link[aria-controls]'));
+    var bulk = doc.getElementById('toc-bulk-btn');
+    if (bulk && all.length) {
+      bulk.textContent = all.every(function (link) { return link.classList.contains('collapsed'); }) ? 'Expand all' : 'Collapse all';
+    }
+  }
+
+  function syncTocLink(link, panel) {
+    var open = !link.classList.contains('collapsed');
+    link.setAttribute('aria-expanded', String(open));
+    if (panel && panel.id) link.setAttribute('aria-controls', panel.id);
+  }
+
+  function navigateTocLink(link) {
+    var href = link.getAttribute('href') || '';
+    if (href.charAt(0) !== '#' || href.length < 2) return;
+    var id;
+    try { id = decodeURIComponent(href.slice(1)); } catch (e) { id = href.slice(1); }
+    var target = doc.getElementById(id);
+    if (!target) return;
+    if (win.history && win.history.pushState) {
+      try { win.history.pushState(null, '', href); } catch (e) {}
+    }
+    if (typeof win.softJump === 'function') win.softJump(target);
+    else {
+      if (target.scrollIntoView) target.scrollIntoView({ block: 'start' });
+      focusDestination(target);
+    }
+  }
+
+  function enhanceToc() {
+    var instruction = null;
+    var links = doc.querySelectorAll('nav.toc a.part-link');
+    Array.prototype.forEach.call(links, function (link, index) {
+      var panel = link.nextElementSibling;
+      if (!panel || String(panel.tagName).toLowerCase() !== 'ol') return;
+      if (!instruction) instruction = ensureTocInstructions();
+      if (!panel.id) {
+        var href = (link.getAttribute('href') || '').replace(/^#/, '').replace(/[^a-z0-9_-]/gi, '-');
+        panel.id = 'vg-toc-part-panel-' + (href || String(index + 1));
+      }
+      link.setAttribute('aria-describedby', instruction.id);
+      syncTocLink(link, panel);
+      if (link.getAttribute('data-vg-a11y-toc-v134') === 'true') return;
+      link.setAttribute('data-vg-a11y-toc-v134', 'true');
+      link.addEventListener('keydown', function (event) {
+        var key = event.key;
+        if (key === ' ' || key === 'Spacebar') {
+          event.preventDefault();
+          event.stopPropagation();
+          link.classList.toggle('collapsed');
+          syncTocLink(link, panel);
+          persistTocState();
+          return;
+        }
+        if (key === 'Enter') {
+          // Prevent the synthetic zero-coordinate click from being mistaken for
+          // a click on v1.10.133's 24 px chevron hit region.
+          event.preventDefault();
+          event.stopPropagation();
+          navigateTocLink(link);
+        }
+      });
+    });
+  }
+
+  function enhanceBedsideFilters() {
+    var group = doc.getElementById('bn-filters');
+    if (group) {
+      group.setAttribute('role', 'group');
+      if (!group.hasAttribute('aria-label')) group.setAttribute('aria-label', 'Filter bedside entries');
+    }
+    Array.prototype.forEach.call(doc.querySelectorAll('.bn-filter-chip'), function (chip) {
+      var isButton = String(chip.tagName).toLowerCase() === 'button';
+      if (isButton && !chip.hasAttribute('type')) chip.setAttribute('type', 'button');
+      if (!isButton) {
+        chip.setAttribute('role', 'button');
+        chip.setAttribute('tabindex', '0');
+      }
+      if (!chip.hasAttribute('aria-pressed')) chip.setAttribute('aria-pressed', String(chip.classList.contains('active')));
+      if (chip.getAttribute('data-vg-a11y-filter-v134') === 'true') return;
+      chip.setAttribute('data-vg-a11y-filter-v134', 'true');
+      if (!isButton) {
+        chip.addEventListener('keydown', function (event) {
+          if (event.key !== 'Enter' && event.key !== ' ' && event.key !== 'Spacebar') return;
+          event.preventDefault();
+          event.stopPropagation();
+          chip.click();
+        });
+      }
+    });
+  }
+
+  function enhanceLaunchers() {
+    var cmdk = doc.getElementById('btn-cmdk');
+    var library = doc.getElementById('btn-library');
+    var tools = doc.getElementById('btn-tools-menu');
+    if (cmdk) { cmdk.setAttribute('aria-controls', 'cmdk-overlay'); cmdk.setAttribute('aria-haspopup', 'dialog'); }
+    if (library) { library.setAttribute('aria-controls', 'lib-overlay'); library.setAttribute('aria-haspopup', 'dialog'); }
+    if (tools) tools.setAttribute('aria-haspopup', 'dialog');
+    Array.prototype.forEach.call(doc.querySelectorAll('.figure-expand-icon'), function (button) {
+      button.setAttribute('aria-controls', 'lightbox');
+    });
+    Array.prototype.forEach.call(doc.querySelectorAll('.tbl-expand'), function (button) {
+      button.setAttribute('aria-controls', 'tbl-modal');
+    });
+  }
+
+  function descriptorNode(descriptor) {
+    return doc.getElementById(descriptor.id);
+  }
+
+  function activeFallback(descriptor) {
+    var active = doc.activeElement;
+    if (active && active !== doc.body && active !== doc.documentElement && isConnected(active)) return active;
+    if (lastActivator && isConnected(lastActivator)) return lastActivator;
+    return descriptor.opener ? descriptor.opener() : null;
+  }
+
+  function focusables(node) {
+    return Array.prototype.filter.call(node.querySelectorAll(focusableSelector), function (item) {
+      return !isHidden(item, node);
+    });
+  }
+
+  function schedule(callback) {
+    if (win.setTimeout) win.setTimeout(callback, 0);
+    else callback();
+  }
+
+  function onOverlayOpened(descriptor, node, state) {
+    state.returnFocus = node.contains(doc.activeElement) ? (descriptor.opener ? descriptor.opener() : null) : activeFallback(descriptor);
+    node.removeAttribute('aria-hidden');
+    if (descriptor.label) descriptor.label(node);
+    schedule(function () {
+      if (!descriptor.open(node) || node.contains(doc.activeElement)) return;
+      var initial = descriptor.initial ? descriptor.initial(node) : null;
+      if (!initial) initial = focusables(node)[0];
+      focusNode(initial);
+    });
+  }
+
+  function onOverlayClosed(descriptor, node, state) {
+    node.setAttribute('aria-hidden', 'true');
+    var focusedAtClose = doc.activeElement;
+    var shouldRestore = !focusedAtClose || focusedAtClose === doc.body || focusedAtClose === doc.documentElement || node.contains(focusedAtClose) || isHidden(focusedAtClose, doc.documentElement);
+    var destination = state.returnFocus || (descriptor.opener ? descriptor.opener() : null);
+    state.returnFocus = null;
+    if (!shouldRestore) return;
+    schedule(function () {
+      var current = doc.activeElement;
+      // A navigation or another overlay may have deliberately accepted focus
+      // after close. Never pull focus back in that case.
+      if (current && current !== doc.body && current !== doc.documentElement && !node.contains(current)) return;
+      if (focusNode(destination)) return;
+      // If an overlay was launched from another overlay and both were closed by
+      // legacy handlers, climb back to the outer overlay's own launcher.
+      for (var i = overlayDescriptors.length - 1; i >= 0; i -= 1) {
+        var parentDescriptor = overlayDescriptors[i];
+        var parentNode = descriptorNode(parentDescriptor);
+        if (destination && parentNode && parentNode.contains(destination) && !parentDescriptor.open(parentNode)) {
+          if (focusNode(parentDescriptor.opener ? parentDescriptor.opener() : null)) return;
+        }
+      }
+      focusNode(descriptor.opener ? descriptor.opener() : null);
+    });
+  }
+
+  function syncOverlays() {
+    overlayDescriptors.forEach(function (descriptor) {
+      var node = descriptorNode(descriptor);
+      if (!node) return;
+      var state = overlayState[descriptor.key];
+      if (!state || state.node !== node) {
+        state = overlayState[descriptor.key] = { node: node, open: false, seen: false, returnFocus: null };
+      }
+      var open = !!descriptor.open(node);
+      if (!state.seen) {
+        state.seen = true;
+        state.open = open;
+        if (open) onOverlayOpened(descriptor, node, state);
+        else node.setAttribute('aria-hidden', 'true');
+        if (descriptor.label) descriptor.label(node);
+        return;
+      }
+      if (open === state.open) {
+        if (open) node.removeAttribute('aria-hidden');
+        return;
+      }
+      state.open = open;
+      if (open) onOverlayOpened(descriptor, node, state);
+      else onOverlayClosed(descriptor, node, state);
+    });
+  }
+
+  function zIndex(node) {
+    if (!win.getComputedStyle) return 0;
+    var value = parseInt(win.getComputedStyle(node).zIndex, 10);
+    return isNaN(value) ? 0 : value;
+  }
+
+  function topOpenOverlay() {
+    var open = [];
+    overlayDescriptors.forEach(function (descriptor, index) {
+      var node = descriptorNode(descriptor);
+      if (node && descriptor.open(node)) open.push({ descriptor: descriptor, node: node, index: index, z: zIndex(node) });
+    });
+    open.sort(function (a, b) { return a.z === b.z ? a.index - b.index : a.z - b.z; });
+    return open.length ? open[open.length - 1] : null;
+  }
+
+  function trapManagedOverlay(event) {
+    if (event.key !== 'Tab') return;
+    // Native <dialog> components in v1.10.133 already own their lifecycle.
+    if (doc.querySelector('dialog[open]')) return;
+    var top = topOpenOverlay();
+    if (!top) return;
+    var items = focusables(top.node);
+    if (!items.length) {
+      event.preventDefault();
+      focusNode(top.node);
+      return;
+    }
+    var first = items[0];
+    var last = items[items.length - 1];
+    var active = doc.activeElement;
+    if (!top.node.contains(active)) {
+      event.preventDefault();
+      focusNode(event.shiftKey ? last : first);
+    } else if (event.shiftKey && active === first) {
+      event.preventDefault();
+      focusNode(last);
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      focusNode(first);
+    }
+  }
+
+  function noteActivator(event) {
+    var target = event.target;
+    if (!target || !target.closest) return;
+    lastActivator = target.closest('button, a[href], input, select, textarea, summary, [tabindex], .figure, table') || target;
+  }
+
+  function refresh() {
+    if (!doc) return;
+    wrapSoftJump();
+    enhanceBedsideFilters();
+    enhanceToc();
+    enhanceLaunchers();
+    syncOverlays();
+  }
+
+  function injectSupportStyle() {
+    if (doc.getElementById('vg-a11y-support-style-v134')) return;
+    var style = doc.createElement('style');
+    style.id = 'vg-a11y-support-style-v134';
+    style.textContent = '.vg-a11y-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;}';
+    (doc.head || doc.documentElement).appendChild(style);
+  }
+
+  function init() {
+    if (!doc) return api;
+    if (initialized) { refresh(); return api; }
+    initialized = true;
+    injectSupportStyle();
+    doc.addEventListener('pointerdown', noteActivator, true);
+    doc.addEventListener('click', capturePhoneAnchorTarget, true);
+    doc.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar' || ((event.metaKey || event.ctrlKey) && String(event.key).toLowerCase() === 'k')) {
+        noteActivator(event);
+      }
+      trapManagedOverlay(event);
+    }, true);
+    refresh();
+    if (win.MutationObserver && doc.body) {
+      observer = new win.MutationObserver(refresh);
+      observer.observe(doc.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    }
+    return api;
+  }
+
+  function start() {
+    if (!doc || initialized || startQueued) return api;
+    if (doc.readyState === 'loading') {
+      startQueued = true;
+      doc.addEventListener('DOMContentLoaded', function () { startQueued = false; init(); }, { once: true });
+    } else init();
+    return api;
+  }
+
+  var api = {
+    start: start,
+    init: init,
+    refresh: refresh,
+    focusDestination: focusDestination,
+    isInitialized: function () { return initialized; },
+    disconnect: function () { if (observer) observer.disconnect(); observer = null; }
+  };
+  // Shared, narrow contract for navigation-data.js and other v1.10.134 layers.
+  // Assignment happens at factory creation so deferred DOM initialization does
+  // not delay availability of the focus helper.
+  if (win) win.__v134FocusTarget = focusDestination;
+  return api;
+});
+</script>
+<script id="v134-tech-client">
+(function (root, factory) {
+  'use strict';
+  var api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  if (root) {
+    root.VentGuideTechV134 = api;
+    if (root.document) api.bootstrap(root);
+  }
+})(typeof window !== 'undefined' ? window : null, function () {
+  'use strict';
+
+  var BUILD = 'v1.10.134';
+  var FULL_FIELDS = [
+    'c-sex', 'c-ht', 'c-age', 'c-hb', 'c-fio2', 'c-pao2', 'c-paco2',
+    'c-spo2', 'c-sao2', 'c-vt', 'c-rr', 'c-rox-time', 'c-pip', 'c-p1',
+    'c-pplat', 'c-peep', 'c-flow', 'c-map', 'c-etco2', 'c-paco2-target',
+    'c-co', 'c-pes-insp', 'c-pes-exp'
+  ];
+  var MINI_FIELDS = [
+    'mc-sex', 'mc-ht', 'mc-vt', 'mc-rr', 'mc-pip', 'mc-p1', 'mc-pplat',
+    'mc-peep', 'mc-flow', 'mc-fio2', 'mc-pao2'
+  ];
+  var CURRENT_SESSION_KEYS = [
+    'mv-calc-inputs-v2', 'mv-calc-mode-v2', 'mv-calc-snapshots-v2',
+    'mv-mc-v3', 'mv-response-log-v1'
+  ];
+  var LEGACY_CURRENT_KEYS = CURRENT_SESSION_KEYS.slice();
+  var PERSISTENT_CLINICAL_KEYS = ['mv-annotations-v1'];
+  var DRAFT_KEYS = ['mv-note-draft-v1'];
+
+  function safeGet(storage, key) {
+    try { return storage && storage.getItem(key); } catch (_) { return null; }
+  }
+
+  function safeRemove(storage, key) {
+    try { if (storage) storage.removeItem(key); return true; } catch (_) { return false; }
+  }
+
+  function buildParts(value) {
+    var match = String(value || '').match(/v?(\d+)\.(\d+)\.(\d+)/i);
+    return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : [0, 0, 0];
+  }
+
+  function compareBuilds(left, right) {
+    var a = buildParts(left), b = buildParts(right);
+    for (var i = 0; i < 3; i++) {
+      if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1;
+    }
+    return 0;
+  }
+
+  function formatBytes(bytes) {
+    bytes = Number(bytes);
+    if (!Number.isFinite(bytes) || bytes < 0) return 'Unavailable';
+    if (bytes < 1024) return Math.round(bytes) + ' B';
+    var units = ['KB', 'MB', 'GB', 'TB'], value = bytes;
+    for (var i = 0; i < units.length; i++) {
+      value /= 1024;
+      if (value < 1024 || i === units.length - 1) {
+        return value.toFixed(value >= 100 ? 0 : value >= 10 ? 1 : 2) + ' ' + units[i];
+      }
+    }
+    return Math.round(bytes) + ' B';
+  }
+
+  function hasClinicalValues(doc) {
+    return FULL_FIELDS.concat(MINI_FIELDS).some(function (id) {
+      var field = doc && doc.getElementById && doc.getElementById(id);
+      if (!field || field.tagName === 'SELECT') return false;
+      return String(field.value || '').trim() !== '';
+    });
+  }
+
+  function dispatchField(field, win) {
+    if (!field || !field.dispatchEvent) return;
+    var EventCtor = win && win.Event;
+    try {
+      field.dispatchEvent(EventCtor ? new EventCtor('input', {bubbles:true}) : {type:'input'});
+      if (field.tagName === 'SELECT') {
+        field.dispatchEvent(EventCtor ? new EventCtor('change', {bubbles:true}) : {type:'change'});
+      }
+    } catch (_) {}
+  }
+
+  function clearCalculatorValues(win) {
+    var doc = win && win.document;
+    FULL_FIELDS.concat(MINI_FIELDS).forEach(function (id) {
+      var field = doc && doc.getElementById && doc.getElementById(id);
+      if (!field) return;
+      if (field.tagName === 'SELECT') field.selectedIndex = 0;
+      else field.value = '';
+      dispatchField(field, win);
+    });
+    CURRENT_SESSION_KEYS.forEach(function (key) { safeRemove(win && win.sessionStorage, key); });
+    LEGACY_CURRENT_KEYS.forEach(function (key) { safeRemove(win && win.localStorage, key); });
+    try {
+      if (doc && doc.dispatchEvent) {
+        var detail = {keys:CURRENT_SESSION_KEYS.slice(), reason:'new-patient'};
+        var event = win && win.CustomEvent ? new win.CustomEvent('vent-guide-clinical-session-cleared', {detail:detail}) : {type:'vent-guide-clinical-session-cleared', detail:detail};
+        doc.dispatchEvent(event);
+      }
+    } catch (_) {}
+    return {
+      clearedFields: FULL_FIELDS.length + MINI_FIELDS.length,
+      clearedSessionKeys:CURRENT_SESSION_KEYS.slice(),
+      sessionOnly:true
+    };
+  }
+
+  function retireLegacyCalculatorPersistence(win) {
+    LEGACY_CURRENT_KEYS.forEach(function (key) { safeRemove(win && win.localStorage, key); });
+  }
+
+  function eraseClinicalData(win) {
+    var removed = [];
+    CURRENT_SESSION_KEYS.concat(DRAFT_KEYS).forEach(function (key) {
+      safeRemove(win && win.sessionStorage, key); removed.push('session:' + key);
+    });
+    LEGACY_CURRENT_KEYS.concat(PERSISTENT_CLINICAL_KEYS).forEach(function (key) {
+      safeRemove(win && win.localStorage, key); removed.push('local:' + key);
+    });
+    clearCalculatorValues(win);
+    return removed;
+  }
+
+  function readResponseLog(win) {
+    var raw = safeGet(win && win.sessionStorage, 'mv-response-log-v1');
+    if (!raw) return [];
+    try { var rows = JSON.parse(raw); return Array.isArray(rows) ? rows : []; }
+    catch (_) { return []; }
+  }
+
+  function appendResponse(win, entry) {
+    var rows = readResponseLog(win);
+    rows.push({time:new Date().toISOString(), response:entry});
+    if (rows.length > 100) rows = rows.slice(rows.length - 100);
+    try { win.sessionStorage.setItem('mv-response-log-v1', JSON.stringify(rows)); } catch (_) {}
+    return rows.length;
+  }
+
+  function currentBuild(win) {
+    var root = win && win.document && win.document.documentElement;
+    return root && (root.getAttribute('data-build') || root.getAttribute('data-pwa-build')) || BUILD;
+  }
+
+  function offlineUrls(win) {
+    var state = win && win.__ventGuideOffline;
+    if (!state || typeof state.collectUrls !== 'function') return {urls:[], optional:[]};
+    var urls = state.collectUrls();
+    var optional = typeof state.optionalUrls === 'function' ? state.optionalUrls(urls) : [];
+    return {urls:urls, optional:optional};
+  }
+
+  function messageWorker(win, payload, timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      var nav = win && win.navigator;
+      var worker = nav && nav.serviceWorker && nav.serviceWorker.controller;
+      if (!worker || typeof win.MessageChannel !== 'function') {
+        reject(new Error('The current service worker is not ready. Reload once while online.'));
+        return;
+      }
+      var channel = new win.MessageChannel(), settled = false;
+      var timer = win.setTimeout(function () {
+        if (settled) return; settled = true;
+        try { channel.port1.close(); } catch (_) {}
+        reject(new Error('The offline check did not respond. Reload once while online.'));
+      }, timeoutMs || 20000);
+      channel.port1.onmessage = function (event) {
+        if (settled) return;
+        var data = event && event.data || {};
+        if (payload.id && data.id && payload.id !== data.id) return;
+        settled = true; win.clearTimeout(timer);
+        try { channel.port1.close(); } catch (_) {}
+        resolve(data);
+      };
+      try { worker.postMessage(payload, [channel.port2]); }
+      catch (error) { win.clearTimeout(timer); settled = true; reject(error); }
+    });
+  }
+
+  function verifyOffline(win) {
+    var set = offlineUrls(win);
+    var id = 'vg-verify-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+    return messageWorker(win, {
+      type:'verify-offline', id:id, urls:set.urls, optionalUrls:set.optional
+    }, 30000).then(function (report) {
+      if (report.type && report.type !== 'offline-verification') {
+        throw new Error('The installed worker does not support offline verification yet.');
+      }
+      return report;
+    });
+  }
+
+  function storageReport(win) {
+    var storage = win && win.navigator && win.navigator.storage;
+    if (!storage) return Promise.resolve({supported:false, persisted:null, usage:null, quota:null});
+    var persisted = typeof storage.persisted === 'function' ? storage.persisted().catch(function(){return null;}) : Promise.resolve(null);
+    var estimate = typeof storage.estimate === 'function' ? storage.estimate().catch(function(){return {};}) : Promise.resolve({});
+    return Promise.all([persisted, estimate]).then(function (values) {
+      return {supported:true, persisted:values[0], usage:values[1].usage, quota:values[1].quota};
+    });
+  }
+
+  function requestPersistence(win) {
+    var storage = win && win.navigator && win.navigator.storage;
+    if (!storage || typeof storage.persist !== 'function') return Promise.resolve(null);
+    return storage.persist().catch(function () { return false; });
+  }
+
+  function checkLatest(win) {
+    var state = win && win.__ventGuideOffline;
+    if (!state || typeof state.checkLatest !== 'function' || (win.navigator && win.navigator.onLine === false)) {
+      return Promise.resolve(null);
+    }
+    return state.checkLatest(true).then(function (latest) {
+      if (!latest || !latest.build) return null;
+      return {
+        current:currentBuild(win), latest:latest.build,
+        newer:compareBuilds(currentBuild(win), latest.build) < 0,
+        metadata:latest
+      };
+    });
+  }
+
+  function waitForController(win, timeoutMs) {
+    return new Promise(function (resolve) {
+      var sw = win.navigator && win.navigator.serviceWorker;
+      if (!sw || !sw.addEventListener) { resolve(false); return; }
+      var settled = false;
+      var done = function (value) {
+        if (settled) return; settled = true;
+        try { sw.removeEventListener('controllerchange', changed); } catch (_) {}
+        win.clearTimeout(timer); resolve(value);
+      };
+      var changed = function () { done(true); };
+      var timer = win.setTimeout(function () { done(false); }, timeoutMs || 15000);
+      sw.addEventListener('controllerchange', changed, {once:true});
+    });
+  }
+
+  function waitForWaiting(win, registration, timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      if (registration && registration.waiting) { resolve(registration.waiting); return; }
+      var settled = false, watched = null;
+      function cleanup() {
+        win.clearTimeout(timer);
+        try { registration.removeEventListener('updatefound', updateFound); } catch (_) {}
+        try { if (watched) watched.removeEventListener('statechange', stateChanged); } catch (_) {}
+      }
+      function done(worker) {
+        if (settled) return; settled = true; cleanup();
+        if (worker) resolve(worker); else reject(new Error('The newer worker was not staged. Check the connection and try again.'));
+      }
+      function stateChanged() {
+        if (registration.waiting) { done(registration.waiting); return; }
+        if (watched && watched.state === 'redundant') done(null);
+      }
+      function watch(worker) {
+        if (!worker || worker === watched) return;
+        if (watched) try { watched.removeEventListener('statechange', stateChanged); } catch (_) {}
+        watched = worker; watched.addEventListener('statechange', stateChanged); stateChanged();
+      }
+      function updateFound() { watch(registration.installing); }
+      registration.addEventListener('updatefound', updateFound);
+      watch(registration.installing);
+      var timer = win.setTimeout(function () { done(registration.waiting || null); }, timeoutMs || 45000);
+    });
+  }
+
+  function activateUpdate(win) {
+    var state = win && win.__ventGuideOffline;
+    if (!state || typeof state.register !== 'function') return Promise.reject(new Error('Update support is unavailable.'));
+    var before = win.navigator.serviceWorker && win.navigator.serviceWorker.controller;
+    return state.register().then(function (registration) {
+      if (!registration) throw new Error('Service-worker registration is unavailable.');
+      var update = typeof registration.update === 'function' ? registration.update() : Promise.resolve(registration);
+      return Promise.resolve(update).then(function () { return waitForWaiting(win, registration, 45000); }).then(function (waiting) {
+        var changed = waitForController(win, 20000);
+        waiting.postMessage({type:'SKIP_WAITING'});
+        return changed.then(function (didChange) {
+          var after = win.navigator.serviceWorker && win.navigator.serviceWorker.controller;
+          if (didChange || (after && after !== before)) return true;
+          throw new Error('The update was staged but did not take control. Close other guide tabs and try again.');
+        });
+      });
+    });
+  }
+
+  function element(doc, tag, attrs, text) {
+    var node = doc.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (key) {
+      if (key === 'className') node.className = attrs[key];
+      else node.setAttribute(key, attrs[key]);
+    });
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function download(win, text, name, type) {
+    var doc = win.document;
+    var url = win.URL.createObjectURL(new win.Blob([text], {type:type}));
+    var link = element(doc, 'a', {href:url, download:name});
+    doc.body.appendChild(link); link.click(); link.remove();
+    win.setTimeout(function(){ win.URL.revokeObjectURL(url); }, 60000);
+  }
+
+  function exportNotes(win) {
+    var raw = safeGet(win.localStorage, 'mv-annotations-v1');
+    var notes = [];
+    if (raw) {
+      try { notes = JSON.parse(raw); } catch (_) { notes = []; }
+    }
+    download(win, JSON.stringify({format:'vent-guide-notes', version:1, notes:notes}, null, 2), 'ventilation-guide-notes-backup.json', 'application/json');
+    return notes.length;
+  }
+
+  function addCalculatorControls(win, announce) {
+    var doc = win.document;
+    function add(host, key) {
+      if (!host || host.querySelector('[data-vg-new-patient="' + key + '"]')) return;
+      var box = element(doc, 'div', {className:'vg-clinical-session-note'});
+      var copy = element(doc, 'p', {}, 'Inputs, named numeric snapshots, and response history stay in this tab and clear when it closes. Verify every value for the current patient.');
+      var button = element(doc, 'button', {type:'button', 'data-vg-new-patient':key}, 'New patient · clear session data');
+      button.addEventListener('click', function () {
+        if (hasClinicalValues(doc) && !win.confirm('Clear current calculator values, named numeric snapshots, mini-calculator values, and the response log for a new patient? Notes are kept.')) return;
+        clearCalculatorValues(win);
+        announce('Session-only calculator data and response log cleared. Notes were kept; sex returned to its default.');
+      });
+      box.appendChild(copy); box.appendChild(button); host.appendChild(box);
+    }
+    add(doc.getElementById('calcWidget'), 'full');
+    add(doc.getElementById('mini-calc-panel'), 'mini');
+  }
+
+  function makeDialog(win) {
+    var doc = win.document;
+    var dialog = doc.getElementById('vg-tech-dialog');
+    if (dialog) return dialog;
+    dialog = element(doc, 'dialog', {id:'vg-tech-dialog', 'aria-labelledby':'vg-tech-title'});
+    dialog.innerHTML =
+      '<header class="vg-tech-head"><h2 id="vg-tech-title">Offline, updates &amp; data</h2><button type="button" data-vg-tech-close aria-label="Close">Close</button></header>' +
+      '<div class="vg-tech-body">' +
+      '<section><h3>Offline copy</h3><p id="vg-tech-storage">Checking browser storage…</p><p id="vg-tech-offline">Select Verify offline copy to check every required file.</p><div class="vg-tech-actions"><button type="button" id="vg-tech-verify">Verify offline copy</button><button type="button" id="vg-tech-save">Save or refresh offline copy</button><button type="button" id="vg-tech-persist">Protect from automatic storage cleanup</button></div></section>' +
+      '<section><h3>Updates</h3><p id="vg-tech-update">Current document: ' + currentBuild(win) + '</p><div class="vg-tech-actions"><button type="button" id="vg-tech-check">Check for updates</button></div></section>' +
+      '<section><h3>Clinical data &amp; privacy</h3><p>Current calculator values, named numeric snapshots, mini-calculator values, and the response log stay only in this tab and are cleared when it closes. Notes remain unencrypted in this browser until you delete them. Never put patient names, record numbers, dates of birth, or other identifiers in notes—especially on shared or unmanaged devices.</p><div class="vg-tech-actions"><button type="button" id="vg-tech-new-patient">New patient · clear session data</button><button type="button" id="vg-tech-export-notes">Export notes first</button><button type="button" class="vg-danger" id="vg-tech-erase">Erase notes &amp; session data</button></div></section>' +
+      '<p id="vg-tech-live" role="status" aria-live="polite"></p></div>';
+    doc.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function makeUpdateBanner(win) {
+    var doc = win.document;
+    var banner = doc.getElementById('vg-update-banner');
+    if (banner) return banner;
+    banner = element(doc, 'aside', {id:'vg-update-banner', role:'status', 'aria-live':'polite', hidden:''});
+    banner.innerHTML = '<span id="vg-update-message">A newer guide is ready.</span><button type="button" id="vg-update-apply">Update and reload</button><button type="button" id="vg-update-dismiss" aria-label="Dismiss update notice">Later</button>';
+    doc.body.appendChild(banner);
+    return banner;
+  }
+
+  function attachOpenButtons(win, open) {
+    var doc = win.document;
+    var hosts = [
+      doc.querySelector('#desktop-tools-popover .dtp-grid'),
+      doc.querySelector('#more-backdrop .more-grid'),
+      doc.querySelector('#pwa-tools-wrap .pwa-tools-grid')
+    ];
+    hosts.forEach(function (host) {
+      if (!host || host.querySelector('[data-vg-tech-open]')) return;
+      var button = element(doc, 'button', {type:'button', 'data-vg-tech-open':'1'}, 'Offline, updates & data');
+      button.addEventListener('click', open); host.appendChild(button);
+    });
+  }
+
+  function labelSimulatorAvailability(win) {
+    var doc = win.document;
+    Array.prototype.forEach.call(doc.querySelectorAll('iframe[data-offline-mode="online-only"]'), function (frame) {
+      var host = frame.closest && (frame.closest('.simulator-figure') || frame.closest('.simulator-launch')) || frame.parentNode;
+      if (!host || host.querySelector('.vg-online-required')) return;
+      var label = element(doc, 'span', {className:'vg-online-required', role:'note'}, 'Online required');
+      var actions = host.querySelector && host.querySelector('.simulator-launch-actions');
+      if (actions) actions.insertBefore(label, actions.firstChild); else host.insertBefore(label, frame);
+    });
+  }
+
+  function labelNotesPrivacy(win) {
+    var dialog = win.document.getElementById('vent-notes-dialog');
+    if (!dialog || dialog.querySelector('.vg-notes-privacy')) return;
+    var warning = element(win.document, 'p', {className:'vg-notes-privacy', role:'note'},
+      'Privacy: notes are stored unencrypted in this browser. Do not enter patient names, record numbers, dates of birth, or other identifiers.');
+    var head = dialog.querySelector('.vn-header');
+    if (head && head.nextSibling) dialog.insertBefore(warning, head.nextSibling); else dialog.appendChild(warning);
+  }
+
+  function bootstrap(win) {
+    if (win.__ventGuideTechV134Bootstrapped) return;
+    win.__ventGuideTechV134Bootstrapped = true;
+    retireLegacyCalculatorPersistence(win);
+
+    function ready() {
+      var doc = win.document, dialog = makeDialog(win), banner = makeUpdateBanner(win), opener = null;
+      var live = doc.getElementById('vg-tech-live');
+      function announce(message, error) {
+        if (live) { live.textContent = message; live.dataset.error = error ? 'true' : 'false'; }
+      }
+      function updateStorage() {
+        var out = doc.getElementById('vg-tech-storage');
+        return storageReport(win).then(function (report) {
+          if (!report.supported) out.textContent = 'Browser storage details are unavailable.';
+          else {
+            var text = report.usage == null ? 'Storage use is unavailable.' : formatBytes(report.usage) + ' used';
+            if (report.quota != null) text += ' of ' + formatBytes(report.quota);
+            text += report.persisted === true ? ' · protected from automatic cleanup' : report.persisted === false ? ' · may be removed automatically by the browser' : '';
+            out.textContent = text;
+          }
+          return report;
+        });
+      }
+      function showUpdate(result) {
+        var out = doc.getElementById('vg-tech-update');
+        if (!result) { out.textContent = 'Could not reach the version record. The current document is ' + currentBuild(win) + '.'; return; }
+        out.textContent = result.newer ? result.latest + ' is available; this document is ' + result.current + '.' : 'This document is current (' + result.current + ').';
+        if (result.newer) {
+          doc.getElementById('vg-update-message').textContent = result.latest + ' is ready. Reload only when convenient; your URL and tab draft are preserved.';
+          banner.hidden = false; banner.dataset.latest = result.latest;
+        }
+      }
+      function runCheck() {
+        announce('Checking for updates…');
+        return checkLatest(win).then(function (result) { showUpdate(result); announce(result && result.newer ? 'A newer build is ready.' : 'Update check complete.'); return result; }, function (error) { announce(error.message, true); });
+      }
+      function open(event) {
+        opener = event && event.currentTarget || doc.activeElement;
+        if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
+        updateStorage();
+        doc.getElementById('vg-tech-verify').focus({preventScroll:true});
+      }
+      function close() {
+        if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open');
+        if (opener && opener.isConnected) { try { opener.focus({preventScroll:true}); } catch (_) {} }
+      }
+
+      addCalculatorControls(win, announce);
+      attachOpenButtons(win, open);
+      labelSimulatorAvailability(win);
+      labelNotesPrivacy(win);
+      dialog.querySelector('[data-vg-tech-close]').addEventListener('click', close);
+      dialog.addEventListener('cancel', function (event) { event.preventDefault(); close(); });
+      doc.getElementById('vg-tech-new-patient').addEventListener('click', function () {
+        if (hasClinicalValues(doc) && !win.confirm('Clear current calculator values, named numeric snapshots, mini-calculator values, and the response log for a new patient? Notes are kept.')) return;
+        clearCalculatorValues(win); announce('Session-only calculator data and response log cleared. Notes were kept.');
+      });
+      doc.getElementById('vg-tech-export-notes').addEventListener('click', function () {
+        try { var count = exportNotes(win); announce('Notes backup requested (' + count + ' note' + (count === 1 ? '' : 's') + ').'); }
+        catch (error) { announce('Notes could not be exported: ' + error.message, true); }
+      });
+      doc.getElementById('vg-tech-erase').addEventListener('click', function () {
+        if (!win.confirm('Erase saved notes plus all session-only calculator data and the unsaved note draft from this browser? Display preferences are kept. This cannot be undone.')) return;
+        eraseClinicalData(win); announce('Saved notes and all session-only clinical data erased from this browser.');
+      });
+      doc.getElementById('vg-tech-persist').addEventListener('click', function () {
+        announce('Requesting protected storage…');
+        requestPersistence(win).then(function (granted) { announce(granted === true ? 'Protected storage granted.' : granted === false ? 'The browser did not grant protected storage; offline files may still work but can be evicted.' : 'This browser does not offer a protected-storage request.'); updateStorage(); });
+      });
+      doc.getElementById('vg-tech-verify').addEventListener('click', function () {
+        var out = doc.getElementById('vg-tech-offline'); out.textContent = 'Checking every required offline file…';
+        verifyOffline(win).then(function (report) {
+          var requiredTotal = Number(report.requiredTotal || 0), requiredReady = Number(report.requiredReady || 0);
+          var optionalTotal = Number(report.optionalTotal || 0), optionalReady = Number(report.optionalReady || 0);
+          out.textContent = (report.complete ? 'Offline copy verified' : 'Offline copy incomplete') + ': ' + requiredReady + ' of ' + requiredTotal + ' required files' + (optionalTotal ? ' · ' + optionalReady + ' of ' + optionalTotal + ' optional files' : '') + ' · worker ' + (report.build || 'unknown') + '.';
+          announce(report.complete ? 'Offline verification passed.' : 'Refresh the offline copy to save missing required files.', !report.complete);
+        }, function (error) { out.textContent = error.message; announce(error.message, true); });
+      });
+      doc.getElementById('vg-tech-save').addEventListener('click', function () {
+        var state = win.__ventGuideOffline;
+        if (!state || typeof state.save !== 'function') { announce('Offline saving is unavailable in this browser.', true); return; }
+        announce('Saving the offline copy…');
+        state.save(function (progress) {
+          if (progress && progress.total) announce('Saving offline copy: ' + ((progress.ok || 0) + (progress.failed || 0)) + ' of ' + progress.total + ' files checked.');
+        }).then(function () { announce('Offline save finished; verifying…'); return verifyOffline(win); }).then(function (report) {
+          announce(report.complete ? 'Offline copy saved and verified.' : 'Offline save finished but required files are still missing.', !report.complete); updateStorage();
+        }, function (error) { announce(error.message, true); });
+      });
+      doc.getElementById('vg-tech-check').addEventListener('click', runCheck);
+      doc.getElementById('vg-update-dismiss').addEventListener('click', function () { banner.hidden = true; });
+      doc.getElementById('vg-update-apply').addEventListener('click', function () {
+        var button = this; button.disabled = true; button.textContent = 'Updating…';
+        activateUpdate(win).then(function () { win.location.reload(); }, function (error) { button.disabled = false; button.textContent = 'Update and reload'; announce(error.message, true); open(); });
+      });
+
+      var schedule = function () { runCheck(); };
+      if (typeof win.requestIdleCallback === 'function') win.requestIdleCallback(schedule, {timeout:5000});
+      else win.setTimeout(schedule, 1800);
+      win.addEventListener('online', runCheck);
+    }
+
+    if (win.document.readyState === 'loading') win.document.addEventListener('DOMContentLoaded', ready, {once:true});
+    else ready();
+  }
+
+  return {
+    build:BUILD,
+    fullFields:FULL_FIELDS.slice(), miniFields:MINI_FIELDS.slice(),
+    currentSessionKeys:CURRENT_SESSION_KEYS.slice(), persistentClinicalKeys:PERSISTENT_CLINICAL_KEYS.slice(),
+    buildParts:buildParts, compareBuilds:compareBuilds, formatBytes:formatBytes,
+    safeGet:safeGet, safeRemove:safeRemove, hasClinicalValues:hasClinicalValues,
+    clearCalculatorValues:clearCalculatorValues, retireLegacyCalculatorPersistence:retireLegacyCalculatorPersistence,
+    eraseClinicalData:eraseClinicalData, readResponseLog:readResponseLog, appendResponse:appendResponse,
+    offlineUrls:offlineUrls, verifyOffline:verifyOffline,
+    storageReport:storageReport, requestPersistence:requestPersistence, checkLatest:checkLatest,
+    waitForController:waitForController, waitForWaiting:waitForWaiting,
+    activateUpdate:activateUpdate, exportNotes:exportNotes,
+    labelSimulatorAvailability:labelSimulatorAvailability, labelNotesPrivacy:labelNotesPrivacy, bootstrap:bootstrap
+  };
+});
 </script>
 </body></html>
