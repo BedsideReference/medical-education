@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-build="v1.10.139" data-public-edition="1.2">
+<html lang="en" data-build="v1.10.140" data-public-edition="1.2">
 <head>
 <meta charset="utf-8">
 <!-- MOBILE_TABLET_PERFORMANCE_LOCK_v1_10_127 · 2026-09-03 · externalized duplicate figure payloads, streamed and revalidated navigation without blocking cache writes, deferred inactive equations/tools/frames, and scoped tablet enhancement work to the active Part; clinical content and figure bytes preserved -->
@@ -13,17 +13,23 @@
 <!-- PWA_NAVIGATION_TABLE_USABILITY_LOCK_v1_10_110 · 2026-08-16 · single-source history routing, cancellable chapter landings, true reading-position resume, unified overlay/focus/scroll locking, cached exact-target search, overflow-only full-table viewer, compound-figure enlargement, and mobile touch-target/landscape polish; Chapters 1–43 science, prose, equations, figures, and references unchanged -->
 
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script id="v139-media-tap">
+<script id="v140-media-tap">
 /* Shared click intent and same-origin static-figure frame bridge. */
 (function (win, doc) {
   'use strict';
-  var documents = new WeakMap(), frames = new WeakMap();
+  var documents = new WeakMap(), frames = new WeakMap(), dismissers = new WeakMap();
   var overlay = '.lightbox,.tbl-modal,.pwa-lightbox,.pwa-table-viewer,.pwa-sim-overlay,.sim-overlay,.sim-fullscreen,.simulator-fullscreen-root,#simulator-fullscreen-root';
   var controls = 'a,button,input,label,select,textarea,summary,[contenteditable]:not([contenteditable="false"]),[role="button"],[role="link"],[role="slider"],[role="spinbutton"],[role="textbox"],[role="combobox"],[role="tab"],[role="switch"],[role="checkbox"],[role="radio"],canvas,video,audio';
   function element(target) { return target && target.nodeType === 3 ? target.parentElement : target; }
   function interactive(target) {
     target = element(target);
-    return !!(target && target.closest && target.closest(controls));
+    var control = target && target.closest && target.closest(controls + ',abbr[data-tip],abbr[title]');
+    // Phone artwork is keyboard-openable. That generated role belongs to the
+    // picture, while real controls inside the picture retain their actions.
+    if (control && control.matches('img[data-pwa-zoom],svg[data-pwa-zoom]') && control.getAttribute('role') === 'button') {
+      return !!(control.parentElement && control.parentElement.closest(controls));
+    }
+    return !!control;
   }
   function bind(owner, insideFrame) {
     if (!owner || documents.has(owner)) return;
@@ -33,7 +39,7 @@
       if (event.isPrimary === false) { if (state.gesture) state.gesture.multiple = true; return; }
       var target = element(event.target), point = event.touches ? event.touches[0] : event;
       if (!target || !point) return;
-      var source = insideFrame ? owner.documentElement : target.closest && target.closest('.figure,figure,table');
+      var source = insideFrame ? owner.documentElement : target.closest && target.closest('.figure,figure,table,[data-v140-dismiss-surface]');
       state.gesture = source ? {source:source, x:point.clientX, y:point.clientY,
         moved:false, multiple:!!(event.touches && event.touches.length > 1), pointer:event.pointerId} : null;
     }
@@ -59,10 +65,10 @@
     }
     owner.addEventListener('scroll', cancel, {capture:true,passive:true});
   }
-  function allow(event, source) {
+  function allow(event, source, allowOverlay) {
     if (!event || !source || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return false;
     if (event.button != null && event.button !== 0) return false;
-    if (source.closest && source.closest(overlay)) return false;
+    if (!allowOverlay && source.closest && source.closest(overlay)) return false;
     var target = element(event.target), owner = target && target.ownerDocument || source.ownerDocument || doc;
     try {
       var selection = owner.getSelection ? owner.getSelection() : owner.defaultView && owner.defaultView.getSelection();
@@ -73,6 +79,29 @@
     // Keyboard activation is independent of the last pointing-device gesture.
     if (event.type !== 'keydown' && event.detail !== 0 && g && (g.source === source || g.source.contains(source) || source.contains(g.source)) && (g.moved || g.multiple)) return false;
     return true;
+  }
+  function findDismiss(node) {
+    for (var host = element(node); host; host = host.parentElement) {
+      if (dismissers.has(host)) return dismissers.get(host);
+    }
+    return null;
+  }
+  function dismiss(event, source, action) {
+    if (interactive(event.target) || !allow(event, source, true)) return false;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    action.close();
+    return true;
+  }
+  function bindDismiss(host, close) {
+    if (!host || typeof close !== 'function') return;
+    var action = dismissers.get(host);
+    if (action) { action.close = close; return; }
+    action = {close:close}; dismissers.set(host, action);
+    host.setAttribute('data-v140-dismiss-surface', '1');
+    // Capture on the stable viewer host. It is absent from the opening click's
+    // original event path when a live figure is moved into the viewer.
+    host.addEventListener('click', function (event) { dismiss(event, host, action); }, true);
   }
   function wireFrame(frame) {
     if (!frame || frames.has(frame)) return;
@@ -88,6 +117,8 @@
         if (state.document && state.click) state.document.removeEventListener('click',state.click);
         state.document=inner; bind(inner,true);
         state.click=function (event) {
+          var action = findDismiss(frame);
+          if (action) { dismiss(event, inner.documentElement, action); return; }
           if (fig.closest(overlay) || interactive(event.target) || !allow(event,inner.documentElement)) return;
           if (typeof fig.__ventOpenMedia !== 'function') return;
           event.preventDefault(); fig.__ventOpenMedia();
@@ -103,7 +134,7 @@
     scope.querySelectorAll('iframe').forEach(wireFrame);
   }
   bind(doc,false);
-  win.__ventMediaTap={allow:allow,interactive:interactive,refreshFrames:refreshFrames};
+  win.__ventMediaTap={allow:allow,interactive:interactive,refreshFrames:refreshFrames,bindDismiss:bindDismiss};
   if(doc.readyState==='loading')doc.addEventListener('DOMContentLoaded',function(){refreshFrames(doc);},{once:true});
   else refreshFrames(doc);
   doc.addEventListener('vent-guide-frame-hydrated',function(event){var frame=event.detail&&event.detail.frame;if(frame)wireFrame(frame);});
@@ -115,7 +146,7 @@
 <script id="offline-sw-bootstrap-v110112">
 (function(){
   'use strict';
-  var BUILD='v1.10.139',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
+  var BUILD='v1.10.140',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
   var APP_FILE='ventilation-guide-app.html',CANONICAL_FILE='mechanical-ventilation-teaching-reference.html';
   var OFFLINE_DEPENDENCIES=["https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_AMS-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-BoldItalic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-BoldItalic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Script-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size1-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size2-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size3-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size4-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Typewriter-Regular.woff2", "fonts/source-code-pro-latin-400-normal.woff2", "fonts/source-code-pro-latin-600-normal.woff2", "fonts/source-code-pro-latin-ext-400-normal.woff2", "fonts/source-code-pro-latin-ext-600-normal.woff2", "fonts/source-sans-3-greek-400-normal.woff2", "fonts/source-sans-3-greek-600-normal.woff2", "fonts/source-sans-3-greek-700-normal.woff2", "fonts/source-sans-3-latin-400-normal.woff2", "fonts/source-sans-3-latin-600-normal.woff2", "fonts/source-sans-3-latin-700-normal.woff2", "fonts/source-sans-3-latin-ext-400-normal.woff2", "fonts/source-sans-3-latin-ext-600-normal.woff2", "fonts/source-sans-3-latin-ext-700-normal.woff2", "fonts/source-serif-4-greek-400-italic.woff2", "fonts/source-serif-4-greek-400-normal.woff2", "fonts/source-serif-4-greek-600-normal.woff2", "fonts/source-serif-4-greek-700-normal.woff2", "fonts/source-serif-4-latin-400-italic.woff2", "fonts/source-serif-4-latin-400-normal.woff2", "fonts/source-serif-4-latin-600-normal.woff2", "fonts/source-serif-4-latin-700-normal.woff2", "fonts/source-serif-4-latin-ext-400-italic.woff2", "fonts/source-serif-4-latin-ext-400-normal.woff2", "fonts/source-serif-4-latin-ext-600-normal.woff2", "fonts/source-serif-4-latin-ext-700-normal.woff2", "ventilation_guide_CASE_LAB_v1_0.html", "apple-touch-icon-v1-10-115.png", "icon-192-v1-10-115.png", "icon-512-v1-10-115.png", "favicon-32-v1-10-115.png", "og-card.png"];
   var localhost=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname||'');
@@ -281,15 +312,15 @@
   }catch(_){}
 })();
 </script>
-<title>Guide to Ventilation — Phone Guide · v1.10.139</title>
+<title>Guide to Ventilation — Phone Guide · v1.10.140</title>
 <meta name="description" content="Chapter-at-a-time mobile edition of the Guide to Ventilation, public edition 1.2.">
 <meta name="theme-color" content="#0b1f3a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Vent Guide">
-<meta name="internal-build" content="v1.10.139">
-<link rel="manifest" href="manifest.webmanifest?build=1.10.139">
+<meta name="internal-build" content="v1.10.140">
+<link rel="manifest" href="manifest.webmanifest?build=1.10.140">
 <link rel="canonical" href="mechanical-ventilation-teaching-reference.html">
 <link rel="apple-touch-icon" href="apple-touch-icon-v1-10-115.png">
 <link rel="icon" href="icon-192-v1-10-115.png" sizes="192x192" type="image/png">
@@ -5287,7 +5318,7 @@ nav.toc a.part-link[aria-expanded]:focus-visible {
 }
 </style>
 <style id="v135-figure-viewer-scope-hotfix-css">
-/* Ventilation Guide v1.10.139 — figure/table viewer and adult-scope hotfix. */
+/* Ventilation Guide v1.10.140 — figure/table viewer and adult-scope hotfix. */
 
 /* The landing scope notice is a direct child of the two-column .layout grid.
    Own the full grid width so it cannot auto-place in the narrow Contents rail. */
@@ -5425,7 +5456,7 @@ html[data-device-class="tablet"] .tbl-modal-body { min-height: 0; }
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.139</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.140</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Selected evidence updated Sep 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -15251,13 +15282,13 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li value="302" id="r302">Grooms D. Double triggering: diagnosis, differentiation, and resolution. Hamilton Medical. July 8, 2019. <a href="https://www.hamilton-medical.com/en_US/Resource-center/Article-page~knowledge-base~f0c47c50-ceb4-4c6d-93f4-3989c9824fdd~Double-triggering---Diagnosis--differentiation--and-resolution~.html" target="_blank" rel="noopener noreferrer">Manufacturer educational resource</a>. Accessed September 5, 2026.</li>
 <li value="303" id="r303">Jagannathan N, Aziz MF. Difficult Airway Society 2025 guidelines for tracheal intubation: thoughtful preparation for success and systematic management of failure. <em>Br J Anaesth</em>. 2026;136(1):9–11. <a href="https://doi.org/10.1016/j.bja.2025.11.003" target="_blank" rel="noopener noreferrer">doi:10.1016/j.bja.2025.11.003</a>. PMID: 41339170.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are synchronized in build v1.10.139.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are synchronized in build v1.10.140.</p>
 </section>
 </main>
 </div>
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.139 · Chapters 1–43 · Evidence and reader update · Updated September 5, 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.140 · Chapters 1–43 · Evidence and reader update · Updated September 5, 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -15926,6 +15957,14 @@ doc.getElementById('pwa-tools-close').addEventListener('click',function(){overla
 doc.addEventListener('click',function(e){var open=e.target.closest&&e.target.closest('[data-sim-open]');if(open){e.preventDefault();openSimulator(open);return;}var reset=e.target.closest&&e.target.closest('[data-sim-reset]');if(reset){e.preventDefault();resetSimulator(reset);return;}var ch=e.target.closest&&e.target.closest('[data-sim-challenge]');if(ch){var frame=doc.getElementById(ch.dataset.simChallenge),fig=frame&&frame.closest('.simulator-figure');if(fig){var box=fig.querySelector('.sim-challenge-active');if(box){box.hidden=false;box.innerHTML='<strong>Challenge:</strong> '+ch.dataset.challenge;}var ob=fig.querySelector('[data-sim-open]');if(ob)openSimulator(ob);}return;}});
 simClose.addEventListener('click',function(){closeSimulator(true);});simOverlay.addEventListener('click',function(e){if(e.target===simOverlay)closeSimulator(true);});
 function closeExpandedFigure(e){if(e){if(e.cancelable)e.preventDefault();e.stopPropagation();}overlayManager.close('lightbox',true);}
+function bindPhoneMediaDismiss(){
+  var tap=window.__ventMediaTap;
+  if(!tap||!tap.bindDismiss)return;
+  tap.bindDismiss(lightboxHost,function(){overlayManager.close('lightbox',true);});
+  tap.bindDismiss(tableHost,function(){overlayManager.close('table',true);});
+  tap.bindDismiss(simHost,function(){overlayManager.close('simulator',true);});
+}
+bindPhoneMediaDismiss();
 if(lightboxClose)lightboxClose.addEventListener('click',closeExpandedFigure);
 lightbox.addEventListener('click',function(e){if(e.target===lightbox)closeExpandedFigure(e);});
 if(tableViewer){var closeTable=function(e){if(e){if(e.cancelable)e.preventDefault();e.stopPropagation();}overlayManager.close('table',true);};tableClose.addEventListener('click',closeTable);if(tableDone)tableDone.addEventListener('click',closeTable);tableViewer.addEventListener('click',function(e){if(e.target===tableViewer)overlayManager.close('table',true);});tableOverview.addEventListener('click',function(){if(!tableState)return;tableState.mode='overview';renderTableViewer();});tableRead.addEventListener('click',function(){if(!tableState)return;tableState.mode='read';renderTableViewer();});tableZoomOut.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.max(75,tableState.textScale-10);renderTableViewer();});tableZoomIn.addEventListener('click',function(){if(!tableState)return;tableState.textScale=Math.min(160,tableState.textScale+10);renderTableViewer();});}
@@ -16058,9 +16097,9 @@ html[data-theme="dark"] .pwa-lightbox-host svg{background:#f3f5f7;filter:brightn
   document.addEventListener('vent-theme-change',syncAll);
 })();
 </script>
-<div hidden id="dual-theme-content-build-v110116" data-public-edition="1.2" data-internal-build="v1.10.139">DUAL_THEME_CONTENT_COMPLETE</div>
+<div hidden id="dual-theme-content-build-v110116" data-public-edition="1.2" data-internal-build="v1.10.140">DUAL_THEME_CONTENT_COMPLETE</div>
 
-<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.139">TABLET_DESKTOP_ROUTING_COMPLETE</div>
+<div hidden id="pwa-image-viewer-device-routing-complete-v110113" data-build="v1.10.140">TABLET_DESKTOP_ROUTING_COMPLETE</div>
 
 <script id="phone-full-calculator-runtime" type="application/x-vent-guide-lazy" data-section="calc-tools">
 (function(){
@@ -18003,7 +18042,7 @@ saveInputs();
 })(typeof window !== 'undefined' ? window : null, function () {
   'use strict';
 
-  var BUILD = 'v1.10.139';
+  var BUILD = 'v1.10.140';
   var FULL_FIELDS = [
     'c-sex', 'c-ht', 'c-age', 'c-hb', 'c-fio2', 'c-pao2', 'c-paco2',
     'c-spo2', 'c-sao2', 'c-vt', 'c-rr', 'c-rox-time', 'c-pip', 'c-p1',
@@ -18675,5 +18714,11 @@ figure > .pwa-figure-open {
 <style id="v139-phone-click-media">
 .figure[data-pwa-click-ready="1"],figure[data-pwa-click-ready="1"]{cursor:zoom-in}
 .pwa-lightbox-host .figure,.pwa-sim-host .figure{cursor:auto}
+</style>
+<style id="v140-phone-media-dismiss">
+.pwa-lightbox-host,.pwa-table-host,.pwa-sim-host,
+.pwa-lightbox-host .figure,.pwa-sim-host .figure { cursor: zoom-out; }
+.pwa-lightbox-host :is(a,button,input,label,select,textarea,summary,canvas,video,audio,[role="button"],[role="slider"],[contenteditable]),
+.pwa-sim-host :is(a,button,input,label,select,textarea,summary,canvas,video,audio,[role="button"],[role="slider"],[contenteditable]) { cursor: auto; }
 </style>
 </body></html>
