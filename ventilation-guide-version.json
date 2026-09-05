@@ -1,13 +1,13 @@
 {
   "name": "Guide to Ventilation — Bedside Reference",
   "publicEdition": "1.2",
-  "build": "v1.10.132",
+  "build": "v1.10.133",
   "canonical": "mechanical-ventilation-teaching-reference.html",
   "appEntry": "ventilation-guide-app.html",
   "serviceWorker": "ventilation-guide-sw.js",
-  "cache": "ventilation-guide-core-v1.10.132",
+  "cache": "ventilation-guide-core-v1.10.133",
   "released": "2026-09-05",
   "routing": "phone-only chapter shell; tablets use the desktop interface with one active book Part at a time; viewport width does not select device class",
   "updated": "2026-09-05",
-  "release": "Chapter notes and reliable Reader mode"
+  "release": "Tablet Contents control positioning"
 }

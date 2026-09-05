@@ -1,7 +1,7 @@
-/* Guide to Ventilation · fast cache-first service worker · internal build v1.10.132 */
+/* Guide to Ventilation · fast cache-first service worker · internal build v1.10.133 */
 'use strict';
 
-const BUILD='v1.10.132';
+const BUILD='v1.10.133';
 const CACHE_NAME=`ventilation-guide-core-${BUILD}`;
 const ASSET_CACHE='ventilation-guide-assets-v1';
 const FALLBACK_CACHE='ventilation-guide-readers-fallback-v1';
