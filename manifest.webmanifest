@@ -1,5 +1,5 @@
 {
-  "name": "Guide to Ventilation \u2014 Bedside Reference",
+  "name": "Guide to Ventilation — Bedside Reference",
   "short_name": "Vent Guide",
   "description": "Physiology-first teaching reference for adult mechanical ventilation. Tablets, laptops, and desktops use the continuous edition; phones use the chapter-at-a-time interface.",
   "id": "./mechanical-ventilation-teaching-reference.html",
@@ -24,5 +24,5 @@
     }
   ],
   "prefer_related_applications": false,
-  "version": "1.2+v1.10.126"
+  "version": "1.10.129"
 }
