@@ -1,7 +1,7 @@
-/* Guide to Ventilation · bounded offline service worker · internal build v1.10.135 */
+/* Guide to Ventilation · bounded offline service worker · internal build v1.10.136 */
 'use strict';
 
-const BUILD='v1.10.135';
+const BUILD='v1.10.136';
 const CACHE_NAME=`ventilation-guide-core-${BUILD}`;
 const FALLBACK_PREFIX='ventilation-guide-fallback-';
 const LEGACY_ASSET_CACHE='ventilation-guide-assets-v1';

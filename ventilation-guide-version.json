@@ -1,13 +1,13 @@
 {
   "name": "Guide to Ventilation — Bedside Reference",
   "publicEdition": "1.2",
-  "build": "v1.10.135",
+  "build": "v1.10.136",
   "canonical": "mechanical-ventilation-teaching-reference.html",
   "appEntry": "ventilation-guide-app.html",
   "serviceWorker": "ventilation-guide-sw.js",
-  "cache": "ventilation-guide-core-v1.10.135",
+  "cache": "ventilation-guide-core-v1.10.136",
   "released": "2026-09-05",
   "routing": "phones use the chapter shell; tablets use the continuous edition with a measured TOC overlay and real Split View width; desktop routing is unchanged",
   "updated": "2026-09-05",
-  "release": "Figure 8.2 discoverability, single-path expanded viewers, and full-width adult scope notice"
+  "release": "Viewer lifecycle feedback-loop repair, native scrolling, and reliable dismissal"
 }
