@@ -1,7 +1,7 @@
-/* Guide to Ventilation · fast cache-first service worker · internal build v1.10.130 */
+/* Guide to Ventilation · fast cache-first service worker · internal build v1.10.132 */
 'use strict';
 
-const BUILD='v1.10.130';
+const BUILD='v1.10.132';
 const CACHE_NAME=`ventilation-guide-core-${BUILD}`;
 const ASSET_CACHE='ventilation-guide-assets-v1';
 const FALLBACK_CACHE='ventilation-guide-readers-fallback-v1';
@@ -9,6 +9,7 @@ function isBuildCache(name){return /^ventilation-guide-(?:core-)?v\d+\.\d+\.\d+$
 const SCOPE_URL=new URL(self.registration.scope);
 const APP_URL=new URL('ventilation-guide-app.html',SCOPE_URL).href;
 const CANONICAL_URL=new URL('mechanical-ventilation-teaching-reference.html',SCOPE_URL).href;
+const INDEX_URL=new URL('index.html',SCOPE_URL);
 const LAB_URL=new URL('ventilation_guide_CASE_LAB_v1_0.html',SCOPE_URL).href;
 const VERSION_URL=new URL('ventilation-guide-version.json',SCOPE_URL).href;
 const SMALL_CORE=[
@@ -36,11 +37,19 @@ function legacyEntry(url){
   return /^ventilation_guide_master_.*\.html$/i.test(file)||/^ventilation_guide_chapter_6_revised_.*\.html$/i.test(file);
 }
 
+/* Only the app's exact landing URLs share its canonical offline reader.
+   Nested indexes and other same-origin pages retain their own routing. */
+function guideLanding(url){
+  return url.origin===SCOPE_URL.origin&&
+    (url.pathname===SCOPE_URL.pathname||url.pathname===INDEX_URL.pathname);
+}
+
 function guideNavigation(url){
   const file=fileOf(url);
   return url.origin===SCOPE_URL.origin&&(
     file==='ventilation-guide-app.html'||
     file==='mechanical-ventilation-teaching-reference.html'||
+    guideLanding(url)||
     legacyEntry(url)
   );
 }
@@ -65,7 +74,7 @@ function knownAsset(url){
   return /(^|\.)cdn\.jsdelivr\.net$/i.test(url.hostname)&&/katex/i.test(url.pathname);
 }
 
-async function fresh(url){
+async function fresh(url,signal){
   const target=new URL(url);
   const same=target.origin===SCOPE_URL.origin;
   return fetch(new Request(target.href,{
@@ -73,6 +82,7 @@ async function fresh(url){
     credentials:same?'same-origin':'omit',
     mode:same?'same-origin':'cors',
     cache:'no-store',
+    signal:signal,
     redirect:'follow'
   }));
 }
@@ -288,7 +298,7 @@ async function appNavigationWork(event){
 }
 
 function deviceAwareOfflineFallback(){
-  return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guide unavailable offline</title><style>body{font-family:system-ui;max-width:42rem;margin:auto;padding:2rem;line-height:1.5}</style><script>(function(){var ua=navigator.userAgent||"",uad=navigator.userAgentData,p=(uad&&uad.mobile===true)||/iPhone|iPod|IEMobile|Windows Phone|webOS|BlackBerry|Opera Mini/i.test(ua)||(/Android/i.test(ua)&&/Mobile/i.test(ua));if(p)location.replace("ventilation-guide-app.html"+location.hash);})();<\/script><h1>Guide unavailable offline</h1><p>Reconnect once and open the guide so the continuous desktop edition can be saved on this device.</p>',{
+  return new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Guide unavailable offline</title><style>body{font-family:system-ui;max-width:42rem;margin:auto;padding:2rem;line-height:1.5}</style><script>(function(){var ua=navigator.userAgent||"",uad=navigator.userAgentData,p=(uad&&uad.mobile===true)||/iPhone|iPod|IEMobile|Windows Phone|webOS|BlackBerry|Opera Mini/i.test(ua)||(/Android/i.test(ua)&&/Mobile/i.test(ua));if(p)location.replace("ventilation-guide-app.html"+location.search+location.hash);})();<\/script><h1>Guide unavailable offline</h1><p>Reconnect once and open the guide so the continuous desktop edition can be saved on this device.</p>',{
     status:200,
     headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}
   });
@@ -429,13 +439,101 @@ self.addEventListener('fetch',event=>{
 
 function normalize(raw,base){
   const url=new URL(raw,base);
-  if(legacyEntry(url))return CANONICAL_URL;
+  if(legacyEntry(url)||guideLanding(url))return CANONICAL_URL;
   const file=fileOf(url);
   if(file==='ventilation-guide-app.html')return APP_URL;
   if(file==='mechanical-ventilation-teaching-reference.html')return CANONICAL_URL;
   if(labNavigation(url))return LAB_URL;
   url.hash='';
   return url.href;
+}
+
+/* Explicit saves must always settle, including unavailable storage and stalled
+   downloads. A current-cache hit is already a saved copy; do not write it again. */
+const OFFLINE_FILE_TIMEOUT=90000;
+const OFFLINE_JOB_TIMEOUT=600000;
+function offlineWithin(task,ms,onTimeout){
+  let timer;
+  return Promise.race([
+    task,
+    new Promise((_,reject)=>{timer=setTimeout(()=>{
+      if(onTimeout)onTimeout();
+      const error=new Error('Timed out');error.name='TimeoutError';reject(error);
+    },Math.max(1,ms));})
+  ]).finally(()=>clearTimeout(timer));
+}
+function offlineReply(event,payload){
+  try{
+    if(event.ports&&event.ports[0])event.ports[0].postMessage(payload);
+    else if(event.source&&event.source.postMessage)event.source.postMessage(payload);
+  }catch(_){}
+}
+function offlineReason(error){
+  if(error&&error.name==='QuotaExceededError')return 'storage-full';
+  if(error&&error.name==='TimeoutError')return 'timeout';
+  if(error&&error.name==='AbortError')return 'timeout';
+  return String(error&&error.message||'Unavailable');
+}
+async function prefetchOffline(event,data){
+  const id=data.id||null;
+  const base=event.source&&event.source.url?event.source.url:self.registration.scope;
+  const normalizeAllowed=raw=>{
+    try{
+      const href=normalize(raw,base),url=new URL(href);
+      if(!/^https?:$/.test(url.protocol))return null;
+      if(url.origin!==SCOPE_URL.origin&&!knownAsset(url))return null;
+      return href;
+    }catch(_){return null;}
+  };
+  const urls=[...new Set(data.urls.map(normalizeAllowed).filter(Boolean))];
+  const optional=new Set((Array.isArray(data.optionalUrls)?data.optionalUrls:[]).map(normalizeAllowed).filter(Boolean));
+  let ok=0,failed=0,cursor=0,requiredFailed=0,optionalFailed=0;
+  const failures=[],optionalFailures=[],failureDetails=[];
+  const deadline=Date.now()+OFFLINE_JOB_TIMEOUT;
+  function recordFailure(href,reason){
+    failed++;failures.push(href);failureDetails.push({url:href,reason});
+    if(optional.has(href)){optionalFailed++;optionalFailures.push(href);}else requiredFailed++;
+  }
+  function progress(){offlineReply(event,{type:'prefetch-progress',id,ok,failed,total:urls.length,build:BUILD});}
+  function done(error){offlineReply(event,{
+    type:'prefetch-done',id,ok,failed,total:urls.length,failures,
+    requiredFailed,optionalFailed,optionalFailures,failureDetails,build:BUILD,
+    error:error||null
+  });}
+  progress();
+  let cache,assets;
+  try{
+    [cache,assets]=await offlineWithin(Promise.all([caches.open(CACHE_NAME),caches.open(ASSET_CACHE)]),OFFLINE_FILE_TIMEOUT);
+  }catch(error){
+    const reason=offlineReason(error);
+    urls.forEach(href=>recordFailure(href,reason));
+    done(reason==='storage-full'?reason:'storage-unavailable');return;
+  }
+  progress();
+  async function next(){
+    while(cursor<urls.length){
+      const href=urls[cursor++],url=new URL(href);
+      const left=deadline-Date.now();
+      if(left<=0){recordFailure(href,'timeout');continue;}
+      const target=guideNavigation(url)||labNavigation(url)||versionedMetadata(url)?cache:assets;
+      const controller=typeof AbortController==='function'?new AbortController():null;
+      try{
+        await offlineWithin((async()=>{
+          const current=await target.match(href,{ignoreSearch:true});
+          if(cacheable(current))return;
+          const existing=target===assets?await findCached(href):null;
+          const response=existing||await fresh(href,controller?controller.signal:undefined);
+          if(!cacheable(response))throw new Error('HTTP '+(response&&response.status||0));
+          /* Keep cache.put errors intact so quota failures can be explained. */
+          await target.put(href,response);
+        })(),Math.min(OFFLINE_FILE_TIMEOUT,left),()=>{if(controller)controller.abort();});
+        ok++;
+      }catch(error){recordFailure(href,offlineReason(error));}
+      progress();
+    }
+  }
+  await Promise.all([next(),next(),next()]);
+  done();
 }
 
 self.addEventListener('message',event=>{
@@ -469,46 +567,5 @@ self.addEventListener('message',event=>{
 
   if(data.type!=='prefetch'||!Array.isArray(data.urls))return;
 
-  const id=data.id||null;
-  const base=event.source&&event.source.url?event.source.url:self.registration.scope;
-  event.waitUntil((async()=>{
-    const cache=await caches.open(CACHE_NAME);
-    const assets=await caches.open(ASSET_CACHE);
-    const urls=[...new Set(data.urls.map(raw=>{
-      try{
-        const href=normalize(raw,base),url=new URL(href);
-        if(url.origin!==SCOPE_URL.origin&&!knownAsset(url))return null;
-        return href;
-      }catch(_){return null;}
-    }).filter(Boolean))];
-    let ok=0,failed=0,cursor=0;
-    const failures=[];
-    async function next(){
-      while(cursor<urls.length){
-        const href=urls[cursor++],url=new URL(href);
-        const target=guideNavigation(url)||labNavigation(url)||versionedMetadata(url)?cache:assets;
-        try{
-          /* Versioned math/fonts/figures already in cache need no redownload. */
-          const existing=target===assets?await findCached(href):null;
-          const response=existing||await fresh(href);
-          if(!cacheable(response)||!await save(target,href,response,false))throw new Error('Unavailable');
-          ok++;
-        }catch(_){failed++;failures.push(href);}
-      }
-    }
-    await Promise.all([next(),next(),next()]);
-
-    const payload={
-      type:'prefetch-done',
-      id,
-      ok,
-      failed,
-      total:urls.length,
-      failures,
-      build:BUILD
-    };
-    try{
-      if(event.source&&event.source.postMessage)event.source.postMessage(payload);
-    }catch(_){}
-  })());
+  event.waitUntil(prefetchOffline(event,data));
 });

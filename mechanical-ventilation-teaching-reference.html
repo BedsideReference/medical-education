@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-build="v1.10.130" data-public-edition="1.2" lang="en">
+<html data-build="v1.10.132" data-public-edition="1.2" lang="en">
 <head>
 <meta charset="utf-8">
 <!-- MOBILE_TABLET_PERFORMANCE_LOCK_v1_10_127 · 2026-09-03 · externalized duplicate figure payloads, streamed and revalidated navigation without blocking cache writes, deferred inactive equations/tools/frames, and scoped tablet enhancement work to the active Part; clinical content and figure bytes preserved -->
@@ -140,74 +140,152 @@
 <script id="offline-sw-bootstrap-v110112">
 (function(){
   'use strict';
-  var BUILD='v1.10.130',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
+  var BUILD='v1.10.132',SW_FILE='ventilation-guide-sw.js',VERSION_FILE='ventilation-guide-version.json';
   var APP_FILE='ventilation-guide-app.html',CANONICAL_FILE='mechanical-ventilation-teaching-reference.html';
-  /* Explicit dependencies include deferred equation assets and CSS font URLs.
-     They download only when the reader requests an offline copy. */
-  var OFFLINE_DEPENDENCIES=["https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_AMS-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_AMS-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_AMS-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Bold.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Bold.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Bold.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Bold.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Bold.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Bold.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Bold.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Bold.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Bold.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-BoldItalic.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-BoldItalic.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-BoldItalic.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Italic.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Italic.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Italic.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-BoldItalic.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-BoldItalic.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-BoldItalic.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-Italic.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-Italic.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-Italic.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Bold.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Bold.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Bold.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Italic.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Italic.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Italic.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Script-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Script-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Script-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size1-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size1-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size1-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size2-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size2-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size2-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size3-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size3-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size3-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size4-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size4-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size4-Regular.woff2","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Typewriter-Regular.ttf","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Typewriter-Regular.woff","https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Typewriter-Regular.woff2","fonts/source-code-pro-latin-400-normal.woff2","fonts/source-code-pro-latin-600-normal.woff2","fonts/source-code-pro-latin-ext-400-normal.woff2","fonts/source-code-pro-latin-ext-600-normal.woff2","fonts/source-sans-3-greek-400-normal.woff2","fonts/source-sans-3-greek-600-normal.woff2","fonts/source-sans-3-greek-700-normal.woff2","fonts/source-sans-3-latin-400-normal.woff2","fonts/source-sans-3-latin-600-normal.woff2","fonts/source-sans-3-latin-700-normal.woff2","fonts/source-sans-3-latin-ext-400-normal.woff2","fonts/source-sans-3-latin-ext-600-normal.woff2","fonts/source-sans-3-latin-ext-700-normal.woff2","fonts/source-serif-4-greek-400-italic.woff2","fonts/source-serif-4-greek-400-normal.woff2","fonts/source-serif-4-greek-600-normal.woff2","fonts/source-serif-4-greek-700-normal.woff2","fonts/source-serif-4-latin-400-italic.woff2","fonts/source-serif-4-latin-400-normal.woff2","fonts/source-serif-4-latin-600-normal.woff2","fonts/source-serif-4-latin-700-normal.woff2","fonts/source-serif-4-latin-ext-400-italic.woff2","fonts/source-serif-4-latin-ext-400-normal.woff2","fonts/source-serif-4-latin-ext-600-normal.woff2","fonts/source-serif-4-latin-ext-700-normal.woff2","ventilation_guide_CASE_LAB_v1_0.html","apple-touch-icon-v1-10-115.png","icon-192-v1-10-115.png","icon-512-v1-10-115.png","favicon-32-v1-10-115.png","og-card.png"];
+  var OFFLINE_DEPENDENCIES=["https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_AMS-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Caligraphic-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Fraktur-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-BoldItalic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Main-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-BoldItalic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Math-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Bold.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Italic.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_SansSerif-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Script-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size1-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size2-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size3-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Size4-Regular.woff2", "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/fonts/KaTeX_Typewriter-Regular.woff2", "fonts/source-code-pro-latin-400-normal.woff2", "fonts/source-code-pro-latin-600-normal.woff2", "fonts/source-code-pro-latin-ext-400-normal.woff2", "fonts/source-code-pro-latin-ext-600-normal.woff2", "fonts/source-sans-3-greek-400-normal.woff2", "fonts/source-sans-3-greek-600-normal.woff2", "fonts/source-sans-3-greek-700-normal.woff2", "fonts/source-sans-3-latin-400-normal.woff2", "fonts/source-sans-3-latin-600-normal.woff2", "fonts/source-sans-3-latin-700-normal.woff2", "fonts/source-sans-3-latin-ext-400-normal.woff2", "fonts/source-sans-3-latin-ext-600-normal.woff2", "fonts/source-sans-3-latin-ext-700-normal.woff2", "fonts/source-serif-4-greek-400-italic.woff2", "fonts/source-serif-4-greek-400-normal.woff2", "fonts/source-serif-4-greek-600-normal.woff2", "fonts/source-serif-4-greek-700-normal.woff2", "fonts/source-serif-4-latin-400-italic.woff2", "fonts/source-serif-4-latin-400-normal.woff2", "fonts/source-serif-4-latin-600-normal.woff2", "fonts/source-serif-4-latin-700-normal.woff2", "fonts/source-serif-4-latin-ext-400-italic.woff2", "fonts/source-serif-4-latin-ext-400-normal.woff2", "fonts/source-serif-4-latin-ext-600-normal.woff2", "fonts/source-serif-4-latin-ext-700-normal.woff2", "ventilation_guide_CASE_LAB_v1_0.html", "apple-touch-icon-v1-10-115.png", "icon-192-v1-10-115.png", "icon-512-v1-10-115.png", "favicon-32-v1-10-115.png", "og-card.png"];
   var localhost=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname||'');
   var supported=('serviceWorker' in navigator)&&(location.protocol==='https:'||(location.protocol==='http:'&&localhost));
-  var state={supported:supported,build:BUILD,canonical:CANONICAL_FILE,app:APP_FILE,registration:null,ready:null,error:null,externalSimulators:0,lastCheck:0};
+  var state={supported:supported,build:BUILD,canonical:CANONICAL_FILE,app:APP_FILE,registration:null,ready:null,error:null,externalSimulators:0,lastCheck:0,saveTask:null,progress:null,listeners:[]};
   window.__ventGuideOffline=state;document.documentElement.setAttribute('data-pwa-build',BUILD);
-  function addUrl(list,raw,kind){if(!raw||/^(data:|blob:|javascript:|mailto:|tel:|#)/i.test(raw))return;try{var u=new URL(raw,location.href);if(kind==='simulator'&&u.origin!==location.origin){state.externalSimulators++;return;}if(/^ventilation_guide_(?:master|chapter_6_revised)_.*\.html$/i.test(u.pathname.split('/').pop()||''))u=new URL(CANONICAL_FILE,location.href);list.push(u.href.split('#')[0]);}catch(_){}}
+
+  function addUrl(list,raw,kind){
+    if(!raw||/^(data:|blob:|javascript:|mailto:|tel:|about:|#)/i.test(raw))return;
+    try{
+      var u=new URL(raw,location.href);
+      if(!/^https?:$/.test(u.protocol))return;
+      if(kind==='simulator'&&u.origin!==location.origin){state.externalSimulators++;return;}
+      if(u.origin!==location.origin&&!(/^cdn\.jsdelivr\.net$/i.test(u.hostname)&&/\/katex@/.test(u.pathname)))return;
+      if(/^ventilation_guide_(?:master|chapter_6_revised)_.*\.html$/i.test(u.pathname.split('/').pop()||''))u=new URL(CANONICAL_FILE,location.href);
+      u.hash='';list.push(u.href);
+    }catch(_){}
+  }
   state.dependencies=OFFLINE_DEPENDENCIES.slice();
-  state.collectUrls=function(){state.externalSimulators=0;var urls=[new URL(CANONICAL_FILE,location.href).href,new URL(APP_FILE,location.href).href,new URL(SW_FILE,location.href).href,new URL(VERSION_FILE,location.href).href,new URL('manifest.webmanifest',location.href).href];OFFLINE_DEPENDENCIES.forEach(function(raw){addUrl(urls,raw,'asset');});document.querySelectorAll('link[href],script[src],img[src],source[src]').forEach(function(el){addUrl(urls,el.getAttribute('href')||el.getAttribute('src'),'asset');});document.querySelectorAll('iframe[src],iframe[data-src]').forEach(function(el){addUrl(urls,el.getAttribute('data-src')||el.getAttribute('src'),'simulator');});return urls.filter(function(u,i){return urls.indexOf(u)===i;});};
-  state.register=function(){
-    if(!supported)return Promise.reject(new Error('Offline installation requires HTTPS or localhost.'));
-    if(state.ready)return state.ready;
-    state.ready=navigator.serviceWorker.register(SW_FILE,{scope:'./',updateViaCache:'none'}).then(function(reg){
-      state.registration=reg;
-      return navigator.serviceWorker.ready;
-    }).then(function(reg){
-      state.registration=reg;
-      document.documentElement.setAttribute('data-offline-capability','ready');
-      var worker=navigator.serviceWorker.controller||reg.active;
-      if(worker)worker.postMessage({type:'warm-reader'});
-      return reg;
-    }).catch(function(err){
-      state.error=err;state.ready=null;
-      document.documentElement.setAttribute('data-offline-capability','error');throw err;
-    });
-    return state.ready;
+  state.collectUrls=function(){
+    state.externalSimulators=0;
+    var urls=[];
+    [CANONICAL_FILE,APP_FILE,VERSION_FILE,'manifest.webmanifest'].concat(OFFLINE_DEPENDENCIES).forEach(function(raw){addUrl(urls,raw,'asset');});
+    document.querySelectorAll('link[rel="stylesheet"][href],link[rel="icon"][href],link[rel="apple-touch-icon"][href],script[src],img[src],source[src],img[data-src],source[data-src]').forEach(function(el){addUrl(urls,el.getAttribute('href')||el.getAttribute('data-src')||el.getAttribute('src'),'asset');});
+    document.querySelectorAll('iframe[src],iframe[data-src]').forEach(function(el){addUrl(urls,el.getAttribute('data-src')||el.getAttribute('src'),'simulator');});
+    return Array.from(new Set(urls));
   };
-  function addPhoneOfflineControl(){
-    var grid=document.querySelector('#pwa-tools-wrap .pwa-tools-grid');
-    if(!grid||document.getElementById('pwa-offline-save'))return;
-    var button=document.createElement('button'),status=document.createElement('p');
-    button.id='pwa-offline-save';button.type='button';button.className='wide';button.textContent='Save for offline use';
-    status.id='pwa-offline-status';status.className='wide';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-    status.style.cssText='margin:0;font-size:.8rem;line-height:1.4';
-    var close=document.getElementById('pwa-tools-close');grid.insertBefore(button,close);grid.insertBefore(status,close);
-    if(!supported){button.disabled=true;status.textContent='Offline saving is available when the guide is hosted.';return;}
-    button.addEventListener('click',function(){
-      button.disabled=true;status.textContent='Preparing offline copy…';
-      state.register().then(function(reg){
-        var id='phone-offline-'+Date.now(),worker=navigator.serviceWorker.controller||reg.active;
-        if(!worker)throw new Error('Offline support is not active yet. Try again.');
-        var urls=state.collectUrls();status.textContent='Saving the guide, figures and equations…';
-        function done(e){
-          var data=e.data||{};if(data.type!=='prefetch-done'||data.id!==id)return;
-          navigator.serviceWorker.removeEventListener('message',done);button.disabled=false;
-          status.textContent=data.failed?'Offline copy incomplete: '+data.failed+' files could not be saved. Reconnect and try again.':'Guide, figures and equations saved for offline use.';
-          if(state.externalSimulators)status.textContent+=' External live simulators require a connection.';
-        }
-        navigator.serviceWorker.addEventListener('message',done);
-        worker.postMessage({type:'prefetch',id:id,urls:urls});
-      }).catch(function(err){button.disabled=false;status.textContent=String(err&&err.message||err);});
+  // Optional typography/icons never invalidate the readable book or equations.
+  state.optionalUrls=function(urls){return urls.filter(function(raw){var u=new URL(raw);return u.origin===location.origin&&(/\/fonts\//.test(u.pathname)||/\/(?:apple-touch-icon[^/]*|icon-(?:192|512)[^/]*|favicon[^/]*|og-card)\.png$/i.test(u.pathname));});};
+  function bounded(promise,ms,message){
+    return new Promise(function(resolve,reject){
+      var timer=setTimeout(function(){reject(new Error(message));},ms);
+      Promise.resolve(promise).then(function(value){clearTimeout(timer);resolve(value);},function(error){clearTimeout(timer);reject(error);});
     });
   }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addPhoneOfflineControl,{once:true});else addPhoneOfflineControl();
+  state.register=function(){
+    if(!supported)return Promise.reject(new Error('Open the hosted guide over HTTPS to save an offline copy.'));
+    if(state.ready)return state.ready;
+    var registration=Promise.resolve().then(function(){return navigator.serviceWorker.register(SW_FILE,{scope:'./',updateViaCache:'none'});}).then(function(reg){
+      return reg.active&&reg.active.state==='activated'?reg:navigator.serviceWorker.ready;
+    });
+    state.ready=bounded(registration,25000,'Offline support did not become ready. Reload this page while online and try again.').then(function(reg){
+      state.registration=reg;state.error=null;
+      document.documentElement.setAttribute('data-offline-capability','ready');
+      var worker=reg.active||navigator.serviceWorker.controller;
+      try{if(worker)worker.postMessage({type:'warm-reader'});}catch(_){}
+      return reg;
+    }).catch(function(err){state.error=err;state.ready=null;document.documentElement.setAttribute('data-offline-capability','error');throw err;});
+    return state.ready;
+  };
+  function notify(progress){state.progress=progress;state.listeners.slice().forEach(function(fn){try{fn(progress);}catch(_){}});}
+  state.save=function(onProgress){
+    if(typeof onProgress==='function')state.listeners.push(onProgress);
+    if(state.saveTask){if(onProgress&&state.progress)onProgress(state.progress);return state.saveTask;}
+    notify({phase:'preparing'});
+    // A denied persistence request does not prevent an ordinary offline copy.
+    try{if(navigator.storage&&navigator.storage.persist)Promise.resolve(navigator.storage.persist()).catch(function(){});}catch(_){}
+    var task=state.register().then(function(reg){
+      var worker=reg.active||navigator.serviceWorker.controller;
+      if(!worker)throw new Error('Offline support is not active. Reload while online and try again.');
+      var urls=state.collectUrls(),optional=state.optionalUrls(urls),optionalSet=new Set(optional);
+      return new Promise(function(resolve,reject){
+        var id='vg-offline-'+Date.now()+'-'+Math.random().toString(36).slice(2),channel=null,finished=false,idleTimer,totalTimer;
+        function cleanup(){clearTimeout(idleTimer);clearTimeout(totalTimer);navigator.serviceWorker.removeEventListener('message',receive);if(channel){channel.port1.onmessage=null;channel.port1.close();}}
+        function fail(message){if(finished)return;finished=true;cleanup();reject(new Error(message));}
+        function armIdle(){clearTimeout(idleTimer);idleTimer=setTimeout(function(){fail('Offline saving stopped responding. Reconnect and try again; files already saved are kept.');},120000);}
+        function receive(event){
+          var data=event.data||{};if(finished||data.id!==id)return;
+          if(data.type==='prefetch-progress'){armIdle();notify(Object.assign({phase:'saving'},data));return;}
+          if(data.type!=='prefetch-done')return;
+          finished=true;cleanup();
+          // Older workers only return total failures and their URLs.
+          if(typeof data.requiredFailed!=='number'){
+            data.optionalFailed=(data.failures||[]).filter(function(url){return optionalSet.has(url);}).length;
+            data.requiredFailed=Math.max(0,(data.failed||0)-data.optionalFailed);
+          }
+          data.externalSimulators=state.externalSimulators;resolve(data);
+        }
+        navigator.serviceWorker.addEventListener('message',receive);
+        armIdle();totalTimer=setTimeout(function(){fail('Offline saving took too long. Reconnect and retry to finish the remaining files.');},660000);
+        notify({phase:'saving',ok:0,failed:0,total:urls.length});
+        var message={type:'prefetch',id:id,urls:urls,optionalUrls:optional};
+        try{
+          if(typeof MessageChannel==='function'){
+            channel=new MessageChannel();channel.port1.onmessage=receive;
+            worker.postMessage(message,[channel.port2]);
+          }else worker.postMessage(message);
+        }catch(err){fail('Could not start offline saving. Reload this page and try again.');}
+      });
+    });
+    state.saveTask=task.then(function(data){state.saveTask=null;state.listeners=[];return data;},function(error){state.saveTask=null;state.listeners=[];throw error;});
+    return state.saveTask;
+  };
+  function resultText(data){
+    var required=data.requiredFailed||0,optional=data.optionalFailed||0;
+    if(data.error==='storage-unavailable')return{success:false,title:'Offline storage is unavailable',detail:'Allow website storage in this browser, then try again.'};
+    var full=(data.failureDetails||[]).some(function(f){return f.reason==='storage-full';});
+    if(required)return{success:false,title:'Offline copy incomplete',detail:required+' required file'+(required===1?' is':'s are')+' still missing. '+(full?'Free some browser storage and retry.':'Reconnect and retry to finish saving. Files already saved are kept.')};
+    var detail=optional?'Saved with standard fonts/icons where optional files were unavailable.':'The book, figures, equations and Case Lab are saved on this device.';
+    if(data.externalSimulators)detail+=' External live simulators still need an internet connection.';
+    return{success:true,title:'Saved for offline use',detail:detail};
+  }
+  state.bindControl=function(button,title,status){
+    if(!button||button.dataset.offlineBound==='1')return;
+    button.dataset.offlineBound='1';
+    if(status){status.setAttribute('role','status');status.setAttribute('aria-live','polite');}
+    function setText(a,b){if(title)title.textContent=a;if(status)status.textContent=b||'';}
+    function busy(on){button.disabled=on;button.setAttribute('aria-busy',String(on));}
+    if(!supported){busy(true);setText('Offline saving requires the hosted guide','Open the guide’s HTTPS website to save it on this device.');return;}
+    button.addEventListener('click',function(){
+      busy(true);button.classList.remove('done');
+      state.save(function(progress){
+        if(progress.phase==='preparing'){setText('Preparing offline copy…','Keep this page open while the guide is saved.');return;}
+        var complete=(progress.ok||0)+(progress.failed||0);
+        setText('Saving offline copy…',complete+' of '+progress.total+' files checked'+(progress.failed?' — some files will need a retry':'')+'.');
+      }).then(function(data){var result=resultText(data);button.classList.toggle('done',result.success);setText(result.title,result.detail);busy(false);},function(error){setText('Offline save was not completed',String(error&&error.message||error));busy(false);});
+    });
+  };
+  function addOfflineControls(){
+    var grid=document.querySelector('#pwa-tools-wrap .pwa-tools-grid');
+    if(grid&&!document.getElementById('pwa-offline-save')){
+      var button=document.createElement('button'),status=document.createElement('p');
+      button.id='pwa-offline-save';button.type='button';button.className='wide';button.textContent='Save for offline use';
+      status.id='pwa-offline-status';status.className='wide';status.style.cssText='margin:0;font-size:.8rem;line-height:1.4';
+      var close=document.getElementById('pwa-tools-close');grid.insertBefore(button,close);grid.insertBefore(status,close);
+      state.bindControl(button,button,status);
+    }
+    state.bindControl(document.getElementById('more-offline'),document.getElementById('more-offline-title'),document.getElementById('more-offline-sub'));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addOfflineControls,{once:true});else addOfflineControls();
   state.checkLatest=function(force){if(!/^https?:$/.test(location.protocol))return Promise.resolve(null);var now=Date.now();if(!force&&now-state.lastCheck<21600000)return Promise.resolve(null);state.lastCheck=now;var u=new URL(VERSION_FILE,location.href);u.searchParams.set('_',now.toString(36));return fetch(u.href,{cache:'no-store',credentials:'same-origin'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});};
-  if(supported){navigator.serviceWorker.addEventListener('controllerchange',function(){document.documentElement.setAttribute('data-pwa-controller','updated');if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage({type:'warm-reader'});});navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='reader-cached')document.documentElement.setAttribute('data-offline-reader',e.data.saved?'saved':'unavailable');});window.addEventListener('load',function(){state.register().catch(function(){});},{once:true});}else document.documentElement.setAttribute('data-offline-capability','unavailable');
+  if(supported){
+    navigator.serviceWorker.addEventListener('controllerchange',function(){document.documentElement.setAttribute('data-pwa-controller','updated');try{if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage({type:'warm-reader'});}catch(_){}});
+    navigator.serviceWorker.addEventListener('message',function(e){if(e.data&&e.data.type==='reader-cached')document.documentElement.setAttribute('data-offline-reader',e.data.saved?'saved':'unavailable');});
+    window.addEventListener('load',function(){state.register().catch(function(){});},{once:true});
+  }else document.documentElement.setAttribute('data-offline-capability','unavailable');
 })();
 </script>
 <script id="device-safe-phone-view-bootstrap-v110120">/* Only phones use mobile-view scaling. Tablets retain a 1024 CSS-pixel desktop canvas. */(function(){try{var vp=document.querySelector('meta[name="viewport"]');if(!vp)return;var ua=(navigator.userAgent||''),uad=navigator.userAgentData;var ipad=/iPad/i.test(ua)||((/Macintosh/i.test(ua)||navigator.platform==='MacIntel')&&(navigator.maxTouchPoints||0)>1);var android=/Android/i.test(ua);var phone=(uad&&uad.mobile===true)||/iPhone|iPod|IEMobile|Windows Phone|webOS|BlackBerry|Opera Mini/i.test(ua)||(android&&/Mobile/i.test(ua));var tablet=!phone&&(ipad||(android&&!/Mobile/i.test(ua))||/Silk|Kindle/i.test(ua));var s=null;try{s=localStorage.getItem('mv-mobileview');}catch(e){}var on=phone&&s!=='0';if(!phone){on=false;try{localStorage.removeItem('mv-mobileview');}catch(e){}}if(on){var sc=Math.max(1,Math.round(Math.max(screen.width,screen.height)/900*100)/100);vp.setAttribute('content','initial-scale='+sc+',viewport-fit=cover');}else if(tablet){vp.setAttribute('content','width=1024,viewport-fit=cover');}else{vp.setAttribute('content','width=device-width,initial-scale=1,viewport-fit=cover');}document.documentElement.setAttribute('data-mobileview',on?'on':'off');document.documentElement.setAttribute('data-device-class',phone?'phone':(tablet?'tablet':'desktop'));}catch(e){}})();</script>
-<title>Guide to Ventilation — Public edition 1.2 · Build v1.10.130</title>
+<title>Guide to Ventilation — Public edition 1.2 · Build v1.10.132</title>
 <meta content="Physiology-first teaching reference on invasive mechanical ventilation for medical students, IM residents, hospitalists, PCCM fellows, and other healthcare trainees and practitioners. Written for the bedside." name="description"/>
 <link href="apple-touch-icon-v1-10-115.png" rel="apple-touch-icon"/>
 <link href="icon-192-v1-10-115.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="favicon-32-v1-10-115.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="manifest.webmanifest?build=1.10.127" rel="manifest"/>
+<link href="manifest.webmanifest?build=1.10.132" rel="manifest"/>
 <link href="mechanical-ventilation-teaching-reference.html" rel="canonical"/>
 <meta content="mechanical-ventilation-teaching-reference.html" name="application-start-url"/>
 <meta content="#0b1f3a" name="theme-color"/>
@@ -217,7 +295,7 @@
 <meta content="Vent Guide" name="apple-mobile-web-app-title"/>
 <meta content="Bedside Reference" name="author"/>
 <meta content="1.2" name="public-edition"/>
-<meta content="v1.10.130" name="internal-build"/>
+<meta content="v1.10.132" name="internal-build"/>
 <script id="ui-v11050-first-paint-bootstrap">
 (function(){
   var root=document.documentElement;
@@ -2470,87 +2548,6 @@ code,pre,kbd,samp{font-family:var(--font-mono);}
     .anim-ohbc * { animation: none !important; }
   }
 
-  /* ========== ANNOTATIONS / NOTES ========== */
-  .annotate-fab {
-    position: absolute;
-    z-index: 600;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 5px 10px;
-    font-size: 0.75rem;
-    font-family: inherit;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-    display: none;
-  }
-  .annotate-fab.show { display: block; }
-  .annotate-popup {
-    position: absolute;
-    z-index: 700;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    padding: 10px 12px;
-    width: 320px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    display: none;
-  }
-  .annotate-popup.show { display: block; }
-  .annotate-popup .quoting { font-size: 0.6875rem; color: var(--muted); font-style: italic; margin-bottom: 6px; line-height: 1.4; max-height: 50px; overflow: hidden; }
-  .annotate-popup textarea {
-    width: 100%; min-height: 64px;
-    font-family: inherit; font-size: 0.8125rem;
-    padding: 6px 8px;
-    border: 1px solid var(--rule); border-radius: 4px;
-    background: var(--bg); color: var(--ink);
-    resize: vertical; box-sizing: border-box;
-  }
-  .annotate-popup textarea:focus { outline: none; border-color: var(--accent); }
-  .annotate-popup .actions { display: flex; gap: 6px; margin-top: 8px; justify-content: flex-end; }
-  .annotate-popup button {
-    font-size: 0.75rem; padding: 4px 12px;
-    border: 1px solid var(--rule); border-radius: 4px;
-    cursor: pointer; background: var(--bg); color: var(--ink); font-family: inherit;
-  }
-  .annotate-popup button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .annotate-panel {
-    position: fixed;
-    top: 0; right: 0; width: 380px; height: 100vh; max-width: 90vw;
-    background: var(--surface);
-    border-left: 1px solid var(--rule);
-    z-index: 950;
-    transform: translateX(110%);
-    transition: transform 200ms ease;
-    display: flex; flex-direction: column;
-    box-shadow: -4px 0 16px rgba(0,0,0,0.08);
-  }
-  .annotate-panel.open { transform: translateX(0); }
-  .annotate-panel-header {
-    padding: 14px 16px; border-bottom: 1px solid var(--rule);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .annotate-panel-header strong { font-size: 0.875rem; color: var(--accent); }
-  .annotate-panel-header button.close-panel {
-    background: none; border: none; font-size: 1.375rem; line-height: 1; cursor: pointer; color: var(--muted); padding: 0 4px;
-  }
-  .annotate-panel-list { overflow-y: auto; flex: 1; padding: 6px 14px 14px; }
-  .annotate-empty { font-size: 0.8125rem; color: var(--muted); padding: 16px 0; line-height: 1.5; }
-  .annotate-item { padding: 10px 0; border-bottom: 1px solid var(--rule); }
-  .annotate-item .quote { font-size: 0.75rem; color: var(--ink-soft); font-style: italic; border-left: 2px solid var(--accent); padding-left: 8px; margin-bottom: 5px; line-height: 1.4; }
-  .annotate-item .note { font-size: 0.84375rem; color: var(--ink); line-height: 1.45; white-space: pre-wrap; }
-  .annotate-item .meta { font-size: 0.6875rem; color: var(--muted); margin-top: 6px; display: flex; gap: 8px; align-items: center; }
-  .annotate-item .meta a { color: var(--accent); text-decoration: none; cursor: pointer; }
-  .annotate-item .meta a:hover { text-decoration: underline; }
-  .annotate-item .meta button.del {
-    margin-left: auto; background: none; border: none; color: var(--muted);
-    cursor: pointer; font-size: 0.6875rem; padding: 0 4px;
-  }
-  .annotate-item .meta button.del:hover { color: var(--danger); }
-  @media (max-width: 700px) { .annotate-panel { width: 92vw; } }
-  @media print { .annotate-fab, .annotate-popup, .annotate-panel { display: none !important; } }
-
   /* ========== CALCULATOR WAVEFORM PANEL ========== */
   .calc-waveform {
     margin-top: 12px;
@@ -4353,6 +4350,105 @@ abbr[data-tip].abbr-tip-open{border-bottom-style:solid;color:var(--accent)}
 .vg-tau-house .metric b{overflow:visible;text-overflow:clip}
 </style>
 <style id="asynchrony-readable-css-v128">.asynchrony-readable{margin:1rem 0;border:1px solid var(--line,#b8c8d9);border-radius:.65rem;padding:.8rem 1rem}.asynchrony-readable summary{cursor:pointer;font-weight:650;min-height:2.75rem;display:list-item;align-content:center}.asynchrony-pattern-list{display:grid;gap:.7rem;margin-top:.6rem}.asynchrony-pattern{border-top:1px solid var(--line,#b8c8d9);padding:.5rem 0}.asynchrony-pattern dl{margin:.5rem 0 1rem}.asynchrony-pattern dt{font-weight:650;margin:.8rem 0 .25rem}.asynchrony-pattern dd{margin:0;line-height:1.55}.asynchrony-readable :focus-visible{outline:3px solid var(--accent,#24639c);outline-offset:3px}</style>
+<style id="reader-reliability-css-v132">/* Reader layout owns one column; normal-canvas rules must not reserve a TOC slot. */
+body.reader-mode:not(.pwa-lite) .layout {
+  display: block !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  width: calc(100% - 32px) !important;
+  max-width: 960px !important;
+  margin: calc(76px + env(safe-area-inset-top, 0px)) auto 48px !important;
+  padding: 24px clamp(14px, 3vw, 36px) 48px !important;
+}
+body.reader-mode:not(.pwa-lite) .layout main {
+  width: 100% !important; max-width: none !important; margin: 0 !important; min-width: 0;
+}
+body.reader-mode .toc-tablet-toggle,
+body.reader-mode .chapter-route-map,
+body.reader-mode .mobile-actionbar { display: none !important; }
+.reader-controls {
+  display: none; position: fixed; inset: 0 0 auto; z-index: 980;
+  min-height: calc(56px + env(safe-area-inset-top, 0px));
+  padding: calc(6px + env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 6px max(12px, env(safe-area-inset-left, 0px));
+  gap: 12px; align-items: center; justify-content: space-between;
+  background: var(--surface); border-bottom: 1px solid var(--rule);
+  font-family: var(--font-sans); box-sizing: border-box;
+}
+body.reader-mode .reader-controls { display: flex; }
+.reader-controls .reader-exit, .reader-controls .reader-more {
+  position: static !important; min-height: 44px; padding: 8px 14px;
+  display: inline-flex !important; align-items: center; gap: 6px;
+  border-radius: 9px; box-shadow: none; font-size: .85rem;
+}
+.reader-controls button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+body.reader-mode { --scroll-pad-top: calc(68px + env(safe-area-inset-top, 0px)); }
+/* The phone remains a chapter reader. Keep its in-flow previous/next controls. */
+body.pwa-lite.reader-mode {
+  padding-top: calc(68px + env(safe-area-inset-top, 0px)) !important;
+  padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+}
+body.pwa-lite.reader-mode .pwa-top,
+body.pwa-lite.reader-mode .pwa-bottom,
+body.pwa-lite.reader-mode .pwa-float { display: none !important; }
+body.pwa-lite.reader-mode .reader-controls { z-index: 1200; }
+body.pwa-lite.reader-mode .pwa-shell { max-width: 900px; padding-top: 8px; }
+body.pwa-lite.reader-mode .layout {
+  background: transparent; border: 0; border-radius: 0; box-shadow: none;
+}
+body.pwa-lite.reader-mode .layout > nav.toc { display: block !important; }
+.pwa-tools { max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px)); overflow-y: auto; }
+@media (max-width: 700px) {
+  body.reader-mode:not(.pwa-lite) .layout {
+    width: 100% !important; margin: calc(68px + env(safe-area-inset-top, 0px)) 0 0 !important;
+    padding: 12px 8px 40px !important; border: 0; border-radius: 0; box-shadow: none;
+  }
+}
+@media print { .reader-controls { display: none !important; } }
+</style>
+<style id="notes-workspace-css-v132">#vent-notes-dialog {
+  box-sizing: border-box; position: fixed; inset: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px); margin: auto;
+  width: min(760px, calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))); max-width: none;
+  height: min(860px, calc(100vh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); height: min(860px, calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  max-height: none; padding: 0; border: 1px solid var(--rule, #b4bbc5);
+  border-radius: 14px; background: var(--surface, #fff); color: var(--ink, #202937);
+  box-shadow: 0 12px 48px #0004; font: 16px/1.5 var(--font-sans, system-ui, sans-serif);
+  z-index: 25000; overflow: hidden; text-align: left;
+}
+#vent-notes-dialog:not([open]), #vent-notes-dialog [hidden] { display: none !important; }
+#vent-notes-dialog[open] { display: flex; flex-direction: column; }
+#vent-notes-dialog::backdrop { background: #0007; }
+#vent-notes-dialog * { box-sizing: border-box; }
+#vent-notes-dialog .vn-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--rule, #b4bbc5); flex-shrink: 0; }
+#vent-notes-dialog h2, #vent-notes-dialog h3 { margin: 0; font-size: 1.15em; color: inherit; }
+#vent-notes-dialog p { margin: 0 0 10px; }
+#vent-notes-dialog .vn-body { padding: 18px 20px; overflow: auto; overscroll-behavior: contain; min-height: 0; flex: 1; -webkit-overflow-scrolling: touch; }
+#vent-notes-dialog .vn-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+#vent-notes-dialog button, #vent-notes-dialog select, #vent-notes-dialog input, #vent-notes-dialog textarea {
+  font: inherit; color: inherit; background: var(--surface, #fff); border: 1px solid var(--rule, #b4bbc5); border-radius: 8px; min-height: 44px; padding: 8px 12px; max-width: 100%;
+}
+#vent-notes-dialog button { cursor: pointer; white-space: normal; line-height: 1.3; }
+#vent-notes-dialog button:disabled { opacity: .6; cursor: default; }
+#vent-notes-dialog .vn-primary { color: var(--accent, #18659a); border-color: currentColor; font-weight: 650; }
+#vent-notes-dialog :focus-visible, #vent-note-selection:focus-visible { outline: 3px solid var(--accent, #18659a); outline-offset: 3px; }
+#vent-notes-dialog label { display: block; margin: 12px 0 6px; font-weight: 600; }
+#vent-notes-dialog textarea { width: 100%; min-height: 190px; resize: vertical; }
+#vent-notes-dialog input[type="search"] { width: 100%; }
+#vent-notes-dialog .vn-muted { color: var(--muted, #526172); font-size: .875em; }
+#vent-notes-dialog .vn-context { font-weight: 600; overflow-wrap: anywhere; }
+#vent-notes-dialog .vn-quote { border-left: 3px solid var(--accent, #18659a); padding: 8px 12px; margin: 8px 0; font-size: .9em; white-space: pre-wrap; overflow-wrap: anywhere; }
+#vent-notes-dialog .vn-item { padding: 18px 0; border-bottom: 1px solid var(--rule, #b4bbc5); }
+#vent-notes-dialog .vn-note-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+#vent-notes-dialog #vn-status { padding: 10px 20px; border-top: 1px solid var(--rule, #b4bbc5); margin: 0; flex-shrink: 0; font-size: .9em; }
+#vent-notes-dialog #vn-status[data-error="true"] { color: var(--danger, #b12622); }
+#vent-notes-dialog .vn-backup { margin-top: 22px; }
+#vent-notes-dialog .vn-backup summary { cursor: pointer; min-height: 44px; padding-top: 10px; }
+#vent-notes-dialog .vn-undo { display: flex; align-items: center; gap: 12px; padding: 10px; border: 1px solid var(--rule, #b4bbc5); }
+#vent-note-selection { position: fixed; right: 16px; bottom: calc(82px + env(safe-area-inset-bottom, 0px)); z-index: 9500; min-height: 44px; padding: 10px 16px; border: 1px solid var(--accent, #18659a); border-radius: 24px; background: var(--surface, #fff); color: var(--accent, #18659a); font: 600 16px/1.3 system-ui, sans-serif; box-shadow: 0 3px 12px #0002; }
+#vent-note-selection[hidden] { display: none !important; }
+@media (max-width: 480px) { #vent-notes-dialog .vn-header, #vent-notes-dialog .vn-body { padding: 12px; } #vent-notes-dialog #vn-status { padding: 10px 12px; } }
+@media print { #vent-notes-dialog, #vent-note-selection { display: none !important; } }
+
+.reader-controls .reader-notes {min-height:44px;padding:8px 14px;border:1px solid var(--rule);border-radius:9px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main-content" id="skip-to-main">Skip to guide content</a>
@@ -4769,7 +4865,7 @@ header.hero .mh-cite b{color:var(--ink-soft);}
 <div class="mh-rule"></div>
 <p class="mh-positioning">Written for everyone learning to manage vented patients — from the medical student on a first ICU rotation to the resident covering nights, the hospitalist running a stepdown, and the PCCM fellow building toward independent practice. It spans the full arc: pulmonary physiology, mode mechanics and waveform interpretation, disease-specific strategy, and advanced concepts — driving pressure, transpulmonary pressure, mechanical power, proning, and ECMO — through liberation, bedside troubleshooting, and worked cases.</p>
 <div class="mh-cred">
-<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.130</small></div></div>
+<div><div class="mh-cred-k">Edition</div><div class="mh-cred-v">Volume I · public edition 1.2<small>First compiled May 2026 · internal build v1.10.132</small></div></div>
 <div><div class="mh-cred-k">Currency</div><div class="mh-cred-v">Reviewed Aug 2026<small>43-chapter scientific revision complete</small></div></div>
 <div><div class="mh-cred-k">Evidence review</div><div class="mh-cred-v">Selected evidence updated Sep 2026<small>Guidelines · trials · physiology · device standards</small></div></div>
 <div><div class="mh-cred-k">Scope</div><div class="mh-cred-v"><span id="hs-chapters">43</span> chapters · <span id="hs-parts">9</span> parts<small>Physiology → liberation</small></div></div>
@@ -14386,7 +14482,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 <li value="302" id="r302">Grooms D. Double triggering: diagnosis, differentiation, and resolution. Hamilton Medical. July 8, 2019. <a href="https://www.hamilton-medical.com/en_US/Resource-center/Article-page~knowledge-base~f0c47c50-ceb4-4c6d-93f4-3989c9824fdd~Double-triggering---Diagnosis--differentiation--and-resolution~.html" target="_blank" rel="noopener noreferrer">Manufacturer educational resource</a>. Accessed September 5, 2026.</li>
 <li value="303" id="r303">Jagannathan N, Aziz MF. Difficult Airway Society 2025 guidelines for tracheal intubation: thoughtful preparation for success and systematic management of failure. <em>Br J Anaesth</em>. 2026;136(1):9–11. <a href="https://doi.org/10.1016/j.bja.2025.11.003" target="_blank" rel="noopener noreferrer">doi:10.1016/j.bja.2025.11.003</a>. PMID: 41339170.</li>
 </ol>
-<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are synchronized in build v1.10.130.</p>
+<p class="footer-note">For clinician education only; not a substitute for institutional protocols, current product labeling, or specialist consultation. Verify clinically actionable dosing and ventilator-specific behavior at the bedside. The guide-local cheat sheet, Bedside-Now pathways, and calculators remain synchronized to the v1.10.88 final reference-consolidation lock and are synchronized in build v1.10.132.</p>
 </section>
 </main>
 </div>
@@ -14430,7 +14526,7 @@ A ventilator should deliver an appropriate breath size for the available lung, e
      mirroring the layout's max-width and horizontal padding. -->
 <footer class="colophon" role="contentinfo">
 <div class="brand-line">Bedside Reference · Guide to Ventilation</div>
-<div>Public edition 1.2 · Internal build v1.10.130 · Chapters 1–43 · Evidence and reader update · Updated September 5, 2026</div>
+<div>Public edition 1.2 · Internal build v1.10.132 · Chapters 1–43 · Evidence and reader update · Updated September 5, 2026</div>
 <div>© 2026 <em>Bedside Reference</em>. All rights reserved. No part of this work may be reproduced, redistributed, or republished — in any form, electronic or print — without prior written permission.</div>
 <div>Errata, corrections, questions: <a href="mailto:bedsidereference@gmail.com">bedsidereference@gmail.com</a></div>
 <div class="foot-nav">
@@ -14438,8 +14534,8 @@ A ventilator should deliver an appropriate breath size for the available lung, e
 </div>
 </footer>
 <button aria-label="Back to top" class="back-top" id="back-top" title="Back to top (g h)">↑</button>
-<button aria-label="Settings and tools" class="reader-more" id="reader-more" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg>More</button>
-<button aria-label="Exit reader mode" class="reader-exit" id="reader-exit" title="Exit reader mode" type="button">✕ Exit reader</button>
+<div class="reader-controls" id="reader-controls" role="region" aria-label="Reader controls"><button type="button" class="reader-notes" data-vent-notes-open>Notes</button><button aria-label="Settings and tools" class="reader-more" id="reader-more" type="button"><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg>More</button>
+<button aria-label="Exit reader mode" class="reader-exit" id="reader-exit" title="Exit reader mode" type="button">✕ Exit reader</button></div>
 <script>
 (function(){
   // Shared at IIFE scope so try/catch'd feature blocks below can reuse it.
@@ -16946,6 +17042,11 @@ saveInputs();
   window.__updateScrollPad = function () {
     try {
       let pad = 0;
+      if (document.body.classList.contains('reader-mode')) {
+        const controls = document.getElementById('reader-controls');
+        document.documentElement.style.setProperty('--scroll-pad-top', ((controls ? controls.getBoundingClientRect().height : 56) + 12) + 'px');
+        return;
+      }
       const tb = document.querySelector('.toolbar');
       if (tb && getComputedStyle(tb).display !== 'none') {
         pad += tb.getBoundingClientRect().height;
@@ -16984,6 +17085,7 @@ saveInputs();
   // Smooth-scroll is suppressed during the restore so it feels instant, not
   // like a glide.
   window.__preserveScrollAround = function (fn) {
+    const html = document.documentElement;
     // Pick a SMALL element (paragraph, list item, heading) that is visible
     // in the viewport as the anchor. Chapter sections are too large — pinning
     // a chapter's top doesn't pin the user's reading position, because text
@@ -17034,7 +17136,6 @@ saveInputs();
     // of the toggle so reflow happens instantly and we can pin the anchor in
     // one shot. Without this, the anchor is a moving target during the 180 ms
     // grid-template-columns/max-width animation.
-    const html = document.documentElement;
     const prevScrollBehavior = html.style.scrollBehavior;
     html.style.scrollBehavior = 'auto';
     const layout = document.querySelector('.layout');
@@ -17064,33 +17165,7 @@ saveInputs();
     });
   };
 
-  // ============== READER MODE ==============
-  // Toolbar Read button toggles a distraction-free single-column layout.
-  // Floating ✕ Exit button restores the full chrome.
-  try {
-    const readBtn = document.getElementById('btn-reader');
-    const readExit = document.getElementById('reader-exit');
-    function setReaderMode(on) {
-      document.body.classList.toggle('reader-mode', !!on);
-      try { localStorage.setItem('mv-reader-mode', on ? '1' : ''); } catch (e) {}
-    }
-    if (readBtn) readBtn.addEventListener('click', () => {
-      window.__preserveScrollAround(() => {
-        setReaderMode(!document.body.classList.contains('reader-mode'));
-        if (window.__updateScrollPad) window.__updateScrollPad();
-      });
-    });
-    if (readExit) readExit.addEventListener('click', () => {
-      window.__preserveScrollAround(() => {
-        setReaderMode(false);
-        if (window.__updateScrollPad) window.__updateScrollPad();
-      });
-    });
-    // Restore from localStorage (page just loaded — no scroll to preserve)
-    try {
-      if (localStorage.getItem('mv-reader-mode')) setReaderMode(true);
-    } catch (e) {}
-  } catch (err) { console.error('[READER MODE] error:', err); }
+  // Reader mode is owned by reader-reliability-v132.
 
   // ============== EQUATION VARIABLE-LINK AFFORDANCE ==============
   // Add a small invisible click target on every <div class="eq"> that takes the
@@ -17343,168 +17418,7 @@ saveInputs();
   } catch (err) { console.error('[KEYBOARD SHORTCUTS] error:', err); }
 
 
-  // ============== ANNOTATIONS / NOTES ==============
-  // Select text → "+ Note" floating button → popup → save to localStorage.
-  // Toolbar Notes button opens a side panel listing all saved notes.
-  // Each saved note links to its source via a text-fragment URL.
-  try {
-    const STORAGE_KEY = 'mv-annotations-v1';
-    let notes = [];
-    try { notes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch (e) { notes = []; }
-
-    // Build the floating "+ Note" button
-    const fab = document.createElement('button');
-    fab.type = 'button';
-    fab.className = 'annotate-fab';
-    fab.textContent = '+ Note';
-    fab.setAttribute('aria-label', 'Add note about selected text');
-    document.body.appendChild(fab);
-
-    // Build the popup
-    const pop = document.createElement('div');
-    pop.className = 'annotate-popup';
-    pop.innerHTML = '<div class="quoting" id="annotate-quoting"></div>' +
-      '<textarea id="annotate-text" placeholder="Your note about this passage..."></textarea>' +
-      '<div class="actions"><button class="cancel" type="button">Cancel</button><button class="primary save" type="button">Save note</button></div>';
-    document.body.appendChild(pop);
-
-    // Build the side panel
-    const panel = document.createElement('aside');
-    panel.className = 'annotate-panel';
-    panel.setAttribute('aria-label', 'Saved notes');
-    panel.innerHTML = '<div class="annotate-panel-header"><strong><svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.12em;margin-right:.3em" aria-hidden="true"><path d="M11 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>My notes</strong>' +
-      '<button class="close-panel" type="button" aria-label="Close notes panel">×</button></div>' +
-      '<div class="annotate-panel-list" id="annotate-list"></div>';
-    document.body.appendChild(panel);
-
-    // Toolbar Notes button
-    const noteBtn = document.getElementById('btn-notes');
-    if (noteBtn) noteBtn.addEventListener('click', () => panel.classList.toggle('open'));
-    panel.querySelector('.close-panel').addEventListener('click', () => panel.classList.remove('open'));
-
-    // Selection → show FAB
-    let currentRange = null;
-    document.addEventListener('mouseup', () => {
-      setTimeout(() => {
-        const sel = window.getSelection();
-        if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
-          fab.classList.remove('show');
-          return;
-        }
-        const text = sel.toString().trim();
-        if (text.length < 3 || text.length > 600) { fab.classList.remove('show'); return; }
-        const range = sel.getRangeAt(0);
-        const main = document.querySelector('.layout > main');
-        if (!main || !main.contains(range.commonAncestorContainer)) {
-          fab.classList.remove('show'); return;
-        }
-        // Position FAB below the selection
-        const rect = range.getBoundingClientRect();
-        fab.style.top = (window.scrollY + rect.bottom + 6) + 'px';
-        fab.style.left = (window.scrollX + Math.max(8, rect.left)) + 'px';
-        fab.classList.add('show');
-        currentRange = range.cloneRange();
-      }, 30);
-    });
-
-    // FAB click → show popup
-    fab.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); });
-    fab.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!currentRange) return;
-      const text = currentRange.toString().trim();
-      const rect = currentRange.getBoundingClientRect();
-      pop.style.top = (window.scrollY + rect.bottom + 8) + 'px';
-      pop.style.left = (window.scrollX + Math.max(8, rect.left)) + 'px';
-      const ta = document.getElementById('annotate-text');
-      ta.value = '';
-      const q = document.getElementById('annotate-quoting');
-      q.textContent = '"' + (text.length > 140 ? text.slice(0, 140) + '…' : text) + '"';
-      pop.classList.add('show');
-      // Find chapter context
-      let node = currentRange.commonAncestorContainer;
-      if (node.nodeType === 3) node = node.parentElement;
-      const chap = node.closest('section.chap');
-      pop.dataset.quote = text;
-      pop.dataset.chapter = chap ? chap.id : '';
-      const h3 = chap ? chap.querySelector(':scope > h3') : null;
-      if (h3) {
-        const hc = h3.cloneNode(true);
-        hc.querySelectorAll('.anchor-link, .chap-print-btn, button:not(.chapter-toggle), svg, [aria-hidden="true"]').forEach(node => node.remove());
-        pop.dataset.chaptertitle = (hc.textContent || '').replace(/Print this chapter/g, '').replace(/\s*#+\s*$/, '').replace(/\s+/g, ' ').trim();
-      } else pop.dataset.chaptertitle = '';
-      fab.classList.remove('show');
-      ta.focus();
-    });
-
-    // Cancel
-    pop.querySelector('.cancel').addEventListener('click', () => pop.classList.remove('show'));
-    // Save
-    pop.querySelector('.save').addEventListener('click', () => {
-      const ta = document.getElementById('annotate-text');
-      const text = ta.value.trim();
-      if (!text) { pop.classList.remove('show'); return; }
-      notes.push({
-        id: Date.now() + Math.floor(Math.random() * 1000),
-        quote: pop.dataset.quote || '',
-        note: text,
-        chapter: pop.dataset.chapter || '',
-        chapterTitle: pop.dataset.chaptertitle || '',
-        timestamp: new Date().toISOString()
-      });
-      persist();
-      pop.classList.remove('show');
-      renderList();
-      panel.classList.add('open');
-    });
-
-    // Close popup on Escape or outside click
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && pop.classList.contains('show')) pop.classList.remove('show');
-    });
-    document.addEventListener('mousedown', (e) => {
-      if (pop.classList.contains('show') && !pop.contains(e.target) && e.target !== fab) {
-        pop.classList.remove('show');
-      }
-    });
-
-    function persist() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(notes)); } catch (e) {} }
-    function escHtml(s) { return String(s).replace(/[&<>"']/g, ch => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
-
-    function renderList() {
-      const list = document.getElementById('annotate-list');
-      if (!notes.length) {
-        list.innerHTML = '<p class="annotate-empty">No notes yet. Select any text in the chapters and click <strong>+ Note</strong> to save your thoughts. Notes are stored locally in this browser only.</p>';
-        return;
-      }
-      // Newest first
-      const sorted = notes.slice().sort((a,b) => b.id - a.id);
-      list.innerHTML = sorted.map(n => {
-        const quoteShort = n.quote.length > 140 ? n.quote.slice(0, 140) + '…' : n.quote;
-        // Text-fragment URL: jumps to chapter + highlights the quote in modern browsers
-        const fragQuote = encodeURIComponent(n.quote.slice(0, 80).split(/\s+/).slice(0, 12).join(' '));
-        const link = n.chapter ? `#${n.chapter}:~:text=${fragQuote}` : '#';
-        const date = new Date(n.timestamp).toLocaleDateString();
-        return '<div class="annotate-item" data-id="' + n.id + '">' +
-          '<div class="quote">' + escHtml(quoteShort) + '</div>' +
-          '<div class="note">' + escHtml(n.note) + '</div>' +
-          '<div class="meta"><a href="' + link + '">' + escHtml(n.chapterTitle || 'Jump') + '</a>' +
-          '<span>·</span><span>' + date + '</span>' +
-          '<button class="del" type="button" aria-label="Delete note">Delete</button></div>' +
-          '</div>';
-      }).join('');
-      list.querySelectorAll('.del').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = parseInt(btn.closest('.annotate-item').dataset.id, 10);
-          notes = notes.filter(n => n.id !== id);
-          persist();
-          renderList();
-        });
-      });
-    }
-
-    renderList();
-  } catch (err) { console.error('[ANNOTATIONS] error:', err); }
+  // Chapter notes are owned by notes-workspace-v132.
 
   // ============== LIBRARY OVERLAY + FOCUS MODE ==============
   // Each chapter is tagged with its parent Part (data-part-group). Focus mode
@@ -18492,48 +18406,7 @@ saveInputs();
       });
     });
 
-    // Save the core guide for offline use. Cross-origin live simulator pages
-    // remain an explicit online boundary because this service worker cannot control another origin.
-    var offBtn = document.getElementById('more-offline');
-    if (offBtn) {
-      var offlineState = window.__ventGuideOffline || {};
-      var offlineTitle = document.getElementById('more-offline-title');
-      var offlineSub = document.getElementById('more-offline-sub');
-      function setOfflineStatus(titleText, subText) {
-        if (offlineTitle) offlineTitle.textContent = titleText;
-        if (offlineSub) offlineSub.textContent = subText || '';
-      }
-      if (!offlineState.supported) {
-        setOfflineStatus('Offline cache available after deployment', 'Use HTTPS or localhost; the local HTML itself still opens normally');
-        offBtn.disabled = true;
-        offBtn.setAttribute('aria-disabled','true');
-      } else offBtn.addEventListener('click', function () {
-        var requestId = 'vg-' + Date.now() + '-' + Math.random().toString(36).slice(2);
-        setOfflineStatus('Preparing offline copy…', 'Waiting for the guide service worker');
-        Promise.resolve(offlineState.register ? offlineState.register() : navigator.serviceWorker.ready).then(function(reg){
-          var worker = navigator.serviceWorker.controller || reg.active || reg.waiting || reg.installing;
-          if (!worker) throw new Error('The service worker is installed but not active yet.');
-          var urls = offlineState.collectUrls ? offlineState.collectUrls() : [location.href.split('#')[0]];
-          setOfflineStatus('Saving… (' + urls.length + ' assets)', 'Keep this page open for a moment');
-          var timer;
-          var done = function(e){
-            var data = e.data || {};
-            if (data.type !== 'prefetch-done' || data.id !== requestId) return;
-            navigator.serviceWorker.removeEventListener('message', done);
-            clearTimeout(timer);
-            offBtn.classList.toggle('done',!data.failed);
-            var external = offlineState.externalSimulators || 0;
-            var suffix = external ? '; ' + external + ' external live simulator' + (external === 1 ? '' : 's') + ' still require a connection' : '';
-            setOfflineStatus(data.failed ? 'Offline copy incomplete — retry when connected' : 'Core guide saved for offline use ✓', data.ok + ' of ' + data.total + ' assets cached' + suffix);
-          };
-          navigator.serviceWorker.addEventListener('message', done);
-          worker.postMessage({ type:'prefetch', id:requestId, urls:urls });
-          timer = setTimeout(function(){ setOfflineStatus('Still saving…', 'Large image or equation assets may take a little longer'); }, 7000);
-        }).catch(function(err){
-          setOfflineStatus('Offline save was not completed', String(err && err.message ? err.message : err));
-        });
-      });
-    }
+    // Offline controls are bound independently by the shared bootstrap.
 
     // Footer -> jump to the disclaimer
     var about = document.getElementById('more-about');
@@ -20183,22 +20056,22 @@ const w=[];if(qS&&(Math.abs(ratio-lln)<.03||Math.abs(fvcZ+1.645)<.3))w.push('One
 /* Global reading-canvas refinement: wider desktop canvas, clearer spacing,
    larger inline figures, and a visible desktop TOC control. */
 @media (min-width:921px){
-  .layout{
+  body:not(.reader-mode) .layout{
     max-width:1740px!important;
     grid-template-columns:260px minmax(0,1fr)!important;
     gap:28px!important;
     padding:28px 30px 110px!important;
   }
-  .layout main{
+  body:not(.reader-mode) .layout main{
     width:100%!important;
     max-width:1240px!important;
     margin:0 auto!important;
   }
-  body.toc-hidden .layout{
+  body:not(.reader-mode).toc-hidden .layout{
     max-width:1600px!important;
     grid-template-columns:minmax(0,1fr)!important;
   }
-  body.toc-hidden .layout main{max-width:1380px!important;}
+  body:not(.reader-mode).toc-hidden .layout main{max-width:1380px!important;}
   .toolbar{
     padding-left:max(16px,calc((100vw - 1740px)/2 + 24px))!important;
     padding-right:max(16px,calc((100vw - 1740px)/2 + 24px))!important;
@@ -21205,6 +21078,7 @@ html,body{max-width:100%;overflow-x:hidden}
   /* Generic Tab containment for the topmost visible modal. */
   doc.addEventListener('keydown',function(e){
     if(e.key!=='Tab')return;
+    if(doc.querySelector('dialog[open]'))return;
     var dialogs=[].slice.call(doc.querySelectorAll('[role="dialog"][aria-modal="true"]')).filter(function(d){var cs=getComputedStyle(d);return cs.display!=='none'&&cs.visibility!=='hidden'&&d.offsetParent!==null;});
     if(!dialogs.length)return;
     var d=dialogs[dialogs.length-1];
@@ -21393,10 +21267,585 @@ html[data-theme="dark"] .pwa-lightbox-host svg{background:#f3f5f7;filter:brightn
   document.addEventListener('vent-guide-frame-hydrated',function(e){var f=e.detail&&e.detail.frame;if(f)wire(f)});document.addEventListener('vent-guide-section-active',syncAll);document.addEventListener('vent-tablet-partchange',syncAll);document.addEventListener('vent-theme-change',syncAll);
 })();
 </script>
-<div hidden id="dual-theme-content-build-v110116" data-public-edition="1.2" data-internal-build="v1.10.130">DUAL_THEME_CONTENT_COMPLETE</div>
+<div hidden id="dual-theme-content-build-v110116" data-public-edition="1.2" data-internal-build="v1.10.132">DUAL_THEME_CONTENT_COMPLETE</div>
 
-<div hidden id="mobile-usability-build-v110112" data-public-edition="1.2" data-internal-build="v1.10.130" data-app-entry="ventilation-guide-app.html">TABLET_DESKTOP_ROUTING_COMPLETE</div>
+<div hidden id="mobile-usability-build-v110112" data-public-edition="1.2" data-internal-build="v1.10.132" data-app-entry="ventilation-guide-app.html">TABLET_DESKTOP_ROUTING_COMPLETE</div>
 <div hidden="" id="finalization-phase4-build-v110106" data-public-edition="1.2" data-internal-build="v1.10.106" data-canonical-entry="mechanical-ventilation-teaching-reference.html">FINALIZATION_PHASE4_PWA_UPDATE_COMPLETE</div>
+<script id="reader-reliability-v132">(function(){
+  'use strict';
+  function init(){
+    var doc=document,body=doc.body,root=doc.documentElement;
+    var readBtn=doc.getElementById('btn-reader'),exitBtn=doc.getElementById('reader-exit');
+    var phone=body.classList.contains('pwa-lite'),phoneAPI=window.__ventPhone;
+    if(!exitBtn)return;
+    function isActive(){return body.classList.contains('reader-mode');}
+    function sync(){
+      var on=isActive();
+      doc.querySelectorAll('#btn-reader,[data-proxy="btn-reader"],[data-act="btn-reader"]').forEach(function(b){
+        b.setAttribute('aria-pressed',String(on));
+        b.setAttribute('aria-label',on?'Exit reader mode':'Enter reader mode');
+      });
+      if(phone&&readBtn)readBtn.textContent=on?'Exit reader mode':'Reader mode';
+      if(window.__updateScrollPad)window.__updateScrollPad();
+      if(phone){
+        root.style.setProperty('--scroll-pad-top',on?'calc(68px + env(safe-area-inset-top, 0px))':'var(--pwa-top)');
+      }
+    }
+    function set(on,options){
+      options=options||{};on=!!on;
+      if(on===isActive()){sync();return;}
+      if(on){
+        var pop=doc.getElementById('desktop-tools-popover'),trigger=doc.getElementById('btn-tools-menu');
+        if(pop)pop.hidden=true;
+        if(trigger)trigger.setAttribute('aria-expanded','false');
+      }
+      var apply=function(){body.classList.toggle('reader-mode',on);sync();};
+      if(options.preserve!==false&&window.__preserveScrollAround)window.__preserveScrollAround(apply);
+      else apply();
+      if(options.persist!==false){try{localStorage.setItem('mv-reader-mode',on?'1':'');}catch(_){}}
+      if(options.focus!==false){
+        var focusTarget=on?exitBtn:(phone?doc.querySelector('[data-pwa-action="tools"]'):doc.getElementById('btn-tools-menu'));
+        if(!focusTarget)focusTarget=readBtn;
+        if(focusTarget){try{focusTarget.focus({preventScroll:true});}catch(_){}}
+      }
+      doc.dispatchEvent(new CustomEvent('vent-reader-change',{detail:{active:on}}));
+    }
+    function toggle(){
+      // Phone modal unlock restores its saved scroll on the next frame; let
+      // that complete before pinning a paragraph for the layout change.
+      if(phoneAPI&&phoneAPI.overlays.isOpen()){
+        phoneAPI.overlays.closeAll(false);
+        requestAnimationFrame(function(){set(!isActive());});
+      }else set(!isActive());
+    }
+    if(readBtn)readBtn.addEventListener('click',toggle);
+    exitBtn.addEventListener('click',function(){set(false);});
+    if(phone){
+      var more=doc.getElementById('reader-more');
+      if(more&&phoneAPI)more.addEventListener('click',function(e){phoneAPI.openTools(e);});
+    }
+    doc.addEventListener('keydown',function(e){
+      if(e.key!=='Escape'||e.defaultPrevented||!isActive())return;
+      if(e.target&&e.target.closest&&e.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+      if(phoneAPI&&phoneAPI.overlays.isOpen())return;
+      if(doc.querySelector('dialog[open],#desktop-tools-popover:not([hidden]),.lightbox.show,.tbl-modal.show,.simcenter-overlay.show,.more-backdrop.show,.m-search.show,.intro-backdrop.show,.lib-overlay.show,.cmd-overlay.show,.notes-panel.show'))return;
+      e.preventDefault();set(false);
+    },true);
+    window.__ventReader={set:set,toggle:toggle,isActive:isActive};
+    var saved=false;try{saved=localStorage.getItem('mv-reader-mode')==='1';}catch(_){}
+    if(saved)set(true,{preserve:false,persist:false,focus:false});else sync();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+<script id="notes-workspace-v132">
+(function (root, factory) {
+  'use strict';
+  var api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  if (root) root.VentNotesStore = api;
+})(typeof window !== 'undefined' ? window : null, function () {
+  'use strict';
+
+  var KEY = 'mv-annotations-v1';
+  var MAX_IMPORT_BYTES = 5 * 1024 * 1024;
+  var sequence = 0;
+  var requiredStrings = ['quote', 'note', 'chapter', 'chapterTitle', 'timestamp'];
+  var optionalStrings = ['target', 'targetTitle', 'updatedAt'];
+
+  function fail(code, message) {
+    var error = new Error(message);
+    error.code = code;
+    return error;
+  }
+
+  function plainObject(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+    var prototype = Object.getPrototypeOf(value);
+    return prototype === Object.prototype || prototype === null;
+  }
+
+  // Do not silently discard fields that JSON.stringify would omit or coerce.
+  function validateJSON(value, depth, ancestors) {
+    if (depth > 100) throw fail('INVALID_RECORD', 'A note contains data nested too deeply.');
+    if (value === null || typeof value === 'string' || typeof value === 'boolean') return;
+    if (typeof value === 'number' && Number.isFinite(value)) return;
+    if (!Array.isArray(value) && !plainObject(value)) {
+      throw fail('INVALID_RECORD', 'A note contains unsupported data.');
+    }
+    if (ancestors.indexOf(value) !== -1) throw fail('INVALID_RECORD', 'A note contains circular data.');
+    ancestors.push(value);
+    Object.keys(value).forEach(function (key) { validateJSON(value[key], depth + 1, ancestors); });
+    if (Array.isArray(value)) {
+      for (var i = 0; i < value.length; i++) {
+        if (!Object.prototype.hasOwnProperty.call(value, i)) {
+          throw fail('INVALID_RECORD', 'A note contains an incomplete list.');
+        }
+      }
+    }
+    ancestors.pop();
+  }
+
+  function clone(value) { return JSON.parse(JSON.stringify(value)); }
+
+  function recordCopy(record) {
+    if (!plainObject(record)) throw fail('INVALID_RECORD', 'Each note must be an object.');
+    if (!((typeof record.id === 'number' && Number.isSafeInteger(record.id)) ||
+          (typeof record.id === 'string' && record.id.trim().length > 0))) {
+      throw fail('INVALID_RECORD', 'Each note must have a valid numeric or text ID.');
+    }
+    requiredStrings.forEach(function (key) {
+      if (typeof record[key] !== 'string') throw fail('INVALID_RECORD', 'The note field "' + key + '" must be text.');
+    });
+    optionalStrings.forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(record, key) && typeof record[key] !== 'string') {
+        throw fail('INVALID_RECORD', 'The note field "' + key + '" must be text.');
+      }
+    });
+    validateJSON(record, 0, []);
+    return clone(record);
+  }
+
+  function idKey(id) { return String(id); }
+
+  function canonical(value) {
+    if (value === null || typeof value !== 'object') return JSON.stringify(value);
+    if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+    return '{' + Object.keys(value).sort().map(function (key) {
+      return JSON.stringify(key) + ':' + canonical(value[key]);
+    }).join(',') + '}';
+  }
+
+  function equal(left, right) { return canonical(left) === canonical(right); }
+
+  function withoutId(record) {
+    var copy = clone(record);
+    delete copy.id;
+    return copy;
+  }
+
+  function safeMerge(original, replacement) {
+    var result = clone(original);
+    Object.keys(replacement).forEach(function (key) {
+      Object.defineProperty(result, key, {
+        configurable: true, enumerable: true, writable: true, value: clone(replacement[key])
+      });
+    });
+    return result;
+  }
+
+  function byteLength(text) {
+    var size = 0;
+    for (var i = 0; i < text.length; i++) {
+      var code = text.charCodeAt(i);
+      if (code < 0x80) size++;
+      else if (code < 0x800) size += 2;
+      else if (code >= 0xd800 && code <= 0xdbff && i + 1 < text.length &&
+               text.charCodeAt(i + 1) >= 0xdc00 && text.charCodeAt(i + 1) <= 0xdfff) {
+        size += 4;
+        i++;
+      } else size += 3;
+      if (size > MAX_IMPORT_BYTES) return size;
+    }
+    return size;
+  }
+
+  function create(storage) {
+    function rawBackup() {
+      try { return storage.getItem(KEY); }
+      catch (error) {
+        throw fail('READ_FAILED', 'Notes cannot be read in this browser. Check that browser storage is available.');
+      }
+    }
+
+    function read() {
+      var raw = rawBackup();
+      if (raw === null) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error('Not an array');
+        var seen = new Set();
+        return parsed.map(function (record) {
+          var note = recordCopy(record);
+          var key = idKey(note.id);
+          if (seen.has(key)) throw new Error('Duplicate note IDs');
+          seen.add(key);
+          return note;
+        });
+      } catch (error) {
+        throw fail('INVALID_STORAGE', 'Existing notes could not be read safely. Export the original data for recovery; it has not been changed.');
+      }
+    }
+
+    function write(notes) {
+      var serialized = JSON.stringify(notes);
+      try { storage.setItem(KEY, serialized); }
+      catch (error) {
+        throw fail('WRITE_FAILED', 'Notes could not be saved. Browser storage may be full or blocked. Keep your draft and export a backup.');
+      }
+    }
+
+    function freshId(notes, knownIds) {
+      var used = knownIds || new Set(notes.map(function (note) { return idKey(note.id); }));
+      var candidate;
+      do {
+        sequence++;
+        candidate = 'n-' + Date.now().toString(36) + '-' + sequence.toString(36) + '-' +
+          Math.random().toString(36).slice(2, 10);
+      } while (used.has(candidate));
+      return candidate;
+    }
+
+    function findIndex(notes, id) {
+      var key = idKey(id);
+      return notes.findIndex(function (note) { return idKey(note.id) === key; });
+    }
+
+    function checkOriginal(current, expectedOriginal) {
+      if (expectedOriginal !== undefined && (!current || !equal(current, expectedOriginal))) {
+        throw fail('CONFLICT', 'This note changed or was deleted in another tab. Reopen it before saving or deleting; your draft is still available.');
+      }
+    }
+
+    function save(record, expectedOriginal) {
+      var replacement = recordCopy(record);
+      var notes = read();
+      var index = findIndex(notes, replacement.id);
+      var existing = index === -1 ? undefined : notes[index];
+      checkOriginal(existing, expectedOriginal);
+      // Retain legacy and future fields even when an editor only supplies fields it knows.
+      var saved = existing ? recordCopy(safeMerge(existing, replacement)) : replacement;
+      if (existing) saved.id = existing.id;
+      if (existing) notes[index] = saved;
+      else notes.push(saved);
+      write(notes);
+      return clone(saved);
+    }
+
+    function remove(id, expectedOriginal) {
+      var notes = read();
+      var index = findIndex(notes, id);
+      checkOriginal(index === -1 ? undefined : notes[index], expectedOriginal);
+      if (index === -1) throw fail('NOT_FOUND', 'This note has already been deleted.');
+      var removed = notes.splice(index, 1)[0];
+      write(notes);
+      return clone(removed);
+    }
+
+    function restore(record) {
+      var restored = recordCopy(record);
+      var notes = read();
+      var index = findIndex(notes, restored.id);
+      if (index !== -1) {
+        if (equal(notes[index], restored)) return clone(notes[index]);
+        restored.id = freshId(notes);
+      }
+      notes.push(restored);
+      write(notes);
+      return clone(restored);
+    }
+
+    function importJSON(text) {
+      if (typeof text !== 'string') throw fail('INVALID_IMPORT', 'Choose a JSON notes backup.');
+      if (byteLength(text) > MAX_IMPORT_BYTES) throw fail('IMPORT_TOO_LARGE', 'The notes backup must be no larger than 5 MB.');
+      var incoming;
+      try {
+        var parsed = JSON.parse(text);
+        if (Array.isArray(parsed)) incoming = parsed;
+        else if (plainObject(parsed) && parsed.format === 'vent-guide-notes' && parsed.version === 1 && Array.isArray(parsed.notes)) {
+          incoming = parsed.notes;
+        } else throw new Error('Unknown backup format');
+        // Validate the entire file before touching any saved note.
+        incoming = incoming.map(recordCopy);
+      } catch (error) {
+        throw fail('INVALID_IMPORT', 'This file is not a valid notes backup. No notes have been changed.');
+      }
+      var notes = read();
+      var added = 0;
+      var skipped = 0;
+      var conflicts = 0;
+      // Index once so a larger backup does not cause quadratic scans on a tablet.
+      var byId = new Map();
+      var knownIds = new Set();
+      var knownContents = new Set();
+      notes.forEach(function (record) {
+        byId.set(idKey(record.id), record);
+        knownIds.add(idKey(record.id));
+        knownContents.add(canonical(withoutId(record)));
+      });
+      incoming.forEach(function (record) {
+        var existing = byId.get(idKey(record.id));
+        if (existing && equal(existing, record)) {
+          skipped++;
+          return;
+        }
+        var contents = canonical(withoutId(record));
+        if (existing) {
+          // A previous import may already have retained this conflicting version under a new ID.
+          if (knownContents.has(contents)) {
+            skipped++;
+            return;
+          }
+          record.id = freshId(notes, knownIds);
+          conflicts++;
+        }
+        notes.push(record);
+        byId.set(idKey(record.id), record);
+        knownIds.add(idKey(record.id));
+        knownContents.add(contents);
+        added++;
+      });
+      if (added) write(notes);
+      return { added: added, skipped: skipped, conflicts: conflicts, notes: clone(notes) };
+    }
+
+    function exportJSON() {
+      return JSON.stringify({ format: 'vent-guide-notes', version: 1, notes: read() }, null, 2);
+    }
+
+    return {
+      list: read,
+      save: save,
+      remove: remove,
+      restore: restore,
+      importJSON: importJSON,
+      exportJSON: exportJSON,
+      newId: function () { return freshId(read()); },
+      rawBackup: rawBackup
+    };
+  }
+
+  return { create: create, key: KEY, maxImportBytes: MAX_IMPORT_BYTES };
+});
+
+/* Chapter notes shared by the desktop/tablet and phone readers. No chapter cloning. */
+(function () {
+  'use strict';
+  function init() {
+    if (window.__ventGuideNotes) return;
+    var doc = document, store;
+    try { store = window.VentNotesStore.create(window.localStorage); }
+    catch (_) { store = window.VentNotesStore.create({getItem:function(){throw Error('Browser storage is unavailable.');},setItem:function(){throw Error('Browser storage is unavailable.');}}); }
+    var dialog = doc.createElement('dialog');
+    dialog.id = 'vent-notes-dialog';
+    dialog.setAttribute('aria-labelledby', 'vn-title');
+    dialog.innerHTML = '<div class="vn-header"><h2 id="vn-title">My notes</h2><button type="button" id="vn-close" aria-label="Close notes">Close</button></div>' +
+      '<div class="vn-body"><div id="vn-browse"><p class="vn-muted">Saved in this browser. Export a backup to keep a copy or move notes to another device.</p>' +
+      '<p id="vn-current" class="vn-context"></p><div class="vn-actions"><button type="button" id="vn-new" class="vn-primary">Add a note</button></div>' +
+      '<label for="vn-search">Search notes and quoted passages</label><input id="vn-search" type="search" autocomplete="off" placeholder="Search your notes…">' +
+      '<label for="vn-filter">Chapter</label><select id="vn-filter"><option value="">All chapters</option></select>' +
+      '<p id="vn-count" class="vn-muted"></p><div id="vn-list"></div><button type="button" id="vn-more" hidden>Show 50 more</button>' +
+      '<details class="vn-backup"><summary>Export and restore notes</summary><div class="vn-actions"><button type="button" id="vn-export">Export backup</button><button type="button" id="vn-text-export">Export readable text</button><button type="button" id="vn-import">Import backup</button><button type="button" id="vn-recover" hidden>Export stored data for recovery</button></div><p class="vn-muted">Import merges notes. Existing notes are retained; changed versions are kept as separate notes.</p><input type="file" id="vn-file" accept="application/json,.json" hidden></details></div>' +
+      '<form id="vn-editor" hidden><h3 id="vn-editor-title">Add a note</h3><p id="vn-source" class="vn-context"></p><blockquote id="vn-quote" class="vn-quote" hidden></blockquote><label for="vn-text">Your note</label><textarea id="vn-text" maxlength="50000" required placeholder="What matters here? A question, explanation, or learning point…"></textarea><p id="vn-draft-status" class="vn-muted"></p><div class="vn-actions"><button type="submit" class="vn-primary">Save note</button><button type="button" id="vn-copy" hidden>Save draft as a separate note</button><button type="button" id="vn-return">Back to notes</button><button type="button" id="vn-discard">Discard draft</button></div></form>' +
+      '<div id="vn-undo" class="vn-undo" hidden><span>Note deleted.</span><button type="button" id="vn-undo-button">Undo delete</button></div></div>' +
+      '<p id="vn-status" role="status" aria-live="polite">Ready.</p>';
+    doc.body.appendChild(dialog);
+    function el(id) { return doc.getElementById('vn-' + id); }
+    var browse = el('browse'), editor = el('editor'), textarea = el('text');
+    var selectionButton = doc.createElement('button');
+    selectionButton.id = 'vent-note-selection'; selectionButton.type = 'button'; selectionButton.textContent = 'Note selected text'; selectionButton.hidden = true; doc.body.appendChild(selectionButton);
+    var records = [], context = {}, passage = null, draft = null, undo = null, opener = null, pageY = 0, shown = 50, selectionTimer, searchTimer, draftTimer, opening = false;
+    var DRAFT_KEY = 'mv-note-draft-v1';
+    function status(message, error) { el('status').textContent = message; el('status').dataset.error = error ? 'true' : 'false'; }
+    function failure(error) { status((error && error.message || 'The operation could not be completed.') + ' Your unsaved text remains available.', true); }
+    function cleanTitle(node) {
+      if (!node) return '';
+      var c = node.cloneNode(true);
+      c.querySelectorAll('button:not(.chapter-toggle),.anchor-link,.chap-print-btn,svg,[aria-hidden="true"]').forEach(function(n){n.remove();});
+      return c.textContent.replace(/Print this chapter/g, '').replace(/\s*#+\s*$/, '').replace(/\s+/g, ' ').trim();
+    }
+    function chapterOf(node) { return node && node.closest && node.closest('section.chap'); }
+    function currentChapter() {
+      if (window.__ventPhone) return window.__ventPhone.getSection();
+      var main = doc.querySelector('main'), r = main && main.getBoundingClientRect();
+      if (r) {
+        var x = Math.max(12, Math.min(innerWidth - 12, r.left + r.width / 2));
+        for (var y of [160, 260, 400]) {
+          var c = chapterOf(doc.elementFromPoint(x, Math.min(y, innerHeight - 20)));
+          if (c) return c;
+        }
+      }
+      var roots = window.__tabletActiveRoots ? window.__tabletActiveRoots() : doc.querySelectorAll('main > section.chap');
+      for (var i = 0; i < roots.length; i++) {
+        var node = roots[i];
+        if (!node.matches('section.chap') || node.getAttribute('data-tablet-hidden') === '1') continue;
+        var box = node.getBoundingClientRect();
+        if (box.height && box.bottom > 100 && box.top < innerHeight) return node;
+      }
+      return null;
+    }
+    function sourceContext(node, chap) {
+      chap = chap || chapterOf(node);
+      if (!chap) return {chapter:'', chapterTitle:'General notes', target:'', targetTitle:''};
+      var heading = null;
+      chap.querySelectorAll('h4[id],h5[id],h6[id]').forEach(function(h){
+        if (node ? h === node || h.contains(node) || !!(h.compareDocumentPosition(node) & 4) : h.getClientRects().length && h.getBoundingClientRect().top <= 180) heading = h;
+      });
+      return {chapter:chap.id, chapterTitle:cleanTitle(chap.querySelector(':scope > h3')) || chap.id, target:heading ? heading.id : chap.id, targetTitle:heading ? cleanTitle(heading) : ''};
+    }
+    function selectedPassage() {
+      var s = window.getSelection();
+      if (!s || s.isCollapsed || !s.rangeCount) return null;
+      var range = s.getRangeAt(0), node = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement;
+      var end = range.endContainer.nodeType === 1 ? range.endContainer : range.endContainer.parentElement;
+      var chapter = chapterOf(node), text = s.toString().trim();
+      if (!chapter || chapterOf(end) !== chapter || text.length < 3 || text.length > 10000 || node.closest('input,textarea,[contenteditable="true"]')) return null;
+      return Object.assign(sourceContext(node, chapter), {quote:text});
+    }
+    function captureSelection() {
+      if (dialog.open || opening) return;
+      passage = selectedPassage(); selectionButton.hidden = !passage;
+    }
+    doc.addEventListener('selectionchange', function(){clearTimeout(selectionTimer);selectionTimer=setTimeout(captureSelection,180);});
+    selectionButton.addEventListener('pointerdown',function(e){e.preventDefault();});
+    selectionButton.addEventListener('click',function(){open(true);});
+    function persistDraft() {
+      if (!draft) return;
+      draft.note = textarea.value;
+      try { sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft)); el('draft-status').textContent = 'Draft retained in this tab until you save or discard it.'; }
+      catch (_) { el('draft-status').textContent = 'Unsaved draft retained while this page stays open. Save or copy it before reloading.'; }
+    }
+    function clearDraft() { clearTimeout(draftTimer); draft = null; el('copy').hidden = true; try { sessionStorage.removeItem(DRAFT_KEY); } catch (_) {} }
+    try {
+      var oldDraft = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || 'null');
+      if (oldDraft && typeof oldDraft.note === 'string' && oldDraft.context && typeof oldDraft.context === 'object') draft = oldDraft;
+    } catch (_) {}
+    function showEditor() {
+      if (!draft) return;
+      browse.hidden = true; editor.hidden = false;
+      el('editor-title').textContent = draft.original ? 'Edit note' : 'Add a note';
+      el('source').textContent = [draft.context.chapterTitle || 'General notes', draft.context.targetTitle].filter(Boolean).join(' · ');
+      el('quote').textContent = draft.quote || ''; el('quote').hidden = !draft.quote;
+      textarea.value = draft.note || ''; persistDraft(); textarea.focus({preventScroll:true});
+    }
+    function beginNote() {
+      if (!draft) draft = {context:Object.assign({}, passage || context), quote:passage && passage.quote || '', note:'', original:null};
+      showEditor();
+    }
+    function showList() { if (draft && !editor.hidden) persistDraft(); editor.hidden = true; browse.hidden = false; el('new').textContent = draft ? 'Resume draft' : passage ? 'Add a note on selected text' : 'Add a note'; render(); }
+    function open(usePassage) {
+      if (opening) return;
+      if (dialog.open) { if(usePassage)beginNote(); return; }
+      opener = doc.activeElement;
+      passage = selectedPassage() || (usePassage ? passage : null);
+      context = sourceContext(null, currentChapter());
+      var unlocking = window.__ventPhone && window.__ventPhone.overlays.isOpen();
+      if (unlocking) window.__ventPhone.overlays.closeAll(false);
+      selectionButton.hidden = true;
+      function finishOpen() {
+        opening = false;
+        pageY = window.scrollY;
+        el('current').textContent = context.chapter ? 'Current chapter: ' + context.chapterTitle : 'General notes';
+        status('Ready.');
+        if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open','');
+        if (usePassage || draft) { if(!draft)beginNote(); else showEditor(); } else showList();
+        if (editor.hidden) el('new').focus({preventScroll:true});
+      }
+      // The phone overlay owner restores reading position on its next frame.
+      // Let it finish before recording the return position or moving focus.
+      if (unlocking) { opening = true; requestAnimationFrame(finishOpen); } else finishOpen();
+    }
+    function close(restore) {
+      if (draft && !editor.hidden) persistDraft();
+      if (typeof dialog.close === 'function') dialog.close(); else dialog.removeAttribute('open');
+      if (restore !== false) {
+        var candidates = [opener,doc.getElementById('reader-more'),doc.querySelector('[data-pwa-action="tools"]'),doc.getElementById('btn-tools-menu'),doc.getElementById('mab-more')];
+        var focusTarget = candidates.find(function(n){return n && n.isConnected && n.getClientRects().length && !n.closest('[inert],[aria-hidden="true"]');});
+        if (focusTarget) focusTarget.focus({preventScroll:true});
+        window.scrollTo({top:pageY,behavior:'auto'});
+      }
+    }
+    function button(label, fn) { var b=doc.createElement('button'); b.type='button'; b.textContent=label; b.addEventListener('click',fn); return b; }
+    function jump(note) {
+      var target = doc.getElementById(note.target || '') || doc.getElementById(note.chapter || '');
+      var chapter = chapterOf(target);
+      if (!target || !chapter || chapter.id !== note.chapter) { status('This source is unavailable in this edition. The note is still saved.',true); return; }
+      close(false);
+      if (window.__ventPhone) window.__ventPhone.goToTarget(target,'push');
+      else {
+        var a=doc.createElement('a'); a.href='#'+encodeURIComponent(target.id); a.hidden=true; doc.body.appendChild(a); a.click(); a.remove();
+      }
+    }
+    function reload() {
+      try { records=store.list(); el('recover').hidden=true; return true; }
+      catch(e) { records=[]; el('recover').hidden=false; failure(e); return false; }
+    }
+    function render() {
+      var list=el('list'); list.replaceChildren();
+      if (!reload()) { el('count').textContent='Stored notes could not be read. Export stored data for recovery before changing browser storage.'; return; }
+      var currentFilter=el('filter').value, choices=new Map();
+      records.forEach(function(n){choices.set(n.chapter || '__general', n.chapterTitle || 'General notes');});
+      el('filter').replaceChildren(new Option('All chapters',''));
+      choices.forEach(function(label,id){el('filter').appendChild(new Option(label,id));});
+      if (choices.has(currentFilter)) el('filter').value=currentFilter;
+      else el('filter').value='';
+      var q=el('search').value.trim().toLocaleLowerCase(), filter=el('filter').value;
+      var matched=records.filter(function(n){return (!filter || (n.chapter || '__general')===filter) && (!q || [n.note,n.quote,n.chapterTitle,n.targetTitle].join(' ').toLocaleLowerCase().includes(q));});
+      matched.sort(function(a,b){return String(b.updatedAt || b.timestamp || '').localeCompare(String(a.updatedAt || a.timestamp || ''));});
+      el('count').textContent=matched.length+' of '+records.length+' notes';
+      if (!matched.length) { var p=doc.createElement('p'); p.textContent=records.length ? 'No notes match these filters.' : 'Add a chapter note or select a passage in the book to attach a quote.'; list.appendChild(p); }
+      matched.slice(0,shown).forEach(function(n){
+        var card=doc.createElement('article'); card.className='vn-item';
+        var source=doc.createElement('p');source.className='vn-context';source.textContent=[n.chapterTitle || 'General notes', n.targetTitle].filter(Boolean).join(' · ');card.appendChild(source);
+        if(n.quote){var quoted=doc.createElement('details'),summary=doc.createElement('summary'),quote=doc.createElement('blockquote');summary.textContent='Quoted passage';quote.className='vn-quote';quote.textContent=n.quote;quoted.append(summary,quote);card.appendChild(quoted);}
+        var text=doc.createElement('p');text.className='vn-note-text';text.textContent=n.note;card.appendChild(text);
+        var date=doc.createElement('p');date.className='vn-muted';var dt=new Date(n.updatedAt || n.timestamp);date.textContent=Number.isNaN(dt.getTime())?'':dt.toLocaleString();card.appendChild(date);
+        var actions=doc.createElement('div');actions.className='vn-actions';
+        if(n.chapter)actions.appendChild(button('Open source',function(){jump(n);}));
+        actions.appendChild(button('Edit',function(){if(draft){showEditor();status('Save or discard the existing draft before editing another note.',true);return;}draft={original:n,context:{chapter:n.chapter,chapterTitle:n.chapterTitle,target:n.target || n.chapter,targetTitle:n.targetTitle || ''},quote:n.quote,note:n.note};showEditor();}));
+        actions.appendChild(button('Delete',function(){try{undo=store.remove(n.id,n);el('undo').hidden=false;render();status('Note deleted. Undo is available below the list.');}catch(e){failure(e);}}));
+        card.appendChild(actions);list.appendChild(card);
+      });
+      el('more').hidden=matched.length<=shown;
+    }
+    function download(text,name,type) {
+      var url=URL.createObjectURL(new Blob([text],{type:type})),a=doc.createElement('a');a.href=url;a.download=name;doc.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},60000);
+    }
+    editor.addEventListener('submit',function(e){
+      e.preventDefault(); if(!draft || !textarea.value.trim()){status('Write a note before saving.',true);return;}
+      persistDraft();
+      try {
+        var record=Object.assign({},draft.original || {},draft.context,{id:draft.original ? draft.original.id : store.newId(),quote:draft.quote || '',note:textarea.value.trim(),timestamp:draft.original && draft.original.timestamp || new Date().toISOString(),updatedAt:new Date().toISOString()});
+        store.save(record,draft.original || undefined);clearDraft();shown=50;el('search').value='';el('filter').value='';showList();status('Note saved in this browser.');
+      }catch(error){el('copy').hidden=error.code!=='CONFLICT';failure(error);}
+    });
+    el('copy').addEventListener('click',function(){if(!draft)return;draft.original=null;persistDraft();el('copy').hidden=true;showEditor();status('This draft will be saved as a separate note. Select Save note to finish.');});
+    textarea.addEventListener('input',function(){if(draft)draft.note=textarea.value;clearTimeout(draftTimer);draftTimer=setTimeout(persistDraft,250);});
+    window.addEventListener('pagehide',persistDraft);
+    el('new').addEventListener('click',beginNote);
+    el('close').addEventListener('click',function(){close();});
+    el('return').addEventListener('click',showList);
+    el('discard').addEventListener('click',function(){clearDraft();showList();status('Draft discarded. Saved notes are unchanged.');});
+    el('undo-button').addEventListener('click',function(){try{if(undo)store.restore(undo);undo=null;el('undo').hidden=true;render();status('Deleted note restored.');}catch(e){failure(e);}});
+    el('search').addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(function(){shown=50;render();},150);});
+    el('filter').addEventListener('change',function(){shown=50;render();});
+    el('more').addEventListener('click',function(){shown+=50;render();});
+    el('export').addEventListener('click',function(){try{download(store.exportJSON(),'ventilation-guide-notes-backup.json','application/json');status('Backup download requested. It includes saved notes; save any draft first.');}catch(e){failure(e);}});
+    el('text-export').addEventListener('click',function(){try{var text=store.list().map(function(n){return [n.chapterTitle || 'General notes',n.targetTitle || '',n.quote ? 'Quoted passage: '+n.quote : '',n.note].filter(Boolean).join('\n\n');}).join('\n\n-----\n\n');download(text,'ventilation-guide-notes.txt','text/plain;charset=utf-8');status('Readable notes download requested.');}catch(e){failure(e);}});
+    el('recover').addEventListener('click',function(){try{download(store.rawBackup(),'ventilation-guide-notes-recovery.txt','text/plain;charset=utf-8');status('Stored data download requested.');}catch(e){failure(e);}});
+    el('import').addEventListener('click',function(){el('file').click();});
+    el('file').addEventListener('change',async function(){var f=el('file').files[0];if(!f)return;try{if(f.size>5*1024*1024)throw Error('Backup is larger than 5 MB.');var result=store.importJSON(await f.text());shown=50;render();status('Imported '+result.added+' notes; '+result.skipped+' duplicates skipped; '+result.conflicts+' changed versions retained separately.');}catch(e){failure(e);}finally{el('file').value='';}});
+    dialog.addEventListener('cancel',function(e){e.preventDefault();close();});
+    dialog.addEventListener('click',function(e){if(e.target!==dialog)return;var r=dialog.getBoundingClientRect();if(e.clientX<r.left || e.clientX>r.right || e.clientY<r.top || e.clientY>r.bottom)close();});
+    doc.addEventListener('keydown',function(e){
+      if(!dialog.open)return;
+      e.stopPropagation();
+      if(e.key==='Escape'){e.preventDefault();close();return;}
+      if(e.key==='Tab'){
+        var focusable=Array.from(dialog.querySelectorAll('button,input,select,textarea,summary')).filter(function(n){return !n.disabled && n.getClientRects().length;});
+        var first=focusable[0],last=focusable[focusable.length-1];
+        if(e.shiftKey && (doc.activeElement===first || !dialog.contains(doc.activeElement))){e.preventDefault();last.focus();}
+        else if(!e.shiftKey && (doc.activeElement===last || !dialog.contains(doc.activeElement))){e.preventDefault();first.focus();}
+      }
+    },true);
+    doc.addEventListener('click',function(e){var b=e.target.closest && e.target.closest('#btn-notes,[data-vent-notes-open]');if(b){e.preventDefault();open(false);}});
+    window.addEventListener('storage',function(e){if(e.key==='mv-annotations-v1' && dialog.open){if(editor.hidden)render();status('Notes changed in another tab. An open draft will be checked before saving.');}});
+    window.__ventGuideNotes={open:function(){open(false);},close:close};
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+
+</script>
 </body>
 </html>
 <!-- CACHE_SAFE_SIMULATION_CENTER_BUILD_v1_2_8 -->
